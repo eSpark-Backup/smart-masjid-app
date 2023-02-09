@@ -1,12 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
-export default function index() {
+import styles from './style';
+
+export default function App() {
+  const { colors } = useTheme();
+
   return (
-    <View>
-      <Text>index</Text>
+    <View style={styles.container}>
+      <Text style={{ color: colors.text }}>Hello World</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({});
