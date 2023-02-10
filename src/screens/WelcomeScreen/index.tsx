@@ -1,15 +1,22 @@
 import React from 'react';
-import { StatusBar, Text, View } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { Text, View } from 'react-native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 
 import styles from './style';
-import { Wrapper } from '../../components';
+import { Wrapper } from '../../containers';
 
 export default function App() {
   const { colors } = useTheme();
+  const navigation = useNavigation();
+
+  const goBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  };
 
   return (
-    <Wrapper>
+    <Wrapper onBackPress={goBack}>
       <View style={styles.container}>
         <Text style={{ color: colors.text }}>Hello World</Text>
       </View>
