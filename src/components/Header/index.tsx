@@ -2,13 +2,14 @@ import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import AD from 'react-native-vector-icons/AntDesign';
+import { WINDOW_HEIGHT } from '../../constants';
 
 export default function Header({ onBackPress }: { onBackPress?: () => void }) {
   const { colors } = useTheme();
   return (
     <View
       style={{
-        height: 66,
+        height: WINDOW_HEIGHT / 10,
         width: '100%',
         justifyContent: 'center',
         paddingHorizontal: 25,
