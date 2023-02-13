@@ -12,10 +12,12 @@ export default function Wrapper({
   children,
   showFooter = true,
   onBackPress,
+  bgImageSpacer = true,
 }: {
   children: React.ReactNode;
   showFooter?: boolean;
   onBackPress?: () => void;
+  bgImageSpacer?: boolean;
 }) {
   return (
     <View style={{ flex: 1 }}>
@@ -25,8 +27,15 @@ export default function Wrapper({
           style={styles.imageBackgroundStyle}
           imageStyle={styles.imageStyle}
           source={HeaderBackgroundImage}>
-          <View style={{ height: 44 }} />
+          <View style={{ height: WINDOW_WIDTH / 10 }} />
           <Header onBackPress={onBackPress} />
+          {bgImageSpacer && (
+            <View
+              style={{
+                height: WINDOW_WIDTH / 3.5,
+              }}
+            />
+          )}
           {children}
         </ImageBackground>
         {showFooter && (
@@ -42,9 +51,9 @@ export default function Wrapper({
 }
 
 const styles = StyleSheet.create({
-  imageBackgroundStyle: { minHeight: WINDOW_HEIGHT / 3, flex: 1 },
+  imageBackgroundStyle: { minHeight: WINDOW_WIDTH / 1.8, flex: 1 },
   imageStyle: {
-    height: WINDOW_HEIGHT / 3,
+    height: WINDOW_WIDTH / 1.8,
     width: WINDOW_WIDTH,
   },
 });
