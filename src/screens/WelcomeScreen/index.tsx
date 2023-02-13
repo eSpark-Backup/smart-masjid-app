@@ -4,6 +4,7 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 
 import { Joined, MyTitle } from '../../components';
 import { Wrapper } from '../../containers';
+import { Rounded } from '../../components/Buttons';
 
 export default function App() {
   const { colors } = useTheme();
@@ -18,6 +19,7 @@ export default function App() {
   return (
     <Wrapper onBackPress={goBack}>
       <MyTitle text="Welcome to Smart Adhan" />
+      <Rounded label="Next" />
     </Wrapper>
   );
 }
