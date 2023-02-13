@@ -1,12 +1,10 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import { Joined, MyTitle } from '../../components';
+import { GapView, Joined, MyText, MyTitle } from '../../components';
 import { Wrapper } from '../../containers';
 
 export default function App() {
-  const { colors } = useTheme();
   const navigation = useNavigation();
 
   const goBack = () => {
@@ -17,7 +15,18 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <MyTitle text="Welcome to Smart Adhan" />
+      <MyTitle
+        style={{ alignSelf: 'center', textAlign: 'center' }}
+        text={`Welcome to\nSmart Adhan`}
+      />
+      <GapView length={85} />
+      <MyText
+        size={16}
+        textStyle={{ textAlign: 'center' }}
+        text="Have you purchased the adhan device ?"
+      />
+      <GapView length={80} />
+      <Joined containerStyle={{ alignSelf: 'center' }} />
     </Wrapper>
   );
 }

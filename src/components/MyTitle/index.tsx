@@ -1,10 +1,16 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextStyle } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 import MyText from '../MyText';
 
-export default function MyTitle({ text }: { text: string }) {
+export default function MyTitle({
+  text,
+  style = {},
+}: {
+  text: string;
+  style?: TextStyle;
+}) {
   const { colors } = useTheme();
 
   return (
@@ -14,6 +20,7 @@ export default function MyTitle({ text }: { text: string }) {
       textStyle={{
         ...styles.title,
         color: colors.primary,
+        ...style,
       }}
     />
   );
