@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 
-import { Joined, MyTitle } from '../../components';
+import { Joined, MyInput, MyTitle } from '../../components';
 import { Wrapper } from '../../containers';
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <MyTitle text="Welcome to Smart Adhan" />
+      <MyInput />
     </Wrapper>
   );
 }
