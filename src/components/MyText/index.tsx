@@ -24,5 +24,3 @@ export default function MyText({
     </Text>
   );
 }
-
-const styles = StyleSheet.create({});
