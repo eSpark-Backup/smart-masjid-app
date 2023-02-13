@@ -15,10 +15,10 @@ export default function MyText({
   return (
     <Text
       style={{
-        ...textStyle,
         fontFamily: 'roboto',
         color: colors.text,
         fontSize: size ?? 14,
+        ...textStyle,
       }}>
       {text}
     </Text>
