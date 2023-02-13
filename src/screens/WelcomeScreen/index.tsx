@@ -1,11 +1,16 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { GapView, Joined, MyText, MyTitle } from '../../components';
 import { Wrapper } from '../../containers';
+import { RootStackParamList } from '../../types';
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
+type WelcomeScreenNavigationProp = Props['navigation'];
 
 export default function App() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
   const goBack = () => {
     if (navigation.canGoBack()) {
@@ -26,7 +31,10 @@ export default function App() {
         text="Have you purchased the adhan device ?"
       />
       <GapView length={80} />
-      <Joined containerStyle={{ alignSelf: 'center' }} />
+      <Joined
+        containerStyle={{ alignSelf: 'center' }}
+        onPress1={() => navigation.navigate('Email')}
+      />
     </Wrapper>
   );
 }
