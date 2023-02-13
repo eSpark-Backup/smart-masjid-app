@@ -11,3 +11,5 @@ export const MyLightTheme = {
     border: 'rgb(0, 104, 112)',
   },
 };
+
+export const GradientColors = ['#008892', '#006870'];
