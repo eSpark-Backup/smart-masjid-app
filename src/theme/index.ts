@@ -7,7 +7,7 @@ export const MyLightTheme = {
     primary: 'rgb(0, 104, 112)',
     background: 'rgb(255, 255, 255)',
     card: 'rgb(255, 255, 255)',
-    text: 'rgb(0, 0, 0)',
+    text: 'rgb(62, 62, 62)',
     border: 'rgb(0, 104, 112)',
   },
 };
