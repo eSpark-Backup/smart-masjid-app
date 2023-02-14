@@ -11,7 +11,7 @@ import { useTheme } from '@react-navigation/native';
 
 import { GradientColors } from '../../../theme';
 
-interface JoindButtonType {
+interface JoinedButtonType {
   title1?: string;
   title2?: string;
   onPress1?: () => void;
@@ -22,10 +22,10 @@ interface JoindButtonType {
 export default function Joined({
   title1 = 'Yes',
   title2 = 'No',
-  onPress1 = () => console.log('title1'),
-  onPress2 = () => console.log('title2'),
+  onPress1 = (): void => console.log('title1'),
+  onPress2 = (): void => console.log('title2'),
   containerStyle = {},
-}: JoindButtonType) {
+}: JoinedButtonType) {
   const { colors } = useTheme();
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     borderBottomRightRadius: 12,
     borderWidth: 1,
-    right: 1
+    right: 1,
   },
 });
