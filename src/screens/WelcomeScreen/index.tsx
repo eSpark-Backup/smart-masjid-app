@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 
 import { Joined, MyInput, MyTitle } from '../../components';
-import { Wrapper } from '../../containers';
+import { Card, Wrapper } from '../../containers';
 
 export default function App() {
   const { colors } = useTheme();
@@ -17,7 +17,31 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <MyInput />
+      {/* Login Input */}
+      <Card>
+        <MyInput isDivider />
+        <MyInput />
+      </Card>
+      <View style={{ marginVertical: 10 }} />
+      {/* Phone Input */}
+      <Card>
+        <MyInput isPhoneCode />
+      </Card>
+      <View style={{ marginVertical: 10 }} />
+      {/* Profile Input */}
+      <View style={{ paddingHorizontal: 20 }}>
+        <MyInput
+          title="Name"
+          isDivider
+          dividerWidth={0.5}
+          dividerColor="#3e3e3e"
+        />
+      </View>
+      <View style={{ marginVertical: 10 }} />
+      {/* Search Input */}
+      <Card>
+        <MyInput searchBar />
+      </Card>
     </Wrapper>
   );
 }
