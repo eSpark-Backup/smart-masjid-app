@@ -12,9 +12,11 @@ import {
   GapView,
   MyText,
   TextLabel,
+  ImageHolder,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
+import { EmptyMasjid } from '../../assets';
 
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
@@ -32,9 +34,7 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <View>
-        <TextLabel label="Email" />
-      </View>
+      <ImageHolder source={EmptyMasjid} />
     </Wrapper>
   );
 }
