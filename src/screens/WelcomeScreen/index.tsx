@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <Wrapper bgImageSpacer={false} onBackPress={goBack}>
-        <ProfileAvatar />
+      <ProfileAvatar />
     </Wrapper>
   );
 }
