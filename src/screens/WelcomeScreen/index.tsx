@@ -12,17 +12,43 @@ import {
   GapView,
   MyText,
   TextLabel,
+  ProfileSectionlist,
+  MyDivider,
   ImageHolder,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
 
 import ProfileAvatar from '../../components/ProfileAvatar';
-
+import {
+  About,
+  Help,
+  ManageAccount,
+  ManageMasjid,
+  Privacy,
+  SettingIcon,
+} from '../../assets';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
 >;
+
+const Data = [
+  {
+    title: 'User Information',
+    icon: <SettingIcon />,
+    data: [
+      { title: 'Manage Account', icon: <ManageAccount />, onPress: () => {} },
+      { title: 'Manage Masjid', icon: <ManageMasjid />, onPress: () => {} },
+    ],
+  },
+];
+
+const FooterArray = [
+  { title: 'Help', icon: <Help />, onPress: () => {} },
+  { title: 'Privacy', icon: <Privacy />, onPress: () => {} },
+  { title: 'About us', icon: <About />, onPress: () => {} },
+];
 
 export default function App() {
   const navigation = useNavigation<WelcomeNavigationProps['navigation']>();
@@ -35,8 +61,8 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      {/* <ProfileAvatar /> */}
-      <ImageHolder />
+      <MyDivider style={{ alignSelf: 'center' }} />
+      <ProfileSectionlist data={Data} footerData={FooterArray} />
     </Wrapper>
   );
 }
