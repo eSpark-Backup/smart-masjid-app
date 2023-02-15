@@ -4,7 +4,7 @@ export { default as Header } from './Header';
 export { default as MyTitle } from './MyTitle';
 export { default as MyInput } from './MyInput';
 export { default as DLoader } from './DLoader';
-export { default as TextLabel } from './TextLabel';
 export { default as GapView } from './GapView';
 export { default as LogoutModal } from './LogoutModal';
 export { default as ImageHolder } from './ImageHolder';
+export { default as TextLabel } from './TextLabel';
