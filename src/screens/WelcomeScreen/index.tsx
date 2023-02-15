@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -10,16 +11,18 @@ import {
   Rounded,
   GapView,
   MyText,
-  LogoutModal,
+  TextLabel,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
-type WelcomeScreenNavigationProp = Props['navigation'];
+type WelcomeNavigationProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Welcome'
+>;
 
 export default function App() {
-  const navigation = useNavigation<WelcomeScreenNavigationProp>();
+  const navigation = useNavigation<WelcomeNavigationProps['navigation']>();
 
   const goBack = () => {
     if (navigation.canGoBack()) {
@@ -29,7 +32,9 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <LogoutModal visible={true} />
+      <View>
+        <TextLabel label="Email" />
+      </View>
     </Wrapper>
   );
 }
