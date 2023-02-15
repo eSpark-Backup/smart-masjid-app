@@ -14,7 +14,7 @@ import {
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
-
+import ProfileAvatar from '../../components/ProfileAvatar';
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 type WelcomeScreenNavigationProp = Props['navigation'];
 
@@ -28,8 +28,8 @@ export default function App() {
   };
 
   return (
-    <Wrapper onBackPress={goBack}>
-      <LogoutModal visible={true} />
+    <Wrapper bgImageSpacer={false} onBackPress={goBack}>
+        <ProfileAvatar />
     </Wrapper>
   );
 }
