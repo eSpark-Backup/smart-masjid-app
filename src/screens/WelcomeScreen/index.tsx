@@ -18,6 +18,7 @@ import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
 
 import ProfileAvatar from '../../components/ProfileAvatar';
+import CenterToast from '../../components/CenterToast';
 
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
@@ -35,8 +36,11 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      {/* <ProfileAvatar /> */}
-      <ImageHolder />
+      <CenterToast
+        mode={true}
+        title="Congratulations"
+        message="Your Device is Successfully Connected"
+      />
     </Wrapper>
   );
 }
