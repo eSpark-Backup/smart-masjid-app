@@ -15,7 +15,7 @@ import {
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
-
+import ProfileAvatar from '../../components/ProfileAvatar';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
@@ -31,10 +31,8 @@ export default function App() {
   };
 
   return (
-    <Wrapper onBackPress={goBack}>
-      <View>
-        <TextLabel label="Email" />
-      </View>
+    <Wrapper bgImageSpacer={false} onBackPress={goBack}>
+      <ProfileAvatar />
     </Wrapper>
   );
 }

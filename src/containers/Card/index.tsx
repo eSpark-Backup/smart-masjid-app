@@ -3,14 +3,25 @@ import { StyleSheet, View } from 'react-native';
 import { ShadowFlex } from 'react-native-neomorph-shadows';
 import { WINDOW_WIDTH } from '../../constants';
 
-export default function Card({ children }: { children?: React.ReactNode }) {
+export default function Card({
+  children,
+  height=undefined,
+  width=WINDOW_WIDTH - 45,
+  radius=12
+}: {
+  children?: React.ReactNode;
+  height?: number | undefined;
+  width?: number;
+  radius?: number
+}) {
   return (
     <View style={styles.mainContainer}>
       <ShadowFlex
         style={{
           ...styles.shadowContainer,
-          width: WINDOW_WIDTH - 45,
-          // height: 56,
+          width: width,
+          height: height,
+          borderRadius: radius
         }}>
         {children}
       </ShadowFlex>
