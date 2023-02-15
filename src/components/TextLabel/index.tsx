@@ -1,12 +1,26 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
-export default function TextLabel() {
+import MyText from '../MyText';
+import { TextStyle } from 'react-native';
+
+export default function TextLabel({
+  label,
+  textStyle,
+}: {
+  label: string;
+  textStyle?: TextStyle;
+}) {
+  const { colors } = useTheme();
   return (
-    <View>
-      <Text>TextLabel</Text>
-    </View>
+    <MyText
+      text={label}
+      textStyle={{
+        color: colors.text,
+        fontWeight: '700',
+        fontSize: 18,
+        ...textStyle,
+      }}
+    />
   );
 }
-
-const styles = StyleSheet.create({});
