@@ -8,5 +8,7 @@ export { default as GapView } from './GapView';
 export { default as LogoutModal } from './LogoutModal';
 export { default as ImageHolder } from './ImageHolder';
 export { default as TextLabel } from './TextLabel';
+export { default as ProfileAvatar } from './ProfileAvatar';
 export { default as ProfileSectionlist } from './ProfileSectionlist';
 export { default as MyDivider } from './MyDivider';
+export { default as CenterToast } from './CenterToast';

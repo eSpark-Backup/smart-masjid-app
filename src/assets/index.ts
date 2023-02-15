@@ -9,6 +9,8 @@ import Privacy from './images/Privacy.svg';
 import SettingIcon from './images/SettingIcon.svg';
 
 export { default as MasjidSvg } from './images/MasjidSvg.svg';
+export { default as CheckSvg } from './images/Check.svg';
+export { default as CrossSvg } from './images/Cross.svg';
 
 export {
   HeaderBackgroundImage,

@@ -15,11 +15,12 @@ import {
   ProfileSectionlist,
   MyDivider,
   ImageHolder,
+  ProfileAvatar,
+  CenterToast,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
 
-import ProfileAvatar from '../../components/ProfileAvatar';
 import {
   About,
   Help,
@@ -61,6 +62,11 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
+      {/* <CenterToast
+        mode={true}
+        title="Congratulations"
+        message="Your Device is Successfully Connected"
+      /> */}
       <MyDivider style={{ alignSelf: 'center' }} />
       <ProfileSectionlist data={Data} footerData={FooterArray} />
     </Wrapper>
