@@ -1,5 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, View } from 'react-native';
+
+import { MasjidSvg } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 
@@ -8,7 +10,7 @@ export default function ImageHolder({
   text1,
   text2,
 }: {
-  source: _SourceUri;
+  source?: _SourceUri;
   text1?: string;
   text2?: string;
 }) {
@@ -16,7 +18,11 @@ export default function ImageHolder({
     <View>
       <MyText text={text1!!} textStyle={styles.text} />
       <GapView length={30} />
-      <Image source={source} style={styles.loader} resizeMode="contain" />
+      {source ? (
+        <Image source={source} style={styles.loader} resizeMode="contain" />
+      ) : (
+        <MasjidSvg style={{ alignSelf: 'center' }} />
+      )}
       <GapView length={30} />
       <MyText text={text2!!} textStyle={styles.text} />
     </View>
