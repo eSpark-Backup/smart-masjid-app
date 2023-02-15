@@ -14,9 +14,11 @@ import {
   TextLabel,
   ProfileSectionlist,
   MyDivider,
+  ImageHolder,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
+
 import ProfileAvatar from '../../components/ProfileAvatar';
 import {
   About,

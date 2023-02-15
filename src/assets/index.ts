@@ -8,6 +8,8 @@ import ManageMasjid from './images/ManageMasjid.svg';
 import Privacy from './images/Privacy.svg';
 import SettingIcon from './images/SettingIcon.svg';
 
+export { default as MasjidSvg } from './images/MasjidSvg.svg';
+
 export {
   HeaderBackgroundImage,
   DeviceLoaderGif,
