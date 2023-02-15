@@ -5,3 +5,4 @@ export { default as MyTitle } from './MyTitle';
 export { default as MyInput } from './MyInput';
 export { default as DLoader } from './DLoader';
 export { default as TextLabel } from './TextLabel';
+export { default as GapView } from './GapView';
