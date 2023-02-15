@@ -37,7 +37,7 @@ export default function MyInput(props: MyInputProps) {
     title,
     searchBar,
     onPhoneCodePress,
-    onSearch
+    onSearch,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -144,5 +144,5 @@ MyInput.defaultProps = {
   placeholder: 'Placeholder Text',
   title: '',
   searchBar: false,
-  onSearch: () => {}
+  onSearch: () => {},
 };
