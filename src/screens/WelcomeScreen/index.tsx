@@ -15,12 +15,11 @@ import {
   ProfileSectionlist,
   MyDivider,
   ImageHolder,
+  ProfileAvatar,
+  CenterToast,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
-
-import ProfileAvatar from '../../components/ProfileAvatar';
-import CenterToast from '../../components/CenterToast';
 
 import {
   About,
