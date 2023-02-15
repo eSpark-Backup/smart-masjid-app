@@ -5,3 +5,5 @@ export { default as MyTitle } from './MyTitle';
 export { default as MyInput } from './MyInput';
 export { default as DLoader } from './DLoader';
 export { default as GapView } from './GapView';
+export { default as LogoutModal } from './LogoutModal';
+
