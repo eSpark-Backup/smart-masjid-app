@@ -7,3 +7,5 @@ export { default as DLoader } from './DLoader';
 export { default as GapView } from './GapView';
 export { default as LogoutModal } from './LogoutModal';
 export { default as TextLabel } from './TextLabel';
+export { default as ProfileSectionlist } from './ProfileSectionlist';
+export { default as MyDivider } from './MyDivider';
