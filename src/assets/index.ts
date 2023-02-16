@@ -11,6 +11,10 @@ import SettingIcon from './images/SettingIcon.svg';
 export { default as MasjidSvg } from './images/MasjidSvg.svg';
 export { default as CheckSvg } from './images/Check.svg';
 export { default as CrossSvg } from './images/Cross.svg';
+export { default as DeviceSvg } from './images/Device.svg';
+export { default as LockSvg } from './images/Lock.svg';
+export { default as MicSvg } from './images/Mic.svg';
+export { default as WifiSvg } from './images/Wifi.svg';
 
 export {
   HeaderBackgroundImage,
