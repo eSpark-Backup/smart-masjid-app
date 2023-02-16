@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
 import { Card } from '../../containers';
 
@@ -12,7 +13,7 @@ export default function EmailForm() {
       />
       <GapView length={80} />
       <Card width={315}>
-        <MyInput />
+        <MyInput placeholder="Email" />
       </Card>
       <View style={{ marginTop: 80, marginBottom: 40 }}>
         <Rounded label="Next" width={250} />
@@ -20,6 +21,7 @@ export default function EmailForm() {
       <MyText
         text="Use phone number instead"
         textStyle={{ fontSize: 16, fontWeight: '400' }}
+        onPress={() => console.log('Go to Phone')}
       />
     </View>
   );
