@@ -34,6 +34,7 @@ import {
   SettingIcon,
   WifiSvg,
 } from '../../assets';
+import MyDropdown from '../../components/MyDropdown';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
@@ -71,7 +72,7 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <SLoader />
+      <MyDropdown />
     </Wrapper>
   );
 }
