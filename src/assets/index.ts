@@ -15,6 +15,7 @@ export { default as DeviceSvg } from './images/Device.svg';
 export { default as LockSvg } from './images/Lock.svg';
 export { default as MicSvg } from './images/Mic.svg';
 export { default as WifiSvg } from './images/Wifi.svg';
+export { default as SLoaderGif } from './animations/sLoader.gif';
 
 export {
   HeaderBackgroundImage,

@@ -18,6 +18,7 @@ import {
   ProfileAvatar,
   CenterToast,
   ButtonListing,
+  SLoader,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
@@ -70,7 +71,7 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <ButtonListing data={dataList} />
+      <SLoader />
     </Wrapper>
   );
 }
