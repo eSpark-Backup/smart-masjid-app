@@ -5,14 +5,14 @@ import { WINDOW_WIDTH } from '../../constants';
 
 export default function Card({
   children,
-  height=undefined,
-  width=WINDOW_WIDTH - 45,
-  radius=12
+  height = undefined,
+  width = WINDOW_WIDTH - 45,
+  radius = 12,
 }: {
   children?: React.ReactNode;
   height?: number | undefined;
   width?: number;
-  radius?: number
+  radius?: number;
 }) {
   return (
     <View style={styles.mainContainer}>
@@ -21,7 +21,7 @@ export default function Card({
           ...styles.shadowContainer,
           width: width,
           height: height,
-          borderRadius: radius
+          borderRadius: radius,
         }}>
         {children}
       </ShadowFlex>
