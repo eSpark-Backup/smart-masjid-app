@@ -34,31 +34,11 @@ import {
   SettingIcon,
   WifiSvg,
 } from '../../assets';
+
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
 >;
-
-const dataList = [
-  {
-    rightChild: (
-      <View style={{ flexDirection: 'row' }}>
-        <LockSvg />
-        <GapView mode="horizontal" />
-        <WifiSvg />
-      </View>
-    ),
-    title: 'Home Wifi',
-  },
-  {
-    title: 'Smart Azhan Speaker',
-    leftIcon: <DeviceSvg />,
-  },
-  {
-    title: 'Smart Azhan Speaker',
-    leftIcon: <DeviceSvg />,
-  },
-];
 
 export default function App() {
   const navigation = useNavigation<WelcomeNavigationProps['navigation']>();
@@ -71,7 +51,21 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <SLoader />
+      <MyTitle
+        style={{ alignSelf: 'center', textAlign: 'center' }}
+        text={`Welcome to\nSmart Adhan`}
+      />
+      <GapView length={85} />
+      <MyText
+        size={16}
+        textStyle={{ textAlign: 'center' }}
+        text="Have you purchased the adhan device ?"
+      />
+      <GapView length={80} />
+      <Joined
+        containerStyle={{ alignSelf: 'center' }}
+        onPress1={() => navigation.navigate('USetup')}
+      />
     </Wrapper>
   );
 }
