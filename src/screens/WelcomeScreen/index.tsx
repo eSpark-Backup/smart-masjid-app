@@ -69,5 +69,9 @@ export default function App() {
     }
   };
 
-  return <Wrapper onBackPress={goBack}>{/* <SLoader /> */}</Wrapper>;
+  return (
+    <Wrapper onBackPress={goBack}>
+      <SLoader />
+    </Wrapper>
+  );
 }
