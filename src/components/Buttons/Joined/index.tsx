@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useTheme } from '@react-navigation/native';
+import { Theme, useTheme } from '@react-navigation/native';
 
 import { GradientColors } from '../../../theme';
 
@@ -17,6 +17,7 @@ interface JoinedButtonType {
   onPress1?: () => void;
   onPress2?: () => void;
   containerStyle?: ViewStyle;
+  activeButton?: 'one' | 'two';
 }
 
 export default function Joined({
@@ -25,44 +26,74 @@ export default function Joined({
   onPress1 = (): void => console.log('title1'),
   onPress2 = (): void => console.log('title2'),
   containerStyle = {},
+  activeButton = 'one',
 }: JoinedButtonType) {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), []);
+
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
       <TouchableWithoutFeedback onPress={onPress1}>
-        <LinearGradient colors={GradientColors} style={styles.gradient}>
-          <Text style={styles.text}>{title1}</Text>
+        <LinearGradient
+          colors={activeButton == 'one' ? GradientColors : ['#fff', '#fff']}
+          style={activeButton == 'one' ? styles.gradient : styles.hollowLeft}>
+          <Text style={activeButton == 'one' ? styles.activeText : styles.text}>
+            {title1}
+          </Text>
         </LinearGradient>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={onPress2}>
-        <View style={{ ...styles.hollow, borderColor: colors.primary }}>
-          <Text style={{ ...styles.text, color: colors.primary }}>
+        <LinearGradient
+          colors={activeButton == 'two' ? GradientColors : ['#fff', '#fff']}
+          style={activeButton == 'two' ? styles.rightGradient : styles.hollow}>
+          <Text style={activeButton == 'two' ? styles.activeText : styles.text}>
             {title2}
           </Text>
-        </View>
+        </LinearGradient>
       </TouchableWithoutFeedback>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-  },
-  text: {
-    paddingVertical: 17,
-    paddingHorizontal: 50,
-    fontSize: 18,
-    color: '#fff',
-  },
-  gradient: {
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
-  },
-  hollow: {
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
-    borderWidth: 1,
-    right: 1,
-  },
-});
+const makeStyles = (theme: Theme) => {
+  const { colors } = theme;
+  return StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+    },
+    text: {
+      paddingVertical: 17,
+      paddingHorizontal: 50,
+      fontSize: 18,
+      color: colors.primary,
+    },
+    activeText: {
+      paddingVertical: 17,
+      paddingHorizontal: 50,
+      fontSize: 18,
+      color: '#fff',
+    },
+    gradient: {
+      borderTopLeftRadius: 12,
+      borderBottomLeftRadius: 12,
+    },
+    rightGradient: {
+      borderTopRightRadius: 12,
+      borderBottomRightRadius: 12,
+    },
+    hollow: {
+      borderTopRightRadius: 12,
+      borderBottomRightRadius: 12,
+      borderWidth: 1,
+      right: 1,
+      borderColor: colors.primary,
+    },
+    hollowLeft: {
+      borderTopLeftRadius: 12,
+      borderBottomLeftRadius: 12,
+      borderWidth: 1,
+      left: 1,
+      borderColor: colors.primary,
+    },
+  });
+};
