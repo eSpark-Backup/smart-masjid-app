@@ -17,38 +17,46 @@ import {
   ImageHolder,
   ProfileAvatar,
   CenterToast,
+  ButtonListing,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
 
 import {
   About,
+  DeviceSvg,
   Help,
+  LockSvg,
   ManageAccount,
   ManageMasjid,
   Privacy,
   SettingIcon,
+  WifiSvg,
 } from '../../assets';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
 >;
 
-const Data = [
+const dataList = [
   {
-    title: 'User Information',
-    icon: <SettingIcon />,
-    data: [
-      { title: 'Manage Account', icon: <ManageAccount />, onPress: () => {} },
-      { title: 'Manage Masjid', icon: <ManageMasjid />, onPress: () => {} },
-    ],
+    rightChild: (
+      <View style={{ flexDirection: 'row' }}>
+        <LockSvg />
+        <GapView mode="horizontal" />
+        <WifiSvg />
+      </View>
+    ),
+    title: 'Home Wifi',
   },
-];
-
-const FooterArray = [
-  { title: 'Help', icon: <Help />, onPress: () => {} },
-  { title: 'Privacy', icon: <Privacy />, onPress: () => {} },
-  { title: 'About us', icon: <About />, onPress: () => {} },
+  {
+    title: 'Smart Azhan Speaker',
+    leftIcon: <DeviceSvg />,
+  },
+  {
+    title: 'Smart Azhan Speaker',
+    leftIcon: <DeviceSvg />,
+  },
 ];
 
 export default function App() {
@@ -62,13 +70,7 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      {/* <CenterToast
-        mode={true}
-        title="Congratulations"
-        message="Your Device is Successfully Connected"
-      /> */}
-      <MyDivider style={{ alignSelf: 'center' }} />
-      <ProfileSectionlist data={Data} footerData={FooterArray} />
+      <ButtonListing data={dataList} />
     </Wrapper>
   );
 }
