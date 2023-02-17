@@ -35,6 +35,7 @@ import {
   WifiSvg,
 } from '../../assets';
 import MyDropdown from '../../components/MyDropdown';
+import { Text } from 'react-native-svg';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
@@ -72,6 +73,7 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
+      <MyDropdown />
       <MyDropdown />
     </Wrapper>
   );

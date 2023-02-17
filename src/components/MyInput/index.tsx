@@ -62,7 +62,7 @@ export default function MyInput(props: MyInputProps) {
   };
 
   return (
-    <>
+    <View>
       {title != '' && (
         <MyText
           text={title ?? ''}
@@ -99,7 +99,7 @@ export default function MyInput(props: MyInputProps) {
           </TouchableOpacity>
         )}
       </View>
-    </>
+    </View>
   );
 }
 

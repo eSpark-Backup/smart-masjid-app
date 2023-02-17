@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, View, Text, TouchableOpacity, Alert } from 'react-native';
+import {
+  FlatList,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+} from 'react-native';
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
@@ -10,7 +17,8 @@ interface Item {
   id: number;
   name: string;
 }
-var items: Item[] = [
+
+var dataItems: Item[] = [
   {
     id: 1,
     name: 'JavaScript',
@@ -45,7 +53,17 @@ var items: Item[] = [
   },
 ];
 
-export default function MyDropdown() {
+export default function MyDropdown({
+  items = dataItems,
+  title = 'Title',
+  placeholder = 'Please Select',
+  onChangeValue = (value: Item) => { }
+}: {
+  items: Item[];
+  title?: string;
+  placeholder?: string;
+  onChangeValue?: (value: Item) => void;
+}) {
   const [show, setShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [data, setData] = useState(items);
@@ -69,37 +87,39 @@ export default function MyDropdown() {
 
   return (
     <>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+      <View style={styles.container}>
         <MyInput
+          title={title}
           onChangeText={onSearch}
           onFocus={() => setShow(true)}
           onBlur={() => setShow(false)}
-          placeholder="Please Select"
+          placeholder={placeholder}
           value={selectedItem?.name ?? ''}
         />
-        <II name="caret-down-sharp" style={{right: 20}} />
+        <II
+          name="caret-down-sharp"
+          style={{ right: 20, top: title ? 12 : 0}}
+          onPress={() => setShow(!show)}
+        />
       </View>
-      <MyDivider style={{ alignSelf: 'center' }} />
+      <MyDivider
+        style={{ alignSelf: 'center' }}
+        height={0.5}
+        backgroundColor="#3E3E3E"
+      />
       {show && (
-        <View
-          style={{
-            width: WINDOW_WIDTH - 45,
-            height: 100,
-            alignSelf: 'center',
-          }}>
+        <View style={styles.listItemContainer}>
           <FlatList
             data={data}
+            keyboardShouldPersistTaps="handled"
             renderItem={({ item, index }) => {
               return (
                 <TouchableOpacity
+                  key={`${item?.name}-${index}`}
                   activeOpacity={0.9}
                   onPress={() => {
                     setSelectedItem(item);
+                    onChangeValue(item)
                     setShow(false);
                   }}
                   style={{ padding: 5 }}>
@@ -107,12 +127,23 @@ export default function MyDropdown() {
                 </TouchableOpacity>
               );
             }}
-            ItemSeparatorComponent={() => {
-              return <MyDivider height={0.25} />;
-            }}
+            ItemSeparatorComponent={MyDivider}
           />
         </View>
       )}
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  listItemContainer: {
+    width: WINDOW_WIDTH - 45,
+    height: 100,
+    alignSelf: 'center',
+  },
+});
