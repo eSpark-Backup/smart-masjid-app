@@ -1,6 +1,6 @@
 import HeaderBackgroundImage from './images/Header.png';
 import DeviceLoaderGif from './animations/deviceLoader.gif';
-import Some from './animations/7bdno2.gif';
+import GLoad from './animations/7bdno2.gif';
 
 import ProfileDummy from './images/ProfileDummy.svg';
 import About from './images/About.svg';
@@ -20,7 +20,7 @@ export { default as WifiSvg } from './images/Wifi.svg';
 export { default as SLoaderGif } from './animations/sLoader.gif';
 
 export {
-  Some,
+  GLoad,
   HeaderBackgroundImage,
   DeviceLoaderGif,
   ProfileDummy,

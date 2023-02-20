@@ -17,6 +17,7 @@ export default function Header({ onBackPress }: { onBackPress?: () => void }) {
       <AD
         name="arrowleft"
         color={colors.card}
+        style={{ alignSelf: 'flex-start' }}
         size={36}
         onPress={onBackPress}
       />
