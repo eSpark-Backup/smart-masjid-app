@@ -8,13 +8,15 @@ import MyText from '../../MyText';
 export default function Rounded({
   label,
   width = 250,
+  onPress,
 }: {
   label: string;
   width?: number | string;
+  onPress?: () => void;
 }) {
   return (
     <View style={{ width }}>
-      <TouchableWithoutFeedback onPress={() => console.log('Hello')}>
+      <TouchableWithoutFeedback onPress={onPress}>
         <LinearGradient
           style={{
             alignItems: 'center',
