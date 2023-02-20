@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
-import { EmailForm, PhoneForm } from '../../forms';
+import { EmailForm, OtpForm, PhoneForm } from '../../forms';
 import { RootStackParamList } from '../../types';
 
 type WelcomeNavigationProps = NativeStackScreenProps<
@@ -32,6 +32,7 @@ export default function UserSetupScreen() {
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
       {step == 1 && <EmailForm setStep={(value: number) => setStep(value)} />}
       {step == 1.1 && <PhoneForm setStep={(value: number) => setStep(value)} />}
+      {step == 2 && <OtpForm setStep={(value: number) => setStep(value)} />}
     </Wrapper>
   );
 }
