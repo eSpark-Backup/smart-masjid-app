@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Wrapper } from '../../containers';
 import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
-import { SLoader } from '../../components';
+import { MyToast, SLoader } from '../../components';
 
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
@@ -20,6 +20,11 @@ export default function UserSetupScreen() {
 
   useEffect(() => {
     console.log('step current?', step);
+    if (step == 4) {
+      setTimeout(() => {
+        setStep(step + 1);
+      }, 3000);
+    }
   }, [step]);
 
   const handleBack = () => {
@@ -41,6 +46,22 @@ export default function UserSetupScreen() {
         <SLoader
           title="Creating Account"
           message="Your account will be ready soon."
+        />
+      )}
+      {step == 5 && (
+        <MyToast
+          isSuccess={true}
+          // onPress={}
+          btnText={'Connect A Device'}
+          title="Congratulations!"
+          message={
+            'Your account has been created.' +
+            '\n' +
+            'Lets setup your device.' +
+            '\n' +
+            '\n' +
+            'Make sure you power on your device and turn on bluetooth on your phone.'
+          }
         />
       )}
     </Wrapper>
