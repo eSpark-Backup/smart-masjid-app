@@ -6,6 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Wrapper } from '../../containers';
 import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
+import { SLoader } from '../../components';
 
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
@@ -35,6 +36,12 @@ export default function UserSetupScreen() {
       {step == 2 && <OtpForm setStep={(value: number) => setStep(value)} />}
       {step == 3 && (
         <PersonalInfoForm setStep={(value: number) => setStep(value)} />
+      )}
+      {step == 4 && (
+        <SLoader
+          title="Creating Account"
+          message="Your account will be ready soon."
+        />
       )}
     </Wrapper>
   );
