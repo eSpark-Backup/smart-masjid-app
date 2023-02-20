@@ -101,7 +101,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       flexDirection: 'row',
       borderBottomColor: isDivider ? dividerColor : 'transparent',
       borderBottomWidth: isDivider ? dividerWidth : 0,
-      width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
+      // width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
     },
     inputStyle: {
       paddingHorizontal: 20,

@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { WelcomeScreen, EmailScreen, PhoneScreen } from '../screens';
+import { WelcomeScreen, UserSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
 import { RootStackParamList } from '../types';
 
@@ -16,8 +16,7 @@ export default function App() {
           headerShown: false,
         }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Email" component={EmailScreen} />
-        <Stack.Screen name="Phone" component={PhoneScreen} />
+        <Stack.Screen name="USetup" component={UserSetupScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
