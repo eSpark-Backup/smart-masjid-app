@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -19,6 +19,7 @@ import {
   CenterToast,
   ButtonListing,
   SLoader,
+  MapBox,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
@@ -35,7 +36,6 @@ import {
   WifiSvg,
 } from '../../assets';
 import MyDropdown from '../../components/MyDropdown';
-import { Text } from 'react-native-svg';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
@@ -73,8 +73,7 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <MyDropdown />
-      <MyDropdown />
+        <MapBox />
     </Wrapper>
   );
 }
