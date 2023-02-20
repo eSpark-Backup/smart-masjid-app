@@ -7,15 +7,17 @@ export default function MyText({
   size,
   textStyle,
   onPress,
+  pressable = false,
 }: {
   text: string;
   size?: number;
   textStyle?: TextStyle;
+  pressable?: boolean;
   onPress?: () => void;
 }) {
   const { colors } = useTheme();
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} disabled={!pressable}>
       <Text
         style={{
           fontFamily: 'roboto',

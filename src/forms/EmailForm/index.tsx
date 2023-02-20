@@ -4,7 +4,11 @@ import { StyleSheet, View } from 'react-native';
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
 import { Card } from '../../containers';
 
-export default function EmailForm() {
+export default function EmailForm({
+  setStep,
+}: {
+  setStep: (value: number) => void;
+}) {
   return (
     <View style={styles.container}>
       <TextLabel
@@ -16,12 +20,13 @@ export default function EmailForm() {
         <MyInput placeholder="Email" />
       </Card>
       <View style={{ marginTop: 80, marginBottom: 40 }}>
-        <Rounded label="Next" width={250} />
+        <Rounded label="Next" width={250} onPress={() => setStep(2)} />
       </View>
       <MyText
         text="Use phone number instead"
+        pressable
         textStyle={{ fontSize: 16, fontWeight: '400' }}
-        onPress={() => console.log('Go to Phone')}
+        onPress={() => setStep(1.1)}
       />
     </View>
   );
