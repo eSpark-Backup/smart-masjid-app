@@ -14,3 +14,4 @@ export { default as MyDivider } from './MyDivider';
 export { default as CenterToast } from './CenterToast';
 export { default as ButtonListing } from './ButtonListing';
 export { default as SLoader } from './SLoader';
+export { default as MapBox } from './MapBox';
