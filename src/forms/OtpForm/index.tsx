@@ -47,7 +47,7 @@ export default function OtpForm({
         text="Resend Code"
         pressable
         textStyle={{ fontSize: 16, fontWeight: '400' }}
-        onPress={() => console.log('ref', otpRef.current)}
+        onPress={() => console.log('ref')}
       />
     </View>
   );
