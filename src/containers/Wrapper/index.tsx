@@ -42,7 +42,7 @@ export default function Wrapper({
           <MyText
             text="Powered by Futurik Labs"
             size={12}
-            textStyle={{ textAlign: 'center', marginBottom: 35 }}
+            textStyle={{ textAlign: 'center', marginVertical: 35 }}
           />
         )}
       </View>

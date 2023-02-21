@@ -8,13 +8,13 @@ import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
 import { MyToast, SLoader } from '../../components';
 
-type WelcomeNavigationProps = NativeStackScreenProps<
+type USetupNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'USetup'
 >;
 
 export default function UserSetupScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<USetupNavigationProps['navigation']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
 
@@ -51,7 +51,7 @@ export default function UserSetupScreen() {
       {step == 5 && (
         <MyToast
           isSuccess={true}
-          // onPress={}
+          onPress={() => navigation.navigate('DSetup')}
           btnText={'Connect A Device'}
           title="Congratulations!"
           message={

@@ -20,7 +20,7 @@ export default function Card({
         style={{
           ...styles.shadowContainer,
           width: width,
-          height: height,
+          maxHeight: height,
           borderRadius: radius,
         }}>
         {children}
