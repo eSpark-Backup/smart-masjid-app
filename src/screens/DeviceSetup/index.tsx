@@ -53,12 +53,13 @@ export default function DeviceSetupScreen() {
         />
       )}
       {step == 6 && (
-            <MyToast
-              isSuccess={true}
-              btnText={"Let's Go"}
-              title="Yay"
-              message={`Your device is connected successfully.\nLets subscribe to a masjid now.`}
-            />
+        <MyToast
+          isSuccess={true}
+          btnText={"Let's Go"}
+          onPress={() => navigation.navigate('HomeBottomTab')}
+          title="Yay"
+          message={`Your device is connected successfully.\nLets subscribe to a masjid now.`}
+        />
       )}
     </Wrapper>
   );

@@ -19,7 +19,16 @@ export { default as MicSvg } from './images/Mic.svg';
 export { default as WifiSvg } from './images/Wifi.svg';
 export { default as SLoaderGif } from './animations/sLoader.gif';
 export { default as BluetoothSvg } from './images/bluetooth.svg';
-export { default as WifiGreen} from './images/WifiGreen.svg';
+export { default as WifiGreen } from './images/WifiGreen.svg';
+export { default as HomeSvg } from './images/Home.svg';
+export { default as HomeActiveSvg } from './images/HomeActive.svg';
+export { default as DeviceActiveSvg } from './images/DeviceActive.svg';
+export { default as DeviceTabSvg } from './images/DeviceTab.svg';
+export { default as ProfileSvg } from './images/Profile.svg';
+export { default as ProfileActiveSvg } from './images/ProfileActive.svg';
+export { default as SearchSvg } from './images/Search.svg';
+export { default as SearchActiveSvg } from './images/SearchActive.svg';
+export { default as SearchMasjidSvg } from './images/searchMasjid.svg';
 
 export {
   GLoad,
