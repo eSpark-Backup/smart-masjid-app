@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   LocationSvg,
   MasjidSample,
+  MuteSvg,
   PeoplesSvg,
   TimeCircleSvg,
   UnMuteSvg,
@@ -43,6 +44,7 @@ export default function MasjidListCard(
   } = props;
 
   const styles = useMemo(() => makeStyles(props), []);
+  const [mute, setMute] = useState(false);
   return (
     <Card width={WINDOW_WIDTH - 38}>
       <View style={styles.container}>
@@ -79,7 +81,19 @@ export default function MasjidListCard(
                 </LinearGradient>
                 <GapView mode="horizontal" />
                 <View style={styles.row}>
-                  <UnMuteSvg />
+                  {!mute ? (
+                    <UnMuteSvg
+                      onPress={() => {
+                        setMute(!mute);
+                      }}
+                    />
+                  ) : (
+                    <MuteSvg
+                      onPress={() => {
+                        setMute(!mute);
+                      }}
+                    />
+                  )}
                   <GapView mode="horizontal" length={5} />
                   <MyText text={azanTime ?? '5:50 am'} />
                 </View>
