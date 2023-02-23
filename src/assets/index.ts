@@ -1,15 +1,13 @@
-import HeaderBackgroundImage from './images/Header.png';
-import DeviceLoaderGif from './animations/deviceLoader.gif';
-import GLoad from './animations/7bdno2.gif';
-
-import ProfileDummy from './images/ProfileDummy.svg';
-import About from './images/About.svg';
-import ManageAccount from './images/ManageAccount.svg';
-import Help from './images/Help.svg';
-import ManageMasjid from './images/ManageMasjid.svg';
-import Privacy from './images/Privacy.svg';
-import SettingIcon from './images/SettingIcon.svg';
-
+export { default as HeaderBackgroundImage } from './images/Header.png';
+export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
+export { default as GLoad } from './animations/7bdno2.gif';
+export { default as ProfileDummy } from './images/ProfileDummy.svg';
+export { default as About } from './images/About.svg';
+export { default as ManageAccount } from './images/ManageAccount.svg';
+export { default as Help } from './images/Help.svg';
+export { default as ManageMasjid } from './images/ManageMasjid.svg';
+export { default as Privacy } from './images/Privacy.svg';
+export { default as SettingIcon } from './images/SettingIcon.svg';
 export { default as MasjidSvg } from './images/MasjidSvg.svg';
 export { default as CheckSvg } from './images/Check.svg';
 export { default as CrossSvg } from './images/Cross.svg';
@@ -29,16 +27,7 @@ export { default as ProfileActiveSvg } from './images/ProfileActive.svg';
 export { default as SearchSvg } from './images/Search.svg';
 export { default as SearchActiveSvg } from './images/SearchActive.svg';
 export { default as SearchMasjidSvg } from './images/searchMasjid.svg';
-
-export {
-  GLoad,
-  HeaderBackgroundImage,
-  DeviceLoaderGif,
-  ProfileDummy,
-  About,
-  Help,
-  ManageAccount,
-  ManageMasjid,
-  Privacy,
-  SettingIcon,
-};
+export { default as LocationSvg } from './images/Location.svg';
+export { default as PeoplesSvg } from './images/Peoples.svg';
+export { default as UnMuteSvg } from './images/UnMute.svg';
+export { default as TimeCircleSvg } from './images/TimeCircle.svg';
