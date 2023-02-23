@@ -1,5 +1,5 @@
-export { default as WelcomeScreen } from './WelcomeScreen';
-export { default as UserSetupScreen } from './UserSetupScreen';
+export { default as WelcomeScreen } from './Welcome';
+export { default as UserSetupScreen } from './UserSetup';
 export { default as DeviceSetupScreen } from './DeviceSetup';
 export { default as Home } from './Home';
 export { default as Search } from './Search';
