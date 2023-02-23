@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { ScrollView } from 'react-native';
+
 import { About, AccountGear, Help, MasjidGear, Privacy } from '../../assets';
 import {
   GapView,
@@ -7,7 +8,6 @@ import {
   ProfileAvatar,
   ProfileSectionlist,
 } from '../../components';
-
 import { Wrapper } from '../../containers';
 
 export default function Profile() {
@@ -16,7 +16,7 @@ export default function Profile() {
       <ProfileAvatar />
       <MyDivider
         style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
+        height={2}
         backgroundColor={'#9E9F9F'}
       />
       <GapView length={20} />
