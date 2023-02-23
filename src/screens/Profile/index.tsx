@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View } from 'react-native';
 
 import { About, AccountGear, Help, MasjidGear, Privacy } from '../../assets';
 import {
@@ -9,14 +9,55 @@ import {
   ProfileSectionlist,
 } from '../../components';
 import { Wrapper } from '../../containers';
+import { ManageAccount, ManageMasjid, ModifyAccount } from './Stack';
 
 export default function Profile() {
+  let arr: string[] = [];
+  const [flag, setFlag] = useState('uInfo' ?? 'uInfo');
+
+  const pushKeyStack = () => {
+    arr.push(flag ?? 'uInfo');
+  };
+
+  const handleBack = () => {
+    arr.pop();
+    const toGo = arr.pop();
+    if (toGo) setFlag(toGo);
+  };
+
+  useEffect(() => {
+    pushKeyStack();
+    console.log('stack arr ', arr, flag);
+  }, [flag]);
+
   return (
-    <Wrapper bgImageSpacer={false} showFooter={false}>
+    <Wrapper
+      bgImageSpacer={false}
+      showFooter={false}
+      onBackPress={() => handleBack()}>
+      {flag == 'uInfo' && (
+        <UserInformation setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'mAcc' && (
+        <ManageAccount setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'mMas' && (
+        <ManageMasjid setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'modAcc' && (
+        <ModifyAccount setFlag={(value: string) => setFlag(value)} />
+      )}
+    </Wrapper>
+  );
+}
+
+function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
+  return (
+    <View style={{ flex: 1 }}>
       <ProfileAvatar />
       <MyDivider
         style={{ alignSelf: 'center', top: 22 }}
-        height={2}
+        height={0.5}
         backgroundColor={'#9E9F9F'}
       />
       <GapView length={20} />
@@ -28,12 +69,14 @@ export default function Profile() {
               {
                 title: 'Manage Account',
                 icon: <AccountGear />,
-                onPress: () => console.log('press hoa account'),
+                onPress: () => {
+                  setFlag('mAcc');
+                },
               },
               {
                 title: 'Manage Masjid',
                 icon: <MasjidGear />,
-                onPress: () => console.log('press hoa masjid'),
+                onPress: () => setFlag('mMas'),
               },
             ],
           },
@@ -56,6 +99,6 @@ export default function Profile() {
           },
         ]}
       />
-    </Wrapper>
+    </View>
   );
 }
