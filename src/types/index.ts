@@ -4,3 +4,10 @@ export type RootStackParamList = {
   DSetup: undefined;
   HomeBottomTab: undefined;
 };
+
+export type BottomNavigationParamList = {
+  Home: undefined;
+  Search: undefined;
+  Device: undefined;
+  Profile: undefined;
+};

@@ -15,3 +15,4 @@ export { default as CenterToast } from './CenterToast';
 export { default as ButtonListing } from './ButtonListing';
 export { default as SLoader } from './SLoader';
 export { default as MyToast } from './MyToast';
+export { default as MasjidListCard } from './MasjidListCard';
