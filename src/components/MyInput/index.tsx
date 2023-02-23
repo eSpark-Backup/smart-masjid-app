@@ -77,6 +77,7 @@ export default function MyInput(props: MyInputProps) {
           style={[styles.inputStyle, inputStyle]}
           onChangeText={handleTextChange}
           value={text}
+          placeholderTextColor={theme.colors.text}
         />
         {searchBar && (
           <TouchableOpacity
@@ -106,6 +107,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
     inputStyle: {
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
+      color: colors.text
     },
     phoneCodeContainer: {
       backgroundColor: colors.primary,
