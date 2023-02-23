@@ -1,9 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { PlusSvg } from '../../assets';
+import { DeviceSvg, PlusSvg } from '../../assets';
 import { GapView, MyText, TextLabel } from '../../components';
 import DeviceCard from '../../components/DeviceCard';
+import DeviceSettingSectionList from '../../components/DeviceSettingSectionList';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList } from '../../types';
 
@@ -15,8 +16,7 @@ type DeviceNavigationProps = NativeStackScreenProps<
 const AddDevice = () => {
   return (
     <Card>
-      <View
-        style={styles.AddDeviceContainer}>
+      <View style={styles.AddDeviceContainer}>
         <View>
           <TextLabel label="Dont see your device?" />
           <GapView length={5} />
@@ -32,7 +32,7 @@ const AddDevice = () => {
 export default function Device() {
   return (
     <Wrapper showFooter={false}>
-      <FlatList
+      {/* <FlatList
         contentContainerStyle={{padding: 10}}
         data={Array(3).fill(10)}
         renderItem={() => <DeviceCard />}
@@ -43,6 +43,17 @@ export default function Device() {
             <AddDevice />
           </>
         }
+      /> */}
+      <DeviceSettingSectionList
+        data={[
+          {
+            title: 'General Settings',
+            data: [
+              { title: 'Nick Name', subtitle: 'Home Device', icon: <DeviceSvg />, isEditable: true },
+              { title: 'Nick Name', subtitle: 'Home Device', icon: <DeviceSvg /> },
+            ],
+          },
+        ]}
       />
     </Wrapper>
   );
@@ -54,5 +65,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 15,
     alignItems: 'center',
-  }
-})
+  },
+});

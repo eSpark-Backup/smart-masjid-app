@@ -1,5 +1,6 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
+export { default as MasjidSample } from './images/masjidSample.png';
 
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
@@ -34,7 +35,7 @@ export { default as MuteSvg } from './images/Mute.svg';
 export { default as TimeCircleSvg } from './images/TimeCircle.svg';
 export { default as PlusSvg } from './images/plus.svg';
 export { default as ThreeDotSvg } from './images/3dot.svg';
-export { default as MasjidSample } from './images/masjidSample.png';
+export { default as DeviceEdit } from './images/DeviceEdit.svg';
 
 //* vector icons
 export { default as AccountGear } from './vectors/account-gear.svg';
