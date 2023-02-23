@@ -31,3 +31,6 @@ export { default as LocationSvg } from './images/Location.svg';
 export { default as PeoplesSvg } from './images/Peoples.svg';
 export { default as UnMuteSvg } from './images/UnMute.svg';
 export { default as TimeCircleSvg } from './images/TimeCircle.svg';
+export { default as MasjidSample } from './images/masjidSample.png';
+export { default as ThreeDotSvg } from './images/3dot.svg';
+export { default as PlusSvg } from './images/plus.svg';

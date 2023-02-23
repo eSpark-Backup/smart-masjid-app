@@ -14,9 +14,9 @@ import {
 import { Theme, useTheme } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { MyText } from '../components';
-import { WINDOW_HEIGHT } from '../constants';
+import { BottomNavigationParamList } from '../types';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<BottomNavigationParamList>();
 
 const TabIcon = (screen: string, isFocused: boolean) => {
   switch (screen) {
