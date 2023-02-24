@@ -1,5 +1,5 @@
 import { Theme, useTheme } from '@react-navigation/native';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -25,6 +25,9 @@ interface MyInputProps {
   title?: string;
   searchBar?: boolean;
   onSearch?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  value?: string;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -38,11 +41,18 @@ export default function MyInput(props: MyInputProps) {
     searchBar,
     onPhoneCodePress,
     onSearch,
+    onFocus,
+    onBlur,
+    value,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
-  const [text, setText] = useState('');
+  const [text, setText] = useState(value);
 
+  useEffect(() => {
+    setText(value);
+  }, [value]);
+  
   const handleTextChange = (newText: string) => {
     setText(newText);
 
@@ -52,7 +62,7 @@ export default function MyInput(props: MyInputProps) {
   };
 
   return (
-    <>
+    <View>
       {title != '' && (
         <MyText
           text={title ?? ''}
@@ -78,6 +88,8 @@ export default function MyInput(props: MyInputProps) {
           onChangeText={handleTextChange}
           value={text}
           placeholderTextColor={theme.colors.text}
+          onPressIn={onFocus}
+          onSubmitEditing={onBlur}
         />
         {searchBar && (
           <TouchableOpacity
@@ -88,7 +100,7 @@ export default function MyInput(props: MyInputProps) {
           </TouchableOpacity>
         )}
       </View>
-    </>
+    </View>
   );
 }
 
