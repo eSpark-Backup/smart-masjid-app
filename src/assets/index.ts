@@ -50,3 +50,4 @@ export { default as Attention } from './vectors/Attention.svg';
 export { default as SettingGreen } from './vectors/SetingGreen.svg';
 export { default as IP } from './vectors/IP.svg';
 export { default as ConnectedDevice } from './vectors/ConnectedDevice.svg';
+export { default as EditTimeTable } from './vectors/EditTimeTable.svg';
