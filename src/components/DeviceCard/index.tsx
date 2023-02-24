@@ -1,4 +1,5 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { View, Text, StyleSheet } from 'react-native';
 import { DeviceSvg, PlusSvg, ThreeDotSvg } from '../../assets';
 import { Card } from '../../containers';
@@ -6,11 +7,17 @@ import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 
-export default function DeviceCard() {
+export default function DeviceCard({
+  onPress = () => {},
+}: {
+  onPress?: () => void;
+}) {
   return (
     <>
       <Card>
-        <View
+        <TouchableOpacity
+          onPress={onPress}
+          activeOpacity={0.9}
           style={styles.container}>
           <View style={styles.row}>
             <View>
@@ -20,9 +27,7 @@ export default function DeviceCard() {
             <View>
               <TextLabel label="Home" />
               <View style={styles.row}>
-                <View
-                  style={styles.status}
-                />
+                <View style={styles.status} />
                 <GapView mode="horizontal" length={5} />
                 <MyText text="Online" />
               </View>
@@ -31,7 +36,7 @@ export default function DeviceCard() {
           <View>
             <ThreeDotSvg />
           </View>
-        </View>
+        </TouchableOpacity>
       </Card>
     </>
   );
@@ -56,6 +61,6 @@ const styles = StyleSheet.create({
     width: 8,
     borderWidth: 0.7,
     borderRadius: 10,
-    backgroundColor: '#1DF126'
-  }
-})
+    backgroundColor: '#1DF126',
+  },
+});

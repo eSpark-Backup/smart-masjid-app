@@ -1,6 +1,7 @@
 import React from 'react';
-import { SectionList, Text, View } from 'react-native';
+import { SectionList, StyleSheet, View } from 'react-native';
 import { DeviceEdit } from '../../assets';
+import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
@@ -23,19 +24,24 @@ export default function DeviceSettingSectionList({
   data: DataItem[];
 }) {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <SectionList
-        contentContainerStyle={{ padding: 15 }}
+        showsVerticalScrollIndicator={false}
         sections={data ?? []}
         keyExtractor={(item, index) => item.title + index}
         renderItem={({ item }) => <SectionCard item={item} />}
         renderSectionHeader={({ section: { title } }) => (
-          <View>
-            <TextLabel label={title ?? ''} />
-            <GapView />
-          </View>
+          <>
+            <View style={{ alignItems: 'center' }}>
+              <MyDivider />
+            </View>
+            <GapView length={30} />
+            <TextLabel
+              label={title ?? ''}
+            />
+            <GapView length={20} />
+          </>
         )}
-        SectionSeparatorComponent={MyDivider}
       />
     </View>
   );
@@ -43,25 +49,35 @@ export default function DeviceSettingSectionList({
 
 const SectionCard = ({ item }: { item: any }) => {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 10,
-        alignItems: 'center',
-      }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View>{item?.icon}</View>
-        <GapView mode="horizontal" />
-        <View>
+    <>
+      <GapView />
+      <View style={styles.cardContainer}>
+        <View style={styles.row}>
+          <View style={styles.leftIcon}>{item?.icon}</View>
+          <GapView mode="horizontal" />
           <View>
-            <MyText text={item?.title} />
-            <GapView mode="horizontal" length={5} />
-            <MyText text={item?.subtitle} />
+            <View>
+              <MyText text={item?.title} />
+              <GapView mode="horizontal" length={5} />
+              <MyText text={item?.subtitle} />
+            </View>
           </View>
         </View>
+        <View>{item?.isEditable && <DeviceEdit />}</View>
       </View>
-      <View>{item?.isEditable && <DeviceEdit />}</View>
-    </View>
+      <GapView />
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: WINDOW_WIDTH / 1.1,
+    alignSelf: 'center',
+  },
+  row: { flexDirection: 'row', alignItems: 'center' },
+  leftIcon: { height: 20, width: 20, alignItems: 'center' },
+});
