@@ -1,22 +1,32 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
 import { DeviceSelectForm, WifiSelectForm, PasswordForm } from '../../forms';
-import { RootStackParamList } from '../../types';
+import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { DLoader, MyToast, SLoader } from '../../components';
 
 type DSetupNavigationProps = NativeStackScreenProps<
-  RootStackParamList,
+  RootStackParamList & BottomNavigationParamList,
   'DSetup'
 >;
 
 export default function DeviceSetupScreen() {
-  const navigation = useNavigation<DSetupNavigationProps['navigation']>();
+  const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
+  const route: any = useRoute();
+  const isFocused = useIsFocused();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
+
+  useEffect(() => {
+    setStep(1);
+  }, [isFocused]);
 
   useEffect(() => {
     console.log('step current?', step);
@@ -53,12 +63,17 @@ export default function DeviceSetupScreen() {
         />
       )}
       {step == 6 && (
-            <MyToast
-              isSuccess={true}
-              btnText={"Let's Go"}
-              title="Yay"
-              message={`Your device is connected successfully.\nLets subscribe to a masjid now.`}
-            />
+        <MyToast
+          isSuccess={true}
+          btnText={"Let's Go"}
+          onPress={() =>
+            navigation.navigate('HomeBottomTab', {
+              screen: route.params?.from ? 'Device' : 'Home',
+            })
+          }
+          title="Yay"
+          message={`Your device is connected successfully.\nLets subscribe to a masjid now.`}
+        />
       )}
     </Wrapper>
   );

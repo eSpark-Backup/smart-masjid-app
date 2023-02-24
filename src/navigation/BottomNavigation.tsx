@@ -1,0 +1,117 @@
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Home, Search, Device, Profile } from '../screens';
+import {
+  DeviceActiveSvg,
+  DeviceTabSvg,
+  HomeActiveSvg,
+  HomeSvg,
+  ProfileActiveSvg,
+  ProfileSvg,
+  SearchActiveSvg,
+  SearchSvg,
+} from '../assets';
+import { Theme, useTheme } from '@react-navigation/native';
+import { StyleSheet } from 'react-native';
+import { MyText } from '../components';
+import { BottomNavigationParamList } from '../types';
+
+const Tab = createBottomTabNavigator<BottomNavigationParamList>();
+
+const TabIcon = (screen: string, isFocused: boolean) => {
+  switch (screen) {
+    case 'Home':
+      if (isFocused) {
+        return <HomeActiveSvg />;
+      } else {
+        return <HomeSvg />;
+      }
+    case 'Search':
+      if (isFocused) {
+        return <SearchActiveSvg />;
+      } else {
+        return <SearchSvg />;
+      }
+    case 'Device':
+      if (isFocused) {
+        return <DeviceActiveSvg />;
+      } else {
+        return <DeviceTabSvg />;
+      }
+    case 'Profile':
+      if (isFocused) {
+        return <ProfileActiveSvg />;
+      } else {
+        return <ProfileSvg />;
+      }
+    default:
+      break;
+  }
+};
+
+function HomeBottomTab() {
+  const theme: Theme = useTheme();
+  const { colors } = theme;
+  const styles = makeStyles(theme);
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused }) => {
+          return TabIcon(route.name, focused);
+        },
+        headerShown: false,
+        tabBarActiveTintColor: colors?.primary,
+        tabBarInactiveTintColor: '#9E9F9F',
+        tabBarStyle: styles.tabBar,
+        tabBarLabel: ({ children, focused }) => {
+          return (
+            <MyText
+              text={children}
+              textStyle={
+                focused
+                  ? styles.ActiveTabBarLabelStyle
+                  : styles.tabBarLabelStyle
+              }
+            />
+          );
+        },
+      })}>
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Search" component={Search} />
+      <Tab.Screen name="Device" component={Device} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  );
+}
+
+const makeStyles = (theme: Theme) => {
+  const { colors } = theme;
+  return StyleSheet.create({
+    tabBar: {
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowOpacity: 0.58,
+      shadowRadius: 16.0,
+      elevation: 24,
+      borderTopWidth: 0,
+      height: 90,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    tabBarLabelStyle: {
+      color: '#9E9F9F',
+      fontSize: 14,
+      bottom: 18,
+    },
+    ActiveTabBarLabelStyle: {
+      color: colors.primary,
+      fontSize: 14,
+      bottom: 18,
+      fontWeight: 'bold',
+    },
+  });
+};
+
+export default HomeBottomTab;
