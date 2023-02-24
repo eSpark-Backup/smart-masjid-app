@@ -57,11 +57,13 @@ export default function MyDropdown({
   items = dataItems,
   title = 'Title',
   placeholder = 'Please Select',
-  onChangeValue = (value: Item) => { }
+  placeholderColor,
+  onChangeValue = (value: Item) => {},
 }: {
   items: Item[];
   title?: string;
   placeholder?: string;
+  placeholderColor?: string;
   onChangeValue?: (value: Item) => void;
 }) {
   const [show, setShow] = useState(false);
@@ -93,12 +95,13 @@ export default function MyDropdown({
           onChangeText={onSearch}
           onFocus={() => setShow(true)}
           onBlur={() => setShow(false)}
+          placeholderColor={placeholderColor ?? '#000000'}
           placeholder={placeholder}
           value={selectedItem?.name ?? ''}
         />
         <II
           name="caret-down-sharp"
-          style={{ right: 20, top: title ? 12 : 0}}
+          style={{ right: 20, top: title ? 12 : 0 }}
           onPress={() => setShow(!show)}
         />
       </View>
@@ -119,7 +122,7 @@ export default function MyDropdown({
                   activeOpacity={0.9}
                   onPress={() => {
                     setSelectedItem(item);
-                    onChangeValue(item)
+                    onChangeValue(item);
                     setShow(false);
                   }}
                   style={{ padding: 5 }}>
