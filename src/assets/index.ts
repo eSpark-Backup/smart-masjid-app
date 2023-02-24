@@ -47,3 +47,4 @@ export { default as Phone } from './vectors/phone.svg';
 export { default as MasjidVector } from './vectors/masjid-vector.svg';
 export { default as VolumeUp } from './vectors/volume-up.svg';
 export { default as SettingsVector } from './vectors/settings-vector.svg';
+export { default as Power } from './vectors/power.svg';

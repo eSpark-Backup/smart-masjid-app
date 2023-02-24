@@ -9,43 +9,70 @@ import {
   ProfileSectionlist,
 } from '../../components';
 import { Wrapper } from '../../containers';
-import { ManageAccount, ManageMasjid, ModifyAccount } from './Stack';
+import {
+  AdhanSettings,
+  IqamaTimings,
+  JummaTimings,
+  ManageAccount,
+  ManageMasjid,
+  ModifyAccount,
+  SalahTimings,
+} from './Stack';
 
 export default function Profile() {
-  let arr: string[] = [];
-  const [flag, setFlag] = useState('uInfo' ?? 'uInfo');
+  const [flag, setFlag] = useState('uInfo');
 
-  const pushKeyStack = () => {
-    arr.push(flag ?? 'uInfo');
+  const handleBack = (currScreen: string) => {
+    console.log(currScreen);
+    if (currScreen == 'mAcc' || currScreen == 'mMas') {
+      setFlag('uInfo');
+      return;
+    }
+    if (currScreen == 'modAcc') {
+      setFlag('mAcc');
+      return;
+    }
+    if (currScreen == 'sTime' || currScreen == 'aSet') {
+      setFlag('mMas');
+      return;
+    }
+    if (currScreen == 'iTime' || currScreen == 'jTime') {
+      setFlag('sTime');
+      return;
+    } else {
+      setFlag('uInfo');
+      return;
+    }
   };
-
-  const handleBack = () => {
-    arr.pop();
-    const toGo = arr.pop();
-    if (toGo) setFlag(toGo);
-  };
-
-  useEffect(() => {
-    pushKeyStack();
-    console.log('stack arr ', arr, flag);
-  }, [flag]);
 
   return (
     <Wrapper
       bgImageSpacer={false}
       showFooter={false}
-      onBackPress={() => handleBack()}>
+      onBackPress={() => handleBack(flag)}>
       {flag == 'uInfo' && (
         <UserInformation setFlag={(value: string) => setFlag(value)} />
       )}
       {flag == 'mAcc' && (
         <ManageAccount setFlag={(value: string) => setFlag(value)} />
       )}
+      {flag == 'modAcc' && (
+        <ModifyAccount setFlag={(value: string) => setFlag(value)} />
+      )}
       {flag == 'mMas' && (
         <ManageMasjid setFlag={(value: string) => setFlag(value)} />
       )}
-      {flag == 'modAcc' && (
-        <ModifyAccount setFlag={(value: string) => setFlag(value)} />
+      {flag == 'sTime' && (
+        <SalahTimings setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'aSet' && (
+        <AdhanSettings setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'iTime' && (
+        <IqamaTimings setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'jTime' && (
+        <JummaTimings setFlag={(value: string) => setFlag(value)} />
       )}
     </Wrapper>
   );

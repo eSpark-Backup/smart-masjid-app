@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import { GradientColors } from '../../../theme';
@@ -16,7 +16,7 @@ export default function Rounded({
 }) {
   return (
     <View style={{ width }}>
-      <TouchableWithoutFeedback onPress={onPress}>
+      <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
         <LinearGradient
           style={{
             alignItems: 'center',
@@ -35,7 +35,7 @@ export default function Rounded({
             }}
           />
         </LinearGradient>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     </View>
   );
 }

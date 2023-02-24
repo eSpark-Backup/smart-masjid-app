@@ -25,13 +25,16 @@ interface FooterItem {
 export default function ProfileSectionlist({
   data,
   footerData,
+  scroll,
 }: {
   data: DataItem[];
   footerData?: FooterItem[];
+  scroll?: boolean;
 }) {
   return (
     <SectionList
       sections={data ?? []}
+      scrollEnabled={scroll}
       keyExtractor={(item, index) => item.title + index}
       renderItem={({ item, index }) => (
         <SectionCard item={item} index={index} />

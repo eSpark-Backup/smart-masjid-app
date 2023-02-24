@@ -32,12 +32,12 @@ export default function ManageMasjid({
               {
                 title: 'Adhan settings',
                 icon: <MasjidVector />,
-                onPress: () => setFlag(''),
+                onPress: () => setFlag('aSet'),
               },
               {
                 title: 'Salah Timings',
                 icon: <VolumeUp />,
-                onPress: () => setFlag(''),
+                onPress: () => setFlag('sTime'),
               },
             ],
           },
