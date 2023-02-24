@@ -1,5 +1,6 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
+export { default as MasjidSample } from './images/masjidSample.png';
 
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
@@ -30,10 +31,11 @@ export { default as SearchMasjidSvg } from './images/searchMasjid.svg';
 export { default as LocationSvg } from './images/Location.svg';
 export { default as PeoplesSvg } from './images/Peoples.svg';
 export { default as UnMuteSvg } from './images/UnMute.svg';
+export { default as MuteSvg } from './images/Mute.svg';
 export { default as TimeCircleSvg } from './images/TimeCircle.svg';
 export { default as PlusSvg } from './images/plus.svg';
 export { default as ThreeDotSvg } from './images/3dot.svg';
-export { default as MasjidSample } from './images/masjidSample.png';
+export { default as DeviceEdit } from './images/DeviceEdit.svg';
 
 //* vector icons
 export { default as AccountGear } from './vectors/account-gear.svg';
@@ -48,3 +50,11 @@ export { default as MasjidVector } from './vectors/masjid-vector.svg';
 export { default as VolumeUp } from './vectors/volume-up.svg';
 export { default as SettingsVector } from './vectors/settings-vector.svg';
 export { default as Power } from './vectors/power.svg';
+export { default as Heart } from './vectors/Heart.svg';
+export { default as Battery } from './vectors/Battery.svg';
+export { default as Clock } from './vectors/Clock.svg';
+export { default as Attention } from './vectors/Attention.svg';
+export { default as SettingGreen } from './vectors/SetingGreen.svg';
+export { default as IP } from './vectors/IP.svg';
+export { default as ConnectedDevice } from './vectors/ConnectedDevice.svg';
+export { default as EditTimeTable } from './vectors/EditTimeTable.svg';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -19,6 +19,7 @@ import {
   CenterToast,
   ButtonListing,
   SLoader,
+  MapBox,
 } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
@@ -28,13 +29,10 @@ import {
   DeviceSvg,
   Help,
   LockSvg,
-  ManageAccount,
-  ManageMasjid,
   Privacy,
   SettingIcon,
   WifiSvg,
 } from '../../assets';
-
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
