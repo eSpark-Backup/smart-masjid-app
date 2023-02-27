@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { EditTimeTable, MuteSvg } from '../../assets';
 import { Card } from '../../containers';
 import GapView from '../GapView';
@@ -24,47 +24,45 @@ export default function TimeTable({
 }) {
   return (
     <Card>
-      <View style={{ padding: 15 }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View style={{ width: '25%' }}>
+      <View style={styles.container}>
+        <View style={styles.headerRow}>
+          <View style={styles.headerCol}>
             <TextLabel label="Salah" />
           </View>
-          <View style={{ width: '25%' }}>
+          <View style={styles.headerCol}>
             <TextLabel label="Adhan" />
           </View>
-          <View style={{ width: '25%' }}>
+          <View style={styles.headerCol}>
             <TextLabel label="Iqamah" />
           </View>
-          {isMute && <View style={{ width: '25%' }} />}
-          {isEdit && <View style={{ width: '25%' }} />}
+          {isMute && <View style={styles.headerIcon} />}
+          {isEdit && <View style={styles.headerIcon} />}
         </View>
         <GapView />
         <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
 
         {data?.map((item, index) => {
           return (
-            <View
-              key={`${item?.name}-${index}`}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingVertical: 10,
-              }}>
-              <View style={{ width: '25%' }}>
+            <View key={`${item?.name}-${index}`} style={styles.contentRow}>
+              <View style={styles.contentCol}>
                 <MyText text={item.name} size={16} />
               </View>
-              <View style={{ width: '25%' }}>
+              <View style={styles.contentCol}>
                 <MyText text={item.azanTiming} size={16} />
               </View>
-              <View style={{ width: '25%' }}>
+              <View style={styles.contentCol}>
                 <MyText text={item.iqamahTiming} size={16} />
               </View>
-              {isEdit && <EditTimeTable style={{ width: '25%' }} />}
-              {isMute && <MuteSvg style={{ width: '25%' }} />}
+              {isEdit && (
+                <View style={styles.contentIcon}>
+                  <EditTimeTable />
+                </View>
+              )}
+              {isMute && (
+                <View style={styles.contentIcon}>
+                  <MuteSvg />
+                </View>
+              )}
             </View>
           );
         })}
@@ -72,3 +70,24 @@ export default function TimeTable({
     </Card>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { padding: 15 },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headerCol: { width: '30%', alignItems: 'center' },
+  headerIcon: { width: '10%', alignItems: 'center' },
+  contentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  contentCol: { width: '30%', alignItems: 'center' },
+  contentIcon: {
+    width: '10%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
