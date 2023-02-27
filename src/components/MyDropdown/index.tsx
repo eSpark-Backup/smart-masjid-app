@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  Keyboard,
 } from 'react-native';
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
@@ -102,7 +103,10 @@ export default function MyDropdown({
         <II
           name="caret-down-sharp"
           style={{ right: 20, top: title ? 12 : 0 }}
-          onPress={() => setShow(!show)}
+          onPress={() => {
+            setShow(!show);
+            Keyboard.dismiss();
+          }}
         />
       </View>
       <MyDivider
@@ -124,6 +128,7 @@ export default function MyDropdown({
                     setSelectedItem(item);
                     onChangeValue(item);
                     setShow(false);
+                    console.log('hoa');
                   }}
                   style={{ padding: 5 }}>
                   <MyText text={item.name} />

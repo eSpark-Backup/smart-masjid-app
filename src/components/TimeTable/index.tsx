@@ -19,13 +19,13 @@ export default function TimeTable({
   isMute = false,
   isEdit = false,
   headings = ['Salah', 'Adhan', 'Iqamah'],
-  header = <></>
+  header = <></>,
 }: {
   data: DataProps[];
   isMute?: boolean;
   isEdit?: boolean;
   headings?: string[];
-  header?: React.ReactNode
+  header?: React.ReactNode;
 }) {
   return (
     <Card>
@@ -42,7 +42,6 @@ export default function TimeTable({
         </View>
         <GapView />
         <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-
         {data?.map((item: any, index) => {
           return (
             <View key={`${item?.name}-${index}`} style={styles.contentRow}>

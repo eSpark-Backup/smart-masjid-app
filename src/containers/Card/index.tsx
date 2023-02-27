@@ -10,12 +10,7 @@ interface CardProps {
   radius?: number;
 }
 export default function Card(props: CardProps) {
-  const {
-    children,
-    height = undefined,
-    width,
-    radius = 12,
-  } = props;
+  const { children, height = undefined, width, radius = 12 } = props;
 
   const styles = makeStyles(props);
   return (
@@ -49,7 +44,7 @@ const makeStyles = (props: CardProps) => {
       borderRadius: 12,
       backgroundColor: '#fff',
       justifyContent: 'center',
-      overflow: 'hidden', 
+      overflow: 'hidden',
     },
   });
 };

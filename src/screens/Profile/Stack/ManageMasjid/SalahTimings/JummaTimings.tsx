@@ -1,6 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { GapView, MyDivider, ProfileAvatar } from '../../../../../components';
+import {
+  GapView,
+  MyDivider,
+  ProfileAvatar,
+  TimeTable,
+} from '../../../../../components';
 
 export default function JummaTimings({
   setFlag,
@@ -10,12 +15,15 @@ export default function JummaTimings({
   return (
     <View style={{ flex: 1 }}>
       <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
       <GapView length={20} />
+      <TimeTable
+        isEdit
+        headings={['Salah', 'Khutbah']}
+        data={[
+          { name: 'Jummah 1', azanTiming: '12:50' },
+          { name: 'Jummah 1', azanTiming: '12:50' },
+        ]}
+      />
     </View>
   );
 }
