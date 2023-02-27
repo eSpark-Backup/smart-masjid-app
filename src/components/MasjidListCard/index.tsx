@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   LocationSvg,
@@ -22,12 +22,14 @@ interface MasjidHomeProps {
   azanTime?: string;
   namazTime?: string;
   isSearch?: boolean;
+  onPress?: () => void;
 }
 
 interface MasjidSearchProps {
   masjidName: string;
   location?: string;
   subscribers?: string;
+  onPress?: () => void;
 }
 
 export default function MasjidListCard(
@@ -41,13 +43,17 @@ export default function MasjidListCard(
     azanTime,
     location,
     subscribers,
+    onPress,
   } = props;
 
   const styles = useMemo(() => makeStyles(props), []);
   const [mute, setMute] = useState(false);
   return (
     <Card width={WINDOW_WIDTH - 38}>
-      <View style={styles.container}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={onPress}
+        style={styles.container}>
         <View>
           <TextLabel label={masjidName ?? 'Masjid Ar - Rahman'} />
           <GapView />
@@ -114,7 +120,7 @@ export default function MasjidListCard(
             style={styles.imageStyle}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     </Card>
   );
 }
