@@ -9,10 +9,12 @@ export default function Rounded({
   label,
   width = 250,
   onPress,
+  disabled = false,
 }: {
   label: string;
   width?: number | string;
   onPress?: () => void;
+  disabled?: boolean;
 }) {
   return (
     <View style={{ width }}>
@@ -23,7 +25,7 @@ export default function Rounded({
             justifyContent: 'center',
             borderRadius: 12,
           }}
-          colors={GradientColors}>
+          colors={!disabled ? GradientColors : ['#9E9F9F', '#9E9F9F']}>
           <MyText
             text={label}
             textStyle={{

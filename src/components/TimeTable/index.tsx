@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { EditTimeTable, MuteSvg } from '../../assets';
 import { Card } from '../../containers';
 import GapView from '../GapView';
@@ -8,63 +8,59 @@ import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 
 interface DataProps {
-  name: string;
-  azanTiming: string;
-  iqamahTiming: string;
+  name?: string;
+  azanTiming?: string;
+  iqamahTiming?: string;
+  khutbahTiming?: string;
 }
 
 export default function TimeTable({
   data,
   isMute = false,
   isEdit = false,
+  headings = ['Salah', 'Adhan', 'Iqamah'],
+  header = <></>
 }: {
   data: DataProps[];
   isMute?: boolean;
   isEdit?: boolean;
+  headings?: string[];
+  header?: React.ReactNode
 }) {
   return (
     <Card>
-      <View style={{ padding: 15 }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View style={{ width: '25%' }}>
-            <TextLabel label="Salah" />
-          </View>
-          <View style={{ width: '25%' }}>
-            <TextLabel label="Adhan" />
-          </View>
-          <View style={{ width: '25%' }}>
-            <TextLabel label="Iqamah" />
-          </View>
-          {isMute && <View style={{ width: '25%' }} />}
-          {isEdit && <View style={{ width: '25%' }} />}
+      <View style={styles.container}>
+        {header}
+        <View style={styles.headerRow}>
+          {headings?.map(value => (
+            <View key={value} style={styles.headerCol}>
+              <TextLabel label={value} />
+            </View>
+          ))}
+          {isMute && <View style={styles.headerIcon} />}
+          {isEdit && <View style={styles.headerIcon} />}
         </View>
         <GapView />
         <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
 
-        {data?.map((item, index) => {
+        {data?.map((item: any, index) => {
           return (
-            <View
-              key={`${item?.name}-${index}`}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingVertical: 10,
-              }}>
-              <View style={{ width: '25%' }}>
-                <MyText text={item.name} size={16} />
-              </View>
-              <View style={{ width: '25%' }}>
-                <MyText text={item.azanTiming} size={16} />
-              </View>
-              <View style={{ width: '25%' }}>
-                <MyText text={item.iqamahTiming} size={16} />
-              </View>
-              {isEdit && <EditTimeTable style={{ width: '25%' }} />}
-              {isMute && <MuteSvg style={{ width: '25%' }} />}
+            <View key={`${item?.name}-${index}`} style={styles.contentRow}>
+              {Object.keys(item)?.map((key: any) => (
+                <View key={key} style={styles.contentCol}>
+                  <MyText text={item[key]} size={16} />
+                </View>
+              ))}
+              {isEdit && (
+                <View style={styles.contentIcon}>
+                  <EditTimeTable />
+                </View>
+              )}
+              {isMute && (
+                <View style={styles.contentIcon}>
+                  <MuteSvg />
+                </View>
+              )}
             </View>
           );
         })}
@@ -72,3 +68,24 @@ export default function TimeTable({
     </Card>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { padding: 15 },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headerCol: { width: '30%', alignItems: 'center' },
+  headerIcon: { width: '10%', alignItems: 'center' },
+  contentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  contentCol: { width: '30%', alignItems: 'center' },
+  contentIcon: {
+    width: '10%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

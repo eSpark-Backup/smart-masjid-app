@@ -1,4 +1,6 @@
-import React from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -9,13 +11,20 @@ import {
   MasjidListCard,
   MyInput,
   MyText,
+  Rounded,
   TextLabel,
   TimeTable,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
+import { BottomNavigationParamList, RootStackParamList } from '../../types';
 
-const SearchListing = () => (
+type SearchNavigationProps = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'HomeBottomTab'
+>;
+
+const SearchListing = ({ onPress }: { onPress?: () => void }) => (
   <View
     style={{
       top: 60,
@@ -38,7 +47,7 @@ const SearchListing = () => (
       data={Array(10).fill(1)}
       contentContainerStyle={{ paddingBottom: 240, paddingTop: 10 }}
       renderItem={() => (
-        <MasjidListCard isSearch masjidName="Masjid Ar - Rahman" />
+        <MasjidListCard onPress={onPress} isSearch masjidName="Masjid Ar - Rahman" />
       )}
       ItemSeparatorComponent={GapView}
     />
@@ -76,37 +85,55 @@ const MasjidDetails = () => {
                 iqamahTiming: '6:00',
               },
               {
-                name: 'Fajar',
+                name: 'Dhuhr',
+                azanTiming: '1:00',
+                iqamahTiming: '1:30',
+              },
+              {
+                name: 'Asr',
+                azanTiming: '4:50',
+                iqamahTiming: '5:00',
+              },
+              {
+                name: 'Mugrib',
                 azanTiming: '5:50',
                 iqamahTiming: '6:00',
               },
               {
-                name: 'Fajar',
-                azanTiming: '5:50',
-                iqamahTiming: '6:00',
-              },
-              {
-                name: 'Fajar',
-                azanTiming: '5:50',
-                iqamahTiming: '6:00',
-              },
-              {
-                name: 'Fajar',
-                azanTiming: '5:50',
-                iqamahTiming: '6:00',
+                name: 'Isha',
+                azanTiming: '6:50',
+                iqamahTiming: '8:00',
               },
             ]}
           />
         </View>
+        <Rounded disabled={false} label="Subscribe" width={'85%'} />
       </ScrollView>
     </View>
   );
 };
+
 export default function Search() {
+  const [step, setStep] = useState(0);
+  const navigation = useNavigation<SearchNavigationProps['navigation']>();
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setStep(0);
+  }, [isFocused]);
+
+  const onBackPress = () => {
+    if (step != 0) {
+      setStep(step - 1);
+    } else {
+      navigation.goBack();
+    }
+  };
+
   return (
-    <Wrapper showFooter={false} bgImageSpacer={false}>
-      {/* <SearchListing /> */}
-      <MasjidDetails />
+    <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
+      {step == 0 && <SearchListing onPress={() => setStep(1)} />}
+      {step == 1 && <MasjidDetails />}
     </Wrapper>
   );
 }
