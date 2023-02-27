@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, ScrollView, FlatList } from 'react-native';
-import { ConnectedDevice, SearchMasjidSvg } from '../../assets';
+import { ConnectedDevice, InfoCircle, SearchMasjidSvg } from '../../assets';
 import {
   GapView,
   MasjidListCard,
@@ -10,9 +10,11 @@ import {
   MyTitle,
   Rounded,
   TextLabel,
+  TimeTable,
 } from '../../components';
 import { Wrapper } from '../../containers';
 import { BottomNavigationParamList } from '../../types';
+import MyDatePicker from '../../components/MyDatePicker';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -71,25 +73,99 @@ const MasjidDetails = () => {
         <MyText text="Connected Devices " />
       </View>
       <GapView length={15} />
+      <MyText text="Next Adhan in" textStyle={{ fontWeight: 'bold' }} />
+      <GapView length={5} />
+      <MyTitle text="06 : 09 : 00" />
+      <GapView length={25} />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           alignItems: 'center',
           paddingBottom: 20,
+          padding: 5,
         }}>
-          <MyText text='Next Adhan in' textStyle={{fontWeight: 'bold'}} />
-          <MyTitle text='06 : 09 : 00' />
-        </ScrollView>
+        <TimeTable
+          isEdit
+          header={
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <View style={{ height: 20, width: 20 }} />
+              <MyDatePicker
+                onDateChange={e => {
+                  console.log('onDateChange', e);
+                }}
+              />
+              <InfoCircle />
+            </View>
+          }
+          data={[
+            {
+              name: 'Fajar',
+              azanTiming: '5:50',
+              iqamahTiming: '6:00',
+            },
+            {
+              name: 'Dhuhr',
+              azanTiming: '1:00',
+              iqamahTiming: '1:30',
+            },
+            {
+              name: 'Asr',
+              azanTiming: '4:50',
+              iqamahTiming: '5:00',
+            },
+            {
+              name: 'Mugrib',
+              azanTiming: '5:50',
+              iqamahTiming: '6:00',
+            },
+            {
+              name: 'Isha',
+              azanTiming: '6:50',
+              iqamahTiming: '8:00',
+            },
+          ]}
+        />
+        <GapView length={20} />
+
+        <TimeTable
+          isMute
+          header={
+            <View
+              style={{
+                alignItems: 'center',
+              }}>
+              <TextLabel label="Jumuah" />
+            </View>
+          }
+          headings={['Salah', 'Khutba']}
+          data={[
+            {
+              name: 'Jumma 1',
+              azanTiming: '12:10',
+            },
+            {
+              name: 'Jumma 2',
+              azanTiming: '01:10',
+            },
+          ]}
+        />
+      </ScrollView>
     </View>
   );
 };
 
 export default function Home() {
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   // const data = Array(10).fill(1)
   const data: any = [];
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     setStep(1);
@@ -103,9 +179,11 @@ export default function Home() {
     }
   };
 
-
   return (
-    <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={step == 0 ? true : false} >
+    <Wrapper
+      onBackPress={onBackPress}
+      showFooter={false}
+      bgImageSpacer={step == 0 ? true : false}>
       {step == 0 && <MasjidListing data={data} />}
       {step == 1 && <MasjidDetails />}
     </Wrapper>
