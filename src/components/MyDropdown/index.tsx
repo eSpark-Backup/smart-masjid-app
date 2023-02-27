@@ -8,11 +8,12 @@ import {
   StyleSheet,
   Keyboard,
 } from 'react-native';
+import II from 'react-native-vector-icons/Ionicons';
+
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
-import II from 'react-native-vector-icons/Ionicons';
 
 interface Item {
   id: number;
