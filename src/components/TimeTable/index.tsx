@@ -8,51 +8,48 @@ import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 
 interface DataProps {
-  name: string;
-  azanTiming: string;
-  iqamahTiming: string;
+  name?: string;
+  azanTiming?: string;
+  iqamahTiming?: string;
+  khutbahTiming?: string;
 }
 
 export default function TimeTable({
   data,
   isMute = false,
   isEdit = false,
+  headings = ['Salah', 'Adhan', 'Iqamah'],
+  header = <></>,
 }: {
   data: DataProps[];
   isMute?: boolean;
   isEdit?: boolean;
+  headings?: string[];
+  header?: React.ReactNode;
 }) {
   return (
     <Card>
       <View style={styles.container}>
+        {header}
         <View style={styles.headerRow}>
-          <View style={styles.headerCol}>
-            <TextLabel label="Salah" />
-          </View>
-          <View style={styles.headerCol}>
-            <TextLabel label="Adhan" />
-          </View>
-          <View style={styles.headerCol}>
-            <TextLabel label="Iqamah" />
-          </View>
+          {headings?.map(value => (
+            <View key={value} style={styles.headerCol}>
+              <TextLabel label={value} />
+            </View>
+          ))}
           {isMute && <View style={styles.headerIcon} />}
           {isEdit && <View style={styles.headerIcon} />}
         </View>
         <GapView />
         <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-
-        {data?.map((item, index) => {
+        {data?.map((item: any, index) => {
           return (
             <View key={`${item?.name}-${index}`} style={styles.contentRow}>
-              <View style={styles.contentCol}>
-                <MyText text={item.name} size={16} />
-              </View>
-              <View style={styles.contentCol}>
-                <MyText text={item.azanTiming} size={16} />
-              </View>
-              <View style={styles.contentCol}>
-                <MyText text={item.iqamahTiming} size={16} />
-              </View>
+              {Object.keys(item)?.map((key: any) => (
+                <View key={key} style={styles.contentCol}>
+                  <MyText text={item[key]} size={16} />
+                </View>
+              ))}
               {isEdit && (
                 <View style={styles.contentIcon}>
                   <EditTimeTable />

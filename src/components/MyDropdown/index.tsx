@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  Keyboard,
 } from 'react-native';
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
@@ -57,11 +58,13 @@ export default function MyDropdown({
   items = dataItems,
   title = 'Title',
   placeholder = 'Please Select',
-  onChangeValue = (value: Item) => { }
+  placeholderColor,
+  onChangeValue = (value: Item) => {},
 }: {
   items: Item[];
   title?: string;
   placeholder?: string;
+  placeholderColor?: string;
   onChangeValue?: (value: Item) => void;
 }) {
   const [show, setShow] = useState(false);
@@ -93,13 +96,17 @@ export default function MyDropdown({
           onChangeText={onSearch}
           onFocus={() => setShow(true)}
           onBlur={() => setShow(false)}
+          placeholderColor={placeholderColor ?? '#000000'}
           placeholder={placeholder}
           value={selectedItem?.name ?? ''}
         />
         <II
           name="caret-down-sharp"
-          style={{ right: 20, top: title ? 12 : 0}}
-          onPress={() => setShow(!show)}
+          style={{ right: 20, top: title ? 12 : 0 }}
+          onPress={() => {
+            setShow(!show);
+            Keyboard.dismiss();
+          }}
         />
       </View>
       <MyDivider
@@ -119,8 +126,9 @@ export default function MyDropdown({
                   activeOpacity={0.9}
                   onPress={() => {
                     setSelectedItem(item);
-                    onChangeValue(item)
+                    onChangeValue(item);
                     setShow(false);
+                    console.log('hoa');
                   }}
                   style={{ padding: 5 }}>
                   <MyText text={item.name} />
