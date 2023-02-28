@@ -13,7 +13,7 @@ export default function App() {
   return (
     <NavigationContainer theme={MyLightTheme}>
       <Stack.Navigator
-        initialRouteName="HomeBottomTab"
+        initialRouteName="Welcome"
         screenOptions={{
           headerShown: false,
           animation: 'fade',

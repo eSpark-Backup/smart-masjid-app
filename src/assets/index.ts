@@ -58,3 +58,6 @@ export { default as SettingGreen } from './vectors/SetingGreen.svg';
 export { default as IP } from './vectors/IP.svg';
 export { default as ConnectedDevice } from './vectors/ConnectedDevice.svg';
 export { default as EditTimeTable } from './vectors/EditTimeTable.svg';
+export { default as Calendar } from './vectors/Calendar.svg';
+export { default as InfoCircle } from './vectors/InfoCircle.svg';
+export { default as CheckMark } from './vectors/CheckMark.svg';
