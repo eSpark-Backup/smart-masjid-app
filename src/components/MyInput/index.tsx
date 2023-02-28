@@ -1,5 +1,5 @@
 import { Theme, useTheme } from '@react-navigation/native';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -22,9 +22,13 @@ interface MyInputProps {
   containerStyle?: ViewStyle;
   inputStyle?: ViewStyle;
   placeholder: string;
+  placeholderColor?: string;
   title?: string;
   searchBar?: boolean;
   onSearch?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  value?: string;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -36,12 +40,20 @@ export default function MyInput(props: MyInputProps) {
     inputStyle,
     title,
     searchBar,
+    placeholderColor,
     onPhoneCodePress,
     onSearch,
+    onFocus,
+    onBlur,
+    value,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
-  const [text, setText] = useState('');
+  const [text, setText] = useState(value);
+
+  useEffect(() => {
+    setText(value);
+  }, [value]);
 
   const handleTextChange = (newText: string) => {
     setText(newText);
@@ -52,7 +64,7 @@ export default function MyInput(props: MyInputProps) {
   };
 
   return (
-    <>
+    <View>
       {title != '' && (
         <MyText
           text={title ?? ''}
@@ -77,6 +89,9 @@ export default function MyInput(props: MyInputProps) {
           style={[styles.inputStyle, inputStyle]}
           onChangeText={handleTextChange}
           value={text}
+          placeholderTextColor={placeholderColor ?? theme.colors.text}
+          onPressIn={onFocus}
+          onSubmitEditing={onBlur}
         />
         {searchBar && (
           <TouchableOpacity
@@ -87,7 +102,7 @@ export default function MyInput(props: MyInputProps) {
           </TouchableOpacity>
         )}
       </View>
-    </>
+    </View>
   );
 }
 
@@ -101,11 +116,12 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       flexDirection: 'row',
       borderBottomColor: isDivider ? dividerColor : 'transparent',
       borderBottomWidth: isDivider ? dividerWidth : 0,
-      width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
+      // width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
     },
     inputStyle: {
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
+      color: colors.text,
     },
     phoneCodeContainer: {
       backgroundColor: colors.primary,

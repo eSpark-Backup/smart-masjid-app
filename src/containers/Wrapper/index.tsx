@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, ImageBackground, StatusBar, StyleSheet } from 'react-native';
+import {
+  View,
+  ImageBackground,
+  StatusBar,
+  StyleSheet
+} from 'react-native';
 
 import { HeaderBackgroundImage } from '../../assets';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
@@ -42,7 +47,7 @@ export default function Wrapper({
           <MyText
             text="Powered by Futurik Labs"
             size={12}
-            textStyle={{ textAlign: 'center', marginBottom: 35 }}
+            textStyle={{ textAlign: 'center', marginVertical: 35 }}
           />
         )}
       </View>

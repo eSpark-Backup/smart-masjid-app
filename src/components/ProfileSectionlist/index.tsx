@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  SectionList,
-  StatusBar,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, View, SectionList, TouchableOpacity } from 'react-native';
+
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
@@ -30,15 +25,20 @@ interface FooterItem {
 export default function ProfileSectionlist({
   data,
   footerData,
+  scroll,
 }: {
   data: DataItem[];
   footerData?: FooterItem[];
+  scroll?: boolean;
 }) {
   return (
     <SectionList
       sections={data ?? []}
+      scrollEnabled={scroll}
       keyExtractor={(item, index) => item.title + index}
-      renderItem={({ item }) => <SectionCard item={item} />}
+      renderItem={({ item, index }) => (
+        <SectionCard item={item} index={index} />
+      )}
       renderSectionHeader={({ section: { title, icon, onIconPress } }) => (
         <View style={styles.sectionHeader}>
           <TextLabel label={title ?? ''} />
@@ -52,8 +52,8 @@ export default function ProfileSectionlist({
       renderSectionFooter={({ section: { title } }) => {
         return (
           <View style={{ marginTop: 184 }}>
-            {footerData?.map(item => {
-              return <SectionCard item={item} />;
+            {footerData?.map((item, index) => {
+              return <SectionCard item={item} index={index} />;
             })}
           </View>
         );
@@ -62,9 +62,13 @@ export default function ProfileSectionlist({
   );
 }
 
-const SectionCard = ({ item }: { item: any }) => {
+const SectionCard = ({ item, index }: { item: any; index: number }) => {
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.cartContainer}>
+    <TouchableOpacity
+      key={index + item.title}
+      activeOpacity={0.8}
+      style={styles.cartContainer}
+      onPress={item.onPress}>
       {item.icon}
       <GapView mode="horizontal" />
       <MyText text={item.title} textStyle={{ fontSize: 16 }} />

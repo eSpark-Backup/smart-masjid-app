@@ -3,25 +3,24 @@ import { StyleSheet, View } from 'react-native';
 import { ShadowFlex } from 'react-native-neomorph-shadows';
 import { WINDOW_WIDTH } from '../../constants';
 
-export default function Card({
-  children,
-  height=undefined,
-  width=WINDOW_WIDTH - 45,
-  radius=12
-}: {
+interface CardProps {
   children?: React.ReactNode;
   height?: number | undefined;
   width?: number;
-  radius?: number
-}) {
+  radius?: number;
+}
+export default function Card(props: CardProps) {
+  const { children, height = undefined, width, radius = 12 } = props;
+
+  const styles = makeStyles(props);
   return (
     <View style={styles.mainContainer}>
       <ShadowFlex
         style={{
           ...styles.shadowContainer,
-          width: width,
-          height: height,
-          borderRadius: radius
+          width: props?.width ?? WINDOW_WIDTH - 45,
+          maxHeight: height,
+          borderRadius: radius,
         }}>
         {children}
       </ShadowFlex>
@@ -29,21 +28,23 @@ export default function Card({
   );
 }
 
-const styles = StyleSheet.create({
-  mainContainer: {
-    borderRadius: 12,
-    width: WINDOW_WIDTH - 45,
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  shadowContainer: {
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.2,
-    shadowColor: 'grey',
-    shadowRadius: 6,
-    borderRadius: 12,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-});
+const makeStyles = (props: CardProps) => {
+  return StyleSheet.create({
+    mainContainer: {
+      borderRadius: 12,
+      width: props.width ?? WINDOW_WIDTH - 45,
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    shadowContainer: {
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.2,
+      shadowColor: 'grey',
+      shadowRadius: 6,
+      borderRadius: 12,
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+  });
+};
