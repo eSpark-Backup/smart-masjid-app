@@ -7,6 +7,7 @@ import GapView from '../GapView';
 import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
+import MyTimePicker from '../MyTimePicker';
 import TextLabel from '../TextLabel';
 
 interface DataProps {
@@ -16,7 +17,7 @@ interface DataProps {
   khutbahTiming?: string;
 }
 
-const RowItem = ({ item, index, isEdit, isMute }: any) => {
+const RowItem = ({ item, index, isEdit, isMute, onSubmitEditing }: any) => {
   const [edit, setEdit] = useState(false);
   return (
     <TouchableOpacity
@@ -33,10 +34,16 @@ const RowItem = ({ item, index, isEdit, isMute }: any) => {
         </>
       )}
       <View style={styles.contentRow}>
-        {Object.keys(item)?.map((key: any) => (
-          <View key={key} style={styles.contentCol}>
-            <MyText text={item[key]} size={16} />
-          </View>
+        {Object.keys(item)?.map((key: any, index) => (
+          <>
+            {index != 0 && edit ? (
+              <MyTimePicker initialValue={item[key]} />
+            ) : (
+              <View key={key} style={styles.contentCol}>
+                <MyText text={item[key]} size={16} />
+              </View>
+            )}
+          </>
         ))}
         {!edit && isEdit && (
           <View style={styles.contentIcon}>
@@ -49,8 +56,8 @@ const RowItem = ({ item, index, isEdit, isMute }: any) => {
           </View>
         )}
         {edit && (
-          <View style={styles.contentIcon}>
-            <CheckMark />
+          <View style={[styles.contentIcon, { width: '15%', left: 10 }]}>
+            <CheckMark onPress={onSubmitEditing} />
           </View>
         )}
       </View>
@@ -64,42 +71,45 @@ export default function TimeTable({
   isEdit = false,
   headings = ['Salah', 'Adhan', 'Iqamah'],
   header = <></>,
+  onSubmitEditing = () => {console.log("submit");
+  }
 }: {
   data: DataProps[];
   isMute?: boolean;
   isEdit?: boolean;
   headings?: string[];
   header?: React.ReactNode;
+  onSubmitEditing?: () => void;
 }) {
-
   return (
     <View style={styles.container}>
-        {header && (
-          <>
-            {header}
-            <GapView />
-          </>
-        )}
-        <View style={styles.headerRow}>
-          {headings?.map(value => (
-            <View key={value} style={styles.headerCol}>
-              <TextLabel label={value} />
-            </View>
-          ))}
-          {isMute && <View style={styles.headerIcon} />}
-          {isEdit && <View style={styles.headerIcon} />}
-        </View>
-        <GapView />
-        <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-        {data?.map((item: any, index) => (
-          <RowItem
-            key={`${item}-${index}`}
-            item={item}
-            index={index}
-            isEdit={isEdit}
-            isMute={isMute}
-          />
+      {header && (
+        <>
+          {header}
+          <GapView />
+        </>
+      )}
+      <View style={styles.headerRow}>
+        {headings?.map(value => (
+          <View key={value} style={styles.headerCol}>
+            <TextLabel label={value} />
+          </View>
         ))}
+        {isMute && <View style={styles.headerIcon} />}
+        {isEdit && <View style={styles.headerIcon} />}
+      </View>
+      <GapView />
+      <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
+      {data?.map((item: any, index) => (
+        <RowItem
+          key={`${item}-${index}`}
+          item={item}
+          index={index}
+          isEdit={isEdit}
+          isMute={isMute}
+          onSubmitEditing={onSubmitEditing}
+        />
+      ))}
     </View>
   );
 }
@@ -116,6 +126,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderRadius: 12,
     width: WINDOW_WIDTH - 45,
+    alignSelf: 'center',
   },
   headerRow: {
     flexDirection: 'row',
@@ -132,12 +143,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: '#CFCFCF',
     borderRadius: 12,
+    padding: 10,
   },
   contentCol: { width: '30%', alignItems: 'center' },
   contentIcon: {
-    width: '10%',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '10%'
   },
   shadowContainer: {
     shadowOffset: { width: 0, height: 0 },

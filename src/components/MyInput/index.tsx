@@ -22,6 +22,7 @@ interface MyInputProps {
   containerStyle?: ViewStyle;
   inputStyle?: ViewStyle;
   placeholder: string;
+  placeholderColor?: string;
   title?: string;
   searchBar?: boolean;
   onSearch?: () => void;
@@ -39,6 +40,7 @@ export default function MyInput(props: MyInputProps) {
     inputStyle,
     title,
     searchBar,
+    placeholderColor,
     onPhoneCodePress,
     onSearch,
     onFocus,
@@ -52,7 +54,7 @@ export default function MyInput(props: MyInputProps) {
   useEffect(() => {
     setText(value);
   }, [value]);
-  
+
   const handleTextChange = (newText: string) => {
     setText(newText);
 
@@ -87,7 +89,7 @@ export default function MyInput(props: MyInputProps) {
           style={[styles.inputStyle, inputStyle]}
           onChangeText={handleTextChange}
           value={text}
-          placeholderTextColor={theme.colors.text}
+          placeholderTextColor={placeholderColor ?? theme.colors.text}
           onPressIn={onFocus}
           onSubmitEditing={onBlur}
         />
@@ -119,7 +121,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
     inputStyle: {
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
-      color: colors.text
+      color: colors.text,
     },
     phoneCodeContainer: {
       backgroundColor: colors.primary,
