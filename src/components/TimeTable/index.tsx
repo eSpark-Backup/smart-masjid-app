@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckMark, EditTimeTable, MuteSvg } from '../../assets';
+import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
 import GapView from '../GapView';
 import MyDatePicker from '../MyDatePicker';
@@ -27,7 +28,7 @@ const RowItem = ({ item, index, isEdit, isMute }: any) => {
       style={!edit ? {} : styles.editContentRow}>
       {edit && (
         <>
-          <MyDatePicker />
+          <MyDatePicker onDateChange={() => {}} />
           <GapView />
         </>
       )}
@@ -37,7 +38,7 @@ const RowItem = ({ item, index, isEdit, isMute }: any) => {
             <MyText text={item[key]} size={16} />
           </View>
         ))}
-        {(!edit && isEdit) && (
+        {!edit && isEdit && (
           <View style={styles.contentIcon}>
             <EditTimeTable />
           </View>
@@ -70,9 +71,9 @@ export default function TimeTable({
   headings?: string[];
   header?: React.ReactNode;
 }) {
+
   return (
-    <Card>
-      <View style={styles.container}>
+    <View style={styles.container}>
         {header && (
           <>
             {header}
@@ -90,7 +91,6 @@ export default function TimeTable({
         </View>
         <GapView />
         <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-
         {data?.map((item: any, index) => (
           <RowItem
             key={`${item}-${index}`}
@@ -100,13 +100,23 @@ export default function TimeTable({
             isMute={isMute}
           />
         ))}
-      </View>
-    </Card>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 10},
+  container: {
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: '#fff',
+    elevation: 3,
+    borderRadius: 12,
+    width: WINDOW_WIDTH - 45,
+  },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -128,5 +138,15 @@ const styles = StyleSheet.create({
     width: '10%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  shadowContainer: {
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowColor: 'grey',
+    shadowRadius: 6,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
 });
