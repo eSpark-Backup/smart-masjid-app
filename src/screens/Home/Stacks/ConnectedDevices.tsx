@@ -68,7 +68,7 @@ export default function ConnectedDevicesComponent() {
               </>
               <GapView />
               <MyDivider
-                height={0.2}
+                height={1}
                 width={WINDOW_WIDTH - 90}
                 backgroundColor="#9E9F9F"
               />

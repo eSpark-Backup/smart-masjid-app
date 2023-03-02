@@ -84,15 +84,15 @@ const makeStyles = (theme: Theme) => {
     hollow: {
       borderTopRightRadius: 12,
       borderBottomRightRadius: 12,
-      borderWidth: 1,
+      borderWidth: 1.5,
       right: 1,
       borderColor: colors.primary,
     },
     hollowLeft: {
       borderTopLeftRadius: 12,
       borderBottomLeftRadius: 12,
-      borderWidth: 1,
-      left: 1,
+      borderWidth: 2,
+      left: 1.5,
       borderColor: colors.primary,
     },
   });
