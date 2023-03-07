@@ -35,6 +35,8 @@ const makeStyles = (props: CardProps) => {
       width: props.width ?? WINDOW_WIDTH - 45,
       alignItems: 'center',
       alignSelf: 'center',
+      shadowOpacity: 0.09,
+      shadowRadius: 10,
     },
     shadowContainer: {
       shadowOffset: { width: 0, height: 0 },
