@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { About, AccountGear, Help, MasjidGear, Privacy } from '../../assets';
 import {
@@ -18,8 +20,16 @@ import {
   ModifyAccount,
   SalahTimings,
 } from './Stack';
+import { BottomNavigationParamList, RootStackParamList } from '../../types';
+
+type ProfileNavigationProp = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'Profile'
+>;
 
 export default function Profile() {
+  const navigation = useNavigation<ProfileNavigationProp['navigation']>();
+
   const [flag, setFlag] = useState('uInfo');
 
   const handleBack = (currScreen: string) => {
@@ -39,6 +49,9 @@ export default function Profile() {
     if (currScreen == 'iTime' || currScreen == 'jTime') {
       setFlag('sTime');
       return;
+    }
+    if (currScreen == 'uInfo') {
+      navigation.navigate('Home');
     } else {
       setFlag('uInfo');
       return;
