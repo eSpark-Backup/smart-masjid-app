@@ -1,6 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { View, FlatList } from 'react-native';
+
 import { ConnectedDevice, DeviceSvg } from '../../../assets';
 import {
   GapView,
@@ -9,7 +10,6 @@ import {
   Rounded,
   TextLabel,
 } from '../../../components';
-import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';
 
 export default function ConnectedDevicesComponent() {
@@ -31,63 +31,76 @@ export default function ConnectedDevicesComponent() {
           textStyle={{ color: '#3E3E3E', alignSelf: 'center' }}
         />
         <GapView length={15} />
-        <FlatList
-          data={Array(5).fill('a')}
-          renderItem={({}) => (
-            <View style={{ paddingHorizontal: 15 }}>
+        <View
+          style={{
+            maxHeight: '60%',
+          }}>
+          <FlatList
+            data={Array('Home', 'Office', 'Shop', "Gradma's House")}
+            renderItem={({ item }) => (
               <>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    paddingHorizontal: 40,
+                    paddingVertical: 20,
                   }}>
-                  <DeviceSvg height={34} width={34} />
-                  <GapView length={10} mode="horizontal" />
-                  <View>
-                    <TextLabel label="Home" />
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <DeviceSvg height={34} width={34} />
+                    <GapView length={10} mode="horizontal" />
+                    <View style={{ alignItems: 'flex-start' }}>
+                      <TextLabel label={item} />
                       <View
                         style={{
-                          height: 10,
-                          width: 10,
-                          borderRadius: 100,
-                          borderWidth: 0.4,
-                          backgroundColor: '#1DF126',
-                        }}
-                      />
-                      <GapView length={5} mode="horizontal" />
-                      <MyText text="Active" />
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <View
+                          style={{
+                            top: 0.5,
+                            height: 10,
+                            width: 10,
+                            borderRadius: 100,
+                            borderWidth: 2,
+                            borderColor: '#9E9F9F',
+                            backgroundColor: '#1DF126',
+                          }}
+                        />
+                        <GapView length={5} mode="horizontal" />
+                        <MyText text="Active" />
+                      </View>
                     </View>
                   </View>
                 </View>
+                <MyDivider
+                  backgroundColor="#9E9F9F"
+                  height={0.25}
+                  style={{
+                    paddingHorizontal: 20,
+                    alignSelf: 'center',
+                    width: '85%',
+                  }}
+                />
               </>
-              <GapView />
-              <MyDivider
-                height={1}
-                width={WINDOW_WIDTH - 90}
-                backgroundColor="#9E9F9F"
-              />
-              <GapView />
-            </View>
-          )}
-        />
-        <GapView length={15} />
-        <View style={{ alignSelf: 'center' }}>
-          <Rounded
-            onPress={() => {
-              navigation.navigate('Device');
-            }}
-            label="Manage Devices"
+            )}
           />
         </View>
-        <GapView length={15} />
+        <View>
+          <GapView length={20} />
+          <View style={{ alignSelf: 'center' }}>
+            <Rounded
+              onPress={() => {
+                navigation.navigate('Device');
+              }}
+              label="Manage Devices"
+            />
+          </View>
+        </View>
       </Card>
-      {/* <MyText text='asdsaasf' /> */}
     </View>
   );
 }
