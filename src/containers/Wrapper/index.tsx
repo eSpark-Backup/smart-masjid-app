@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  View,
-  ImageBackground,
-  StatusBar,
-  StyleSheet
-} from 'react-native';
+import { View, ImageBackground, StatusBar, StyleSheet } from 'react-native';
 
 import { HeaderBackgroundImage } from '../../assets';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet } from 'react-native';
+import { Animated, ScrollView, StyleSheet } from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -46,35 +46,37 @@ export default function DeviceSetupScreen() {
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
-      {step == 1 && <DLoader />}
-      {step == 2 && (
-        <DeviceSelectForm setStep={(value: number) => setStep(value)} />
-      )}
-      {step == 3 && (
-        <WifiSelectForm setStep={(value: number) => setStep(value)} />
-      )}
-      {step == 4 && (
-        <PasswordForm setStep={(value: number) => setStep(value)} />
-      )}
-      {step == 5 && (
-        <SLoader
-          // title="Creating Account"
-          message="Connecting to wifi network"
-        />
-      )}
-      {step == 6 && (
-        <MyToast
-          isSuccess={true}
-          btnText={"Let's Go"}
-          onPress={() =>
-            navigation.navigate('HomeBottomTab', {
-              screen: route.params?.from ? 'Device' : 'Home',
-            })
-          }
-          title="Yay"
-          message={`Your device is connected successfully.\nLets subscribe to a masjid now.`}
-        />
-      )}
+      <ScrollView contentContainerStyle={{paddingBottom: 30, }}>
+        {step == 1 && <DLoader />}
+        {step == 2 && (
+          <DeviceSelectForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 3 && (
+          <WifiSelectForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 4 && (
+          <PasswordForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 5 && (
+          <SLoader
+            // title="Creating Account"
+            message="Connecting to wifi network"
+          />
+        )}
+        {step == 6 && (
+          <MyToast
+            isSuccess={true}
+            btnText={"Let's Go"}
+            onPress={() =>
+              navigation.navigate('HomeBottomTab', {
+                screen: route.params?.from ? 'Device' : 'Home',
+              })
+            }
+            title="Yay"
+            message={`Your device is connected successfully.\nLets subscribe to a masjid now.`}
+          />
+        )}
+      </ScrollView>
     </Wrapper>
   );
 }
