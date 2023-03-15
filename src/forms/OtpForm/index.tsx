@@ -4,6 +4,7 @@ import OTPInputView from '@twotalltotems/react-native-otp-input';
 
 import { GapView, MyText, Rounded } from '../../components';
 import { MyLightTheme } from '../../theme';
+import { Theme, useTheme } from '@react-navigation/native';
 
 export default function OtpForm({
   setStep,
@@ -11,7 +12,7 @@ export default function OtpForm({
   setStep: (value: number) => void;
 }) {
   const otpRef: any = useRef(null);
-
+  const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
       <MyText
@@ -46,7 +47,7 @@ export default function OtpForm({
       <MyText
         text="Resend Code"
         pressable
-        textStyle={{ fontSize: 16, fontWeight: '400' }}
+        textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
         onPress={() => console.log('ref')}
       />
     </View>

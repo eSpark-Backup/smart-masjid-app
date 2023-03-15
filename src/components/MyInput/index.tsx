@@ -89,7 +89,7 @@ export default function MyInput(props: MyInputProps) {
           style={[styles.inputStyle, inputStyle]}
           onChangeText={handleTextChange}
           value={text}
-          placeholderTextColor={placeholderColor ?? theme.colors.text}
+          placeholderTextColor={placeholderColor ?? "#9E9F9F"}
           onPressIn={onFocus}
           onSubmitEditing={onBlur}
         />

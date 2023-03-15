@@ -56,10 +56,8 @@ export default function UserSetupScreen() {
             isSuccess={true}
             onPress={() => navigation.navigate('DSetup')}
             btnText={'Connect Device'}
-            title="Congratulations!"
+            title="You’re all set!"
             message={
-              'Your account has been created.' +
-              '\n' +
               'Lets setup your device.' +
               '\n' +
               '\n' +
