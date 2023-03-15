@@ -14,8 +14,6 @@ export default function JummaTimings({
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <GapView length={20} />
       <TimeTable
         isEdit
         headings={['Salah', 'Khutbah']}

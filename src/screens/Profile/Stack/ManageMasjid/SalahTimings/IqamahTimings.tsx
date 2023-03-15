@@ -15,8 +15,6 @@ export default function IqamahTimings({
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <GapView length={20} />
       <TimeTable
         isEdit
         data={[

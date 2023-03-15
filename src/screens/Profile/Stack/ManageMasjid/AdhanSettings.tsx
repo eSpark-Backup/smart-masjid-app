@@ -17,14 +17,7 @@ export default function AdhanSettings({
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
       <View style={{ marginBottom: 40 }}>
-        <GapView length={30} />
         <View style={{ padding: 20 }}>
           <TextLabel label={'Adhan Settings'} />
         </View>

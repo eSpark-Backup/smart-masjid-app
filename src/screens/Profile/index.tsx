@@ -3,7 +3,14 @@ import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { About, AccountGear, Help, MasjidGear, Privacy } from '../../assets';
+import {
+  About,
+  AccountGear,
+  Help,
+  ManageUser,
+  MasjidGear,
+  Privacy,
+} from '../../assets';
 import {
   GapView,
   MyDivider,
@@ -60,7 +67,7 @@ export default function Profile() {
 
   return (
     <Wrapper
-      bgImageSpacer={false}
+      // bgImageSpacer={false}
       showFooter={false}
       onBackPress={() => handleBack(flag)}>
       {flag == 'uInfo' && (
@@ -94,13 +101,6 @@ export default function Profile() {
 function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <GapView length={20} />
       <ProfileSectionlist
         data={[
           {
@@ -117,6 +117,11 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
                 title: 'Manage Masjid',
                 icon: <MasjidGear />,
                 onPress: () => setFlag('mMas'),
+              },
+              {
+                title: 'Manage Users',
+                icon: <ManageUser />,
+                onPress: () => console.log('Manage User'),
               },
             ],
           },

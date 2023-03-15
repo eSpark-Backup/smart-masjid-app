@@ -17,13 +17,6 @@ export default function ModifyAccount({
 }) {
   return (
     <ScrollView style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <GapView length={20} />
       <View style={{ padding: 20 }}>
         <TextLabel label={'Modify Account'} />
       </View>

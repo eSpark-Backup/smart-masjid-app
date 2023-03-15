@@ -26,13 +26,6 @@ export default function ManageAccount({
 
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <GapView length={20} />
       <ProfileSectionlist
         scroll={false}
         data={[

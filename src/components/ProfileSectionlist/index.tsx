@@ -40,7 +40,12 @@ export default function ProfileSectionlist({
         <SectionCard item={item} index={index} />
       )}
       renderSectionHeader={({ section: { title, icon, onIconPress } }) => (
-        <View style={styles.sectionHeader}>
+        <View
+          style={{
+            ...styles.sectionHeader,
+            justifyContent: icon ? 'space-between' : 'center',
+          }}>
+          {icon && <GapView mode="horizontal" length={19} />}
           <TextLabel label={title ?? ''} />
           {icon && (
             <TouchableOpacity activeOpacity={0.9} onPress={onIconPress}>
@@ -85,6 +90,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 20,
   },
 });
