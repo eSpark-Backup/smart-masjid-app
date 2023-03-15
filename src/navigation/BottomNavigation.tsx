@@ -64,20 +64,7 @@ function HomeBottomTab() {
         tabBarActiveTintColor: colors?.primary,
         tabBarInactiveTintColor: '#9E9F9F',
         tabBarStyle: styles.tabBar,
-        tabBarLabel: ({ children, focused }) => {
-          return (
-            <>
-              <MyText
-                text={children}
-                textStyle={
-                  focused
-                    ? styles.ActiveTabBarLabelStyle
-                    : styles.tabBarLabelStyle
-                }
-              />
-            </>
-          );
-        },
+        tabBarShowLabel: false
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Search" component={Search} />
