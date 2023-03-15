@@ -12,19 +12,19 @@ export default function PasswordForm({
   return (
     <View style={styles.container}>
       <TextLabel
-        label="Enter password"
+        label="Enter Wi-Fi password"
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={20} />
-      <MyText text='[Wifi_netowrk] SSID' textStyle={styles.text} />
-      <GapView length={20} />
+      <MyText text='Connecting to : WiFi Network 1' textStyle={styles.text} />
+      <GapView length={60} />
       <Card width={315} radius={12}>
         <MyInput
           placeholder="Password"
         />
       </Card>
       <View style={{ marginTop: 60, marginBottom: 40 }}>
-        <Rounded label="Connect" width={250} onPress={() => setStep(5)} />
+        <Rounded label="Connect" width={250} onPress={() => setStep(6)} />
       </View>
     </View>
   );

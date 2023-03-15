@@ -61,3 +61,4 @@ export { default as EditTimeTable } from './vectors/EditTimeTable.svg';
 export { default as Calendar } from './vectors/Calendar.svg';
 export { default as InfoCircle } from './vectors/InfoCircle.svg';
 export { default as CheckMark } from './vectors/CheckMark.svg';
+export { default as AdhanButton } from './vectors/AdhanButton.svg';
