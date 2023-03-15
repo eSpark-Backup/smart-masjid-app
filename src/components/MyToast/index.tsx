@@ -60,6 +60,7 @@ export default function MyToast({
               }}
             />
           </View>
+          <GapView length={30} />
           <View style={{ paddingHorizontal: 30, marginBottom: 20 }}>
             <MyText
               text={message}
