@@ -17,7 +17,7 @@ export default function Rounded({
   disabled?: boolean;
 }) {
   return (
-    <View style={{ width, height: 55 }}>
+    <View style={{ width, height: 41 }}>
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={onPress}
@@ -25,7 +25,7 @@ export default function Rounded({
         <LinearGradient
           style={{
             flex: 1,
-            borderRadius: 12,
+            borderRadius: 20,
             alignItems: 'center',
             justifyContent: 'center',
           }}
