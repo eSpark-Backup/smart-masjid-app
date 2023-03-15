@@ -55,7 +55,7 @@ export default function UserSetupScreen() {
           <MyToast
             isSuccess={true}
             onPress={() => navigation.navigate('DSetup')}
-            btnText={'Connect A Device'}
+            btnText={'Connect Device'}
             title="Congratulations!"
             message={
               'Your account has been created.' +
