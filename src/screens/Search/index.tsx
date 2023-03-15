@@ -33,8 +33,8 @@ const SearchListing = ({ onPress }: { onPress?: () => void }) => (
       justifyContent: 'center',
       width: WINDOW_WIDTH,
     }}>
-    <View style={{ right: WINDOW_WIDTH * 0.05 }}>
-      <Card width={260}>
+    <View style={{  }}>
+      <Card width={300}>
         <MyInput
           searchBar
           inputStyle={{ width: 250 }}

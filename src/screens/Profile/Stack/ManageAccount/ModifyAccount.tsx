@@ -33,21 +33,24 @@ export default function ModifyAccount({
           title="Name"
           placeholder="Mukthar Ahmed"
           placeholderColor="#CFCFCF"
-          inputStyle={{ borderBottomWidth: 1, paddingHorizontal: 10 }}
+          isDivider
+          dividerWidth={1}
         />
         <GapView />
         <MyInput
           title="Email"
           placeholder="muk.ahmed@gmail.com"
           placeholderColor="#CFCFCF"
-          inputStyle={{ borderBottomWidth: 1, paddingHorizontal: 10 }}
+          isDivider
+          dividerWidth={1}
         />
         <GapView />
         <MyInput
           title="Phone Number"
           placeholder="+1 4122142457"
           placeholderColor="#CFCFCF"
-          inputStyle={{ borderBottomWidth: 1, paddingHorizontal: 10 }}
+          isDivider
+          dividerWidth={1}
         />
       </View>
       <View style={{ alignSelf: 'center', marginTop: 30, marginBottom: 10 }}>

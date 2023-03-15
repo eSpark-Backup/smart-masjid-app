@@ -34,22 +34,42 @@ export default function Joined({
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
       <TouchableWithoutFeedback onPress={onPress1}>
-        <LinearGradient
-          colors={activeButton == 'one' ? GradientColors : ['#fff', '#fff']}
-          style={activeButton == 'one' ? styles.gradient : styles.hollowLeft}>
-          <Text style={activeButton == 'one' ? styles.activeText : styles.text}>
-            {title1}
-          </Text>
-        </LinearGradient>
+        {activeButton == 'one' ? (
+          <LinearGradient
+            colors={activeButton == 'one' ? GradientColors : ['#fff', '#fff']}
+            style={activeButton == 'one' ? styles.gradient : styles.hollowLeft}>
+            <Text
+              style={activeButton == 'one' ? styles.activeText : styles.text}>
+              {title1}
+            </Text>
+          </LinearGradient>
+        ) : (
+          <View
+            style={styles.hollowLeft}>
+            <Text
+              style={styles.text}>
+              {title1}
+            </Text>
+          </View>
+        )}
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={onPress2}>
-        <LinearGradient
-          colors={activeButton == 'two' ? GradientColors : ['#fff', '#fff']}
-          style={activeButton == 'two' ? styles.rightGradient : styles.hollow}>
-          <Text style={activeButton == 'two' ? styles.activeText : styles.text}>
-            {title2}
-          </Text>
-        </LinearGradient>
+        {activeButton == 'two' ? (
+          <LinearGradient
+            colors={activeButton == 'two' ? GradientColors : ['#fff', '#fff']}
+            style={
+              activeButton == 'two' ? styles.rightGradient : styles.hollow
+            }>
+            <Text
+              style={activeButton == 'two' ? styles.activeText : styles.text}>
+              {title2}
+            </Text>
+          </LinearGradient>
+        ) : (
+          <View style={styles.hollow}>
+            <Text style={styles.text}>{title2}</Text>
+          </View>
+        )}
       </TouchableWithoutFeedback>
     </View>
   );
@@ -60,6 +80,7 @@ const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     container: {
       flexDirection: 'row',
+      // backgroundColor: 'red'
     },
     text: {
       paddingVertical: 17,

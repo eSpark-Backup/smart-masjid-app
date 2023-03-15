@@ -64,7 +64,7 @@ export default function MyInput(props: MyInputProps) {
   };
 
   return (
-    <View>
+    <View style={{justifyContent: 'center'}}>
       {title != '' && (
         <MyText
           text={title ?? ''}
@@ -116,6 +116,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       flexDirection: 'row',
       borderBottomColor: isDivider ? dividerColor : 'transparent',
       borderBottomWidth: isDivider ? dividerWidth : 0,
+      height: 50,
       // width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
     },
     inputStyle: {
@@ -138,7 +139,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       borderTopRightRadius: 12,
       borderBottomRightRadius: 12,
       width: 50,
-      height: 56,
+      height: 50,
       alignItems: 'center',
       justifyContent: 'center',
       alignSelf: 'flex-end',

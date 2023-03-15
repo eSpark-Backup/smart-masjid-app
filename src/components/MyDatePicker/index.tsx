@@ -5,8 +5,8 @@ import II from 'react-native-vector-icons/Ionicons';
 import { Calendar } from '../../assets';
 import GapView from '../GapView';
 import TextLabel from '../TextLabel';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Platform } from 'react-native';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import { TouchableOpacity } from 'react-native';
 
 export default function MyDatePicker({
@@ -18,7 +18,7 @@ export default function MyDatePicker({
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
-  const onChange = (event: any, selectedDate: any) => {
+  const onChange = (selectedDate: any) => {
     const currentDate = selectedDate;
     setShow(false);
     setDate(currentDate);
@@ -50,12 +50,13 @@ export default function MyDatePicker({
           justifyContent: 'center',
         }}>
         {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
+          <DateTimePickerModal
+            isVisible={show}
+            date={date}
             mode={'date'}
             is24Hour={true}
-            onChange={onChange}
+            onConfirm={onChange}
+            onCancel={() => setShow(false)}
           />
         )}
         <II onPress={prevDate} name="md-chevron-back" size={24} />
