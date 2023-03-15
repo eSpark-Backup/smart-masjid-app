@@ -61,7 +61,7 @@ export default function Home() {
     <Wrapper
       onBackPress={onBackPress}
       showFooter={false}
-      bgImageSpacer={step == 0 ? true : false}>
+      bgImageSpacer={false}>
       {step == 0 && <MasjidListing setStep={setStep} data={data} />}
       {step == 1 && <MasjidDetails setStep={setStep} />}
       {step == 2 && <ConnectedDevices />}
