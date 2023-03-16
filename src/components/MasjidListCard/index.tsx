@@ -113,7 +113,7 @@ export default function MasjidListCard(
           <Image
             source={MasjidSample}
             resizeMode="contain"
-            style={styles.imageStyle}
+            style={!isSearch ? styles.imageStyle : {height: 75, width: 75}}
           />
         </View>
       </TouchableOpacity>
