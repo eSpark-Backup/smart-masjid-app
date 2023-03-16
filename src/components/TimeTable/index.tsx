@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { CheckMark, EditTimeTable, MuteSvg } from '../../assets';
+import { CheckMark, EditTimeTable, InfoCircle, MuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
 import GapView from '../GapView';
@@ -19,6 +19,7 @@ interface DataProps {
 
 const RowItem = ({ item, index, isEdit, isMute, onSubmitEditing }: any) => {
   const [edit, setEdit] = useState(false);
+  const [toggleMute, setToggleMute] = useState(true);
   return (
     <TouchableOpacity
       onPress={() => {
@@ -52,7 +53,19 @@ const RowItem = ({ item, index, isEdit, isMute, onSubmitEditing }: any) => {
         )}
         {isMute && (
           <View style={styles.contentIcon}>
-            <MuteSvg />
+            {toggleMute ? (
+              <MuteSvg
+                onPress={() => setToggleMute(!toggleMute)}
+                height={16}
+                width={16}
+              />
+            ) : (
+              <VolumUpGreen
+                onPress={() => setToggleMute(!toggleMute)}
+                height={16}
+                width={16}
+              />
+            )}
           </View>
         )}
         {edit && (
@@ -69,14 +82,17 @@ export default function TimeTable({
   data,
   isMute = false,
   isEdit = false,
+  isInfo = false,
   headings = ['Salah', 'Adhan', 'Iqamah'],
   header = <></>,
-  onSubmitEditing = () => {console.log("submit");
-  }
+  onSubmitEditing = () => {
+    console.log('submit');
+  },
 }: {
   data: DataProps[];
   isMute?: boolean;
   isEdit?: boolean;
+  isInfo?: boolean;
   headings?: string[];
   header?: React.ReactNode;
   onSubmitEditing?: () => void;
@@ -95,8 +111,13 @@ export default function TimeTable({
             <TextLabel label={value} />
           </View>
         ))}
-        {isMute && <View style={styles.headerIcon} />}
-        {isEdit && <View style={styles.headerIcon} />}
+        {isMute && !isInfo && <View style={styles.headerIcon} />}
+        {isEdit && !isInfo && <View style={styles.headerIcon} />}
+        {isInfo && (
+          <View style={styles.headerIcon}>
+            <InfoCircle />
+          </View>
+        )}
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
@@ -151,7 +172,7 @@ const styles = StyleSheet.create({
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '10%'
+    width: '10%',
   },
   shadowContainer: {
     shadowOffset: { width: 0, height: 0 },

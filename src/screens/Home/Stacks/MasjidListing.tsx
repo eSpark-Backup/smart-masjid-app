@@ -16,7 +16,6 @@ export default function MasjidListing({
 
   return (
     <View>
-
       <View style={{ alignSelf: 'center' }}>
         <GapView length={40} />
         <TextLabel label="My Subscriptions" />
@@ -25,8 +24,9 @@ export default function MasjidListing({
       <FlatList
         data={data}
         contentContainerStyle={{ paddingBottom: 210, paddingTop: 10 }}
-        renderItem={() => (
+        renderItem={({ index }) => (
           <MasjidListCard
+            key={index}
             onPress={() => setStep(1)}
             masjidName="Masjid Ar - Rahman"
           />

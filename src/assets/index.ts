@@ -36,6 +36,7 @@ export { default as TimeCircleSvg } from './images/TimeCircle.svg';
 export { default as PlusSvg } from './images/plus.svg';
 export { default as ThreeDotSvg } from './images/3dot.svg';
 export { default as DeviceEdit } from './images/DeviceEdit.svg';
+export { default as SujudSvg } from './images/Sujud.svg';
 
 //* vector icons
 export { default as AccountGear } from './vectors/account-gear.svg';
@@ -62,3 +63,5 @@ export { default as Calendar } from './vectors/Calendar.svg';
 export { default as InfoCircle } from './vectors/InfoCircle.svg';
 export { default as CheckMark } from './vectors/CheckMark.svg';
 export { default as AdhanButton } from './vectors/AdhanButton.svg';
+export { default as SyncSvg } from './vectors/Sync.svg';
+export { default as VolumUpGreen } from './vectors/VolumUpGreen.svg';
