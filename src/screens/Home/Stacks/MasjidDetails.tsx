@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, ScrollView } from 'react-native';
-import { ConnectedDevice, InfoCircle } from '../../../assets';
+import { SyncSvg } from '../../../assets';
 import {
   GapView,
   MyText,
@@ -18,14 +18,17 @@ export default function MasjidDetails({ setStep }: any) {
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => setStep(2)}
-        style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <ConnectedDevice />
-        <MyText text="Connected Devices " />
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <MyText text="Home " />
+        <SyncSvg />
       </TouchableOpacity>
       <GapView length={15} />
       <MyText text="Next Adhan in" textStyle={{ fontWeight: 'bold' }} />
       <GapView length={5} />
-      <MyTitle text="06 : 09 : 00" />
+      <MyTitle text="06 : 09 : 00" style={{fontSize: 32}} />
       <GapView length={25} />
 
       <ScrollView
@@ -36,21 +39,20 @@ export default function MasjidDetails({ setStep }: any) {
           padding: 5,
         }}>
         <TimeTable
-          isEdit
+          isMute
+          isInfo
           header={
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <View style={{ height: 20, width: 20 }} />
               <MyDatePicker
                 onDateChange={e => {
                   console.log('onDateChange', e);
                 }}
               />
-              <InfoCircle />
             </View>
           }
           data={[
