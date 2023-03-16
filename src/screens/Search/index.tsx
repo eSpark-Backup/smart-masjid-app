@@ -1,7 +1,7 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import { View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ConnectedDevice } from '../../assets';
@@ -33,12 +33,12 @@ const SearchListing = ({ onPress }: { onPress?: () => void }) => (
       justifyContent: 'center',
       width: WINDOW_WIDTH,
     }}>
-    <View style={{  }}>
+    <View style={{}}>
       <Card width={300}>
         <MyInput
           searchBar
           inputStyle={{ width: 250 }}
-          placeholder="Enter Zip Code / City"
+          placeholder="Enter Zip Code"
         />
       </Card>
     </View>
@@ -47,7 +47,11 @@ const SearchListing = ({ onPress }: { onPress?: () => void }) => (
       data={Array(10).fill(1)}
       contentContainerStyle={{ paddingBottom: 240, paddingTop: 10 }}
       renderItem={() => (
-        <MasjidListCard onPress={onPress} isSearch masjidName="Masjid Ar - Rahman" />
+        <MasjidListCard
+          onPress={onPress}
+          isSearch
+          masjidName="Masjid Ar - Rahman"
+        />
       )}
       ItemSeparatorComponent={GapView}
     />
@@ -55,18 +59,15 @@ const SearchListing = ({ onPress }: { onPress?: () => void }) => (
 );
 
 const MasjidDetails = () => {
+  const [subscribe, setSubscribe] = useState(false);
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <TextLabel label="Masjid Ar - Rahman" />
-      <GapView length={5} />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <ConnectedDevice />
-        <MyText text="Connected Devices " />
-      </View>
-      <GapView length={25} />
+      <GapView length={45} />
+      <TextLabel label="Masjid Ar - Rahman" textStyle={{paddingBottom: 5}}/>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>
+        <GapView length={15} />
         <MyText text="Method: Islamic Society of North America" size={16} />
         <GapView length={5} />
         <MyText
@@ -107,7 +108,30 @@ const MasjidDetails = () => {
             ]}
           />
         </View>
-        <Rounded disabled={false} label="Subscribe" width={'85%'} />
+        <GapView />
+        {!subscribe ? (
+          <Rounded
+            onPress={() => setSubscribe(!subscribe)}
+            disabled={false}
+            label="Subscribe"
+            width={'70%'}
+          />
+        ) : (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={{
+              height: 41,
+              width: '70%',
+              backgroundColor: '#FF6464',
+              borderRadius: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+            }}
+            onPress={() => setSubscribe(!subscribe)}>
+            <TextLabel label="Unsubscribe" textStyle={{ color: '#ffffff' }} />
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );
