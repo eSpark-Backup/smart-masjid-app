@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
+
 import { CheckMark, EditTimeTable, MuteSvg } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
+import { Rounded } from '../Buttons';
 import GapView from '../GapView';
 import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
@@ -39,17 +41,18 @@ const RowItem = ({ item, index, isEdit, isMute, onSubmitEditing }: any) => {
             {index != 0 && edit ? (
               <MyTimePicker initialValue={item[key]} />
             ) : (
-              <View key={key} style={styles.contentCol}>
+              <View
+                key={key}
+                style={
+                  isEdit
+                    ? { ...styles.contentCol, borderWidth: 1 }
+                    : styles.contentCol
+                }>
                 <MyText text={item[key]} size={16} />
               </View>
             )}
           </>
         ))}
-        {!edit && isEdit && (
-          <View style={styles.contentIcon}>
-            <EditTimeTable />
-          </View>
-        )}
         {isMute && (
           <View style={styles.contentIcon}>
             <MuteSvg />
@@ -71,14 +74,19 @@ export default function TimeTable({
   isEdit = false,
   headings = ['Salah', 'Adhan', 'Iqamah'],
   header = <></>,
-  onSubmitEditing = () => {console.log("submit");
-  }
+  btnLabel = undefined,
+  onButtonPress,
+  onSubmitEditing = () => {
+    console.log('submit');
+  },
 }: {
   data: DataProps[];
   isMute?: boolean;
   isEdit?: boolean;
   headings?: string[];
   header?: React.ReactNode;
+  btnLabel?: string;
+  onButtonPress?: () => void;
   onSubmitEditing?: () => void;
 }) {
   return (
@@ -110,6 +118,12 @@ export default function TimeTable({
           onSubmitEditing={onSubmitEditing}
         />
       ))}
+      {btnLabel && (
+        <View style={{ alignSelf: 'center', marginBottom: 20 }}>
+          <GapView length={20} />
+          <Rounded label={btnLabel} width={250} onPress={onButtonPress} />
+        </View>
+      )}
     </View>
   );
 }
@@ -151,7 +165,7 @@ const styles = StyleSheet.create({
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '10%'
+    width: '10%',
   },
   shadowContainer: {
     shadowOffset: { width: 0, height: 0 },

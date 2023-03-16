@@ -17,10 +17,13 @@ interface MyInputProps {
   dividerWidth?: number;
   isPhoneCode?: boolean;
   phoneCodeValue: string;
+  isDropDown?: boolean;
+  onDropPress?: () => void;
   onPhoneCodePress?: () => void;
   onChangeText?: (value: string) => void;
   containerStyle?: ViewStyle;
   inputStyle?: ViewStyle;
+  dropStyle?: ViewStyle;
   placeholder: string;
   placeholderColor?: string;
   title?: string;
@@ -34,6 +37,8 @@ interface MyInputProps {
 export default function MyInput(props: MyInputProps) {
   const {
     isPhoneCode,
+    isDropDown = false,
+    dropStyle,
     phoneCodeValue,
     placeholder,
     containerStyle,
@@ -45,6 +50,7 @@ export default function MyInput(props: MyInputProps) {
     onSearch,
     onFocus,
     onBlur,
+    onDropPress,
     value,
   } = props;
   const theme: Theme = useTheme();
@@ -64,7 +70,7 @@ export default function MyInput(props: MyInputProps) {
   };
 
   return (
-    <View style={{justifyContent: 'center'}}>
+    <View style={{ justifyContent: 'center' }}>
       {title != '' && (
         <MyText
           text={title ?? ''}
@@ -82,17 +88,26 @@ export default function MyInput(props: MyInputProps) {
             <MyText textStyle={styles.phoneCodeText} text={phoneCodeValue} />
           </TouchableOpacity>
         )}
-        <TextInput
-          autoComplete="off"
-          autoCorrect={false}
-          placeholder={placeholder}
-          style={[styles.inputStyle, inputStyle]}
-          onChangeText={handleTextChange}
-          value={text}
-          placeholderTextColor={placeholderColor ?? "#9E9F9F"}
-          onPressIn={onFocus}
-          onSubmitEditing={onBlur}
-        />
+        <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
+          <TextInput
+            autoComplete="off"
+            autoCorrect={false}
+            placeholder={placeholder}
+            style={[styles.inputStyle, inputStyle]}
+            onChangeText={handleTextChange}
+            value={text}
+            placeholderTextColor={placeholderColor ?? '#9E9F9F'}
+            onPressIn={onFocus}
+            onSubmitEditing={onBlur}
+          />
+          {isDropDown && (
+            <II
+              name="caret-down-sharp"
+              style={{ alignSelf: 'center', right: 20 }}
+              onPress={onDropPress}
+            />
+          )}
+        </View>
         {searchBar && (
           <TouchableOpacity
             onPress={onSearch}

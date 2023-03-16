@@ -11,21 +11,20 @@ import {
   MasjidGear,
   Privacy,
 } from '../../assets';
-import {
-  GapView,
-  MyDivider,
-  ProfileAvatar,
-  ProfileSectionlist,
-} from '../../components';
+import { ProfileSectionlist } from '../../components';
 import { Wrapper } from '../../containers';
 import {
   AdhanSettings,
-  IqamaTimings,
+  IqamahTimings,
   JummaTimings,
   ManageAccount,
   ManageMasjid,
   ModifyAccount,
   SalahTimings,
+  EditIqamah,
+  IqamahHistory,
+  EditJumma,
+  JummaHistory,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 
@@ -57,6 +56,14 @@ export default function Profile() {
       setFlag('sTime');
       return;
     }
+    if (currScreen == 'iEdit' || currScreen == 'iHist') {
+      setFlag('iTime');
+      return;
+    }
+    if (currScreen == 'jEdit' || currScreen == 'jHist') {
+      setFlag('jTime');
+      return;
+    }
     if (currScreen == 'uInfo') {
       navigation.navigate('Home');
     } else {
@@ -65,9 +72,24 @@ export default function Profile() {
     }
   };
 
+  const handleSpacing = (currScreen: string) => {
+    if (
+      currScreen == 'iEdit' ||
+      currScreen == 'iHist' ||
+      currScreen == 'iTime' ||
+      currScreen == 'jTime' ||
+      currScreen == 'jEdit' ||
+      currScreen == 'jHist'
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   return (
     <Wrapper
-      // bgImageSpacer={false}
+      bgImageSpacer={handleSpacing(flag)}
       showFooter={false}
       onBackPress={() => handleBack(flag)}>
       {flag == 'uInfo' && (
@@ -89,7 +111,13 @@ export default function Profile() {
         <AdhanSettings setFlag={(value: string) => setFlag(value)} />
       )}
       {flag == 'iTime' && (
-        <IqamaTimings setFlag={(value: string) => setFlag(value)} />
+        <IqamahTimings setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'iEdit' && (
+        <EditIqamah setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'iHist' && (
+        <IqamahHistory setFlag={(value: string) => setFlag(value)} />
       )}
       {flag == 'jTime' && (
         <JummaTimings setFlag={(value: string) => setFlag(value)} />

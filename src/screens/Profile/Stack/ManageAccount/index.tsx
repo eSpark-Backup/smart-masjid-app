@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 import {
+  EditVector,
   Email,
   Phone,
   Power,
   ProfileUser,
-  SettingsVector,
 } from '../../../../assets';
 import {
   GapView,
@@ -31,21 +31,24 @@ export default function ManageAccount({
         data={[
           {
             title: 'Manage Account',
-            icon: <SettingsVector />,
+            icon: <EditVector />,
             onIconPress: () => setFlag('modAcc'),
             data: [
               {
                 title: 'Name',
+                value: 'Mukthar Ahmed',
                 icon: <ProfileUser />,
                 onPress: () => console.log('no effect'),
               },
               {
                 title: 'Email',
+                value: 'muk.ahmed@xyz.com',
                 icon: <Email />,
                 onPress: () => console.log('no effect'),
               },
               {
                 title: 'Phone',
+                value: '+1-412 214 2457',
                 icon: <Phone />,
                 onPress: () => console.log('no effect'),
               },

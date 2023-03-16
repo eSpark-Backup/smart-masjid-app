@@ -59,12 +59,14 @@ export default function MyDropdown({
   title = 'Title',
   placeholder = 'Please Select',
   placeholderColor,
+  containerPadding = 15,
   onChangeValue = (value: Item) => {},
 }: {
   items: Item[];
   title?: string;
   placeholder?: string;
   placeholderColor?: string;
+  containerPadding?: number;
   onChangeValue?: (value: Item) => void;
 }) {
   const [show, setShow] = useState(false);
@@ -90,30 +92,31 @@ export default function MyDropdown({
 
   return (
     <>
-      <View style={styles.container}>
+      <View
+        style={{ ...styles.container, paddingHorizontal: containerPadding }}>
         <MyInput
           title={title}
           onChangeText={onSearch}
+          containerStyle={{ marginTop: 5 }}
+          dropStyle={{
+            borderWidth: 1,
+            borderColor: '#9E9F9F',
+            borderRadius: 12,
+            width: '100%',
+          }}
+          inputStyle={{ width: '100%' }}
           onFocus={() => setShow(true)}
           onBlur={() => setShow(false)}
           placeholderColor={placeholderColor ?? '#000000'}
-          placeholder={placeholder}
-          value={selectedItem?.name ?? ''}
-        />
-        <II
-          name="caret-down-sharp"
-          style={{ right: 20, top: title ? 12 : 0 }}
-          onPress={() => {
+          isDropDown={true}
+          onDropPress={() => {
             setShow(!show);
             Keyboard.dismiss();
           }}
+          placeholder={placeholder}
+          value={selectedItem?.name ?? ''}
         />
       </View>
-      <MyDivider
-        style={{ alignSelf: 'center' }}
-        height={0.5}
-        backgroundColor="#3E3E3E"
-      />
       {show && (
         <View style={styles.listItemContainer}>
           <FlatList

@@ -1,12 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { VolumeUp } from '../../../../../assets';
-import {
-  GapView,
-  MyDivider,
-  ProfileAvatar,
-  ProfileSectionlist,
-} from '../../../../../components';
+import { ProfileSectionlist } from '../../../../../components';
 
 export default function SalahSettings({
   setFlag,

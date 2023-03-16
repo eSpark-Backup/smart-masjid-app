@@ -11,6 +11,7 @@ interface DataItem {
   onIconPress?: () => void;
   data: {
     title: string;
+    value?: string;
     icon: JSX.Element;
     onPress: () => void;
   }[];
@@ -69,15 +70,23 @@ export default function ProfileSectionlist({
 
 const SectionCard = ({ item, index }: { item: any; index: number }) => {
   return (
-    <TouchableOpacity
-      key={index + item.title}
-      activeOpacity={0.8}
-      style={styles.cartContainer}
-      onPress={item.onPress}>
-      {item.icon}
-      <GapView mode="horizontal" />
-      <MyText text={item.title} textStyle={{ fontSize: 16 }} />
-    </TouchableOpacity>
+    <View style={{ ...styles.cartContainer }}>
+      <TouchableOpacity
+        key={index + item.title}
+        activeOpacity={0.8}
+        style={{ flexDirection: 'row' }}
+        onPress={item.onPress}>
+        {item.icon}
+        <GapView mode="horizontal" />
+        <MyText text={item.title} textStyle={{ fontSize: 16 }} />
+      </TouchableOpacity>
+      {item.value && (
+        <MyText
+          text={item.value}
+          textStyle={{ fontSize: 14, color: '#6E6E6E' }}
+        />
+      )}
+    </View>
   );
 };
 
@@ -85,7 +94,8 @@ const styles = StyleSheet.create({
   cartContainer: {
     flexDirection: 'row',
     paddingHorizontal: 30,
-    paddingVertical: 10,
+    paddingVertical: 15,
+    justifyContent: 'space-between',
   },
   sectionHeader: {
     flexDirection: 'row',

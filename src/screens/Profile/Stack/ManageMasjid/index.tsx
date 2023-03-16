@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { MasjidVector, VolumeUp } from '../../../../assets';
+import { VolumeUp } from '../../../../assets';
 
 import {
   GapView,
@@ -24,7 +24,7 @@ export default function ManageMasjid({
             data: [
               {
                 title: 'Adhan settings',
-                icon: <MasjidVector />,
+                icon: <VolumeUp />,
                 onPress: () => setFlag('aSet'),
               },
               {
