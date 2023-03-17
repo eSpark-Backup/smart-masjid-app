@@ -24,9 +24,9 @@ export default function ButtonListing({
   radius?: number;
 }) {
   return (
-    <Card radius={radius} width={275} height={200}>
+    <Card radius={radius} width={275} height={216}>
       <FlatList
-        style={{ maxHeight: 200 }}
+        style={{ maxHeight: 216 }}
         data={data}
         renderItem={({ item, index }) => {
           return <ListCard item={item} index={index} />;
@@ -56,7 +56,7 @@ const ListCard = ({ item, index }: { item: ListItem; index: number }) => {
         mode="horizontal"
         length={item.leftIcon ? 50 : WINDOW_WIDTH / 8.5}
       />
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         {item.rightChild && item?.rightChild}
       </View>
     </TouchableOpacity>
