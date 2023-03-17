@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+
 import { EditTimeTable, HistoryVector } from '../../../../../../assets';
 import {
   GapView,
@@ -30,8 +31,12 @@ export default function JummaTimings({
               textStyle={{ color: '#3E3E3E', fontWeight: '400', fontSize: 14 }}
             />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <HistoryVector style={{ paddingHorizontal: 30 }} />
-              <EditTimeTable />
+              <TouchableOpacity onPress={() => setFlag('jHist')}>
+                <HistoryVector style={{ paddingHorizontal: 30 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setFlag('jEdit')}>
+                <EditTimeTable />
+              </TouchableOpacity>
             </View>
           </View>
         }

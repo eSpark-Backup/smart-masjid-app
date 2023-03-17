@@ -122,6 +122,12 @@ export default function Profile() {
       {flag == 'jTime' && (
         <JummaTimings setFlag={(value: string) => setFlag(value)} />
       )}
+      {flag == 'jEdit' && (
+        <EditJumma setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'jHist' && (
+        <JummaHistory setFlag={(value: string) => setFlag(value)} />
+      )}
     </Wrapper>
   );
 }
