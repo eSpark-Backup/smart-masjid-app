@@ -6,7 +6,13 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {
   Attention,
   Battery,
@@ -36,21 +42,20 @@ const AddDevice = () => {
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
 
   return (
-    <Card>
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => navigation.navigate('DSetup',  {from: 'Device'})}
-        style={styles.AddDeviceContainer}>
-        <View>
-          <TextLabel label="Dont see your device?" />
-          <GapView length={5} />
-          <MyText text="Lets connect" />
-        </View>
-        <View>
-          <PlusSvg />
-        </View>
-      </TouchableOpacity>
-    </Card>
+    <View style={{ marginHorizontal: 10 }}>
+      <Card height={161} width={165}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('DSetup', { from: 'Device' })}
+          style={styles.AddDeviceContainer}>
+          <View style={{ alignItems: 'center' }}>
+            <PlusSvg style={{ color: '#6E6E6E' }} />
+            <GapView length={10} />
+            <TextLabel label="Add Device" textStyle={{ color: '#6E6E6E' }} />
+          </View>
+        </TouchableOpacity>
+      </Card>
+    </View>
   );
 };
 
@@ -58,72 +63,80 @@ const DeviceSetting = () => {
   const theme: Theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
   return (
-    <View style={styles.deviceSettingContainer}>
-      <TextLabel label="Device  Settings" textStyle={{ paddingVertical: 20 }} />
-      <GapView length={20} />
-      <View style={styles.subHeader}>
-        <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />
-        <View style={styles.row}>
-          <View style={styles.activeStatus} />
-          <GapView mode="horizontal" length={5} />
-          <MyText text="Online" />
+    <>
+      <GapView length={80} />
+      <ScrollView>
+        <View style={styles.deviceSettingContainer}>
+          <TextLabel
+            label="Device  Settings"
+            textStyle={{ paddingVertical: 20 }}
+          />
+          <GapView length={20} />
+          <View style={styles.subHeader}>
+            <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />
+            <View style={styles.row}>
+              <View style={styles.activeStatus} />
+              <GapView mode="horizontal" length={5} />
+              <MyText text="Online" />
+            </View>
+          </View>
+          <GapView length={20} />
+          <DeviceSettingSectionList
+            data={[
+              {
+                title: 'General Settings',
+                data: [
+                  {
+                    title: 'Nick Name',
+                    subtitle: 'Home Device',
+                    icon: <DeviceSvg />,
+                    isEditable: true,
+                  },
+                  { title: 'Battery', subtitle: '20%', icon: <Battery /> },
+                  {
+                    title: 'Subscription',
+                    subtitle: 'Masjid Al Noor',
+                    icon: <Heart />,
+                    isEditable: true,
+                  },
+                ],
+              },
+              {
+                title: 'Advance Settings',
+                data: [
+                  {
+                    title: 'Wifi',
+                    subtitle: 'My_wifi_SSID',
+                    icon: <WifiSvg />,
+                    isEditable: true,
+                  },
+                  {
+                    title: 'Firmware Version',
+                    subtitle: 'Version 1.0',
+                    icon: <Clock />,
+                  },
+                  {
+                    title: 'MAC Address',
+                    subtitle: 'aa:12:bc:dd:ee:87',
+                    icon: <Heart />,
+                  },
+                  {
+                    title: 'IP Address',
+                    subtitle: '192.168.0.15',
+                    icon: <IP />,
+                  },
+                  {
+                    title: 'Factory Reset',
+                    subtitle: 'Reseting will erase all data',
+                    icon: <Attention height={24} width={24} />,
+                  },
+                ],
+              },
+            ]}
+          />
         </View>
-      </View>
-      <GapView length={20} />
-      <DeviceSettingSectionList
-        data={[
-          {
-            title: 'General Settings',
-            data: [
-              {
-                title: 'Nick Name',
-                subtitle: 'Home Device',
-                icon: <DeviceSvg />,
-                isEditable: true,
-              },
-              { title: 'Battery', subtitle: '20%', icon: <Battery /> },
-              {
-                title: 'Subscription',
-                subtitle: 'Masjid Al Noor',
-                icon: <Heart />,
-                isEditable: true,
-              },
-            ],
-          },
-          {
-            title: 'Advance Settings',
-            data: [
-              {
-                title: 'Wifi',
-                subtitle: 'My_wifi_SSID',
-                icon: <WifiSvg />,
-                isEditable: true,
-              },
-              {
-                title: 'Firmware Version',
-                subtitle: 'Version 1.0',
-                icon: <Clock />,
-              },
-              {
-                title: 'MAC Address',
-                subtitle: 'aa:12:bc:dd:ee:87',
-                icon: <SettingGreen />,
-              },
-              {
-                title: 'IP Address',
-                subtitle: '192.168.0.15',
-                icon: <IP />,
-              },
-              {
-                title: 'Factory Reset',
-                subtitle: 'Reseting will erase all data',
-                icon: <Attention height={24} width={24} />,
-              },
-            ],
-          },
-        ]}
-      />
-    </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -143,7 +156,7 @@ export default function Device() {
       navigation.goBack();
     }
   };
-
+  const data = Array(4).fill(10);
   return (
     <Wrapper
       onBackPress={onBackPress}
@@ -151,16 +164,20 @@ export default function Device() {
       bgImageSpacer={step == 1 ? false : true}>
       {step == 0 && (
         <FlatList
-          contentContainerStyle={{ padding: 10 }}
-          data={Array(3).fill(10)}
-          renderItem={() => <DeviceCard onPress={() => setStep(1)} />}
+          contentContainerStyle={{
+            paddingHorizontal: 10,
+            paddingBottom: 20,
+          }}
+          numColumns={2}
+          data={data}
+          renderItem={({ index }) => {
+            if (index != (data?.length - 1)) {
+              return <DeviceCard onPress={() => setStep(1)} />;
+            } else {
+              return <AddDevice />;
+            }
+          }}
           ItemSeparatorComponent={GapView}
-          ListFooterComponent={
-            <>
-              <GapView />
-              <AddDevice />
-            </>
-          }
         />
       )}
       {step == 1 && <DeviceSetting />}
@@ -172,10 +189,9 @@ const makeStyles = (theme: Theme) => {
   const { colors } = theme;
   return StyleSheet.create({
     AddDeviceContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
       padding: 15,
-      alignItems: 'center',
+      justifyContent: 'center',
+      height: 161,
     },
     deviceSettingContainer: { flex: 1, alignItems: 'center' },
     subHeader: {

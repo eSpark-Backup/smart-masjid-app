@@ -9,9 +9,12 @@ export default function WifiSelectForm({
   setStep: (value: number) => void;
 }) {
   return (
-    <View style={{alignItems: 'center'}}>
+    <View style={{ alignItems: 'center' }}>
       <GapView length={20} />
-      <TextLabel textStyle={{alignItems: 'center',}} label="Select Wi-Fi network" />
+      <TextLabel
+        textStyle={{ alignItems: 'center' }}
+        label="Select Wi-Fi network"
+      />
       <GapView length={80} />
       <ButtonListing
         data={[
@@ -20,7 +23,7 @@ export default function WifiSelectForm({
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'Wifi Network 1',
@@ -31,7 +34,7 @@ export default function WifiSelectForm({
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'Wifi Network Shop',
@@ -42,7 +45,7 @@ export default function WifiSelectForm({
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'My Wifi',
@@ -53,7 +56,7 @@ export default function WifiSelectForm({
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'Shop 5g wifi',

@@ -8,7 +8,12 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
-import { DeviceSelectForm, WifiSelectForm, PasswordForm, DeviceNicknameForm } from '../../forms';
+import {
+  DeviceSelectForm,
+  WifiSelectForm,
+  PasswordForm,
+  DeviceNicknameForm,
+} from '../../forms';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { DLoader, MyToast, SLoader } from '../../components';
 
@@ -46,12 +51,14 @@ export default function DeviceSetupScreen() {
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
-      <ScrollView contentContainerStyle={{paddingBottom: 30, }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
         {step == 1 && <DLoader />}
         {step == 2 && (
           <DeviceSelectForm setStep={(value: number) => setStep(value)} />
         )}
-        {step == 3 && <DeviceNicknameForm setStep={(value: number) => setStep(value)} />}
+        {step == 3 && (
+          <DeviceNicknameForm setStep={(value: number) => setStep(value)} />
+        )}
         {step == 4 && (
           <WifiSelectForm setStep={(value: number) => setStep(value)} />
         )}
@@ -59,22 +66,21 @@ export default function DeviceSetupScreen() {
           <PasswordForm setStep={(value: number) => setStep(value)} />
         )}
         {step == 6 && (
-          <SLoader
-            title="Connecting"
-            message="Connecting to wifi network"
-          />
+          <SLoader title="Connecting" message="Connecting to wifi network" />
         )}
         {step == 7 && (
           <MyToast
             isSuccess={true}
-            btnText={"Search Masjid"}
+            btnText={route.params?.from ? 'Awesome' : 'Search Masjid'}
             onPress={() =>
               navigation.navigate('HomeBottomTab', {
                 screen: route.params?.from ? 'Device' : 'Home',
               })
             }
             title="Device setup complete!"
-            message={`Your device is connected successfully.\n \nLets subscribe to a masjid now.`}
+            message={`Your device is connected successfully.${
+              !route.params?.from && '\n \nLets subscribe to a masjid now.'
+            }`}
           />
         )}
       </ScrollView>
