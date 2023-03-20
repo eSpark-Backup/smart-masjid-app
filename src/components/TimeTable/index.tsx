@@ -9,6 +9,7 @@ import {
 } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
+import { Rounded } from '../Buttons';
 import GapView from '../GapView';
 import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
@@ -52,11 +53,6 @@ const RowItem = ({
             )}
           </>
         ))}
-        {!edit && isEdit && (
-          <View style={styles.contentIcon}>
-            <EditTimeTable />
-          </View>
-        )}
         {isMute && (
           <View style={styles.contentIcon}>
             {toggleMute ? (
@@ -98,6 +94,8 @@ export default function TimeTable({
   isInfo?: boolean;
   headings?: string[];
   header?: React.ReactNode;
+  btnLabel?: string;
+  onButtonPress?: () => void;
   onSubmitEditing?: () => void;
   editView?: boolean;
   footer?: React.ReactNode;

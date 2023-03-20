@@ -1,12 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { VolumeUp } from '../../../../../assets';
-import {
-  GapView,
-  MyDivider,
-  ProfileAvatar,
-  ProfileSectionlist,
-} from '../../../../../components';
+import { ProfileSectionlist } from '../../../../../components';
 
 export default function SalahSettings({
   setFlag,
@@ -15,13 +10,6 @@ export default function SalahSettings({
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <GapView length={20} />
       <ProfileSectionlist
         data={[
           {

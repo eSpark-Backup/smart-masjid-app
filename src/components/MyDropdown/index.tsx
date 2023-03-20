@@ -60,6 +60,7 @@ export default function MyDropdown({
   title = 'Title',
   placeholder = 'Please Select',
   placeholderColor,
+  containerPadding = 15,
   onChangeValue = (value: Item) => {},
   width = WINDOW_WIDTH - 40
 }: {
@@ -67,6 +68,7 @@ export default function MyDropdown({
   title?: string;
   placeholder?: string;
   placeholderColor?: string;
+  containerPadding?: number;
   onChangeValue?: (value: Item) => void;
   width?: number | string | undefined;
 }) {
@@ -92,7 +94,8 @@ export default function MyDropdown({
 
   return (
     <>
-      <View style={styles.container}>
+      <View
+        style={{ ...styles.container, paddingHorizontal: containerPadding }}>
         <MyInput
           title={title}
           onChangeText={onSearch}
