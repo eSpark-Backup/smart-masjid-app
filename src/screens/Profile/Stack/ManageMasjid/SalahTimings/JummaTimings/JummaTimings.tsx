@@ -23,58 +23,61 @@ export default function JummaTimings({
 }) {
   const [edit, setEdit] = useState(false);
   return (
-    <View style={{ flex: 1, marginTop: 70  }}>
-      <TimeTable
-        header={
-          <>
-          <GapView />
-            {!edit ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 5,
-                }}>
-                <View>
-                  <MyText text="Change Date: 02-24-2023" />
-                </View>
+    <>
+      <GapView length={30} />
+      <View style={{ flex: 1, marginTop: 70 }}>
+        <TimeTable
+          header={
+            <>
+              <GapView />
+              {!edit ? (
                 <View
                   style={{
                     flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 5,
                   }}>
-                  <History  onPress={() => setFlag('jHist')} />
-                  <GapView mode="horizontal" length={20} />
-                  <EditTimeTable onPress={() => setEdit(true)} />
+                  <View>
+                    <MyText text="Change Date: 02-24-2023" />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <History onPress={() => setFlag('jHist')} />
+                    <GapView mode="horizontal" length={20} />
+                    <EditTimeTable onPress={() => setEdit(true)} />
+                  </View>
                 </View>
-              </View>
-            ) : (
-              <View>
-                <MyDatePicker onDateChange={() => {}} />
-                <GapView length={20} />
-              </View>
-            )}
-          </>
-        }
-        headings={['Salah', 'Khutbah']}
-        data={[
-          { name: 'Jummah 1', azanTiming: '12:50' },
-          { name: 'Jummah 1', azanTiming: '12:50' },
-        ]}
-        editView={edit}
-        footer={
-          <>
-            {edit && (
-              <View style={{ alignSelf: 'center' }}>
-                <GapView />
-                <Rounded label="Save" onPress={() => setEdit(false)} />
-              </View>
-            )}
-          </>
-        }
-      />
-    </View>
+              ) : (
+                <View>
+                  <MyDatePicker onDateChange={() => {}} />
+                  <GapView length={20} />
+                </View>
+              )}
+            </>
+          }
+          headings={['Salah', 'Khutbah']}
+          data={[
+            { name: 'Jummah 1', azanTiming: '12:50' },
+            { name: 'Jummah 1', azanTiming: '12:50' },
+          ]}
+          editView={edit}
+          footer={
+            <>
+              {edit && (
+                <View style={{ alignSelf: 'center' }}>
+                  <GapView />
+                  <Rounded label="Save" onPress={() => setEdit(false)} />
+                </View>
+              )}
+            </>
+          }
+        />
+      </View>
+    </>
   );
 }
 

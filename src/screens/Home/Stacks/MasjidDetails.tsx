@@ -49,6 +49,7 @@ export default function MasjidDetails({ setStep }: any) {
                 alignItems: 'center',
               }}>
               <MyDatePicker
+                type='standard'
                 onDateChange={e => {
                   console.log('onDateChange', e);
                 }}
