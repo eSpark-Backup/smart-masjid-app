@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 import { Joined } from '../Buttons';
 import MyText from '../MyText';
+import GapView from '../GapView';
 
 export default function LogoutModal({
   visible,
@@ -25,14 +26,13 @@ export default function LogoutModal({
       <View style={styles.main}>
         <View style={styles.body}>
           <MyText text="Attention" textStyle={styles.label} size={16} />
-
+          <GapView length={50} />
           <MyText
-            text={`If you logout, you will not receive adhan untill you setup your device again. 
-            \nDo you wish to logout?`}
+            text={`Do you wish to logout?`}
             textStyle={styles.bodyText}
             size={16}
           />
-
+          <GapView length={50} />
           <Joined activeButton="two" onPress2={onClose} onPress1={onAllowed} />
         </View>
       </View>

@@ -31,7 +31,7 @@ export default function SLoader({
             backgroundColor: '#ffffff',
             position: 'absolute',
             bottom: 0,
-            left: 10,
+            left: 15,
           }}
         />
       </View>
