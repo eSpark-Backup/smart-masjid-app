@@ -144,7 +144,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       borderTopLeftRadius: 12,
       borderBottomLeftRadius: 12,
       width: 80,
-      height: 56,
+      // height: 56,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
