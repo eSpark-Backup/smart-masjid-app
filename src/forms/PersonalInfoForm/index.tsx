@@ -12,7 +12,7 @@ export default function PersonalInfoForm({
   return (
     <View style={styles.container}>
       <TextLabel
-        label="Personal Information"
+        label="Lets have some details about you"
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={56} />
@@ -25,11 +25,7 @@ export default function PersonalInfoForm({
         />
         <MyInput
           placeholder="Last Name"
-          isDivider
-          dividerWidth={0.25}
-          dividerColor="rgba(158, 159, 159, 1)"
         />
-        <MyInput placeholder="Phone Number" />
       </Card>
       <View style={{ marginTop: 60, marginBottom: 40 }}>
         <Rounded label="Next" width={250} onPress={() => setStep(4)} />

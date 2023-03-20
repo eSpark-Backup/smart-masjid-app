@@ -9,6 +9,7 @@ import {
   Rounded,
   TextLabel,
 } from '../../../../components';
+import { Card } from '../../../../containers';
 
 export default function ModifyAccount({
   setFlag,
@@ -17,40 +18,44 @@ export default function ModifyAccount({
 }) {
   return (
     <ScrollView style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <GapView length={20} />
-      <View style={{ padding: 20 }}>
+      <View
+        style={{ padding: 20, justifyContent: 'center', alignItems: 'center' }}>
         <TextLabel label={'Modify Account'} />
       </View>
       <View style={{ paddingHorizontal: 25 }}>
         <GapView />
-        <MyInput
-          title="Name"
-          placeholder="Mukthar Ahmed"
-          placeholderColor="#CFCFCF"
-          inputStyle={{ borderBottomWidth: 1, paddingHorizontal: 10 }}
-        />
-        <GapView />
-        <MyInput
-          title="Email"
-          placeholder="muk.ahmed@gmail.com"
-          placeholderColor="#CFCFCF"
-          inputStyle={{ borderBottomWidth: 1, paddingHorizontal: 10 }}
-        />
-        <GapView />
-        <MyInput
-          title="Phone Number"
-          placeholder="+1 4122142457"
-          placeholderColor="#CFCFCF"
-          inputStyle={{ borderBottomWidth: 1, paddingHorizontal: 10 }}
-        />
+        <Card width={345} radius={12}>
+          <MyInput
+            placeholder="Mukthar"
+            placeholderColor="#CFCFCF"
+            isDivider
+            dividerWidth={0.25}
+            dividerColor="rgba(158, 159, 159, 1)"
+          />
+          <MyInput
+            placeholder="Ahmed"
+            placeholderColor="#CFCFCF"
+            isDivider
+            dividerWidth={0.25}
+            dividerColor="rgba(158, 159, 159, 1)"
+          />
+          <MyInput
+            placeholder="muk.ahmed@gmail.com"
+            placeholderColor="#CFCFCF"
+            isDivider
+            dividerWidth={0.25}
+            dividerColor="rgba(158, 159, 159, 1)"
+          />
+          <MyInput
+            placeholder="+1 4122142457"
+            placeholderColor="#CFCFCF"
+            isDivider={false}
+            dividerWidth={0.25}
+            dividerColor="rgba(158, 159, 159, 1)"
+          />
+        </Card>
       </View>
-      <View style={{ alignSelf: 'center', marginTop: 30, marginBottom: 10 }}>
+      <View style={{ alignSelf: 'center', marginTop: 80, marginBottom: 10 }}>
         <Rounded label="Update" />
       </View>
     </ScrollView>

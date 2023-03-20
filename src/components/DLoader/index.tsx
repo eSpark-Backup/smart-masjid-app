@@ -8,7 +8,7 @@ export default function DLoader() {
   return (
     <View style={styles.container}>
       <MyText
-        text={`Your Device will be connected soon\nplease wait....`}
+        text={`Searching for your device\nplease wait....`}
         pressable={false}
         textStyle={styles.text}
       />
@@ -18,9 +18,9 @@ export default function DLoader() {
         style={styles.loader}
         resizeMode="contain"
       />
-      <GapView length={30} />
+      <GapView length={50} />
       <MyText
-        text={`Make sure you power on your device and\nturn on bluetooth on your phone.`}
+        text={`Make sure your device is ON.`}
         pressable={false}
         textStyle={styles.text}
       />

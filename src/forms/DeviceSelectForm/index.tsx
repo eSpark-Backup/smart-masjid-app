@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { BluetoothSvg, DeviceSvg, MicSvg } from '../../assets';
+import { AdhanButton, DeviceSvg } from '../../assets';
 import { ButtonListing, GapView, TextLabel } from '../../components';
 
 export default function DeviceSelectForm({
@@ -10,20 +10,20 @@ export default function DeviceSelectForm({
 }) {
   return (
     <View style={{ alignItems: 'center' }}>
-      <BluetoothSvg />
       <GapView length={20} />
-      <TextLabel label="Select device" />
+      <TextLabel label="Select your device" />
       <GapView length={50} />
       <ButtonListing
+        radius={12}
         data={[
           {
             leftIcon: <DeviceSvg />,
-            title: 'Smart Azhan Speaker',
+            title: 'Smart Adhan Speaker',
             onPress: () => setStep(3),
           },
           {
-            leftIcon: <MicSvg />,
-            title: 'Smart Azhan Streamer',
+            leftIcon: <AdhanButton />,
+            title: 'Smart Adhan Button',
             onPress: () => setStep(3),
           },
         ]}

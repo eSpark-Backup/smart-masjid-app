@@ -10,6 +10,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Theme, useTheme } from '@react-navigation/native';
 
 import { GradientColors } from '../../../theme';
+import { WINDOW_WIDTH } from '../../../constants';
+import GapView from '../../GapView';
 
 interface JoinedButtonType {
   title1?: string;
@@ -21,12 +23,12 @@ interface JoinedButtonType {
 }
 
 export default function Joined({
-  title1 = 'Yes',
-  title2 = 'No',
+  title1 = 'No',
+  title2 = 'Yes',
   onPress1 = (): void => console.log('title1'),
   onPress2 = (): void => console.log('title2'),
   containerStyle = {},
-  activeButton = 'one',
+  activeButton = 'two',
 }: JoinedButtonType) {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
@@ -34,22 +36,39 @@ export default function Joined({
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
       <TouchableWithoutFeedback onPress={onPress1}>
-        <LinearGradient
-          colors={activeButton == 'one' ? GradientColors : ['#fff', '#fff']}
-          style={activeButton == 'one' ? styles.gradient : styles.hollowLeft}>
-          <Text style={activeButton == 'one' ? styles.activeText : styles.text}>
-            {title1}
-          </Text>
-        </LinearGradient>
+        {activeButton == 'one' ? (
+          <LinearGradient
+            colors={activeButton == 'one' ? GradientColors : ['#fff', '#fff']}
+            style={activeButton == 'one' ? styles.gradient : styles.hollowLeft}>
+            <Text
+              style={activeButton == 'one' ? styles.activeText : styles.text}>
+              {title1}
+            </Text>
+          </LinearGradient>
+        ) : (
+          <View style={styles.hollowLeft}>
+            <Text style={styles.text}>{title1}</Text>
+          </View>
+        )}
       </TouchableWithoutFeedback>
+      <GapView mode='horizontal' />
       <TouchableWithoutFeedback onPress={onPress2}>
-        <LinearGradient
-          colors={activeButton == 'two' ? GradientColors : ['#fff', '#fff']}
-          style={activeButton == 'two' ? styles.rightGradient : styles.hollow}>
-          <Text style={activeButton == 'two' ? styles.activeText : styles.text}>
-            {title2}
-          </Text>
-        </LinearGradient>
+        {activeButton == 'two' ? (
+          <LinearGradient
+            colors={activeButton == 'two' ? GradientColors : ['#fff', '#fff']}
+            style={
+              activeButton == 'two' ? styles.rightGradient : styles.hollow
+            }>
+            <Text
+              style={activeButton == 'two' ? styles.activeText : styles.text}>
+              {title2}
+            </Text>
+          </LinearGradient>
+        ) : (
+          <View style={styles.hollow}>
+            <Text style={styles.text}>{title2}</Text>
+          </View>
+        )}
       </TouchableWithoutFeedback>
     </View>
   );
@@ -60,40 +79,49 @@ const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     container: {
       flexDirection: 'row',
+      // backgroundColor: 'red'
     },
     text: {
-      paddingVertical: 17,
-      paddingHorizontal: 50,
       fontSize: 18,
       color: colors.primary,
     },
     activeText: {
-      paddingVertical: 17,
-      paddingHorizontal: 50,
       fontSize: 18,
       color: '#fff',
     },
     gradient: {
-      borderTopLeftRadius: 12,
-      borderBottomLeftRadius: 12,
+      borderRadius: 20,
+      height: 41,
+      width: WINDOW_WIDTH / 2 - 40,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     rightGradient: {
-      borderTopRightRadius: 12,
-      borderBottomRightRadius: 12,
+      borderRadius: 20,
+      height: 41,
+      width: WINDOW_WIDTH / 2 - 40,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     hollow: {
-      borderTopRightRadius: 12,
-      borderBottomRightRadius: 12,
-      borderWidth: 1,
+      borderRadius: 20,
+      height: 41,
+      width: WINDOW_WIDTH / 2 - 40,
+      borderWidth: 1.5,
       right: 1,
       borderColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     hollowLeft: {
-      borderTopLeftRadius: 12,
-      borderBottomLeftRadius: 12,
-      borderWidth: 1,
-      left: 1,
+      borderRadius: 20,
+      height: 41,
+      width: WINDOW_WIDTH / 2 - 40,
+      borderWidth: 2,
+      left: 1.5,
       borderColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
 };

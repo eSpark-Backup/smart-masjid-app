@@ -9,11 +9,13 @@ export default function WifiSelectForm({
   setStep: (value: number) => void;
 }) {
   return (
-    <View style={{alignItems: 'center'}}>
-      <WifiGreen />
+    <View style={{ alignItems: 'center' }}>
       <GapView length={20} />
-      <MyText textStyle={{fontSize: 16, fontWeight: '400'}} text="Choose a wifi network to connect" />
-      <GapView length={50} />
+      <TextLabel
+        textStyle={{ alignItems: 'center' }}
+        label="Select Wi-Fi network"
+      />
+      <GapView length={80} />
       <ButtonListing
         data={[
           {
@@ -21,44 +23,44 @@ export default function WifiSelectForm({
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'Wifi Network 1',
-            onPress: () => setStep(4),
+            onPress: () => setStep(5),
           },
           {
             rightChild: (
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'Wifi Network Shop',
-            onPress: () => setStep(4),
+            onPress: () => setStep(5),
           },
           {
             rightChild: (
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'My Wifi',
-            onPress: () => setStep(4),
+            onPress: () => setStep(5),
           },
           {
             rightChild: (
               <>
                 <LockSvg />
                 <GapView mode="horizontal" />
-                <WifiSvg />
+                <WifiSvg width={24} height={34} />
               </>
             ),
             title: 'Shop 5g wifi',
-            onPress: () => setStep(4),
+            onPress: () => setStep(5),
           },
         ]}
       />

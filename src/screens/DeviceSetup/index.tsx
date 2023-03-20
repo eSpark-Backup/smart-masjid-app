@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet } from 'react-native';
+import { Animated, ScrollView, StyleSheet } from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -8,7 +8,12 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
-import { DeviceSelectForm, WifiSelectForm, PasswordForm } from '../../forms';
+import {
+  DeviceSelectForm,
+  WifiSelectForm,
+  PasswordForm,
+  DeviceNicknameForm,
+} from '../../forms';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { DLoader, MyToast, SLoader } from '../../components';
 
@@ -30,7 +35,7 @@ export default function DeviceSetupScreen() {
 
   useEffect(() => {
     console.log('step current?', step);
-    if (step == 1 || step == 5) {
+    if (step == 1 || step == 6) {
       setTimeout(() => {
         setStep(step + 1);
       }, 3000);
@@ -46,35 +51,39 @@ export default function DeviceSetupScreen() {
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
-      {step == 1 && <DLoader />}
-      {step == 2 && (
-        <DeviceSelectForm setStep={(value: number) => setStep(value)} />
-      )}
-      {step == 3 && (
-        <WifiSelectForm setStep={(value: number) => setStep(value)} />
-      )}
-      {step == 4 && (
-        <PasswordForm setStep={(value: number) => setStep(value)} />
-      )}
-      {step == 5 && (
-        <SLoader
-          // title="Creating Account"
-          message="Connecting to wifi network"
-        />
-      )}
-      {step == 6 && (
-        <MyToast
-          isSuccess={true}
-          btnText={"Let's Go"}
-          onPress={() =>
-            navigation.navigate('HomeBottomTab', {
-              screen: route.params?.from ? 'Device' : 'Home',
-            })
-          }
-          title="Yay"
-          message={`Your device is connected successfully.\nLets subscribe to a masjid now.`}
-        />
-      )}
+      <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
+        {step == 1 && <DLoader />}
+        {step == 2 && (
+          <DeviceSelectForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 3 && (
+          <DeviceNicknameForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 4 && (
+          <WifiSelectForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 5 && (
+          <PasswordForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 6 && (
+          <SLoader title="Connecting" message="Connecting to wifi network" />
+        )}
+        {step == 7 && (
+          <MyToast
+            isSuccess={true}
+            btnText={route.params?.from ? 'Awesome' : 'Search Masjid'}
+            onPress={() =>
+              navigation.navigate('HomeBottomTab', {
+                screen: route.params?.from ? 'Device' : 'Home',
+              })
+            }
+            title="Device setup complete!"
+            message={`Your device is connected successfully.${
+              !route.params?.from && '\n \nLets subscribe to a masjid now.'
+            }`}
+          />
+        )}
+      </ScrollView>
     </Wrapper>
   );
 }

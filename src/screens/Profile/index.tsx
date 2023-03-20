@@ -1,28 +1,44 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { useAtom } from 'jotai';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { About, AccountGear, Help, MasjidGear, Privacy } from '../../assets';
 import {
-  GapView,
-  MyDivider,
-  ProfileAvatar,
-  ProfileSectionlist,
-} from '../../components';
+  About,
+  AccountGear,
+  Help,
+  ManageUser,
+  MasjidGear,
+  Privacy,
+} from '../../assets';
+import { ProfileSectionlist } from '../../components';
 import { Wrapper } from '../../containers';
 import {
   AdhanSettings,
-  IqamaTimings,
+  IqamahTimings,
   JummaTimings,
   ManageAccount,
   ManageMasjid,
   ModifyAccount,
   SalahTimings,
+  EditIqamah,
+  IqamahHistory,
+  EditJumma,
+  JummaHistory,
 } from './Stack';
 import { countAtom, mangaAtom } from '../../store/GlobalStates';
+import { BottomNavigationParamList, RootStackParamList } from '../../types';
+
+type ProfileNavigationProp = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'Profile'
+>;
 
 export default function Profile() {
   const [count, setCount] = useAtom<any>(mangaAtom);
+  const navigation = useNavigation<ProfileNavigationProp['navigation']>();
+
   const [flag, setFlag] = useState('uInfo');
 
   const handleBack = (currScreen: string) => {
@@ -42,15 +58,41 @@ export default function Profile() {
     if (currScreen == 'iTime' || currScreen == 'jTime') {
       setFlag('sTime');
       return;
+    }
+    if (currScreen == 'iEdit' || currScreen == 'iHist') {
+      setFlag('iTime');
+      return;
+    }
+    if (currScreen == 'jEdit' || currScreen == 'jHist') {
+      setFlag('jTime');
+      return;
+    }
+    if (currScreen == 'uInfo') {
+      navigation.navigate('Home');
     } else {
       setFlag('uInfo');
       return;
     }
   };
 
+  const handleSpacing = (currScreen: string) => {
+    if (
+      currScreen == 'iEdit' ||
+      currScreen == 'iHist' ||
+      currScreen == 'iTime' ||
+      currScreen == 'jTime' ||
+      currScreen == 'jEdit' ||
+      currScreen == 'jHist'
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   return (
     <Wrapper
-      bgImageSpacer={false}
+      bgImageSpacer={handleSpacing(flag)}
       showFooter={false}
       onBackPress={() => handleBack(flag)}>
       {flag == 'uInfo' && (
@@ -76,10 +118,16 @@ export default function Profile() {
         <AdhanSettings setFlag={(value: string) => setFlag(value)} />
       )}
       {flag == 'iTime' && (
-        <IqamaTimings setFlag={(value: string) => setFlag(value)} />
+        <IqamahTimings setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'iHist' && (
+        <IqamahHistory setFlag={(value: string) => setFlag(value)} />
       )}
       {flag == 'jTime' && (
         <JummaTimings setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'jHist' && (
+        <JummaHistory setFlag={(value: string) => setFlag(value)} />
       )}
     </Wrapper>
   );
@@ -96,13 +144,6 @@ function UserInformation({
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <GapView length={20} />
       <ProfileSectionlist
         data={[
           {
@@ -119,6 +160,11 @@ function UserInformation({
                 title: 'Manage Masjid',
                 icon: <MasjidGear />,
                 onPress: () => setFlag('mMas'),
+              },
+              {
+                title: 'Manage Users',
+                icon: <ManageUser />,
+                onPress: () => console.log('Manage User'),
               },
             ],
           },

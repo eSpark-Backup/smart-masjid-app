@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -33,6 +33,7 @@ import {
   SettingIcon,
   WifiSvg,
 } from '../../assets';
+import { ScrollView } from 'react-native';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
@@ -40,7 +41,7 @@ type WelcomeNavigationProps = NativeStackScreenProps<
 
 export default function App() {
   const navigation = useNavigation<WelcomeNavigationProps['navigation']>();
-
+  const { colors }: Theme = useTheme();
   const goBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -49,21 +50,35 @@ export default function App() {
 
   return (
     <Wrapper onBackPress={goBack}>
-      <MyTitle
-        style={{ alignSelf: 'center', textAlign: 'center' }}
-        text={`Welcome to\nSmart Adhan`}
-      />
-      <GapView length={85} />
-      <MyText
-        size={16}
-        textStyle={{ textAlign: 'center' }}
-        text="Have you purchased the adhan device ?"
-      />
-      <GapView length={80} />
-      <Joined
-        containerStyle={{ alignSelf: 'center' }}
-        onPress1={() => navigation.navigate('USetup')}
-      />
+      <ScrollView>
+        <MyTitle
+          style={{ alignSelf: 'center', textAlign: 'center' }}
+          text={`Welcome to\nSmart Adhan`}
+        />
+        <GapView length={85} />
+        <MyText
+          size={16}
+          textStyle={{ textAlign: 'center' }}
+          text="Have you purchased the adhan device ?"
+        />
+        <GapView length={80} />
+        <Joined
+          containerStyle={{ alignSelf: 'center' }}
+          onPress1={() => navigation.navigate('USetup')}
+          onPress2={() => navigation.navigate('USetup')}
+        />
+        <GapView length={80} />
+        <MyText
+          text="Use phone number instead"
+          pressable
+          textStyle={{
+            fontSize: 16,
+            fontWeight: '400',
+            textAlign: 'center',
+            color: colors.primary,
+          }}
+        />
+      </ScrollView>
     </Wrapper>
   );
 }

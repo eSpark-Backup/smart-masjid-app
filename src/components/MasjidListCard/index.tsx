@@ -6,6 +6,7 @@ import {
   MasjidSample,
   MuteSvg,
   PeoplesSvg,
+  SujudSvg,
   TimeCircleSvg,
   UnMuteSvg,
 } from '../../assets';
@@ -77,15 +78,10 @@ export default function MasjidListCard(
           ) : (
             <>
               <View style={styles.row}>
-                <LinearGradient
-                  style={styles.gradientContainer}
-                  colors={GradientColors}>
-                  <MyText
-                    text={namazName ?? 'Fajr'}
-                    textStyle={{ color: '#fff' }}
-                  />
-                </LinearGradient>
-                <GapView mode="horizontal" />
+                <SujudSvg />
+                <GapView mode="horizontal" length={5} />
+                <MyText text={'Maghrib'} />
+                <GapView mode="horizontal" length={5} />
                 <View style={styles.row}>
                   {!mute ? (
                     <UnMuteSvg
@@ -117,7 +113,7 @@ export default function MasjidListCard(
           <Image
             source={MasjidSample}
             resizeMode="contain"
-            style={styles.imageStyle}
+            style={!isSearch ? styles.imageStyle : {height: 75, width: 75}}
           />
         </View>
       </TouchableOpacity>
@@ -134,13 +130,6 @@ const makeStyles = (props: MasjidHomeProps & MasjidSearchProps) => {
       alignItems: 'center',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
-    gradientContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 15,
-      paddingHorizontal: 15,
-      paddingVertical: 5,
-    },
-    imageStyle: { height: 75, width: 75 },
+    imageStyle: { height: 60, width: 60 },
   });
 };

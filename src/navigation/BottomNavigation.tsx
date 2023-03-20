@@ -13,8 +13,9 @@ import {
 } from '../assets';
 import { Theme, useTheme } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
-import { MyText } from '../components';
+import { GapView, MyText } from '../components';
 import { BottomNavigationParamList } from '../types';
+import { Platform } from 'react-native';
 
 const Tab = createBottomTabNavigator<BottomNavigationParamList>();
 
@@ -63,18 +64,7 @@ function HomeBottomTab() {
         tabBarActiveTintColor: colors?.primary,
         tabBarInactiveTintColor: '#9E9F9F',
         tabBarStyle: styles.tabBar,
-        tabBarLabel: ({ children, focused }) => {
-          return (
-            <MyText
-              text={children}
-              textStyle={
-                focused
-                  ? styles.ActiveTabBarLabelStyle
-                  : styles.tabBarLabelStyle
-              }
-            />
-          );
-        },
+        tabBarShowLabel: false
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Search" component={Search} />
@@ -103,12 +93,12 @@ const makeStyles = (theme: Theme) => {
     tabBarLabelStyle: {
       color: '#9E9F9F',
       fontSize: 14,
-      bottom: 18,
+      bottom: Platform.OS == "android" ? 18 : 0,
     },
     ActiveTabBarLabelStyle: {
       color: colors.primary,
       fontSize: 14,
-      bottom: 18,
+      bottom: Platform.OS == "android" ? 18 : 0,
       fontWeight: 'bold',
     },
   });

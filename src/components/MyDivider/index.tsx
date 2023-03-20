@@ -16,9 +16,10 @@ export default function MyDivider({
   return (
     <View
       style={{
-        height: height,
+        height: 1,
         width,
         backgroundColor: backgroundColor,
+        opacity: .5,
         ...style,
       }}
     />

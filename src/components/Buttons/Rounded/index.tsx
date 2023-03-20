@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import { GradientColors } from '../../../theme';
@@ -17,21 +17,23 @@ export default function Rounded({
   disabled?: boolean;
 }) {
   return (
-    <View style={{ width }}>
-      <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
+    <View style={{ width, height: 41 }}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={onPress}
+        style={{ flex: 1 }}>
         <LinearGradient
           style={{
+            flex: 1,
+            borderRadius: 20,
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: 12,
           }}
           colors={!disabled ? GradientColors : ['#9E9F9F', '#9E9F9F']}>
           <MyText
             text={label}
             textStyle={{
               color: '#fff',
-              paddingVertical: 17,
-              paddingHorizontal: 50,
               fontSize: 18,
               fontWeight: '700',
             }}

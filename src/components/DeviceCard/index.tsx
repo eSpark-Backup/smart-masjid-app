@@ -13,39 +13,38 @@ export default function DeviceCard({
   onPress?: () => void;
 }) {
   return (
-    <>
-      <Card>
+    <View style={{marginHorizontal:  10}}>
+      <Card height={161} width={165}>
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.9}
           style={styles.container}>
-          <View style={styles.row}>
-            <View>
-              <DeviceSvg />
-            </View>
+          <View style={{ alignItems: 'center', width: '100%' }}>
             <GapView mode="horizontal" length={15} />
             <View>
-              <TextLabel label="Home" />
+              <TextLabel
+                label="My Home Speaker"
+                textStyle={{ alignItems: 'center', fontSize: 14 }}
+              />
+              <GapView length={25} />
+              <DeviceSvg height={50} width={50} style={{alignSelf: 'center',}} />
+              <GapView length={25} />
               <View style={styles.row}>
-                <View style={styles.status} />
+                <View style={styles.activeStatus} />
                 <GapView mode="horizontal" length={5} />
                 <MyText text="Online" />
               </View>
             </View>
           </View>
-          <View>
-            <ThreeDotSvg />
-          </View>
         </TouchableOpacity>
       </Card>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
   },

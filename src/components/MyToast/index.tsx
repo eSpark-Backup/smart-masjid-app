@@ -6,6 +6,7 @@ import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import * as Animatable from 'react-native-animatable';
+import GapView from '../GapView';
 
 export default function MyToast({
   title,
@@ -59,6 +60,7 @@ export default function MyToast({
               }}
             />
           </View>
+          <GapView length={30} />
           <View style={{ paddingHorizontal: 30, marginBottom: 20 }}>
             <MyText
               text={message}
@@ -69,6 +71,7 @@ export default function MyToast({
               }}
             />
           </View>
+          <GapView length={70} />
           <Rounded onPress={onPress} label={btnText!!} />
         </View>
       </Animated.View>

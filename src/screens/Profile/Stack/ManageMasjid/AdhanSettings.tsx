@@ -5,8 +5,8 @@ import {
   GapView,
   MyDivider,
   MyDropDown,
+  MyText,
   ProfileAvatar,
-  Rounded,
   TextLabel,
 } from '../../../../components';
 
@@ -17,15 +17,15 @@ export default function AdhanSettings({
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <View style={{ marginBottom: 40 }}>
-        <GapView length={30} />
-        <View style={{ padding: 20 }}>
+      <View style={{ marginBottom: 10 }}>
+        <View
+          style={{
+            paddingTop: 30,
+            padding: 15,
+            paddingBottom: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           <TextLabel label={'Adhan Settings'} />
         </View>
         <MyDropDown
@@ -50,9 +50,17 @@ export default function AdhanSettings({
           ]}
         />
       </View>
-      <View style={{ alignSelf: 'center' }}>
-        <Rounded label="Save" onPress={() => console.log('saved')} />
-      </View>
+      <GapView length={40} />
+      <MyText
+        text="Contact support@smartmasjid.net to update the adhan settings"
+        textStyle={{
+          paddingHorizontal: 37.5,
+          textAlign: 'center',
+          fontSize: 16,
+          fontWeight: '400',
+          color: '#000000',
+        }}
+      />
     </View>
   );
 }
