@@ -5,8 +5,8 @@ import {
   GapView,
   MyDivider,
   MyDropDown,
+  MyText,
   ProfileAvatar,
-  Rounded,
   TextLabel,
 } from '../../../../components';
 
@@ -23,36 +23,40 @@ export default function AdhanSettings({
         height={0.5}
         backgroundColor={'#9E9F9F'}
       />
-      <View style={{ marginBottom: 40 }}>
-        <GapView length={30} />
-        <View style={{ padding: 20 }}>
-          <TextLabel label={'Adhan Settings'} />
+      <ScrollView>
+        <View style={{ flex: 1 }}>
+          <GapView length={30} />
+          <View style={{ padding: 20 }}>
+            <TextLabel label={'Adhan Settings'} />
+          </View>
+          <MyDropDown
+            title="Calculation"
+            placeholder="Muslim World League"
+            placeholderColor="#CFCFCF"
+            items={[
+              { id: 1, name: 'Item 1' },
+              { id: 2, name: 'Item 2' },
+              { id: 3, name: 'Item 3' },
+            ]}
+          />
+          <GapView length={20} />
+          <MyDropDown
+            title="Juristic"
+            placeholder="Muslim World League"
+            placeholderColor="#CFCFCF"
+            items={[
+              { id: 1, name: 'Item 1' },
+              { id: 2, name: 'Item 2' },
+              { id: 3, name: 'Item 3' },
+            ]}
+          />
+          <GapView length={20} />
+          <MyText
+            text={`Contact support@smartmasjid.net to\nupdate the adhan settings`}
+            textStyle={{ textAlign: 'center', fontSize: 16, paddingVertical: 20 }}
+          />
         </View>
-        <MyDropDown
-          title="Calculation"
-          placeholder="Muslim World League"
-          placeholderColor="#CFCFCF"
-          items={[
-            { id: 1, name: 'Item 1' },
-            { id: 2, name: 'Item 2' },
-            { id: 3, name: 'Item 3' },
-          ]}
-        />
-        <GapView length={20} />
-        <MyDropDown
-          title="Juristic"
-          placeholder="Muslim World League"
-          placeholderColor="#CFCFCF"
-          items={[
-            { id: 1, name: 'Item 1' },
-            { id: 2, name: 'Item 2' },
-            { id: 3, name: 'Item 3' },
-          ]}
-        />
-      </View>
-      <View style={{ alignSelf: 'center' }}>
-        <Rounded label="Save" onPress={() => console.log('saved')} />
-      </View>
+      </ScrollView>
     </View>
   );
 }

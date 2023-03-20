@@ -65,3 +65,5 @@ export { default as CheckMark } from './vectors/CheckMark.svg';
 export { default as AdhanButton } from './vectors/AdhanButton.svg';
 export { default as SyncSvg } from './vectors/Sync.svg';
 export { default as VolumUpGreen } from './vectors/VolumUpGreen.svg';
+export { default as ArrowDown } from './vectors/ArrowDown.svg';
+export { default as History } from './vectors/History.svg';

@@ -38,7 +38,6 @@ export default function MyTimePicker({
           date={timeToday}
           onConfirm={onChange}
           onCancel={() => setShow(false)}
-
         />
       )}
       <TouchableOpacity
@@ -48,10 +47,12 @@ export default function MyTimePicker({
           styles.contentCol,
           {
             borderWidth: 0.5,
-            width: '27.5%',
+            width: 152,
             left: 10,
             borderColor: '#3E3E3E',
-            padding: 5,
+            borderRadius: 12,
+            height: 40,
+            justifyContent: 'center',
           },
         ]}>
         <MyText text={time} size={16} />
@@ -61,5 +62,5 @@ export default function MyTimePicker({
 }
 
 const styles = StyleSheet.create({
-  contentCol: { width: '30%', alignItems: 'center' },
+  contentCol: { alignItems: 'center' },
 });

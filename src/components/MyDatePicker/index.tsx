@@ -8,6 +8,7 @@ import TextLabel from '../TextLabel';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { TouchableOpacity } from 'react-native';
+import MyText from '../MyText';
 
 export default function MyDatePicker({
   onDateChange = (e: any) => {},
@@ -47,7 +48,11 @@ export default function MyDatePicker({
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
+          borderWidth: .5,
+          borderRadius: 12,
+          height: 38
         }}>
         {show && (
           <DateTimePickerModal
@@ -59,13 +64,13 @@ export default function MyDatePicker({
             onCancel={() => setShow(false)}
           />
         )}
-        <II onPress={prevDate} name="md-chevron-back" size={24} />
+        {/* <II onPress={prevDate} name="md-chevron-back" size={24} />
+        <GapView length={10} mode="horizontal" /> */}
+        <MyText text={moment(date)?.format('DD/MM/YYYY')} />
         <GapView length={10} mode="horizontal" />
         <Calendar />
-        <GapView length={10} mode="horizontal" />
-        <TextLabel label={moment(date)?.format('MMM-DD, YYYY')} />
-        <GapView length={10} mode="horizontal" />
-        <II onPress={nextDate} name="md-chevron-forward" size={24} />
+        {/* <GapView length={10} mode="horizontal" />
+        <II onPress={nextDate} name="md-chevron-forward" size={24} /> */}
       </TouchableOpacity>
     </>
   );

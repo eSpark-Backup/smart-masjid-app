@@ -12,7 +12,8 @@ import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
-import II from 'react-native-vector-icons/Ionicons';
+import { ArrowDown } from '../../assets';
+import { useLayoutAnimation } from '../../utils/hooks/useLayoutAnimation';
 
 interface Item {
   id: number;
@@ -60,12 +61,14 @@ export default function MyDropdown({
   placeholder = 'Please Select',
   placeholderColor,
   onChangeValue = (value: Item) => {},
+  width = WINDOW_WIDTH - 40
 }: {
   items: Item[];
   title?: string;
   placeholder?: string;
   placeholderColor?: string;
   onChangeValue?: (value: Item) => void;
+  width?: number | string | undefined;
 }) {
   const [show, setShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -84,7 +87,6 @@ export default function MyDropdown({
     const updatedList = items?.filter(item =>
       item?.name?.toLowerCase()?.includes(text.toLowerCase()),
     );
-
     setData([...updatedList]);
   };
 
@@ -94,50 +96,68 @@ export default function MyDropdown({
         <MyInput
           title={title}
           onChangeText={onSearch}
-          onFocus={() => setShow(true)}
-          onBlur={() => setShow(false)}
+          onFocus={() => {
+            useLayoutAnimation(200);
+            setShow(true);
+          }}
+          onBlur={() => {
+            useLayoutAnimation(200);
+            setShow(false);
+          }}
           placeholderColor={placeholderColor ?? '#000000'}
           placeholder={placeholder}
           value={selectedItem?.name ?? ''}
+          isDivider={false}
+          inputStyle={{
+            borderWidth: 1,
+            borderColor: '#9E9F9F',
+            borderRadius: 12,
+            marginTop: 8,
+            width: width,
+          }}
         />
-        <II
-          name="caret-down-sharp"
-          style={{ right: 20, top: title ? 12 : 0 }}
+        <ArrowDown
           onPress={() => {
+            useLayoutAnimation(200);
             setShow(!show);
             Keyboard.dismiss();
           }}
+          style={{ bottom: 15, right: title ? 35 : 15, position: 'absolute' }}
         />
       </View>
-      <MyDivider
-        style={{ alignSelf: 'center' }}
-        height={0.5}
-        backgroundColor="#3E3E3E"
-      />
       {show && (
-        <View style={styles.listItemContainer}>
-          <FlatList
-            data={data}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item, index }) => {
-              return (
-                <TouchableOpacity
-                  key={`${item?.name}-${index}`}
-                  activeOpacity={0.9}
-                  onPress={() => {
-                    setSelectedItem(item);
-                    onChangeValue(item);
-                    setShow(false);
-                    console.log('hoa');
-                  }}
-                  style={{ padding: 5 }}>
-                  <MyText text={item.name} />
-                </TouchableOpacity>
-              );
-            }}
-            ItemSeparatorComponent={MyDivider}
-          />
-        </View>
+        <FlatList
+          data={data}
+          contentContainerStyle={{
+            borderWidth: 1,
+            borderColor: '#9E9F9F',
+            borderRadius: 12,
+            width: width ?? WINDOW_WIDTH - 45,
+            marginTop: 5,
+            alignSelf: 'center',
+          }}
+          keyboardShouldPersistTaps="handled"
+          renderItem={({ item, index }) => {
+            return (
+              <TouchableOpacity
+                key={`${item?.name}-${index}`}
+                activeOpacity={0.9}
+                onPress={() => {
+                  setSelectedItem(item);
+                  onChangeValue(item);
+                  setShow(false);
+                }}
+                style={{
+                  height: 40,
+                  justifyContent: 'center',
+                  paddingHorizontal: 20,
+                }}>
+                <MyText text={item.name} />
+              </TouchableOpacity>
+            );
+          }}
+          ItemSeparatorComponent={MyDivider}
+        />
       )}
     </>
   );
@@ -150,8 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   listItemContainer: {
-    width: WINDOW_WIDTH - 45,
-    height: 100,
-    alignSelf: 'center',
+    // height: 100,
+    // alignSelf: 'center',
   },
 });
