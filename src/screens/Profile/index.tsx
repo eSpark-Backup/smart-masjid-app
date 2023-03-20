@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
+import { useAtom } from 'jotai';
 
 import { About, AccountGear, Help, MasjidGear, Privacy } from '../../assets';
 import {
@@ -18,8 +19,10 @@ import {
   ModifyAccount,
   SalahTimings,
 } from './Stack';
+import { countAtom, mangaAtom } from '../../store/GlobalStates';
 
 export default function Profile() {
+  const [count, setCount] = useAtom<any>(mangaAtom);
   const [flag, setFlag] = useState('uInfo');
 
   const handleBack = (currScreen: string) => {
@@ -51,7 +54,11 @@ export default function Profile() {
       showFooter={false}
       onBackPress={() => handleBack(flag)}>
       {flag == 'uInfo' && (
-        <UserInformation setFlag={(value: string) => setFlag(value)} />
+        <UserInformation
+          getter={count}
+          setter={setCount}
+          setFlag={(value: string) => setFlag(value)}
+        />
       )}
       {flag == 'mAcc' && (
         <ManageAccount setFlag={(value: string) => setFlag(value)} />
@@ -78,7 +85,15 @@ export default function Profile() {
   );
 }
 
-function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
+function UserInformation({
+  setFlag,
+  getter,
+  setter,
+}: {
+  setFlag: (value: string) => void;
+  getter: any;
+  setter: (value: any) => void;
+}) {
   return (
     <View style={{ flex: 1 }}>
       <ProfileAvatar />
@@ -112,12 +127,12 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
           {
             title: 'Help',
             icon: <About />,
-            onPress: () => console.log('pressed'),
+            onPress: () => console.log('pressed', getter),
           },
           {
             title: 'Privacy',
             icon: <Privacy />,
-            onPress: () => console.log('pressed'),
+            onPress: () => setter({ ...getter, 'Full Metal Alchemist': 1998 }),
           },
           {
             title: 'About us',
