@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useMachine } from '@xstate/react';
 
 import {
   GapView,
@@ -8,24 +7,12 @@ import {
   ProfileAvatar,
   TimeTable,
 } from '../../../../../components';
-import jokeMachine from '../../../../../store/NewMachine';
 
 export default function IqamahTimings({
   setFlag,
 }: {
   setFlag: (value: string) => void;
 }) {
-  const [state, send] = useMachine(jokeMachine);
-
-  useEffect(() => {
-    send('FETCH_JOKE');
-  }, []);
-
-  if (state.value === 'loaded') {
-    console.log('data', state.context.joke);
-    console.log('data', state.context.empty);
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <ProfileAvatar />
