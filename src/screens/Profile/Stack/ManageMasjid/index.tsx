@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { MasjidVector, VolumeUp } from '../../../../assets';
+import { VolumeUp } from '../../../../assets';
 
 import {
   GapView,
@@ -17,13 +17,6 @@ export default function ManageMasjid({
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <ProfileAvatar />
-      <MyDivider
-        style={{ alignSelf: 'center', top: 22 }}
-        height={0.5}
-        backgroundColor={'#9E9F9F'}
-      />
-      <GapView length={20} />
       <ProfileSectionlist
         data={[
           {
@@ -31,7 +24,7 @@ export default function ManageMasjid({
             data: [
               {
                 title: 'Adhan settings',
-                icon: <MasjidVector />,
+                icon: <VolumeUp />,
                 onPress: () => setFlag('aSet'),
               },
               {

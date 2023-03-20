@@ -16,11 +16,17 @@ interface ListItem {
   onPress?: () => void;
 }
 
-export default function ButtonListing({ data = [] }: { data: ListItem[] }) {
+export default function ButtonListing({
+  data = [],
+  radius = 0,
+}: {
+  data: ListItem[];
+  radius?: number;
+}) {
   return (
-    <Card radius={0} width={275} height={200}>
+    <Card radius={radius} width={275} height={216}>
       <FlatList
-        style={{maxHeight: 200}}
+        style={{ maxHeight: 216 }}
         data={data}
         renderItem={({ item, index }) => {
           return <ListCard item={item} index={index} />;
@@ -34,8 +40,8 @@ export default function ButtonListing({ data = [] }: { data: ListItem[] }) {
 }
 
 const ListCard = ({ item, index }: { item: ListItem; index: number }) => {
-  const theme: Theme = useTheme()
-  const styles = makeStyles(theme, item)
+  const theme: Theme = useTheme();
+  const styles = makeStyles(theme, item);
 
   return (
     <TouchableOpacity
@@ -50,23 +56,23 @@ const ListCard = ({ item, index }: { item: ListItem; index: number }) => {
         mode="horizontal"
         length={item.leftIcon ? 50 : WINDOW_WIDTH / 8.5}
       />
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         {item.rightChild && item?.rightChild}
       </View>
     </TouchableOpacity>
   );
 };
 
-
 const makeStyles = (theme: Theme, props: ListItem) => {
   const { colors } = theme;
-  const { rightChild } = props
+  const { rightChild } = props;
   return StyleSheet.create({
     cardContainer: {
       flexDirection: 'row',
-      padding: 20,
+      paddingHorizontal: 20,
+      height: 54,
       alignItems: 'center',
-      justifyContent: !rightChild ? 'flex-start' : 'space-between'
+      justifyContent: !rightChild ? 'flex-start' : 'space-between',
     },
-  })
-}
+  });
+};

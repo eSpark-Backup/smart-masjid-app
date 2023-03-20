@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -36,34 +36,36 @@ export default function UserSetupScreen() {
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
-      {step == 1 && <EmailForm setStep={(value: number) => setStep(value)} />}
-      {step == 1.1 && <PhoneForm setStep={(value: number) => setStep(value)} />}
-      {step == 2 && <OtpForm setStep={(value: number) => setStep(value)} />}
-      {step == 3 && (
-        <PersonalInfoForm setStep={(value: number) => setStep(value)} />
-      )}
-      {step == 4 && (
-        <SLoader
-          title="Creating Account"
-          message="Your account will be ready soon."
-        />
-      )}
-      {step == 5 && (
-        <MyToast
-          isSuccess={true}
-          onPress={() => navigation.navigate('DSetup')}
-          btnText={'Connect A Device'}
-          title="Congratulations!"
-          message={
-            'Your account has been created.' +
-            '\n' +
-            'Lets setup your device.' +
-            '\n' +
-            '\n' +
-            'Make sure you power on your device and turn on bluetooth on your phone.'
-          }
-        />
-      )}
+      <ScrollView>
+        {step == 1 && <EmailForm setStep={(value: number) => setStep(value)} />}
+        {step == 1.1 && (
+          <PhoneForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 2 && <OtpForm setStep={(value: number) => setStep(value)} />}
+        {step == 3 && (
+          <PersonalInfoForm setStep={(value: number) => setStep(value)} />
+        )}
+        {step == 4 && (
+          <SLoader
+            title="Creating Account"
+            message="Your account will be ready soon."
+          />
+        )}
+        {step == 5 && (
+          <MyToast
+            isSuccess={true}
+            onPress={() => navigation.navigate('DSetup')}
+            btnText={'Connect Device'}
+            title="You’re all set!"
+            message={
+              'Lets setup your device.' +
+              '\n' +
+              '\n' +
+              'Make sure you power on your device and turn on bluetooth on your phone.'
+            }
+          />
+        )}
+      </ScrollView>
     </Wrapper>
   );
 }

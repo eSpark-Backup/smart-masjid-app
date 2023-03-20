@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import MyText from '../MyText';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
 export default function MyTimePicker({
   initialValue = '00:00',
   onTimeChanged = (e: any) => {},
@@ -12,7 +13,7 @@ export default function MyTimePicker({
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(initialValue);
 
-  const onChange = (event: any, selectedDate: any) => {
+  const onChange = (selectedDate: any) => {
     let time = selectedDate.toString().substring(16, 21);
     setShow(false);
     setTime(time);
@@ -31,7 +32,13 @@ export default function MyTimePicker({
   return (
     <>
       {show && (
-        <DateTimePicker mode="time" value={timeToday} onChange={onChange} />
+        <DateTimePickerModal
+          isVisible={show}
+          mode="time"
+          date={timeToday}
+          onConfirm={onChange}
+          onCancel={() => setShow(false)}
+        />
       )}
       <TouchableOpacity
         activeOpacity={0.8}
@@ -40,10 +47,12 @@ export default function MyTimePicker({
           styles.contentCol,
           {
             borderWidth: 0.5,
-            width: '27.5%',
+            width: 152,
             left: 10,
             borderColor: '#3E3E3E',
-            padding: 5,
+            borderRadius: 12,
+            height: 40,
+            justifyContent: 'center',
           },
         ]}>
         <MyText text={time} size={16} />
@@ -53,5 +62,5 @@ export default function MyTimePicker({
 }
 
 const styles = StyleSheet.create({
-  contentCol: { width: '30%', alignItems: 'center' },
+  contentCol: { alignItems: 'center' },
 });
