@@ -1,5 +1,11 @@
 import { atom } from 'jotai';
 
+{
+  /**
+//* remove this code just used for testing state management
+*/
+}
+
 const countAtom = atom(0);
 const countryAtom = atom('Japan');
 const citiesAtom = atom(['Tokyo', 'Kyoto', 'Osaka']);
