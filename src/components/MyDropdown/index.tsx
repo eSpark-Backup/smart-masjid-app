@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Keyboard,
 } from 'react-native';
+import II from 'react-native-vector-icons/Ionicons';
+
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
@@ -62,7 +64,7 @@ export default function MyDropdown({
   placeholderColor,
   containerPadding = 15,
   onChangeValue = (value: Item) => {},
-  width = WINDOW_WIDTH - 40
+  width = WINDOW_WIDTH - 40,
 }: {
   items: Item[];
   title?: string;

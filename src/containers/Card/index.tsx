@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ShadowFlex } from 'react-native-neomorph-shadows';
+
 import { WINDOW_WIDTH } from '../../constants';
 
 interface CardProps {
