@@ -33,6 +33,7 @@ interface MyInputProps {
   onBlur?: () => void;
   value?: string;
   error?: string;
+  isSecure?: boolean;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -54,6 +55,7 @@ export default function MyInput(props: MyInputProps) {
     onDropPress,
     value,
     error,
+    isSecure
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -102,8 +104,9 @@ export default function MyInput(props: MyInputProps) {
               placeholderTextColor={placeholderColor ?? '#9E9F9F'}
               onPressIn={onFocus}
               onSubmitEditing={onBlur}
+              secureTextEntry={isSecure}
             />
-            {error && <MyText text={error} textStyle={{ color: 'red', left: 10 }} />}
+            {error && <MyText text={error} textStyle={{ color: 'red', left: 10, marginTop: 3 }} />}
           </View>
           {isDropDown && (
             <II
