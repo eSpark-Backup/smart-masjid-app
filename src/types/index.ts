@@ -1,6 +1,6 @@
 export type RootStackParamList = {
   Welcome: undefined;
-  USetup: undefined;
+  USetup?: { type?: 'login' | 'setup' };
   DSetup?: { from?: string };
   HomeBottomTab: undefined;
 };

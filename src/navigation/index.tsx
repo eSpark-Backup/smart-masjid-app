@@ -7,11 +7,13 @@ import Toast, {
   ErrorToast,
   BaseToastProps,
 } from 'react-native-toast-message';
+import { atom, useAtom } from 'jotai';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
 import { RootStackParamList } from '../types';
 import HomeBottomTab from './BottomNavigation';
+import { userAtom } from '../store/GlobalStates';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -55,6 +57,8 @@ const toastConfig = {
 };
 
 export default function App() {
+  const [user] = useAtom(userAtom);
+  console.log('user Data', user);
   return (
     <NavigationContainer theme={MyLightTheme}>
       <Stack.Navigator

@@ -6,15 +6,17 @@ import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
 import { Card } from '../../containers';
 
 export default function EmailForm({
+  type,
   setStep,
 }: {
+  type?: 'login' | 'setup';
   setStep: (value: number) => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
       <TextLabel
-        label="Lets create an account"
+        label={type == 'login' ? 'Enter Your Email' : 'Lets create an account'}
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={80} />

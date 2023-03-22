@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
@@ -8,15 +8,15 @@ import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
 import { MyToast, SLoader } from '../../components';
 
-type USetupNavigationProps = NativeStackScreenProps<
-  RootStackParamList,
-  'USetup'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
 export default function UserSetupScreen() {
-  const navigation = useNavigation<USetupNavigationProps['navigation']>();
+  const navigation = useNavigation<Props['navigation']>();
+  const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
+
+  console.log('route params', route.params?.type);
 
   useEffect(() => {
     console.log('step current?', step);
@@ -37,18 +37,37 @@ export default function UserSetupScreen() {
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
       <ScrollView>
-        {step == 1 && <EmailForm setStep={(value: number) => setStep(value)} />}
-        {step == 1.1 && (
-          <PhoneForm setStep={(value: number) => setStep(value)} />
+        {step == 1 && (
+          <EmailForm
+            type={route.params?.type}
+            setStep={(value: number) => setStep(value)}
+          />
         )}
-        {step == 2 && <OtpForm setStep={(value: number) => setStep(value)} />}
+        {step == 1.1 && (
+          <PhoneForm
+            type={route.params?.type}
+            setStep={(value: number) => setStep(value)}
+          />
+        )}
+        {step == 2 && (
+          <OtpForm
+            type={route.params?.type}
+            setStep={(value: number) => setStep(value)}
+          />
+        )}
         {step == 3 && (
           <PersonalInfoForm setStep={(value: number) => setStep(value)} />
         )}
         {step == 4 && (
           <SLoader
-            title="Creating Account"
-            message="Your account will be ready soon."
+            title={
+              route.params?.type == 'login' ? 'Loggin In' : 'Creating Account'
+            }
+            message={
+              route.params?.type == 'login'
+                ? 'Logging into the System.'
+                : 'Your account will be ready soon.'
+            }
           />
         )}
         {step == 5 && (

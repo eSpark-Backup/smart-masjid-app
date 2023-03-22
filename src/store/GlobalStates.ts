@@ -6,7 +6,7 @@ import { atom } from 'jotai';
 */
 }
 
-const countAtom = atom(0);
+const countAtom = atom(4);
 const countryAtom = atom('Japan');
 const citiesAtom = atom(['Tokyo', 'Kyoto', 'Osaka']);
 const mangaAtom = atom({
@@ -14,5 +14,6 @@ const mangaAtom = atom({
   'One Piece': 1997,
   Naruto: 1999,
 });
+const userAtom = atom<{ devId?: string }>({ devId: undefined });
 
-export { countAtom, countryAtom, citiesAtom, mangaAtom };
+export { countAtom, countryAtom, citiesAtom, mangaAtom, userAtom };

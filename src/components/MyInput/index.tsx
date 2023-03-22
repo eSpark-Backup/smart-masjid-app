@@ -98,6 +98,7 @@ export default function MyInput(props: MyInputProps) {
             value={text}
             placeholderTextColor={placeholderColor ?? '#9E9F9F'}
             onPressIn={onFocus}
+            keyboardType={isPhoneCode ? 'phone-pad' : 'default'}
             onSubmitEditing={onBlur}
           />
           {isDropDown && (
