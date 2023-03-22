@@ -1,8 +1,10 @@
 import { Theme, useTheme } from '@react-navigation/native';
+import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
 export default function EmailForm({
@@ -18,12 +20,27 @@ export default function EmailForm({
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={80} />
-      <Card width={315}>
-        <MyInput placeholder="Email" />
-      </Card>
-      <View style={{ marginTop: 80, marginBottom: 40 }}>
-        <Rounded label="Next" width={250} onPress={() => setStep(2)} />
-      </View>
+      <Formik
+        initialValues={{ email: '' }}
+        validationSchema={UserSetupSchema.emailForm}
+        onSubmit={values => {
+          setStep(2);
+        }}>
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <>
+            <Card width={315}>
+              <MyInput
+                placeholder="Email"
+                onChangeText={handleChange('email')}
+                value={values.email}
+              />
+            </Card>
+            <View style={{ marginTop: 80, marginBottom: 40 }}>
+              <Rounded label="Next" width={250} onPress={handleSubmit} />
+            </View>
+          </>
+        )}
+      </Formik>
       <GapView length={40} />
       <MyText
         text="Use phone number instead"

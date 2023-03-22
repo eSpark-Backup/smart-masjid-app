@@ -32,6 +32,7 @@ interface MyInputProps {
   onFocus?: () => void;
   onBlur?: () => void;
   value?: string;
+  error?: string;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -52,6 +53,7 @@ export default function MyInput(props: MyInputProps) {
     onBlur,
     onDropPress,
     value,
+    error,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -89,17 +91,20 @@ export default function MyInput(props: MyInputProps) {
           </TouchableOpacity>
         )}
         <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
-          <TextInput
-            autoComplete="off"
-            autoCorrect={false}
-            placeholder={placeholder}
-            style={[styles.inputStyle, inputStyle]}
-            onChangeText={handleTextChange}
-            value={text}
-            placeholderTextColor={placeholderColor ?? '#9E9F9F'}
-            onPressIn={onFocus}
-            onSubmitEditing={onBlur}
-          />
+          <View>
+            <TextInput
+              autoComplete="off"
+              autoCorrect={false}
+              placeholder={placeholder}
+              style={[styles.inputStyle, inputStyle]}
+              onChangeText={handleTextChange}
+              value={text}
+              placeholderTextColor={placeholderColor ?? '#9E9F9F'}
+              onPressIn={onFocus}
+              onSubmitEditing={onBlur}
+            />
+            {error && <MyText text={error} textStyle={{ color: 'red', left: 10 }} />}
+          </View>
           {isDropDown && (
             <II
               name="caret-down-sharp"
