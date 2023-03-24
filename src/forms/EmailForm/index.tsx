@@ -13,7 +13,7 @@ export default function EmailForm({
   setStep,
 }: {
   type?: 'login' | 'setup';
-  setStep: (value: number) => void;
+  setStep: (value: any) => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
@@ -27,7 +27,7 @@ export default function EmailForm({
         initialValues={{ email: '' }}
         validationSchema={UserSetupSchema.emailForm}
         onSubmit={values => {
-          setStep(2);
+          setStep(values);
         }}>
         {({
           handleChange,
@@ -48,7 +48,11 @@ export default function EmailForm({
             {errors.email && touched.email && (
               <MyText
                 text={errors.email}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4 }}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 110,
+                  marginTop: 4,
+                }}
               />
             )}
             <View style={{ marginTop: 80, marginBottom: 40 }}>

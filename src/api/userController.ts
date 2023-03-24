@@ -3,6 +3,7 @@ import {
   FailCheckPhoneId,
   SuccessCheckPhoneId,
 } from '../types/userControllerApiResponse';
+import { userStore } from '../store/UserStore';
 
 /**
  *
@@ -23,3 +24,14 @@ export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
     console.log(e);
   }
 }
+
+export const CreateUser = async (data: any) => {
+  try {
+    const result: any = await api.post('/users', data);
+    console.log('result', result);
+    userStore.userData.set(result);
+    return true;
+  } catch (error) {
+    console.log('error', error);
+  }
+};

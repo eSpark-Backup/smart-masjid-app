@@ -7,6 +7,7 @@ import { Wrapper } from '../../containers';
 import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
 import { MyToast, SLoader } from '../../components';
+import { CreateUser } from '../../api/userController';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -15,6 +16,11 @@ export default function UserSetupScreen() {
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
+  const [data, setData] = useState<any>({
+    firstName: 'string',
+    lastName: 'string',
+    userType: 'Customer',
+  });
 
   console.log('route params', route.params?.type);
 
@@ -34,19 +40,28 @@ export default function UserSetupScreen() {
     return 1;
   };
 
+  const onSubmit = async (dataObj: any) => {
+    setStep(4);
+    await CreateUser(dataObj);
+    setStep(5);
+  };
+
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
       <ScrollView>
         {step == 1 && (
           <EmailForm
             type={route.params?.type}
-            setStep={(value: number) => setStep(value)}
+            setStep={values => {
+              setData({ ...data, ...values });
+              setStep(3);
+            }}
           />
         )}
         {step == 1.1 && (
           <PhoneForm
             type={route.params?.type}
-            setStep={(value: number) => setStep(value)}
+            setStep={(value: number) => setStep(3)}
           />
         )}
         {step == 2 && (
@@ -56,7 +71,12 @@ export default function UserSetupScreen() {
           />
         )}
         {step == 3 && (
-          <PersonalInfoForm setStep={(value: number) => setStep(value)} />
+          <PersonalInfoForm
+            setStep={values => {
+              setData({ ...data, ...values });
+              onSubmit({ ...data, ...values });
+            }}
+          />
         )}
         {step == 4 && (
           <SLoader
