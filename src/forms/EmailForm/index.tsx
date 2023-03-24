@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
@@ -26,7 +27,14 @@ export default function EmailForm({
         onSubmit={values => {
           setStep(2);
         }}>
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
           <>
             <Card width={315}>
               <MyInput
@@ -35,6 +43,12 @@ export default function EmailForm({
                 value={values.email}
               />
             </Card>
+            {errors.email && touched.email && (
+              <MyText
+                text={errors.email}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4 }}
+              />
+            )}
             <View style={{ marginTop: 80, marginBottom: 40 }}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>

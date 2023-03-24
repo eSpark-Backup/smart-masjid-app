@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
@@ -22,7 +23,7 @@ export default function PersonalInfoForm({
         initialValues={{ firstName: '', lastName: '' }}
         validationSchema={UserSetupSchema.PersonalInfoForm}
         onSubmit={values => {
-          setStep(4)
+          setStep(4);
         }}>
         {({
           handleChange,
@@ -48,6 +49,18 @@ export default function PersonalInfoForm({
                 value={values.lastName}
               />
             </Card>
+            {errors.firstName && touched.firstName && (
+              <MyText
+                text={errors.firstName}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4  }}
+              />
+            )}
+            {errors.lastName && touched.lastName && (
+              <MyText
+                text={errors.lastName}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4  }}
+              />
+            )}
             <View style={{ marginTop: 60, marginBottom: 40 }}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
