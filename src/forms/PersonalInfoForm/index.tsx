@@ -10,7 +10,7 @@ import { Card } from '../../containers';
 export default function PersonalInfoForm({
   setStep,
 }: {
-  setStep: (value: number) => void;
+  setStep: (value: any) => void;
 }) {
   return (
     <View style={styles.container}>
@@ -23,7 +23,7 @@ export default function PersonalInfoForm({
         initialValues={{ firstName: '', lastName: '' }}
         validationSchema={UserSetupSchema.PersonalInfoForm}
         onSubmit={values => {
-          setStep(4);
+          setStep(values)
         }}>
         {({
           handleChange,
