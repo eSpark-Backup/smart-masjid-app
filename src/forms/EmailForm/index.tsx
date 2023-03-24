@@ -11,7 +11,7 @@ import { Card } from '../../containers';
 export default function EmailForm({
   setStep,
 }: {
-  setStep: (value: number) => void;
+  setStep: (value: any) => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
@@ -25,7 +25,7 @@ export default function EmailForm({
         initialValues={{ email: '' }}
         validationSchema={UserSetupSchema.emailForm}
         onSubmit={values => {
-          setStep(2);
+          setStep(values)
         }}>
         {({
           handleChange,
