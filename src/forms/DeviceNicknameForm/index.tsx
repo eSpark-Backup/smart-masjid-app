@@ -44,7 +44,7 @@ export default function DeviceNicknameForm({
             {errors.nickName && touched.nickName && (
               <MyText
                 text={errors.nickName}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 9, marginTop: 30 }}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4 }}
               />
             )}
             <View style={{ marginTop: 80, marginBottom: 40 }}>

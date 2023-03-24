@@ -46,7 +46,7 @@ export default function EmailForm({
             {errors.email && touched.email && (
               <MyText
                 text={errors.email}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 90, marginTop: 3 }}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4 }}
               />
             )}
             <View style={{ marginTop: 80, marginBottom: 40 }}>

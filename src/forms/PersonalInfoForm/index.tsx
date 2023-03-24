@@ -52,13 +52,13 @@ export default function PersonalInfoForm({
             {errors.firstName && touched.firstName && (
               <MyText
                 text={errors.firstName}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 90, marginTop: 3 }}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4  }}
               />
             )}
             {errors.lastName && touched.lastName && (
               <MyText
                 text={errors.lastName}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 90, marginTop: 3 }}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4  }}
               />
             )}
             <View style={{ marginTop: 60, marginBottom: 40 }}>

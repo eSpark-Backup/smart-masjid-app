@@ -106,7 +106,7 @@ export default function MyInput(props: MyInputProps) {
               onSubmitEditing={onBlur}
               secureTextEntry={isSecure}
             />
-            {error && <MyText text={error} textStyle={{ color: 'red', left: 10, marginTop: 3 }} />}
+            {error && <MyText text={error} textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4}} />}
           </View>
           {isDropDown && (
             <II
