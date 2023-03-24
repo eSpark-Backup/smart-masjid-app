@@ -11,3 +11,7 @@ export type BottomNavigationParamList = {
   Device?: { from?: string };
   Profile: undefined;
 };
+
+export type GlobalProps = {
+  phoneId: string | null;
+}

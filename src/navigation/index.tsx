@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,13 +7,16 @@ import Toast, {
   ErrorToast,
   BaseToastProps,
 } from 'react-native-toast-message';
-import { atom, useAtom } from 'jotai';
+import { useHookstate } from '@hookstate/core';
+import { getUniqueId } from 'react-native-device-info';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
 import { RootStackParamList } from '../types';
 import HomeBottomTab from './BottomNavigation';
-import { userAtom } from '../store/GlobalStates';
+import { _getPhoneId } from '../utils';
+import { globalStore } from '../store/GlobalStates';
+import { _checkPhoneId } from '../api/userController';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -57,24 +60,48 @@ const toastConfig = {
 };
 
 export default function App() {
-  const [user] = useAtom(userAtom);
-  console.log('user Data', user);
-  return (
-    <NavigationContainer theme={MyLightTheme}>
-      <Stack.Navigator
-        initialRouteName="Welcome"
-        screenOptions={{
-          headerShown: false,
-          animation: 'fade',
-        }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="USetup" component={UserSetupScreen} />
-        <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
-        <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
-      </Stack.Navigator>
-      <Toast config={toastConfig} topOffset={25} visibilityTime={2000} />
-    </NavigationContainer>
-  );
+  const state = useHookstate(globalStore);
+  const [checkedId, setCheckedId] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    data();
+  }, []);
+
+  const data = useCallback(async () => {
+    const res = await getUniqueId();
+    console.log('kia mila', res);
+    state.set({ phoneId: res });
+    try {
+      const check: any = await _checkPhoneId('1');
+      if (check?.deviceId) {
+        console.log('hoa', check.deviceId);
+        setCheckedId(true);
+      } else {
+        setCheckedId(false);
+      }
+    } catch (e) {
+      console.log('error', e);
+    }
+  }, []);
+
+  if (checkedId !== null) {
+    return (
+      <NavigationContainer theme={MyLightTheme}>
+        <Stack.Navigator
+          initialRouteName={checkedId ? 'USetup' : 'Welcome'}
+          screenOptions={{
+            headerShown: false,
+            animation: 'fade',
+          }}>
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="USetup" component={UserSetupScreen} />
+          <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+          <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
+        </Stack.Navigator>
+        <Toast config={toastConfig} topOffset={25} visibilityTime={2000} />
+      </NavigationContainer>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
