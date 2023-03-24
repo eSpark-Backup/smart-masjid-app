@@ -9,7 +9,9 @@ import { Card } from '../../containers';
 
 export default function PhoneForm({
   setStep,
+  type,
 }: {
+  type?: 'login' | 'setup';
   setStep: (value: number) => void;
 }) {
 
@@ -17,7 +19,9 @@ export default function PhoneForm({
   return (
     <View style={styles.container}>
       <TextLabel
-        label="Lets create an account"
+        label={
+          type == 'login' ? 'Enter Your Phone number' : 'Lets create an account'
+        }
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={80} />

@@ -55,7 +55,7 @@ export default function MyInput(props: MyInputProps) {
     onDropPress,
     value,
     error,
-    isSecure
+    isSecure,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -106,7 +106,16 @@ export default function MyInput(props: MyInputProps) {
               onSubmitEditing={onBlur}
               secureTextEntry={isSecure}
             />
-            {error && <MyText text={error} textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4}} />}
+            {error && (
+              <MyText
+                text={error}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 110,
+                  marginTop: 4,
+                }}
+              />
+            )}
           </View>
           {isDropDown && (
             <II

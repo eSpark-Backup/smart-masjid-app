@@ -38,12 +38,13 @@ export default function App() {
         <GapView length={80} />
         <Joined
           containerStyle={{ alignSelf: 'center' }}
-          onPress1={() => navigation.navigate('USetup')}
-          onPress2={() => navigation.navigate('USetup')}
+          onPress1={() => navigation.navigate('USetup', { type: 'setup' })}
+          onPress2={() => navigation.navigate('USetup', { type: 'setup' })}
         />
         <GapView length={80} />
         <MyText
-          text="Use phone number instead"
+          text="I already have an account."
+          onPress={() => navigation.navigate('USetup', { type: 'login' })}
           pressable
           textStyle={{
             fontSize: 16,
