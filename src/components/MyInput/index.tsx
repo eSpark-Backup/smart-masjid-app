@@ -32,6 +32,8 @@ interface MyInputProps {
   onFocus?: () => void;
   onBlur?: () => void;
   value?: string;
+  error?: string;
+  isSecure?: boolean;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -52,6 +54,8 @@ export default function MyInput(props: MyInputProps) {
     onBlur,
     onDropPress,
     value,
+    error,
+    isSecure,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -89,18 +93,30 @@ export default function MyInput(props: MyInputProps) {
           </TouchableOpacity>
         )}
         <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
-          <TextInput
-            autoComplete="off"
-            autoCorrect={false}
-            placeholder={placeholder}
-            style={[styles.inputStyle, inputStyle]}
-            onChangeText={handleTextChange}
-            value={text}
-            placeholderTextColor={placeholderColor ?? '#9E9F9F'}
-            onPressIn={onFocus}
-            keyboardType={isPhoneCode ? 'phone-pad' : 'default'}
-            onSubmitEditing={onBlur}
-          />
+          <View>
+            <TextInput
+              autoComplete="off"
+              autoCorrect={false}
+              placeholder={placeholder}
+              style={[styles.inputStyle, inputStyle]}
+              onChangeText={handleTextChange}
+              value={text}
+              placeholderTextColor={placeholderColor ?? '#9E9F9F'}
+              onPressIn={onFocus}
+              onSubmitEditing={onBlur}
+              secureTextEntry={isSecure}
+            />
+            {error && (
+              <MyText
+                text={error}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 110,
+                  marginTop: 4,
+                }}
+              />
+            )}
+          </View>
           {isDropDown && (
             <II
               name="caret-down-sharp"
