@@ -11,15 +11,17 @@ import { Card } from '../../containers';
 export default function EmailForm({
   type,
   setStep,
+  onPhonePress = () => {},
 }: {
   type?: 'login' | 'setup';
   setStep: (value: any) => void;
+  onPhonePress?: (value: any) => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
       <TextLabel
-        label={type == 'login' ? 'Enter Your Email' : 'Lets create an account'}
+        label={type != 'setup' ? 'Enter Your Email' : 'Lets create an account'}
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={80} />
@@ -66,7 +68,7 @@ export default function EmailForm({
         text="Use phone number instead"
         pressable
         textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-        onPress={() => setStep(1.1)}
+        onPress={() => onPhonePress(1.1)}
       />
     </View>
   );

@@ -72,7 +72,7 @@ export default function App() {
     console.log('kia mila', res);
     state.set({ phoneId: res });
     try {
-      const check: any = await _checkPhoneId('1');
+      const check: any = await _checkPhoneId(res);
       if (check?.deviceId) {
         console.log('hoa', check.deviceId);
         setCheckedId(true);

@@ -7,25 +7,29 @@ import { Wrapper } from '../../containers';
 import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
 import { MyToast, SLoader } from '../../components';
-import { CreateUser } from '../../api/userController';
+import { CreateUser, LoginUser, RegisterUserPhone } from '../../api/userController';
+import {
+  CreateUserRequest,
+  UserResponse,
+} from '../../types/userControllerApiResponse';
+import { useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
 export default function UserSetupScreen() {
   const navigation = useNavigation<Props['navigation']>();
+  const phoneId = useHookstate(globalStore.phoneId).get();
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
-  const [data, setData] = useState<any>({
+  const [data, setData] = useState<CreateUserRequest>({
     firstName: 'string',
     lastName: 'string',
     userType: 'Customer',
   });
 
-  console.log('route params', route.params?.type);
-
   useEffect(() => {
-    console.log('step current?', step);
     if (step == 4) {
       setTimeout(() => {
         setStep(step + 1);
@@ -40,11 +44,26 @@ export default function UserSetupScreen() {
     return 1;
   };
 
-  const onSubmit = async (dataObj: any) => {
+  const onSubmit = async (dataObj: CreateUserRequest) => {
     setStep(4);
-    await CreateUser(dataObj);
+    const res: UserResponse | undefined = await CreateUser(dataObj);
+    console.log('onSubmit data', dataObj, phoneId, res?.id);
+    if (res?.id && phoneId) {
+      await RegisterUserPhone(
+        { deviceId: phoneId, fcmToken: 'fcmToken' },
+        res?.id.toString(),
+      );
+    }
     setStep(5);
   };
+
+  const onLogin = async (email: string, phone: string) => {
+    console.log("onLogin email", email, "phone", phone);
+    const res = await LoginUser(email, phone)
+    if (res?.id){
+      navigation.navigate('HomeBottomTab')
+    }
+  }
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
@@ -52,16 +71,29 @@ export default function UserSetupScreen() {
         {step == 1 && (
           <EmailForm
             type={route.params?.type}
+            onPhonePress={(value) => setStep(value)}
             setStep={values => {
-              setData({ ...data, ...values });
-              setStep(3);
+              if(route.params?.type == "setup") {
+                setData({ ...data, ...values });
+                setStep(3);
+              }else {
+                onLogin(values.email, '')
+              }
             }}
           />
         )}
         {step == 1.1 && (
           <PhoneForm
+            onEmailPress={(value) => setStep(value)}
             type={route.params?.type}
-            setStep={(value: number) => setStep(3)}
+            setStep={values => {
+              if(route.params?.type == "setup") {
+                setData({ ...data, ...values });
+                setStep(3);
+              }else {
+                onLogin('', values.phone)
+              }
+            }}
           />
         )}
         {step == 2 && (
