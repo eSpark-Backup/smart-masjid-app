@@ -7,12 +7,17 @@ import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
+type PhoneForm = {
+  phone: string
+}
 export default function PhoneForm({
   setStep,
   type,
+  onEmailPress = (value: number) => {}
 }: {
   type?: 'login' | 'setup';
-  setStep: (value: number) => void;
+  setStep: (value: PhoneForm) => void;
+  onEmailPress: (value: number) => void
 }) {
 
   const { colors }: Theme = useTheme();
@@ -20,7 +25,7 @@ export default function PhoneForm({
     <View style={styles.container}>
       <TextLabel
         label={
-          type == 'login' ? 'Enter Your Phone number' : 'Lets create an account'
+          type != 'setup' ? 'Enter Your Phone number' : 'Lets create an account'
         }
         textStyle={{ alignSelf: 'center' }}
       />
@@ -29,7 +34,7 @@ export default function PhoneForm({
         initialValues={{ phone: '' }}
         validationSchema={UserSetupSchema.phoneForm}
         onSubmit={values => {
-          setStep(2);
+          setStep(values);
         }}>
         {({
           handleChange,
@@ -49,7 +54,6 @@ export default function PhoneForm({
                 value={values.phone}
               />
             </Card>
-            {console.log('errors errors', errors)}
             {errors.phone && touched.phone && (
               <MyText
                 text={errors.phone}
@@ -67,7 +71,7 @@ export default function PhoneForm({
         text="Use email instead"
         pressable
         textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-        onPress={() => setStep(1)}
+        onPress={() => onEmailPress(1)}
       />
     </View>
   );

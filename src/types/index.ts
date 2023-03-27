@@ -1,3 +1,5 @@
+import { UserResponse } from "./userControllerApiResponse";
+
 export type RootStackParamList = {
   Welcome: undefined;
   USetup?: { type?: 'login' | 'setup' };
@@ -14,4 +16,8 @@ export type BottomNavigationParamList = {
 
 export type GlobalProps = {
   phoneId: string | null;
+}
+
+export type UserStoreProps = {
+  userData: UserResponse | null;
 }
