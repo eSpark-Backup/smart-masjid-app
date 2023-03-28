@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "520906108982",
+    "project_id": "smart-masjid-d3a92",
+    "storage_bucket": "smart-masjid-d3a92.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520906108982:android:275f9f238fcbf4f9ae6897",
+        "android_client_info": {
+          "package_name": "com.smart_masjid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "520906108982-eudnf9id2r05n4u1opta2iv2g5ckgnru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfu3LK6JBL2ekhEiNGQCB16fmnZygHHlw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "520906108982-eudnf9id2r05n4u1opta2iv2g5ckgnru.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

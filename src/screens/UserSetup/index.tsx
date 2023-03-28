@@ -14,12 +14,14 @@ import {
 } from '../../types/userControllerApiResponse';
 import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
+import { _getFCMToken } from '../../utils/functions';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
 export default function UserSetupScreen() {
   const navigation = useNavigation<Props['navigation']>();
   const phoneId = useHookstate(globalStore.phoneId).get();
+  const fcmToken = useHookstate(globalStore.fcmToken).get();
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
@@ -47,10 +49,9 @@ export default function UserSetupScreen() {
   const onSubmit = async (dataObj: CreateUserRequest) => {
     setStep(4);
     const res: UserResponse | undefined = await CreateUser(dataObj);
-    console.log('onSubmit data', dataObj, phoneId, res?.id);
     if (res?.id && phoneId) {
       await RegisterUserPhone(
-        { deviceId: phoneId, fcmToken: 'fcmToken' },
+        { deviceId: phoneId, fcmToken: fcmToken },
         res?.id.toString(),
       );
     }
@@ -58,7 +59,6 @@ export default function UserSetupScreen() {
   };
 
   const onLogin = async (email: string, phone: string) => {
-    console.log("onLogin email", email, "phone", phone);
     const res = await LoginUser(email, phone)
     if (res?.id){
       navigation.navigate('HomeBottomTab')
