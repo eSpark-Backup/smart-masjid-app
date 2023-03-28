@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Wrapper } from '../../containers';
 import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
-import { MyToast, SLoader } from '../../components';
+import { MyToast, OverlayLoader, SLoader } from '../../components';
 import { CreateUser, LoginUser, RegisterUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
@@ -25,6 +25,7 @@ export default function UserSetupScreen() {
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
+  const [loader, setLoader] = useState<boolean>(false)
   const [data, setData] = useState<CreateUserRequest>({
     firstName: 'string',
     lastName: 'string',
@@ -59,7 +60,9 @@ export default function UserSetupScreen() {
   };
 
   const onLogin = async (email: string, phone: string) => {
+    setLoader(true)
     const res = await LoginUser(email, phone)
+    setLoader(false)
     if (res?.id){
       navigation.navigate('HomeBottomTab')
     }
@@ -67,6 +70,7 @@ export default function UserSetupScreen() {
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
+      <OverlayLoader isShow={loader} />
       <ScrollView>
         {step == 1 && (
           <EmailForm

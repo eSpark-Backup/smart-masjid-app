@@ -3,9 +3,9 @@ import messaging from '@react-native-firebase/messaging';
 import {
   checkMultiple,
   PERMISSIONS,
-  RESULTS,
   requestMultiple,
 } from 'react-native-permissions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { globalStore } from '../../store/GlobalStates';
 
 /**
@@ -58,4 +58,56 @@ async function _requestUserPermission() {
   });
 }
 
-export { _getPhoneId, _getFCMToken, _requestUserPermission };
+/**
+ *
+ * @description get key and value from parameters and save it to asyncstorage
+ * @returns null
+ * @todo //todo: Delete This later
+ */
+async function setDataInLocalStorage(key: string, value: any) {
+  try {
+    await AsyncStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ *
+ * @description get data from asyncStorage for specific key
+ * @returns data
+ * @todo //todo: Delete This later
+ */
+async function getDataFromLocalStorage(key: string) {
+  try {
+    const result = await AsyncStorage.getItem(key);
+    return result;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ *
+ * @description remove data from asyncstorage of given key
+ * @returns boolean
+ * @todo //todo: Delete This later
+ */
+ async function removeDatafromLocalStorage(key: string) {
+  try {
+    await AsyncStorage.removeItem(key);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+export {
+  _getPhoneId,
+  _getFCMToken,
+  _requestUserPermission,
+  setDataInLocalStorage,
+  getDataFromLocalStorage,
+  removeDatafromLocalStorage
+};

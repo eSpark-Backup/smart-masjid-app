@@ -8,6 +8,7 @@ import {
 } from '../types/userControllerApiResponse';
 import { userStore } from '../store/UserStore';
 import Toast from 'react-native-toast-message';
+import { setDataInLocalStorage } from '../utils/functions';
 
 /**
  *
@@ -72,12 +73,13 @@ export const LoginUser = async (email: string, phone: string) => {
     const result: any = await api.get(`/users?email=${email}&phone=${phone}`);
     if (result.data && result.data.length > 0) {
       userStore.set({ userData: result.data[0] });
-      return result.data[0]
-    }else {
+      setDataInLocalStorage('user', JSON.stringify(result.data[0]));
+      return result.data[0];
+    } else {
       Toast.show({
         text2: 'User not found',
         type: 'error',
-      })
+      });
     }
   } catch (error) {
     console.log('error LoginUser', error, 'Request', email);
