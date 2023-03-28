@@ -17,6 +17,7 @@ import HomeBottomTab from './BottomNavigation';
 import { _getPhoneId } from '../utils';
 import { globalStore } from '../store/GlobalStates';
 import { _checkPhoneId } from '../api/userController';
+import { _getFCMToken } from '../utils/functions';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -65,6 +66,7 @@ export default function App() {
 
   useEffect(() => {
     data();
+    _getFCMToken();
   }, []);
 
   const data = useCallback(async () => {

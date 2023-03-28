@@ -7,6 +7,8 @@ import { enableLatestRenderer } from 'react-native-maps';
 
 import App from './src/navigation';
 import { name as appName } from './app.json';
+import { _requestUserPermission } from './src/utils/functions';
 
+_requestUserPermission();
 enableLatestRenderer();
 AppRegistry.registerComponent(appName, () => App);
