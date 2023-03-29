@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Wrapper } from '../../containers';
 import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
-import { MyToast, SLoader } from '../../components';
+import { MyToast, OverlayLoader, SLoader } from '../../components';
 import { CreateUser, LoginUser, RegisterUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
@@ -14,15 +14,18 @@ import {
 } from '../../types/userControllerApiResponse';
 import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
+import { _getFCMToken } from '../../utils/functions';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
 export default function UserSetupScreen() {
   const navigation = useNavigation<Props['navigation']>();
   const phoneId = useHookstate(globalStore.phoneId).get();
+  const fcmToken = useHookstate(globalStore.fcmToken).get();
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
+  const [loader, setLoader] = useState<boolean>(false)
   const [data, setData] = useState<CreateUserRequest>({
     firstName: 'string',
     lastName: 'string',
@@ -47,10 +50,9 @@ export default function UserSetupScreen() {
   const onSubmit = async (dataObj: CreateUserRequest) => {
     setStep(4);
     const res: UserResponse | undefined = await CreateUser(dataObj);
-    console.log('onSubmit data', dataObj, phoneId, res?.id);
     if (res?.id && phoneId) {
       await RegisterUserPhone(
-        { deviceId: phoneId, fcmToken: 'fcmToken' },
+        { deviceId: phoneId, fcmToken: fcmToken },
         res?.id.toString(),
       );
     }
@@ -58,8 +60,9 @@ export default function UserSetupScreen() {
   };
 
   const onLogin = async (email: string, phone: string) => {
-    console.log("onLogin email", email, "phone", phone);
+    setLoader(true)
     const res = await LoginUser(email, phone)
+    setLoader(false)
     if (res?.id){
       navigation.navigate('HomeBottomTab')
     }
@@ -67,6 +70,7 @@ export default function UserSetupScreen() {
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
+      <OverlayLoader isShow={loader} />
       <ScrollView>
         {step == 1 && (
           <EmailForm

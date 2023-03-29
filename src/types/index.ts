@@ -16,6 +16,7 @@ export type BottomNavigationParamList = {
 
 export type GlobalProps = {
   phoneId: string | null;
+  fcmToken: string;
 }
 
 export type UserStoreProps = {

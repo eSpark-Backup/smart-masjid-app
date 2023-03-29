@@ -17,6 +17,10 @@ import HomeBottomTab from './BottomNavigation';
 import { _getPhoneId } from '../utils';
 import { globalStore } from '../store/GlobalStates';
 import { _checkPhoneId } from '../api/userController';
+import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
+import { userStore } from '../store/UserStore';
+import { UserResponse } from '../types/userControllerApiResponse';
+import { OverlayLoader } from '../components';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -62,12 +66,21 @@ const toastConfig = {
 export default function App() {
   const state = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
-
+  const userData = useHookstate(userStore.userData);
+  const [loader, setLoader] = useState<boolean>(false);
   useEffect(() => {
     data();
+    _getFCMToken();
+    getDataFromLocalStorage('user').then((res: any) => {
+      if (res != null) {
+        const data: UserResponse = JSON.parse(res);
+        userData.set(data);
+      }
+    });
   }, []);
 
   const data = useCallback(async () => {
+    setLoader(true);
     const res = await getUniqueId();
     console.log('kia mila', res);
     state.set({ phoneId: res });
@@ -82,6 +95,7 @@ export default function App() {
     } catch (e) {
       console.log('error', e);
     }
+    setLoader(false);
   }, []);
 
   if (checkedId !== null) {
@@ -93,14 +107,23 @@ export default function App() {
             headerShown: false,
             animation: 'fade',
           }}>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="USetup" component={UserSetupScreen} />
-          <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
-          <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
+          {!userData.get()?.id ? (
+            <Stack.Group>
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="USetup" component={UserSetupScreen} />
+            </Stack.Group>
+          ) : (
+            <Stack.Group>
+              <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
+              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+            </Stack.Group>
+          )}
         </Stack.Navigator>
         <Toast config={toastConfig} topOffset={25} visibilityTime={2000} />
       </NavigationContainer>
     );
+  } else {
+    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={loader} />;
   }
 }
 
