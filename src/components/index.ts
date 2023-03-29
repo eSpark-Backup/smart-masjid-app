@@ -22,3 +22,4 @@ export { default as MyDropDown } from './MyDropdown';
 export { default as MyTimePicker } from './MyTimePicker';
 export { default as TimeSheet } from './TimeSheet';
 export { default as OverlayLoader } from './OverlayLoader';
+export { default as DeviceListItem } from './DeviceListItem';
