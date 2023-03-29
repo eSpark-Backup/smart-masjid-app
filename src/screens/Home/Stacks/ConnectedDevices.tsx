@@ -4,6 +4,7 @@ import { View, FlatList } from 'react-native';
 
 import { DeviceSvg, SyncSvg } from '../../../assets';
 import {
+  DeviceListItem,
   GapView,
   MyDivider,
   MyText,
@@ -30,65 +31,10 @@ export default function ConnectedDevicesComponent() {
       />
       <GapView length={80} />
       <Card>
-        <View
-          style={
-            {
-              // maxHeight: '60%',
-            }
-          }>
+        <View>
           <FlatList
             data={Array('Home', 'Office', 'Shop', "Gradma's House")}
-            renderItem={({ item }) => (
-              <>
-                <View
-                  style={{
-                    paddingHorizontal: 20,
-                    paddingVertical: 15,
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={{ flexDirection: 'row' }}>
-                      <DeviceSvg height={24} width={24} />
-                      <GapView length={10} mode="horizontal" />
-                      <View style={{ alignItems: 'flex-start' }}>
-                        <TextLabel
-                          label={item}
-                          textStyle={{
-                            color: '#3E3E3E',
-                            fontWeight: '400',
-                            fontSize: 16,
-                          }}
-                        />
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <View
-                        style={{
-                          top: 0.5,
-                          height: 10,
-                          width: 10,
-                          borderRadius: 100,
-                          borderWidth: 2,
-                          borderColor: '#9E9F9F',
-                          backgroundColor: '#1DF126',
-                        }}
-                      />
-                      <GapView length={5} mode="horizontal" />
-                      <MyText text="Online" textStyle={{ color: '#9E9F9F' }} />
-                    </View>
-                  </View>
-                </View>
-              </>
-            )}
+            renderItem={({ item }) => <DeviceListItem title={item} />}
             ItemSeparatorComponent={() => (
               <MyDivider
                 backgroundColor="#9E9F9F"

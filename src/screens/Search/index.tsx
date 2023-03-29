@@ -6,9 +6,11 @@ import { View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ConnectedDevice } from '../../assets';
 import {
+  DeviceListItem,
   GapView,
   MapBox,
   MasjidListCard,
+  MyDivider,
   MyInput,
   MyText,
   Rounded,
@@ -58,12 +60,12 @@ const SearchListing = ({ onPress }: { onPress?: () => void }) => (
   </View>
 );
 
-const MasjidDetails = () => {
+const MasjidDetails = ({ onSubscribe }: { onSubscribe: () => void }) => {
   const [subscribe, setSubscribe] = useState(false);
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <GapView length={45} />
-      <TextLabel label="Masjid Ar - Rahman" textStyle={{paddingBottom: 5}}/>
+      <TextLabel label="Masjid Ar - Rahman" textStyle={{ paddingBottom: 5 }} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>
@@ -111,7 +113,7 @@ const MasjidDetails = () => {
         <GapView />
         {!subscribe ? (
           <Rounded
-            onPress={() => setSubscribe(!subscribe)}
+            onPress={onSubscribe}
             disabled={false}
             label="Subscribe"
             width={'70%'}
@@ -137,6 +139,53 @@ const MasjidDetails = () => {
   );
 };
 
+const DeviceListing = ({ onPress }: { onPress?: () => void }) => {
+  return (
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      <GapView length={45} />
+      <TextLabel label="Masjid Ar - Rahman" textStyle={{ paddingBottom: 5 }} />
+      <GapView length={60} />
+      <TextLabel
+        label="Select Device"
+        textStyle={{ color: '#3E3E3E', alignSelf: 'center' }}
+      />
+      <GapView length={80} />
+      <Card>
+        <View>
+          <FlatList
+            data={[
+              { name: 'Home', subscription: 'No Subscription', online: true },
+              { name: 'Home', subscription: 'No Subscription', online: false },
+              { name: 'Home', subscription: 'Masjid Al Aqsa', online: true },
+            ]}
+            renderItem={({ item }) => (
+              <DeviceListItem
+                onPress={onPress}
+                title={item.name}
+                subTitle={item.subscription}
+                disabled={
+                  !(item.subscription == 'No Subscription' && item.online)
+                }
+                online={item.online}
+              />
+            )}
+            ItemSeparatorComponent={() => (
+              <MyDivider
+                backgroundColor="#9E9F9F"
+                height={0.25}
+                style={{
+                  paddingHorizontal: 20,
+                  alignSelf: 'center',
+                  width: '100%',
+                }}
+              />
+            )}
+          />
+        </View>
+      </Card>
+    </View>
+  );
+};
 export default function Search() {
   const [step, setStep] = useState(0);
   const navigation = useNavigation<SearchNavigationProps['navigation']>();
@@ -157,7 +206,8 @@ export default function Search() {
   return (
     <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
       {step == 0 && <SearchListing onPress={() => setStep(1)} />}
-      {step == 1 && <MasjidDetails />}
+      {step == 1 && <MasjidDetails onSubscribe={() => setStep(2)} />}
+      {step == 2 && <DeviceListing onPress={() => navigation.navigate('Home')} />}
     </Wrapper>
   );
 }
