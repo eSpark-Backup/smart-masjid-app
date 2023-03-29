@@ -25,6 +25,9 @@ import {
   IqamahHistory,
   EditJumma,
   JummaHistory,
+  ManageUsers,
+  ViewUser,
+  AddUser,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 
@@ -64,6 +67,10 @@ export default function Profile() {
       setFlag('jTime');
       return;
     }
+    if (currScreen == 'vUser' || currScreen == 'addUser') {
+      setFlag('mUsers');
+      return;
+    }
     if (currScreen == 'uInfo') {
       navigation.navigate('Home');
     } else {
@@ -79,7 +86,10 @@ export default function Profile() {
       currScreen == 'iTime' ||
       currScreen == 'jTime' ||
       currScreen == 'jEdit' ||
-      currScreen == 'jHist'
+      currScreen == 'jHist' ||
+      currScreen == 'mUsers' ||
+      currScreen == 'vUser' ||
+      currScreen == 'addUser'
     ) {
       return false;
     } else {
@@ -122,6 +132,15 @@ export default function Profile() {
       {flag == 'jHist' && (
         <JummaHistory setFlag={(value: string) => setFlag(value)} />
       )}
+      {flag == 'mUsers' && (
+        <ManageUsers setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'vUser' && (
+        <ViewUser setFlag={(value: string) => setFlag(value)} />
+      )}
+      {flag == 'addUser' && (
+        <AddUser setFlag={(value: string) => setFlag(value)} />
+      )}
     </Wrapper>
   );
 }
@@ -149,7 +168,7 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
               {
                 title: 'Manage Users',
                 icon: <ManageUser />,
-                onPress: () => console.log('Manage User'),
+                onPress: () => setFlag('mUsers'),
               },
             ],
           },

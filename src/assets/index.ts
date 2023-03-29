@@ -68,3 +68,4 @@ export { default as VolumUpGreen } from './vectors/VolumUpGreen.svg';
 export { default as ArrowDown } from './vectors/ArrowDown.svg';
 export { default as History } from './vectors/History.svg';
 export { default as ManageUser } from './vectors/manage-user.svg';
+export { default as Delete } from './vectors/Delete.svg';
