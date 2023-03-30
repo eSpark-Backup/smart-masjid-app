@@ -27,7 +27,7 @@ import {
 import { GapView, MyText, TextLabel } from '../../components';
 import DeviceCard from '../../components/DeviceCard';
 import DeviceSettingSectionList from '../../components/DeviceSettingSectionList';
-import { WINDOW_WIDTH } from '../../constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 
@@ -142,9 +142,12 @@ const DeviceSetting = () => {
 
 export default function Device() {
   const [step, setStep] = useState(0);
+  const [activeTab, setActiveTab] = useState<string>('MyDevice');
+
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const isFocused = useIsFocused();
-
+  const theme: Theme = useTheme();
+  const { colors } = theme;
   useEffect(() => {
     setStep(0);
   }, [isFocused]);
@@ -163,22 +166,79 @@ export default function Device() {
       showFooter={false}
       bgImageSpacer={step == 1 ? false : true}>
       {step == 0 && (
-        <FlatList
-          contentContainerStyle={{
-            paddingHorizontal: 10,
-            paddingBottom: 20,
-          }}
-          numColumns={2}
-          data={data}
-          renderItem={({ index }) => {
-            if (index != (data?.length - 1)) {
-              return <DeviceCard onPress={() => setStep(1)} />;
-            } else {
-              return <AddDevice />;
-            }
-          }}
-          ItemSeparatorComponent={GapView}
-        />
+        <>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: WINDOW_WIDTH - 80,
+              alignSelf: 'center',
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => setActiveTab('MyDevice')}>
+              <TextLabel
+                label="My Devices"
+                textStyle={{
+                  color: activeTab == 'MyDevice' ? colors.primary : '#9E9F9F',
+                }}
+              />
+              {activeTab == 'MyDevice' && (
+                <View
+                  style={{
+                    height: 5,
+                    width: 5,
+                    backgroundColor: colors.primary,
+                    borderRadius: 10,
+                    alignSelf: 'center',
+                    marginTop: 5,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => setActiveTab('MasjidDevice')}>
+              <TextLabel
+                label="Masjid Devices"
+                textStyle={{
+                  color:
+                    activeTab == 'MasjidDevice' ? colors.primary : '#9E9F9F',
+                }}
+              />
+              {activeTab == 'MasjidDevice' && (
+                <View
+                  style={{
+                    height: 5,
+                    width: 5,
+                    backgroundColor: colors.primary,
+                    borderRadius: 10,
+                    alignSelf: 'center',
+                    marginTop: 5,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+          <GapView length={20} />
+
+          <FlatList
+            contentContainerStyle={{
+              paddingHorizontal: 10,
+              paddingBottom: 20,
+            }}
+            numColumns={2}
+            data={data}
+            renderItem={({ index }) => {
+              if (index != data?.length - 1) {
+                return <DeviceCard onPress={() => setStep(1)} />;
+              } else {
+                return <AddDevice />;
+              }
+            }}
+            ItemSeparatorComponent={GapView}
+          />
+        </>
       )}
       {step == 1 && <DeviceSetting />}
     </Wrapper>
