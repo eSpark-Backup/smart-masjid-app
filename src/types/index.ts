@@ -1,4 +1,4 @@
-import { UserResponse } from "./userControllerApiResponse";
+import { UserResponse } from './userControllerApiResponse';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -15,10 +15,10 @@ export type BottomNavigationParamList = {
 };
 
 export type GlobalProps = {
-  phoneId: string | null;
-  fcmToken: string;
-}
+  phoneId?: string | null;
+  fcmToken?: string;
+};
 
 export type UserStoreProps = {
   userData: UserResponse | null;
-}
+};
