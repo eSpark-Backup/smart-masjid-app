@@ -10,7 +10,7 @@ import {
   TimeCircleSvg,
   UnMuteSvg,
 } from '../../assets';
-import { WINDOW_WIDTH } from '../../constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
 import { GradientColors } from '../../theme';
 import GapView from '../GapView';
@@ -77,7 +77,13 @@ export default function MasjidListCard(
             </>
           ) : (
             <>
-              <View style={styles.row}>
+              <View
+                style={{
+                  ...styles.row,
+                  width: '95%',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                }}>
                 <SujudSvg />
                 <GapView mode="horizontal" length={5} />
                 <MyText text={'Maghrib'} />
@@ -113,7 +119,7 @@ export default function MasjidListCard(
           <Image
             source={MasjidSample}
             resizeMode="contain"
-            style={!isSearch ? styles.imageStyle : {height: 75, width: 75}}
+            style={!isSearch ? styles.imageStyle : { height: 75, width: 75 }}
           />
         </View>
       </TouchableOpacity>

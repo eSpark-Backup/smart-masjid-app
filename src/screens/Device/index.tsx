@@ -220,18 +220,21 @@ export default function Device() {
               )}
             </TouchableOpacity>
           </View>
-          <GapView length={20} />
-
           <FlatList
             contentContainerStyle={{
               paddingHorizontal: 10,
-              paddingBottom: 20,
+              paddingVertical: 20,
             }}
             numColumns={2}
             data={data}
             renderItem={({ index }) => {
               if (index != data?.length - 1) {
-                return <DeviceCard onPress={() => setStep(1)} />;
+                return (
+                  <DeviceCard
+                    type={activeTab === 'MyDevice' ? 'speaker' : 'button'}
+                    onPress={() => setStep(1)}
+                  />
+                );
               } else {
                 return <AddDevice />;
               }
