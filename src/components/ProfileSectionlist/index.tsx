@@ -74,7 +74,7 @@ const SectionCard = ({ item, index }: { item: any; index: number }) => {
       <TouchableOpacity
         key={index + item.title}
         activeOpacity={0.8}
-        style={{ flexDirection: 'row' }}
+        style={{ flexDirection: 'row', alignItems: 'center' }}
         onPress={item.onPress}>
         {item.icon}
         <GapView mode="horizontal" />

@@ -1,7 +1,10 @@
+import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { GapView, MyInput, Rounded, TextLabel } from '../../components';
+import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import { WINDOW_WIDTH } from '../../constants';
+import { DeviceSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
 export default function DeviceNicknameForm({
@@ -16,12 +19,40 @@ export default function DeviceNicknameForm({
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={80} />
-      <Card width={315}>
-        <MyInput placeholder="Nick Name" />
-      </Card>
-      <View style={{ marginTop: 80, marginBottom: 40 }}>
-        <Rounded label="Next" width={250} onPress={() => setStep(4)} />
-      </View>
+      <Formik
+        initialValues={{ nickName: '' }}
+        validationSchema={DeviceSetupSchema.deviceNickName}
+        onSubmit={values => {
+          setStep(4);
+        }}>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <>
+            <Card width={315}>
+              <MyInput
+                placeholder="Nick Name"
+                onChangeText={handleChange('nickName')}
+                value={values.nickName}
+              />
+            </Card>
+            {errors.nickName && touched.nickName && (
+              <MyText
+                text={errors.nickName}
+                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4 }}
+              />
+            )}
+            <View style={{ marginTop: 80, marginBottom: 40 }}>
+              <Rounded label="Next" width={250} onPress={handleSubmit} />
+            </View>
+          </>
+        )}
+      </Formik>
     </View>
   );
 }

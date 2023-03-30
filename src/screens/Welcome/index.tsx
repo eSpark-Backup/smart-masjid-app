@@ -1,39 +1,13 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Toast from 'react-native-toast-message';
 
-import {
-  DLoader,
-  Joined,
-  MyInput,
-  MyTitle,
-  Rounded,
-  GapView,
-  MyText,
-  TextLabel,
-  ProfileSectionlist,
-  MyDivider,
-  ImageHolder,
-  ProfileAvatar,
-  CenterToast,
-  ButtonListing,
-  SLoader,
-  MapBox,
-} from '../../components';
-import { Card, Wrapper } from '../../containers';
+import { Joined, MyTitle, GapView, MyText } from '../../components';
+import { Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
 
-import {
-  About,
-  DeviceSvg,
-  Help,
-  LockSvg,
-  Privacy,
-  SettingIcon,
-  WifiSvg,
-} from '../../assets';
-import { ScrollView } from 'react-native';
 type WelcomeNavigationProps = NativeStackScreenProps<
   RootStackParamList,
   'Welcome'
@@ -64,12 +38,13 @@ export default function App() {
         <GapView length={80} />
         <Joined
           containerStyle={{ alignSelf: 'center' }}
-          onPress1={() => navigation.navigate('USetup')}
-          onPress2={() => navigation.navigate('USetup')}
+          onPress1={() => navigation.navigate('USetup', { type: 'setup' })}
+          onPress2={() => navigation.navigate('USetup', { type: 'setup' })}
         />
         <GapView length={80} />
         <MyText
-          text="Use phone number instead"
+          text="I already have an account."
+          onPress={() => navigation.navigate('USetup', { type: 'login' })}
           pressable
           textStyle={{
             fontSize: 16,

@@ -33,7 +33,7 @@ export default function LogoutModal({
             size={16}
           />
           <GapView length={50} />
-          <Joined activeButton="two" onPress2={onClose} onPress1={onAllowed} />
+          <Joined activeButton="two" onPress2={onAllowed} onPress1={onClose} />
         </View>
       </View>
     </Modal>

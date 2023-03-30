@@ -1,3 +1,4 @@
+import { useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
@@ -16,6 +17,8 @@ import {
   ProfileSectionlist,
   TextLabel,
 } from '../../../../components';
+import { userStore } from '../../../../store/UserStore';
+import { removeDatafromLocalStorage } from '../../../../utils/functions';
 
 export default function ManageAccount({
   setFlag,
@@ -23,7 +26,7 @@ export default function ManageAccount({
   setFlag: (value: string) => void;
 }) {
   const [isVisible, setIsVisible] = useState(false);
-
+  const userData = useHookstate(userStore.userData)
   return (
     <View style={{ flex: 1 }}>
       <ProfileSectionlist
@@ -75,7 +78,9 @@ export default function ManageAccount({
       </View>
       <LogoutModal
         visible={isVisible}
-        onAllowed={() => {
+        onAllowed={async () => {
+          await removeDatafromLocalStorage('user')
+          userData.set(null)
           setIsVisible(!isVisible);
           console.log('Logged Out');
         }}

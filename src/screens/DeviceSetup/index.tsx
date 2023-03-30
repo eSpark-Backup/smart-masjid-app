@@ -83,6 +83,16 @@ export default function DeviceSetupScreen() {
             }`}
           />
         )}
+        {step == 8 && (
+          <MyToast
+            isSuccess={true}
+            btnText={'Try Again'}
+            onPress={() => setStep(2)}
+            title="Oops! Device not found."
+            message={`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
+          `}
+          />
+        )}
       </ScrollView>
     </Wrapper>
   );

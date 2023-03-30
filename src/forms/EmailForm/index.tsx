@@ -1,35 +1,74 @@
 import { Theme, useTheme } from '@react-navigation/native';
+import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import { WINDOW_WIDTH } from '../../constants';
+import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
 export default function EmailForm({
+  type,
   setStep,
+  onPhonePress = () => {},
 }: {
-  setStep: (value: number) => void;
+  type?: 'login' | 'setup';
+  setStep: (value: any) => void;
+  onPhonePress?: (value: any) => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
       <TextLabel
-        label="Lets create an account"
+        label={type != 'setup' ? 'Enter Your Email' : 'Lets create an account'}
         textStyle={{ alignSelf: 'center' }}
       />
       <GapView length={80} />
-      <Card width={315}>
-        <MyInput placeholder="Email" />
-      </Card>
-      <View style={{ marginTop: 80, marginBottom: 40 }}>
-        <Rounded label="Next" width={250} onPress={() => setStep(2)} />
-      </View>
+      <Formik
+        initialValues={{ email: '' }}
+        validationSchema={UserSetupSchema.emailForm}
+        onSubmit={values => {
+          setStep(values);
+        }}>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <>
+            <Card width={315}>
+              <MyInput
+                placeholder="Email"
+                onChangeText={handleChange('email')}
+                value={values.email}
+              />
+            </Card>
+            {errors.email && touched.email && (
+              <MyText
+                text={errors.email}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 110,
+                  marginTop: 4,
+                }}
+              />
+            )}
+            <View style={{ marginTop: 80, marginBottom: 40 }}>
+              <Rounded label="Next" width={250} onPress={handleSubmit} />
+            </View>
+          </>
+        )}
+      </Formik>
       <GapView length={40} />
       <MyText
         text="Use phone number instead"
         pressable
         textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-        onPress={() => setStep(1.1)}
+        onPress={() => onPhonePress(1.1)}
       />
     </View>
   );
