@@ -1,19 +1,21 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { View, Text, StyleSheet } from 'react-native';
-import { DeviceSvg, PlusSvg, ThreeDotSvg } from '../../assets';
+import { ButtonIcon, DeviceSvg, PlusSvg, ThreeDotSvg } from '../../assets';
 import { Card } from '../../containers';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 
 export default function DeviceCard({
+  type,
   onPress = () => {},
 }: {
+  type: 'button' | 'speaker';
   onPress?: () => void;
 }) {
   return (
-    <View style={{marginHorizontal:  10}}>
+    <View style={{ marginHorizontal: 10 }}>
       <Card height={161} width={165}>
         <TouchableOpacity
           onPress={onPress}
@@ -23,11 +25,25 @@ export default function DeviceCard({
             <GapView mode="horizontal" length={15} />
             <View>
               <TextLabel
-                label="My Home Speaker"
+                label={
+                  type == 'speaker' ? 'My Home Speaker' : 'My Masjid Button'
+                }
                 textStyle={{ alignItems: 'center', fontSize: 14 }}
               />
               <GapView length={25} />
-              <DeviceSvg height={50} width={50} style={{alignSelf: 'center',}} />
+              {type == 'button' ? (
+                <ButtonIcon
+                  height={50}
+                  width={50}
+                  style={{ alignSelf: 'center' }}
+                />
+              ) : (
+                <DeviceSvg
+                  height={50}
+                  width={50}
+                  style={{ alignSelf: 'center' }}
+                />
+              )}
               <GapView length={25} />
               <View style={styles.row}>
                 <View style={styles.activeStatus} />
