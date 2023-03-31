@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "520906108982",
-    "project_id": "smart-masjid-d3a92",
-    "storage_bucket": "smart-masjid-d3a92.appspot.com"
+    "project_number": "891649283900",
+    "project_id": "smart-masjid-279a7",
+    "storage_bucket": "smart-masjid-279a7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:520906108982:android:275f9f238fcbf4f9ae6897",
+        "mobilesdk_app_id": "1:891649283900:android:432f1e5256964bd2f4b039",
         "android_client_info": {
-          "package_name": "com.smart_masjid"
+          "package_name": "com.futurik.smartmasjid"
         }
       },
       "oauth_client": [
         {
-          "client_id": "520906108982-eudnf9id2r05n4u1opta2iv2g5ckgnru.apps.googleusercontent.com",
+          "client_id": "891649283900-at3edbbp8hnh645t2ga42lmf3l2f7bq1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCfu3LK6JBL2ekhEiNGQCB16fmnZygHHlw"
+          "current_key": "AIzaSyAXnkFa_TPGYyxfhSmyNOiFiJsxn1ng3rw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "520906108982-eudnf9id2r05n4u1opta2iv2g5ckgnru.apps.googleusercontent.com",
+              "client_id": "891649283900-at3edbbp8hnh645t2ga42lmf3l2f7bq1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

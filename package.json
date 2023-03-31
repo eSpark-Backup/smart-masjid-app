@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "react-native setup-ios-permissions && pod-install"
   },
   "dependencies": {
     "@hookstate/core": "^4.0.0",
@@ -43,7 +44,11 @@
     "react-native-vector-icons": "^9.2.0",
     "yup": "^1.0.2"
   },
+  "reactNativePermissionsIOS": [
+    "Notifications"
+  ],
   "devDependencies": {
+    "pod-install": "0.1.38",
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
