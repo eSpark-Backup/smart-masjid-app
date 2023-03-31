@@ -7,12 +7,12 @@ import Toast, {
   ErrorToast,
   BaseToastProps,
 } from 'react-native-toast-message';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import { getUniqueId } from 'react-native-device-info';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
-import { RootStackParamList } from '../types';
+import { GlobalProps, RootStackParamList } from '../types';
 import HomeBottomTab from './BottomNavigation';
 import { _getPhoneId } from '../utils';
 import { globalStore } from '../store/GlobalStates';
@@ -64,12 +64,12 @@ const toastConfig = {
 };
 
 export default function App() {
-  const state = useHookstate(globalStore);
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
   const [loader, setLoader] = useState<boolean>(false);
   useEffect(() => {
-    data();
+    handleDeviceIdCheck();
     _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
@@ -79,7 +79,7 @@ export default function App() {
     });
   }, []);
 
-  const data = useCallback(async () => {
+  const handleDeviceIdCheck = useCallback(async () => {
     setLoader(true);
     const res = await getUniqueId();
     console.log('kia mila', res);

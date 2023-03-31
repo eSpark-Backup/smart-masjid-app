@@ -7,7 +7,11 @@ import { Wrapper } from '../../containers';
 import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
 import { MyToast, OverlayLoader, SLoader } from '../../components';
-import { CreateUser, LoginUser, RegisterUserPhone } from '../../api/userController';
+import {
+  CreateUser,
+  LoginUser,
+  RegisterUserPhone,
+} from '../../api/userController';
 import {
   CreateUserRequest,
   UserResponse,
@@ -25,7 +29,7 @@ export default function UserSetupScreen() {
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
-  const [loader, setLoader] = useState<boolean>(false)
+  const [loader, setLoader] = useState<boolean>(false);
   const [data, setData] = useState<CreateUserRequest>({
     firstName: 'string',
     lastName: 'string',
@@ -52,7 +56,7 @@ export default function UserSetupScreen() {
     const res: UserResponse | undefined = await CreateUser(dataObj);
     if (res?.id && phoneId) {
       await RegisterUserPhone(
-        { deviceId: phoneId, fcmToken: fcmToken },
+        { deviceId: phoneId, fcmToken: fcmToken as string },
         res?.id.toString(),
       );
     }
@@ -60,13 +64,13 @@ export default function UserSetupScreen() {
   };
 
   const onLogin = async (email: string, phone: string) => {
-    setLoader(true)
-    const res = await LoginUser(email, phone)
-    setLoader(false)
-    if (res?.id){
-      navigation.navigate('HomeBottomTab')
+    setLoader(true);
+    const res = await LoginUser(email, phone);
+    setLoader(false);
+    if (res?.id) {
+      navigation.navigate('HomeBottomTab');
     }
-  }
+  };
 
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
@@ -75,27 +79,27 @@ export default function UserSetupScreen() {
         {step == 1 && (
           <EmailForm
             type={route.params?.type}
-            onPhonePress={(value) => setStep(value)}
+            onPhonePress={value => setStep(value)}
             setStep={values => {
-              if(route.params?.type == "setup") {
+              if (route.params?.type == 'setup') {
                 setData({ ...data, ...values });
                 setStep(3);
-              }else {
-                onLogin(values.email, '')
+              } else {
+                onLogin(values.email, '');
               }
             }}
           />
         )}
         {step == 1.1 && (
           <PhoneForm
-            onEmailPress={(value) => setStep(value)}
+            onEmailPress={value => setStep(value)}
             type={route.params?.type}
             setStep={values => {
-              if(route.params?.type == "setup") {
+              if (route.params?.type == 'setup') {
                 setData({ ...data, ...values });
                 setStep(3);
-              }else {
-                onLogin('', values.phone)
+              } else {
+                onLogin('', values.phone);
               }
             }}
           />
