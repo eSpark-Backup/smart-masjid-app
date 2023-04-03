@@ -49,6 +49,10 @@ export default function DeviceSetupScreen() {
     return 1;
   };
 
+  const masjidSetupText = !route?.params?.from
+    ? '\n \nLets subscribe to a masjid now.'
+    : '';
+
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
       <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
@@ -78,9 +82,7 @@ export default function DeviceSetupScreen() {
               })
             }
             title="Device setup complete!"
-            message={`Your device is connected successfully.${
-              !route.params?.from && '\n \nLets subscribe to a masjid now.'
-            }`}
+            message={'Your device is connected successfully.' + masjidSetupText}
           />
         )}
         {step == 8 && (
