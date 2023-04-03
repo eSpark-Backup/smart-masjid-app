@@ -28,7 +28,9 @@ async function _getPhoneId(): Promise<string> {
  */
 
 async function _getFCMToken(): Promise<string> {
-  await messaging().registerDeviceForRemoteMessages();
+  if (!messaging().isDeviceRegisteredForRemoteMessages) {
+    await messaging().registerDeviceForRemoteMessages();
+  }
   // Get the token
   const fcmToken = await messaging().getToken();
   globalStore.fcmToken.set(fcmToken);

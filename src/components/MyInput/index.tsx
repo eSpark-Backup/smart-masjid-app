@@ -1,6 +1,7 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Platform,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -155,6 +156,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,
+      top: Platform.OS == "ios" ? 17 : 0
     },
     phoneCodeContainer: {
       backgroundColor: colors.primary,
