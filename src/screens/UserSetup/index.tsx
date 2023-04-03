@@ -25,6 +25,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 export default function UserSetupScreen() {
   const navigation = useNavigation<Props['navigation']>();
   const phoneId = useHookstate(globalStore.phoneId).get();
+  const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
@@ -71,6 +72,14 @@ export default function UserSetupScreen() {
     setLoader(true);
     const res = await LoginUser(email, phone);
     setLoader(false);
+
+    if (res?.id && phoneId && !isDeviceRegistered) {
+      await RegisterUserPhone(
+        { deviceId: phoneId, fcmToken: fcmToken as string },
+        res?.id.toString(),
+      );
+    }
+    
     if (res?.id) {
       navigation.navigate('HomeBottomTab');
     }
