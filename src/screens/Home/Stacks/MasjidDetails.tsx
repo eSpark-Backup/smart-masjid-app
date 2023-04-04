@@ -6,10 +6,12 @@ import {
   GapView,
   MyText,
   MyTitle,
+  SwipeableTimeTable,
   TextLabel,
   TimeTable,
 } from '../../../components';
 import MyDatePicker from '../../../components/MyDatePicker';
+import { getCurrentMonthAdhanData } from '../../../utils/functions';
 
 export default function MasjidDetails({ setStep }: any) {
   const { colors }: Theme = useTheme();
@@ -40,51 +42,10 @@ export default function MasjidDetails({ setStep }: any) {
           paddingBottom: 20,
           padding: 5,
         }}>
-        <TimeTable
+        <SwipeableTimeTable
           isMute
           isInfo
-          header={
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <MyDatePicker
-                type="standard"
-                onDateChange={e => {
-                  console.log('onDateChange', e);
-                }}
-              />
-            </View>
-          }
-          data={[
-            {
-              name: 'Fajar',
-              azanTiming: '5:50',
-              iqamahTiming: '6:00',
-            },
-            {
-              name: 'Dhuhr',
-              azanTiming: '1:00',
-              iqamahTiming: '1:30',
-            },
-            {
-              name: 'Asr',
-              azanTiming: '4:50',
-              iqamahTiming: '5:00',
-            },
-            {
-              name: 'Mugrib',
-              azanTiming: '5:50',
-              iqamahTiming: '6:00',
-            },
-            {
-              name: 'Isha',
-              azanTiming: '6:50',
-              iqamahTiming: '8:00',
-            },
-          ]}
+          data={getCurrentMonthAdhanData()}
         />
         <GapView length={20} />
 

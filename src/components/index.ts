@@ -23,3 +23,4 @@ export { default as MyTimePicker } from './MyTimePicker';
 export { default as TimeSheet } from './TimeSheet';
 export { default as OverlayLoader } from './OverlayLoader';
 export { default as DeviceListItem } from './DeviceListItem';
+export { default as SwipeableTimeTable } from './TimeTable/SwipeableTimeTable'

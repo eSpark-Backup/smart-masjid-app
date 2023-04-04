@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
 import { Calendar } from '../../assets';
@@ -13,13 +13,20 @@ import MyText from '../MyText';
 export default function MyDatePicker({
   onDateChange = (e: any) => {},
   type = 'box',
+  currentDate = new Date(),
 }: {
   onDateChange: (e: any) => void;
   type?: 'box' | 'standard';
+  currentDate?: Date;
 }) {
-  const [date, setDate] = useState<any>(new Date());
+
+  const [date, setDate] = useState<any>(currentDate);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setDate(currentDate)
+  }, [currentDate])
 
   const onChange = (selectedDate: any) => {
     const currentDate = selectedDate;

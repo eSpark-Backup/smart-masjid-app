@@ -7,6 +7,7 @@ import {
 } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { globalStore } from '../../store/GlobalStates';
+import { IPrayerTimeForPeriod } from '../../types';
 
 /**
  *
@@ -96,7 +97,7 @@ async function getDataFromLocalStorage(key: string) {
  * @returns boolean
  * @todo //todo: Delete This later
  */
- async function removeDatafromLocalStorage(key: string) {
+async function removeDatafromLocalStorage(key: string) {
   try {
     await AsyncStorage.removeItem(key);
     return true;
@@ -105,11 +106,75 @@ async function getDataFromLocalStorage(key: string) {
   }
 }
 
+function getCurrentMonthAdhanData(): IPrayerTimeForPeriod[] {
+  const prayerTimings = [
+    {
+      id: 0,
+      date: '2023-04-03',
+      fajr: {
+        hour: 5,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      dhuhr: {
+        hour: 1,
+        minute: 0,
+        second: 0,
+        nano: 0,
+      },
+      asr: {
+        hour: 4,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      maghrib: {
+        hour: 5,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      isha: {
+        hour: 6,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      updatedDate: '2023-04-03T10:54:40.945Z',
+      fajrCalled: true,
+      dhuhrCalled: true,
+      asrCalled: true,
+      maghribCalled: true,
+      ishaCalled: true,
+    },
+  ];
+
+  const monthPrayerTimings = [];
+
+  const today = new Date(); // get current date
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate(); // change this to the number of days in the desired month
+
+  for (let i = 0; i < daysInMonth; i++) {
+    const date = new Date(year, month, today.getDay() + i); // April 4th plus the current day number
+    const dateString = date.toISOString().slice(0, 10);
+    const prayerTiming = JSON.parse(JSON.stringify(prayerTimings[0])); // create a deep copy of the first day's timings object
+    prayerTiming.date = dateString;
+    prayerTiming.id = i;
+    monthPrayerTimings.push(prayerTiming);
+  }
+
+  return monthPrayerTimings;
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
   _requestUserPermission,
   setDataInLocalStorage,
   getDataFromLocalStorage,
-  removeDatafromLocalStorage
+  removeDatafromLocalStorage,
+  getCurrentMonthAdhanData,
 };
