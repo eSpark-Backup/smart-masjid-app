@@ -110,10 +110,8 @@ export default function SwipeableTimeTable({
   const onViewRef = React.useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       // Use viewable items in state or as intended
-      console.log('viewableItems', viewableItems);
       if (viewableItems.length > 0) {
         let index: any = viewableItems[0].index;
-        console.log('data[index]', data[index].date, index);
         setCurrentItem(data[index]);
       }
     },
@@ -176,10 +174,8 @@ export default function SwipeableTimeTable({
 
   const onDateChange = (e: Date) => {
     const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
-      console.log('value.date', value.date, moment(e).format('YYYY-MM-DD'));
       return value.date == moment(e).format('YYYY-MM-DD');
     });
-    console.log('currentIndex', currentIndex);
 
     if (currentIndex != -1) {
       slider.current?.scrollToIndex({
@@ -199,6 +195,8 @@ export default function SwipeableTimeTable({
             alignItems: 'center',
           }}>
           <MyDatePicker
+            minimumDate={moment().toDate()}
+            maximumDate={moment().add(1, 'month').toDate()}
             type="standard"
             currentDate={currentItem ? new Date(currentItem.date) : new Date()}
             onDateChange={onDateChange}
@@ -229,11 +227,13 @@ export default function SwipeableTimeTable({
         horizontal
         pagingEnabled
         snapToInterval={WINDOW_WIDTH - 70}
-        decelerationRate="fast"
+        decelerationRate={0}
         pinchGestureEnabled={true}
+        scrollEventThrottle={0}
         showsHorizontalScrollIndicator={false}
         onViewableItemsChanged={onViewRef.current}
         renderItem={renderItem}
+        keyExtractor={(_, index) => `list_item${index}`}
         viewabilityConfig={{
           itemVisiblePercentThreshold: 100,
         }}

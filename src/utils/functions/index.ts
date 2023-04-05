@@ -8,6 +8,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { globalStore } from '../../store/GlobalStates';
 import { IPrayerTimeForPeriod } from '../../types';
+import moment from 'moment';
 
 /**
  *
@@ -152,13 +153,16 @@ function getCurrentMonthAdhanData(): IPrayerTimeForPeriod[] {
 
   const monthPrayerTimings = [];
 
-  const today = new Date(); // get current date
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate(); // change this to the number of days in the desired month
+  const dates = [];
+  let currentDate = new Date();
+  let endDate = moment().add(1, 'month').toDate();
+  while (currentDate <= endDate) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
 
-  for (let i = 0; i < daysInMonth; i++) {
-    const date = new Date(year, month, today.getDay() + i); // April 4th plus the current day number
+  for (let i = 0; i < dates.length; i++) {
+    const date = new Date(dates[i]); // April 4th plus the current day number
     const dateString = date.toISOString().slice(0, 10);
     const prayerTiming = JSON.parse(JSON.stringify(prayerTimings[0])); // create a deep copy of the first day's timings object
     prayerTiming.date = dateString;
