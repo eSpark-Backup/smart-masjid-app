@@ -83,13 +83,15 @@ export default function App() {
     setLoader(true);
     const res = await getUniqueId();
     console.log('kia mila', res);
-    state.set({ phoneId: res });
+    state.phoneId.set(res.toString());
     try {
       const check: any = await _checkPhoneId(res);
       if (check?.deviceId) {
         console.log('hoa', check.deviceId);
+        state.isDeviceRegistered.set(true);
         setCheckedId(true);
       } else {
+        state.isDeviceRegistered.set(false);
         setCheckedId(false);
       }
     } catch (e) {

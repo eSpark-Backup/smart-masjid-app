@@ -7,6 +7,8 @@ import {
 } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { globalStore } from '../../store/GlobalStates';
+import { IPrayerTimeForPeriod } from '../../types';
+import moment from 'moment';
 
 /**
  *
@@ -28,7 +30,9 @@ async function _getPhoneId(): Promise<string> {
  */
 
 async function _getFCMToken(): Promise<string> {
-  await messaging().registerDeviceForRemoteMessages();
+  if (!messaging().isDeviceRegisteredForRemoteMessages) {
+    await messaging().registerDeviceForRemoteMessages();
+  }
   // Get the token
   const fcmToken = await messaging().getToken();
   globalStore.fcmToken.set(fcmToken);
@@ -94,7 +98,7 @@ async function getDataFromLocalStorage(key: string) {
  * @returns boolean
  * @todo //todo: Delete This later
  */
- async function removeDatafromLocalStorage(key: string) {
+async function removeDatafromLocalStorage(key: string) {
   try {
     await AsyncStorage.removeItem(key);
     return true;
@@ -103,11 +107,78 @@ async function getDataFromLocalStorage(key: string) {
   }
 }
 
+function getCurrentMonthAdhanData(): IPrayerTimeForPeriod[] {
+  const prayerTimings = [
+    {
+      id: 0,
+      date: '2023-04-03',
+      fajr: {
+        hour: 5,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      dhuhr: {
+        hour: 1,
+        minute: 0,
+        second: 0,
+        nano: 0,
+      },
+      asr: {
+        hour: 4,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      maghrib: {
+        hour: 5,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      isha: {
+        hour: 6,
+        minute: 50,
+        second: 0,
+        nano: 0,
+      },
+      updatedDate: '2023-04-03T10:54:40.945Z',
+      fajrCalled: true,
+      dhuhrCalled: true,
+      asrCalled: true,
+      maghribCalled: true,
+      ishaCalled: true,
+    },
+  ];
+
+  const monthPrayerTimings = [];
+
+  const dates = [];
+  let currentDate = new Date();
+  let endDate = moment().add(1, 'month').toDate();
+  while (currentDate <= endDate) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  for (let i = 0; i < dates.length; i++) {
+    const date = new Date(dates[i]); // April 4th plus the current day number
+    const dateString = date.toISOString().slice(0, 10);
+    const prayerTiming = JSON.parse(JSON.stringify(prayerTimings[0])); // create a deep copy of the first day's timings object
+    prayerTiming.date = dateString;
+    prayerTiming.id = i;
+    monthPrayerTimings.push(prayerTiming);
+  }
+
+  return monthPrayerTimings;
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
   _requestUserPermission,
   setDataInLocalStorage,
   getDataFromLocalStorage,
-  removeDatafromLocalStorage
+  removeDatafromLocalStorage,
+  getCurrentMonthAdhanData,
 };

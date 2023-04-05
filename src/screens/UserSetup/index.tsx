@@ -25,6 +25,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 export default function UserSetupScreen() {
   const navigation = useNavigation<Props['navigation']>();
   const phoneId = useHookstate(globalStore.phoneId).get();
+  const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
@@ -45,9 +46,13 @@ export default function UserSetupScreen() {
   }, [step]);
 
   const handleBack = () => {
+    if (step == 1.1) {
+      return 1;
+    }
     if (step !== 1) {
       return step - 1;
     }
+    navigation.goBack();
     return 1;
   };
 
@@ -67,85 +72,95 @@ export default function UserSetupScreen() {
     setLoader(true);
     const res = await LoginUser(email, phone);
     setLoader(false);
+
+    if (res?.id && phoneId && !isDeviceRegistered) {
+      await RegisterUserPhone(
+        { deviceId: phoneId, fcmToken: fcmToken as string },
+        res?.id.toString(),
+      );
+    }
+    
     if (res?.id) {
       navigation.navigate('HomeBottomTab');
     }
   };
 
   return (
-    <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
+    <>
       <OverlayLoader isShow={loader} />
-      <ScrollView>
-        {step == 1 && (
-          <EmailForm
-            type={route.params?.type}
-            onPhonePress={value => setStep(value)}
-            setStep={values => {
-              if (route.params?.type == 'setup') {
+      <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
+        <ScrollView>
+          {step == 1 && (
+            <EmailForm
+              type={route.params?.type}
+              onPhonePress={value => setStep(value)}
+              setStep={values => {
+                if (route.params?.type == 'setup') {
+                  setData({ ...data, ...values });
+                  setStep(3);
+                } else {
+                  onLogin(values.email, '');
+                }
+              }}
+            />
+          )}
+          {step == 1.1 && (
+            <PhoneForm
+              onEmailPress={value => setStep(value)}
+              type={route.params?.type}
+              setStep={values => {
+                if (route.params?.type == 'setup') {
+                  setData({ ...data, ...values });
+                  setStep(3);
+                } else {
+                  onLogin('', values.phone);
+                }
+              }}
+            />
+          )}
+          {step == 2 && (
+            <OtpForm
+              type={route.params?.type}
+              setStep={(value: number) => setStep(value)}
+            />
+          )}
+          {step == 3 && (
+            <PersonalInfoForm
+              setStep={values => {
                 setData({ ...data, ...values });
-                setStep(3);
-              } else {
-                onLogin(values.email, '');
+                onSubmit({ ...data, ...values });
+              }}
+            />
+          )}
+          {step == 4 && (
+            <SLoader
+              title={
+                route.params?.type == 'login' ? 'Loggin In' : 'Creating Account'
               }
-            }}
-          />
-        )}
-        {step == 1.1 && (
-          <PhoneForm
-            onEmailPress={value => setStep(value)}
-            type={route.params?.type}
-            setStep={values => {
-              if (route.params?.type == 'setup') {
-                setData({ ...data, ...values });
-                setStep(3);
-              } else {
-                onLogin('', values.phone);
+              message={
+                route.params?.type == 'login'
+                  ? 'Logging into the System.'
+                  : 'Your account will be ready soon.'
               }
-            }}
-          />
-        )}
-        {step == 2 && (
-          <OtpForm
-            type={route.params?.type}
-            setStep={(value: number) => setStep(value)}
-          />
-        )}
-        {step == 3 && (
-          <PersonalInfoForm
-            setStep={values => {
-              setData({ ...data, ...values });
-              onSubmit({ ...data, ...values });
-            }}
-          />
-        )}
-        {step == 4 && (
-          <SLoader
-            title={
-              route.params?.type == 'login' ? 'Loggin In' : 'Creating Account'
-            }
-            message={
-              route.params?.type == 'login'
-                ? 'Logging into the System.'
-                : 'Your account will be ready soon.'
-            }
-          />
-        )}
-        {step == 5 && (
-          <MyToast
-            isSuccess={true}
-            onPress={() => navigation.navigate('DSetup')}
-            btnText={'Connect Device'}
-            title="You’re all set!"
-            message={
-              'Lets setup your device.' +
-              '\n' +
-              '\n' +
-              'Make sure you power on your device and turn on bluetooth on your phone.'
-            }
-          />
-        )}
-      </ScrollView>
-    </Wrapper>
+            />
+          )}
+          {step == 5 && (
+            <MyToast
+              isSuccess={true}
+              onPress={() => navigation.navigate('DSetup')}
+              btnText={'Connect Device'}
+              title="You’re all set!"
+              message={
+                'Lets setup your device.' +
+                '\n' +
+                '\n' +
+                'Make sure you power on your device and turn on bluetooth on your phone.'
+              }
+            />
+          )}
+        </ScrollView>
+      </Wrapper>
+    </>
   );
 }
 

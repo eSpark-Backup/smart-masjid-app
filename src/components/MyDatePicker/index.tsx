@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
 import { Calendar } from '../../assets';
@@ -13,13 +13,23 @@ import MyText from '../MyText';
 export default function MyDatePicker({
   onDateChange = (e: any) => {},
   type = 'box',
+  currentDate = new Date(),
+  minimumDate = undefined,
+  maximumDate = undefined,
 }: {
   onDateChange: (e: any) => void;
   type?: 'box' | 'standard';
+  currentDate?: Date;
+  minimumDate?: Date | undefined;
+  maximumDate?: Date | undefined;
 }) {
-  const [date, setDate] = useState<any>(new Date());
+  const [date, setDate] = useState<any>(currentDate);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setDate(currentDate);
+  }, [currentDate]);
 
   const onChange = (selectedDate: any) => {
     const currentDate = selectedDate;
@@ -59,6 +69,8 @@ export default function MyDatePicker({
           }}>
           {show && (
             <DateTimePickerModal
+              minimumDate={minimumDate}
+              maximumDate={maximumDate}
               isVisible={show}
               date={date}
               mode={'date'}
@@ -67,13 +79,9 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          {/* <II onPress={prevDate} name="md-chevron-back" size={24} />
-            <GapView length={10} mode="horizontal" /> */}
           <MyText text={moment(date)?.format('DD/MM/YYYY')} />
           <GapView length={10} mode="horizontal" />
           <Calendar />
-          {/* <GapView length={10} mode="horizontal" />
-            <II onPress={nextDate} name="md-chevron-forward" size={24} /> */}
         </TouchableOpacity>
       </>
     );
@@ -93,18 +101,24 @@ export default function MyDatePicker({
               isVisible={show}
               date={date}
               mode={'date'}
+              minimumDate={minimumDate}
+              maximumDate={maximumDate}
               is24Hour={true}
               onConfirm={onChange}
               onCancel={() => setShow(false)}
             />
           )}
-          <II onPress={prevDate} name="md-chevron-back" size={24} />
+          {moment(date).isAfter(minimumDate) && (
+            <II onPress={prevDate} name="md-chevron-back" size={24} />
+          )}
           <GapView length={10} mode="horizontal" />
           <Calendar />
           <GapView length={10} mode="horizontal" />
           <TextLabel label={moment(date)?.format('MMM-DD, YYYY')} />
           <GapView length={10} mode="horizontal" />
-          <II onPress={nextDate} name="md-chevron-forward" size={24} />
+          {moment(date).isBefore(maximumDate) && (
+            <II onPress={nextDate} name="md-chevron-forward" size={24} />
+          )}
         </TouchableOpacity>
       </>
     );
