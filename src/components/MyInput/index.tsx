@@ -35,6 +35,7 @@ interface MyInputProps {
   value?: string;
   error?: string;
   isSecure?: boolean;
+  disabled?: boolean;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -57,6 +58,7 @@ export default function MyInput(props: MyInputProps) {
     value,
     error,
     isSecure,
+    disabled
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -96,6 +98,7 @@ export default function MyInput(props: MyInputProps) {
         <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
           <View>
             <TextInput
+              editable={!disabled}
               autoComplete="off"
               autoCorrect={false}
               placeholder={placeholder}

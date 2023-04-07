@@ -110,7 +110,7 @@ export default function UserSetupScreen() {
               type={route.params?.type}
               setStep={values => {
                 if (route.params?.type == 'setup') {
-                  setData({ ...data, ...values });
+                  setData({ ...data, phone: `+1${values.phone}` });
                   setStep(3);
                 } else {
                   onLogin('', values.phone);
