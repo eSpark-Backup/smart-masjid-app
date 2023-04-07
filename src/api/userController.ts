@@ -85,3 +85,29 @@ export const LoginUser = async (email: string, phone: string) => {
     console.log('error LoginUser', error, 'Request', email);
   }
 };
+
+/**
+ *
+ * @description Update the user data from profile screen
+ * @returns get data of user and save to userStore
+ */
+export const UpdateUser = async (
+  id: string,
+  data: { firstName?: string; lastName?: string; email?: string; phone?: string },
+) => {
+  try {
+    const result: any = await api.put<UserResponse>(`/users/${id}`, data);
+    
+    if (result.data){
+       userStore.set({ userData: result.data })
+       await setDataInLocalStorage('user', JSON.stringify(result.data));
+       Toast.show({
+        text2: 'User Updated Successfully',
+        type: 'success',
+      });
+      };
+    return result.data;
+  } catch (error) {
+    console.log('error CreateUser', error, 'Request', data);
+  }
+};
