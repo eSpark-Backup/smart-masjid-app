@@ -1,6 +1,7 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { LogoutUser } from '../../../../api/userController';
 
 import {
   EditVector,
@@ -80,8 +81,7 @@ export default function ManageAccount({
       <LogoutModal
         visible={isVisible}
         onAllowed={async () => {
-          await removeDatafromLocalStorage('user');
-          userObj.set(null);
+          await LogoutUser(userData?.id?.toString() ?? '');
           setIsVisible(!isVisible);
           console.log('Logged Out');
         }}

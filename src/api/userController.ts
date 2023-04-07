@@ -8,7 +8,11 @@ import {
 } from '../types/userControllerApiResponse';
 import { userStore } from '../store/UserStore';
 import Toast from 'react-native-toast-message';
-import { setDataInLocalStorage } from '../utils/functions';
+import {
+  removeDatafromLocalStorage,
+  setDataInLocalStorage,
+} from '../utils/functions';
+import { globalStore } from '../store/GlobalStates';
 
 /**
  *
@@ -70,11 +74,18 @@ export const RegisterUserPhone = async (
  */
 export const LoginUser = async (email: string, phone: string) => {
   try {
-    const result: any = await api.get(`/users?email=${email}&phone=${phone}`);
-    if (result.data && result.data.length > 0) {
-      userStore.set({ userData: result.data[0] });
-      setDataInLocalStorage('user', JSON.stringify(result.data[0]));
-      return result.data[0];
+    const result: any = await api.get(
+      `/external/users/exists?email=${email}&phone=${
+        phone ? '%2B1' + phone : ''
+      }`,
+    );
+    if (result.data) {
+      await api.put(`/users/${result?.data?.id}/login`, {
+        phoneDeviceId: globalStore.phoneId?.get(),
+      });
+      userStore.set({ userData: result.data });
+      setDataInLocalStorage('user', JSON.stringify(result.data));
+      return result.data;
     } else {
       Toast.show({
         text2: 'User not found',
@@ -88,24 +99,46 @@ export const LoginUser = async (email: string, phone: string) => {
 
 /**
  *
+ * @description Log
+ * @returns get data of user and save to userStore
+ */
+export const LogoutUser = async (userId: string) => {
+  try {
+    const res = await api.put(`/users/${userId}/logout`, {
+      phoneDeviceId: globalStore.phoneId?.get(),
+    });
+    await removeDatafromLocalStorage('user');
+    userStore.userData.set(null);
+  } catch (error) {
+    console.log('error LogoutUser', error);
+  }
+};
+
+/**
+ *
  * @description Update the user data from profile screen
  * @returns get data of user and save to userStore
  */
 export const UpdateUser = async (
   id: string,
-  data: { firstName?: string; lastName?: string; email?: string; phone?: string },
+  data: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+  },
 ) => {
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
-    
-    if (result.data){
-       userStore.set({ userData: result.data })
-       await setDataInLocalStorage('user', JSON.stringify(result.data));
-       Toast.show({
+
+    if (result.data) {
+      userStore.set({ userData: result.data });
+      await setDataInLocalStorage('user', JSON.stringify(result.data));
+      Toast.show({
         text2: 'User Updated Successfully',
         type: 'success',
       });
-      };
+    }
     return result.data;
   } catch (error) {
     console.log('error CreateUser', error, 'Request', data);
