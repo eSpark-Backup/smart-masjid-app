@@ -30,6 +30,9 @@ import {
   AddUser,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
+import { useHookstate } from '@hookstate/core';
+import { userStore } from '../../store/UserStore';
+import { UserResponse } from '../../types/userControllerApiResponse';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -38,8 +41,8 @@ type ProfileNavigationProp = NativeStackScreenProps<
 
 export default function Profile() {
   const navigation = useNavigation<ProfileNavigationProp['navigation']>();
-
   const [flag, setFlag] = useState('uInfo');
+  const [user, setUser] = useState<UserResponse | null>();
 
   const handleBack = (currScreen: string) => {
     console.log(currScreen);
@@ -133,10 +136,15 @@ export default function Profile() {
         <JummaHistory setFlag={(value: string) => setFlag(value)} />
       )}
       {flag == 'mUsers' && (
-        <ManageUsers setFlag={(value: string) => setFlag(value)} />
+        <ManageUsers
+          setFlag={(value: string, user?: UserResponse) => {
+            setFlag(value);
+            user && setUser(user);
+          }}
+        />
       )}
       {flag == 'vUser' && (
-        <ViewUser setFlag={(value: string) => setFlag(value)} />
+        <ViewUser user={user} setFlag={(value: string) => setFlag(value)} />
       )}
       {flag == 'addUser' && (
         <AddUser setFlag={(value: string) => setFlag(value)} />
@@ -146,6 +154,8 @@ export default function Profile() {
 }
 
 function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
+  const userData = useHookstate(userStore.userData).get();
+
   return (
     <View style={{ flex: 1 }}>
       <ProfileSectionlist
@@ -164,11 +174,21 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
                 title: 'Manage Masjid',
                 icon: <MasjidGear />,
                 onPress: () => setFlag('mMas'),
+                hidden:
+                  userData?.userType.id == 1 ||
+                  userData?.userType?.permissions?.filter(
+                    val => val?.name == 'MANAGE_MASJID',
+                  )?.length == 0,
               },
               {
                 title: 'Manage Users',
                 icon: <ManageUser />,
                 onPress: () => setFlag('mUsers'),
+                hidden:
+                  userData?.userType.id == 1 ||
+                  userData?.userType?.permissions?.filter(
+                    val => val?.name == 'MANAGE_USERS',
+                  )?.length == 0,
               },
             ],
           },
