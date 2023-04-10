@@ -22,6 +22,7 @@ export type GlobalProps = {
 
 export type UserStoreProps = {
   userData: UserResponse | null;
+  masjidAdmins: UserResponse[];
 };
 
 export interface IPrayerTimeForPeriod {
@@ -64,4 +65,3 @@ export interface IPrayerTimeForPeriod {
   maghribCalled: boolean;
   ishaCalled: boolean;
 }
-

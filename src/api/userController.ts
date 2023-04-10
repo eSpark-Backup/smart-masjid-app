@@ -45,7 +45,7 @@ export const CreateUser = async (
 ): Promise<UserResponse | undefined> => {
   try {
     const result: any = await api.post<UserResponse>('/users', data);
-    if (result.data) userStore.set({ userData: result.data });
+    if (result.data) userStore.userData.set(result.data);
     return result.data;
   } catch (error) {
     console.log('error CreateUser', error, 'Request', data);
@@ -83,7 +83,7 @@ export const LoginUser = async (email: string, phone: string) => {
       await api.put(`/users/${result?.data?.id}/login`, {
         phoneDeviceId: globalStore.phoneId?.get(),
       });
-      userStore.set({ userData: result.data });
+      userStore.userData.set(result.data);
       setDataInLocalStorage('user', JSON.stringify(result.data));
       return result.data;
     } else {
@@ -132,7 +132,7 @@ export const UpdateUser = async (
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
 
     if (result.data) {
-      userStore.set({ userData: result.data });
+      userStore.userData.set(result.data);
       await setDataInLocalStorage('user', JSON.stringify(result.data));
       Toast.show({
         text2: 'User Updated Successfully',
@@ -143,4 +143,47 @@ export const UpdateUser = async (
   } catch (error) {
     console.log('error CreateUser', error, 'Request', data);
   }
+};
+
+/**
+ *
+ * @description Get Masjid Admins by masjid is
+ * @returns get data of Masjid Admins and save to userStore
+ */
+export const GetMasjidAdmins = async (id: string) => {
+  try {
+    const result: any = await api.get(`/users/masjid/${id}`);
+    if (result.data && result.status === 200) {
+      userStore.masjidAdmins.set(result.data);
+    }
+  } catch (error) {
+    console.log('GetMasjidAdmins error', error);
+  }
+};
+
+/**
+ *
+ * @description Delete Admin from Masjid
+ * @returns returns message whether success or error
+ */
+export const DeleteAdminFromMasjid = async (
+  userId: string,
+  masjidId: string,
+) => {
+  try {
+    const result: any = await api.delete(`/users/${userId}/masjid/${masjidId}`);
+    if (result.status === 200) {
+      Toast.show({
+        text2: 'Admin removed from the masjid',
+        type: 'success',
+      });
+      GetMasjidAdmins(masjidId)
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true
+      });
+    }
+  } catch (error) {}
 };

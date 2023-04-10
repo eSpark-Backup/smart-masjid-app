@@ -1,6 +1,12 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../../../components';
+import {
+  GapView,
+  MyInput,
+  MyText,
+  Rounded,
+  TextLabel,
+} from '../../../../components';
 import { Card } from '../../../../containers';
 
 export default function AddUsers({
@@ -45,6 +51,13 @@ export default function AddUsers({
             dividerWidth={0.25}
             dividerColor="rgba(158, 159, 159, 1)"
           />
+          {/* <MyInput
+            placeholder="Phone Number"
+            isPhoneCode
+            phoneCodeValue="+ 1"
+            // onChangeText={handleChange('phone')}
+            // value={values.phone?.replace('+1', '')}
+          /> */}
         </Card>
       </View>
       <View style={{ alignSelf: 'center', marginTop: 80, marginBottom: 10 }}>

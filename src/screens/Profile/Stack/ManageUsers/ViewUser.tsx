@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Email, Phone, ProfileUser } from '../../../../assets';
 import { MyText, ProfileSectionlist } from '../../../../components';
+import { UserResponse } from '../../../../types/userControllerApiResponse';
 
 export default function ViewUsers({
   setFlag,
+  user = null,
 }: {
   setFlag: (value: string) => void;
+  user?: UserResponse | null | undefined;
 }) {
   return (
     <View style={{ flex: 1, marginTop: 90 }}>
@@ -19,19 +22,19 @@ export default function ViewUsers({
             data: [
               {
                 title: 'Full Name',
-                value: 'Kulsum Mudassir',
+                value: user?.firstName + ' ' + user?.lastName,
                 icon: <ProfileUser />,
                 onPress: () => console.log('no effect'),
               },
               {
                 title: 'Email',
-                value: 'kulsum@xyz.com',
+                value: user?.email ?? '-',
                 icon: <Email />,
                 onPress: () => console.log('no effect'),
               },
               {
                 title: 'Phone',
-                value: '+1-412 214 2457',
+                value: user?.phone ?? '-',
                 icon: <Phone />,
                 onPress: () => console.log('no effect'),
               },
