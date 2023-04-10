@@ -13,3 +13,6 @@ export {
   EditJumma,
   JummaHistory,
 } from './ManageMasjid/SalahTimings/JummaTimings';
+export { default as ManageUsers } from './ManageUsers';
+export { default as AddUser } from './ManageUsers/AddUser';
+export { default as ViewUser } from './ManageUsers/ViewUser';

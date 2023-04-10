@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services' 
 
 import com.android.build.OutputFile
 
@@ -117,9 +118,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.smart_masjid"
+    namespace "com.futurik.smartmasjid"
     defaultConfig {
-        applicationId "com.smart_masjid"
+        applicationId "com.futurik.smartmasjid"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

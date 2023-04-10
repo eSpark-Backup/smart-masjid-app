@@ -1,5 +1,7 @@
+import { useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { LogoutUser } from '../../../../api/userController';
 
 import {
   EditVector,
@@ -16,6 +18,8 @@ import {
   ProfileSectionlist,
   TextLabel,
 } from '../../../../components';
+import { userStore } from '../../../../store/UserStore';
+import { removeDatafromLocalStorage } from '../../../../utils/functions';
 
 export default function ManageAccount({
   setFlag,
@@ -23,7 +27,8 @@ export default function ManageAccount({
   setFlag: (value: string) => void;
 }) {
   const [isVisible, setIsVisible] = useState(false);
-
+  const userObj = useHookstate(userStore.userData);
+  const userData = userObj?.get();
   return (
     <View style={{ flex: 1 }}>
       <ProfileSectionlist
@@ -36,19 +41,19 @@ export default function ManageAccount({
             data: [
               {
                 title: 'Name',
-                value: 'Mukthar Ahmed',
+                value: userData?.firstName + ' ' + userData?.lastName,
                 icon: <ProfileUser />,
                 onPress: () => console.log('no effect'),
               },
               {
                 title: 'Email',
-                value: 'muk.ahmed@xyz.com',
+                value: userData?.email ?? '-',
                 icon: <Email />,
                 onPress: () => console.log('no effect'),
               },
               {
                 title: 'Phone',
-                value: '+1-412 214 2457',
+                value: userData?.phone ?? '-',
                 icon: <Phone />,
                 onPress: () => console.log('no effect'),
               },
@@ -75,7 +80,8 @@ export default function ManageAccount({
       </View>
       <LogoutModal
         visible={isVisible}
-        onAllowed={() => {
+        onAllowed={async () => {
+          await LogoutUser(userData?.id?.toString() ?? '');
           setIsVisible(!isVisible);
           console.log('Logged Out');
         }}

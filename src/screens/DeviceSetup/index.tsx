@@ -49,6 +49,10 @@ export default function DeviceSetupScreen() {
     return 1;
   };
 
+  const masjidSetupText = !route?.params?.from
+    ? '\n \nLets subscribe to a masjid now.'
+    : '';
+
   return (
     <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
       <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
@@ -78,9 +82,17 @@ export default function DeviceSetupScreen() {
               })
             }
             title="Device setup complete!"
-            message={`Your device is connected successfully.${
-              !route.params?.from && '\n \nLets subscribe to a masjid now.'
-            }`}
+            message={'Your device is connected successfully.' + masjidSetupText}
+          />
+        )}
+        {step == 8 && (
+          <MyToast
+            isSuccess={true}
+            btnText={'Try Again'}
+            onPress={() => setStep(2)}
+            title="Oops! Device not found."
+            message={`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
+          `}
           />
         )}
       </ScrollView>

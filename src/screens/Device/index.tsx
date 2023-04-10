@@ -27,9 +27,10 @@ import {
 import { GapView, MyText, TextLabel } from '../../components';
 import DeviceCard from '../../components/DeviceCard';
 import DeviceSettingSectionList from '../../components/DeviceSettingSectionList';
-import { WINDOW_WIDTH } from '../../constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
+import { DeviceSetting } from './Stacks';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -59,92 +60,14 @@ const AddDevice = () => {
   );
 };
 
-const DeviceSetting = () => {
-  const theme: Theme = useTheme();
-  const styles = useMemo(() => makeStyles(theme), []);
-  return (
-    <>
-      <GapView length={80} />
-      <ScrollView>
-        <View style={styles.deviceSettingContainer}>
-          <TextLabel
-            label="Device  Settings"
-            textStyle={{ paddingVertical: 20 }}
-          />
-          <GapView length={20} />
-          <View style={styles.subHeader}>
-            <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />
-            <View style={styles.row}>
-              <View style={styles.activeStatus} />
-              <GapView mode="horizontal" length={5} />
-              <MyText text="Online" />
-            </View>
-          </View>
-          <GapView length={20} />
-          <DeviceSettingSectionList
-            data={[
-              {
-                title: 'General Settings',
-                data: [
-                  {
-                    title: 'Nick Name',
-                    subtitle: 'Home Device',
-                    icon: <DeviceSvg />,
-                    isEditable: true,
-                  },
-                  { title: 'Battery', subtitle: '20%', icon: <Battery /> },
-                  {
-                    title: 'Subscription',
-                    subtitle: 'Masjid Al Noor',
-                    icon: <Heart />,
-                    isEditable: true,
-                  },
-                ],
-              },
-              {
-                title: 'Advance Settings',
-                data: [
-                  {
-                    title: 'Wifi',
-                    subtitle: 'My_wifi_SSID',
-                    icon: <WifiSvg />,
-                    isEditable: true,
-                  },
-                  {
-                    title: 'Firmware Version',
-                    subtitle: 'Version 1.0',
-                    icon: <Clock />,
-                  },
-                  {
-                    title: 'MAC Address',
-                    subtitle: 'aa:12:bc:dd:ee:87',
-                    icon: <Heart />,
-                  },
-                  {
-                    title: 'IP Address',
-                    subtitle: '192.168.0.15',
-                    icon: <IP />,
-                  },
-                  {
-                    title: 'Factory Reset',
-                    subtitle: 'Reseting will erase all data',
-                    icon: <Attention height={24} width={24} />,
-                  },
-                ],
-              },
-            ]}
-          />
-        </View>
-      </ScrollView>
-    </>
-  );
-};
-
 export default function Device() {
   const [step, setStep] = useState(0);
+  const [activeTab, setActiveTab] = useState<string>('MyDevice');
+
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const isFocused = useIsFocused();
-
+  const theme: Theme = useTheme();
+  const { colors } = theme;
   useEffect(() => {
     setStep(0);
   }, [isFocused]);
@@ -163,22 +86,82 @@ export default function Device() {
       showFooter={false}
       bgImageSpacer={step == 1 ? false : true}>
       {step == 0 && (
-        <FlatList
-          contentContainerStyle={{
-            paddingHorizontal: 10,
-            paddingBottom: 20,
-          }}
-          numColumns={2}
-          data={data}
-          renderItem={({ index }) => {
-            if (index != (data?.length - 1)) {
-              return <DeviceCard onPress={() => setStep(1)} />;
-            } else {
-              return <AddDevice />;
-            }
-          }}
-          ItemSeparatorComponent={GapView}
-        />
+        <>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: WINDOW_WIDTH - 80,
+              alignSelf: 'center',
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => setActiveTab('MyDevice')}>
+              <TextLabel
+                label="My Devices"
+                textStyle={{
+                  color: activeTab == 'MyDevice' ? colors.primary : '#9E9F9F',
+                }}
+              />
+              {activeTab == 'MyDevice' && (
+                <View
+                  style={{
+                    height: 5,
+                    width: 5,
+                    backgroundColor: colors.primary,
+                    borderRadius: 10,
+                    alignSelf: 'center',
+                    marginTop: 5,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => setActiveTab('MasjidDevice')}>
+              <TextLabel
+                label="Masjid Devices"
+                textStyle={{
+                  color:
+                    activeTab == 'MasjidDevice' ? colors.primary : '#9E9F9F',
+                }}
+              />
+              {activeTab == 'MasjidDevice' && (
+                <View
+                  style={{
+                    height: 5,
+                    width: 5,
+                    backgroundColor: colors.primary,
+                    borderRadius: 10,
+                    alignSelf: 'center',
+                    marginTop: 5,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            contentContainerStyle={{
+              paddingHorizontal: 10,
+              paddingVertical: 20,
+            }}
+            numColumns={2}
+            data={data}
+            renderItem={({ index }) => {
+              if (index != data?.length - 1) {
+                return (
+                  <DeviceCard
+                    type={activeTab === 'MyDevice' ? 'speaker' : 'button'}
+                    onPress={() => setStep(1)}
+                  />
+                );
+              } else {
+                return <AddDevice />;
+              }
+            }}
+            ItemSeparatorComponent={GapView}
+          />
+        </>
       )}
       {step == 1 && <DeviceSetting />}
     </Wrapper>

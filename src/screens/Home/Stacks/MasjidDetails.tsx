@@ -1,3 +1,4 @@
+import { Theme, useTheme } from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { SyncSvg } from '../../../assets';
@@ -5,12 +6,15 @@ import {
   GapView,
   MyText,
   MyTitle,
+  SwipeableTimeTable,
   TextLabel,
   TimeTable,
 } from '../../../components';
 import MyDatePicker from '../../../components/MyDatePicker';
+import { getCurrentMonthAdhanData } from '../../../utils/functions';
 
 export default function MasjidDetails({ setStep }: any) {
+  const { colors }: Theme = useTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <TextLabel label="Masjid Ar - Rahman" />
@@ -22,13 +26,13 @@ export default function MasjidDetails({ setStep }: any) {
           flexDirection: 'row',
           alignItems: 'center',
         }}>
-        <MyText text="Home " />
+        <MyText text="MY HOME DEVICE " textStyle={{ color: colors.primary }} />
         <SyncSvg />
       </TouchableOpacity>
       <GapView length={15} />
       <MyText text="Next Adhan in" textStyle={{ fontWeight: 'bold' }} />
       <GapView length={5} />
-      <MyTitle text="06 : 09 : 00" style={{fontSize: 32}} />
+      <MyTitle text="06 : 09 : 00" style={{ fontSize: 32 }} />
       <GapView length={25} />
 
       <ScrollView
@@ -38,51 +42,10 @@ export default function MasjidDetails({ setStep }: any) {
           paddingBottom: 20,
           padding: 5,
         }}>
-        <TimeTable
+        <SwipeableTimeTable
           isMute
           isInfo
-          header={
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <MyDatePicker
-                type='standard'
-                onDateChange={e => {
-                  console.log('onDateChange', e);
-                }}
-              />
-            </View>
-          }
-          data={[
-            {
-              name: 'Fajar',
-              azanTiming: '5:50',
-              iqamahTiming: '6:00',
-            },
-            {
-              name: 'Dhuhr',
-              azanTiming: '1:00',
-              iqamahTiming: '1:30',
-            },
-            {
-              name: 'Asr',
-              azanTiming: '4:50',
-              iqamahTiming: '5:00',
-            },
-            {
-              name: 'Mugrib',
-              azanTiming: '5:50',
-              iqamahTiming: '6:00',
-            },
-            {
-              name: 'Isha',
-              azanTiming: '6:50',
-              iqamahTiming: '8:00',
-            },
-          ]}
+          data={getCurrentMonthAdhanData()}
         />
         <GapView length={20} />
 
@@ -108,6 +71,21 @@ export default function MasjidDetails({ setStep }: any) {
             },
           ]}
         />
+        <GapView length={20} />
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={{
+            height: 41,
+            width: '70%',
+            backgroundColor: '#FF6464',
+            borderRadius: 50,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+          }}
+          onPress={() => {}}>
+          <TextLabel label="Unsubscribe" textStyle={{ color: '#ffffff' }} />
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

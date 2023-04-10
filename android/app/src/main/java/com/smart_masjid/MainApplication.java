@@ -1,4 +1,4 @@
-package com.smart_masjid;
+package com.futurik.smartmasjid;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

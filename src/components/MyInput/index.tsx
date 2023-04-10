@@ -1,6 +1,7 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Platform,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -32,6 +33,9 @@ interface MyInputProps {
   onFocus?: () => void;
   onBlur?: () => void;
   value?: string;
+  error?: string;
+  isSecure?: boolean;
+  disabled?: boolean;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -52,6 +56,9 @@ export default function MyInput(props: MyInputProps) {
     onBlur,
     onDropPress,
     value,
+    error,
+    isSecure,
+    disabled
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -89,17 +96,31 @@ export default function MyInput(props: MyInputProps) {
           </TouchableOpacity>
         )}
         <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
-          <TextInput
-            autoComplete="off"
-            autoCorrect={false}
-            placeholder={placeholder}
-            style={[styles.inputStyle, inputStyle]}
-            onChangeText={handleTextChange}
-            value={text}
-            placeholderTextColor={placeholderColor ?? '#9E9F9F'}
-            onPressIn={onFocus}
-            onSubmitEditing={onBlur}
-          />
+          <View>
+            <TextInput
+              editable={!disabled}
+              autoComplete="off"
+              autoCorrect={false}
+              placeholder={placeholder}
+              style={[styles.inputStyle, inputStyle]}
+              onChangeText={handleTextChange}
+              value={text}
+              placeholderTextColor={placeholderColor ?? '#9E9F9F'}
+              onPressIn={onFocus}
+              onSubmitEditing={onBlur}
+              secureTextEntry={isSecure}
+            />
+            {error && (
+              <MyText
+                text={error}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 110,
+                  marginTop: 4,
+                }}
+              />
+            )}
+          </View>
           {isDropDown && (
             <II
               name="caret-down-sharp"
@@ -138,6 +159,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,
+      top: Platform.OS == "ios" ? 17 : 0
     },
     phoneCodeContainer: {
       backgroundColor: colors.primary,

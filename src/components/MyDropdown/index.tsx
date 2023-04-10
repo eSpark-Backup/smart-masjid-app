@@ -7,6 +7,7 @@ import {
   Alert,
   StyleSheet,
   Keyboard,
+  Platform,
 } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
 
@@ -119,6 +120,8 @@ export default function MyDropdown({
             borderRadius: 12,
             marginTop: 8,
             width: width,
+            height: Platform.OS == 'ios' ? 40 : undefined,
+            top: 0,
           }}
         />
         <ArrowDown
@@ -127,7 +130,12 @@ export default function MyDropdown({
             setShow(!show);
             Keyboard.dismiss();
           }}
-          style={{ bottom: 15, right: title ? 35 : 15, position: 'absolute' }}
+          style={{
+            bottom: 15,
+            right: title ? 35 : 15,
+            position: 'absolute',
+            zIndex: 1,
+          }}
         />
       </View>
       {show && (

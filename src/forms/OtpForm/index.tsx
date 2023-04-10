@@ -7,8 +7,10 @@ import { MyLightTheme } from '../../theme';
 import { Theme, useTheme } from '@react-navigation/native';
 
 export default function OtpForm({
+  type,
   setStep,
 }: {
+  type?: 'login' | 'setup';
   setStep: (value: number) => void;
 }) {
   const otpRef: any = useRef(null);
