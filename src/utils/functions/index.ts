@@ -4,11 +4,13 @@ import {
   checkMultiple,
   PERMISSIONS,
   requestMultiple,
+  RESULTS,
 } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
+
 import { globalStore } from '../../store/GlobalStates';
 import { IPrayerTimeForPeriod } from '../../types';
-import moment from 'moment';
 
 /**
  *
@@ -60,6 +62,68 @@ async function _requestUserPermission() {
       requestMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]);
     }
   });
+}
+
+/**
+ *
+ * @description Used to requestPermission for Ble and Location for Using ble scan and connection
+ * @returns Promise<Boolean>
+ * @todo //todo: Delete This later
+ */
+async function _requestBlePermissions(): Promise<Boolean> {
+  const checkStatus = await checkMultiple([
+    PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+    PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+    PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+  ]);
+  console.log(
+    'check Status',
+    checkStatus[
+      (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+    ] === 'denied',
+  );
+
+  if (
+    checkStatus[
+      (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+    ] !== 'granted' ||
+    checkStatus[
+      (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+    ] === 'denied'
+  ) {
+    const requestStatus = await requestMultiple([
+      PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    ]);
+    return (
+      requestStatus[
+        (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+      ] === 'granted'
+    );
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -177,6 +241,7 @@ export {
   _getPhoneId,
   _getFCMToken,
   _requestUserPermission,
+  _requestBlePermissions,
   setDataInLocalStorage,
   getDataFromLocalStorage,
   removeDatafromLocalStorage,

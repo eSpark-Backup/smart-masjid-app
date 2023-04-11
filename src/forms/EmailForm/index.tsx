@@ -26,7 +26,7 @@ export default function EmailForm({
       />
       <GapView length={80} />
       <Formik
-        initialValues={{ email: '' }}
+        initialValues={{ email: 'test2@yopmail.com' }}
         validationSchema={UserSetupSchema.emailForm}
         onSubmit={values => {
           setStep(values);

@@ -16,6 +16,8 @@ import {
 } from '../../forms';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { DLoader, MyToast, SLoader } from '../../components';
+import { _startBluetooth } from './utils/functions';
+import { _requestBlePermissions } from '../../utils/functions';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -28,18 +30,47 @@ export default function DeviceSetupScreen() {
   const isFocused = useIsFocused();
   const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
+  const [toastContent, setToastContent] = useState<{
+    title?: string;
+    message?: string;
+    btnText?: string;
+    onPress?: () => void;
+  }>({
+    title: '',
+    message: '',
+    btnText: '',
+    onPress: () => setStep(2),
+  });
+
+  const handlePermissions = async () => {
+    const status = await _requestBlePermissions();
+    console.log(status);
+    if (!status) {
+      setStep(8);
+      setToastContent({
+        title: 'Accept Permissions',
+        message: 'Accept All Permission to Continue to Scan for BLE devices',
+        onPress: () => {
+          handlePermissions();
+          setStep(1);
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     setStep(1);
+    handlePermissions();
+    // _startBluetooth();
   }, [isFocused]);
 
   useEffect(() => {
     console.log('step current?', step);
-    if (step == 1 || step == 6) {
-      setTimeout(() => {
-        setStep(step + 1);
-      }, 3000);
-    }
+    // if (step == 1) {
+    //   setTimeout(() => {
+    //     setStep(step + 1);
+    //   }, 3000);
+    // }
   }, [step]);
 
   const handleBack = () => {
@@ -88,11 +119,14 @@ export default function DeviceSetupScreen() {
         {step == 8 && (
           <MyToast
             isSuccess={true}
-            btnText={'Try Again'}
-            onPress={() => setStep(2)}
-            title="Oops! Device not found."
-            message={`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
-          `}
+            btnText={toastContent.btnText ?? 'Try Again'}
+            onPress={toastContent.onPress}
+            title={toastContent.title ?? 'Oops! Device not found.'}
+            message={
+              toastContent.message ??
+              `Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
+          `
+            }
           />
         )}
       </ScrollView>
