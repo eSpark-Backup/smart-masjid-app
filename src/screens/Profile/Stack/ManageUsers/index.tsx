@@ -8,6 +8,7 @@ import {
 import { Delete, PlusSvg, ProfileDummy } from '../../../../assets';
 import {
   GapView,
+  LogoutModal,
   MyText,
   OverlayLoader,
   TextLabel,
@@ -24,6 +25,7 @@ export default function ManageUsers({
 }) {
   const admins: any = useHookstate(userStore.masjidAdmins).get();
   const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState('');
   useEffect(() => {
     setLoading(true);
     GetMasjidAdmins('1')
@@ -35,13 +37,24 @@ export default function ManageUsers({
       });
   }, []);
 
-  const onDelete = async (userId: string) => {
+  const onDelete = async () => {
+    setIsVisible('')
     setLoading(true);
-    await DeleteAdminFromMasjid(userId, '1');
+    await DeleteAdminFromMasjid(isVisible, '1');
     setLoading(false);
   };
+
   return (
     <View style={{ flex: 1, marginTop: 110, alignItems: 'center' }}>
+      <LogoutModal
+        message="Are you sure yo want to delete this admin?"
+        visible={Boolean(isVisible)}
+        onAllowed={onDelete}
+        onClose={() => {
+          setIsVisible('');
+          console.log('Cancelled');
+        }}
+      />
       <OverlayLoader isShow={loading} />
       <TextLabel label="Manage Users" />
       <GapView length={20} />
@@ -62,7 +75,7 @@ export default function ManageUsers({
               onPress={() => {
                 setFlag('vUser', item);
               }}
-              onDeletePress={onDelete}
+              onDeletePress={setIsVisible}
             />
           );
         }}
