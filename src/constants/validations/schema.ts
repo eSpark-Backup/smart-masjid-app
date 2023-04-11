@@ -35,3 +35,23 @@ export const DeviceSetupSchema = {
     password: string().required('Password is required'),
   }),
 };
+
+export const AddAdminForSchema = {
+  AddAdminForSchema: object({
+    firstName: string()
+      .min(2, 'First Name Too Short!')
+      .max(50, 'First Name Too Long!')
+      .required('First Name is Required'),
+    lastName: string()
+      .min(2, 'Last Name is Too Short!')
+      .max(50, 'Last Name is Too Long!')
+      .required('Last Name is Required'),
+    email: string().email('Invalid email').required('Email is required'),
+    phone: string()
+      .matches(
+        /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/,
+        'Phone number is not valid',
+      )
+      .required('Phone No is Required'),
+  }),
+};

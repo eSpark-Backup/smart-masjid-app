@@ -36,6 +36,7 @@ interface MyInputProps {
   error?: string;
   isSecure?: boolean;
   disabled?: boolean;
+  phoneCodeContainerStyle?: ViewStyle;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -58,7 +59,8 @@ export default function MyInput(props: MyInputProps) {
     value,
     error,
     isSecure,
-    disabled
+    disabled,
+    phoneCodeContainerStyle,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
@@ -90,7 +92,7 @@ export default function MyInput(props: MyInputProps) {
           <TouchableOpacity
             onPress={onPhoneCodePress}
             activeOpacity={0.9}
-            style={[styles.phoneCodeContainer]}>
+            style={[styles.phoneCodeContainer, phoneCodeContainerStyle ?? {}]}>
             <II name="caret-down-sharp" size={10} color="#fff" />
             <MyText textStyle={styles.phoneCodeText} text={phoneCodeValue} />
           </TouchableOpacity>
@@ -159,7 +161,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,
-      top: Platform.OS == "ios" ? 17 : 0
+      top: Platform.OS == 'ios' ? 17 : 0,
     },
     phoneCodeContainer: {
       backgroundColor: colors.primary,

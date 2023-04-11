@@ -99,7 +99,29 @@ export const LoginUser = async (email: string, phone: string) => {
 
 /**
  *
- * @description Log
+ * @description Checks if the user is exist or not
+ * @returns if the user is exist so return user information
+ */
+export const CheckUserExists = async (email: string, phone: string) => {
+  try {
+    const result = await api.get(
+      `/external/users/exists?email=${email}&phone=${
+        phone ? '%2B1' + phone : ''
+      }`,
+    );
+   
+    if(result.status == 200 && result.data) {
+      return result.data;
+    }else {
+      return null
+    }
+  } catch (err) {}
+};
+
+
+/**
+ *
+ * @description Login User
  * @returns get data of user and save to userStore
  */
 export const LogoutUser = async (userId: string) => {
@@ -177,13 +199,42 @@ export const DeleteAdminFromMasjid = async (
         text2: 'Admin removed from the masjid',
         type: 'success',
       });
-      GetMasjidAdmins(masjidId)
+      GetMasjidAdmins(masjidId);
     } else {
       Toast.show({
         text2: result.data?.message,
         type: 'error',
-        autoHide: true
+        autoHide: true,
       });
+    }
+  } catch (error) {}
+};
+
+/**
+ *
+ * @description Add Admin into Masjid
+ * @returns returns message whether success or error
+ */
+ export const AddAdminIntoMasjid = async (
+  userId: string,
+  masjidId: string,
+) => {
+  try {
+    const result: any = await api.post(`/users/${userId}/masjid/${masjidId}`);
+    if (result.status === 200) {
+      Toast.show({
+        text2: 'Admin added to the masjid',
+        type: 'success',
+      });
+      GetMasjidAdmins(masjidId);
+      return true
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+      });
+      return false;
     }
   } catch (error) {}
 };
