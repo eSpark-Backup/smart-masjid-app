@@ -16,8 +16,8 @@ export type CreateUserRequest = {
   lastName: string;
   email?: string;
   phone?: string;
-  userType: 'Customer';
-  masjidId?: number;
+  userType: 'Customer' | 'Masjid Admin';
+  masjidId?: string;
 };
 
 type Permission = {

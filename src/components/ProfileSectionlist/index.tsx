@@ -14,6 +14,7 @@ interface DataItem {
     value?: string;
     icon: JSX.Element;
     onPress: () => void;
+    hidden?: boolean;
   }[];
 }
 
@@ -37,9 +38,11 @@ export default function ProfileSectionlist({
       sections={data ?? []}
       scrollEnabled={scroll}
       keyExtractor={(item, index) => item.title + index}
-      renderItem={({ item, index }) => (
-        <SectionCard item={item} index={index} />
-      )}
+      renderItem={({ item, index }) => {
+        if (!item.hidden) {
+          return <SectionCard item={item} index={index} />;
+        } else return <View />;
+      }}
       renderSectionHeader={({ section: { title, icon, onIconPress } }) => (
         <View
           style={{
@@ -102,6 +105,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
 });

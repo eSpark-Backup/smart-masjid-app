@@ -79,6 +79,7 @@ export default function ManageAccount({
         </TouchableOpacity>
       </View>
       <LogoutModal
+        message="Do you wish to logout?"
         visible={isVisible}
         onAllowed={async () => {
           await LogoutUser(userData?.id?.toString() ?? '');
