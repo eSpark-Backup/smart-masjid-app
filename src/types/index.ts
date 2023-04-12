@@ -1,3 +1,4 @@
+import { AdhanConfig, IqamahTime } from './masjidControllerTypes';
 import { UserResponse } from './userControllerApiResponse';
 
 export type RootStackParamList = {
@@ -24,6 +25,11 @@ export type UserStoreProps = {
   userData: UserResponse | null;
   masjidAdmins: UserResponse[];
 };
+
+export type MasjidStoreProps = {
+  adhanConfig: AdhanConfig | null;
+  iqamahTime: IqamahTime | null;
+}
 
 export interface IPrayerTimeForPeriod {
   id: number;
