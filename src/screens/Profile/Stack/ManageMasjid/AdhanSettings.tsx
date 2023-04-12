@@ -1,5 +1,7 @@
-import React from 'react';
+import { useHookstate } from '@hookstate/core';
+import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { GetMasjidAdhanSetting } from '../../../../api/masjidController';
 
 import {
   GapView,
@@ -9,12 +11,20 @@ import {
   ProfileAvatar,
   TextLabel,
 } from '../../../../components';
+import { masjidStore } from '../../../../store/MasjidStore';
 
 export default function AdhanSettings({
   setFlag,
 }: {
   setFlag: (value: string) => void;
 }) {
+  const adhanConfig = useHookstate(masjidStore.adhanConfig).get();
+  useEffect(() => {
+    if(!adhanConfig) {
+      GetMasjidAdhanSetting('1')
+    }
+  }, []);
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ marginBottom: 10 }}>
@@ -29,25 +39,21 @@ export default function AdhanSettings({
           <TextLabel label={'Adhan Settings'} />
         </View>
         <MyDropDown
+          disabled
           title="Calculation"
           placeholder="Muslim World League"
           placeholderColor="#CFCFCF"
-          items={[
-            { id: 1, name: 'Item 1' },
-            { id: 2, name: 'Item 2' },
-            { id: 3, name: 'Item 3' },
-          ]}
+          items={[]}
+          defaultValue={adhanConfig?.adhanCalcConfig}
         />
         <GapView length={20} />
         <MyDropDown
+          disabled
           title="Juristic"
           placeholder="Muslim World League"
           placeholderColor="#CFCFCF"
-          items={[
-            { id: 1, name: 'Item 1' },
-            { id: 2, name: 'Item 2' },
-            { id: 3, name: 'Item 3' },
-          ]}
+          items={[]}
+          defaultValue={adhanConfig?.adhanJuristicConfig}
         />
       </View>
       <GapView length={40} />
