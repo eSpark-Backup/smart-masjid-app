@@ -22,6 +22,7 @@ interface DataProps {
   azanTiming?: string;
   iqamahTiming?: string;
   khutbahTiming?: string;
+  onChange?: (value: any) => void;
 }
 
 const RowItem = ({
@@ -39,20 +40,23 @@ const RowItem = ({
       key={`${item?.name}-${index}`}
       style={!edit ? {} : styles.editContentRow}>
       <View style={[styles.contentRow, {marginVertical: edit ? 0 : 10}]}>
-        {Object.keys(item)?.map((key: any, index) => (
-          <>
-            {index != 0 && edit ? (
-              <MyTimePicker initialValue={item[key]} />
-            ) : (
-              <View key={key} style={styles.contentCol}>
-                <MyText
-                  text={item[key]}
-                  size={16}
-                />
-              </View>
-            )}
-          </>
-        ))}
+        {Object.keys(item)?.map((key: any, index) => {
+          if(key == 'onChange') return
+          return (
+            <React.Fragment key={index}>
+              {index != 0 && edit ? (
+                <MyTimePicker onTimeChanged={item?.onChange} initialValue={item[key]} />
+              ) : (
+                <View key={key} style={styles.contentCol}>
+                  <MyText
+                    text={item[key]}
+                    size={16}
+                  />
+                </View>
+              )}
+            </React.Fragment>
+          )
+        })}
         {isMute && (
           <View style={styles.contentIcon}>
             {toggleMute ? (
@@ -127,7 +131,7 @@ export default function TimeTable({
       <GapView />
       {data?.map((item: any, index) => (
         <RowItem
-          key={`${item}-${index}`}
+          key={`${index}`}
           item={item}
           index={index}
           isEdit={isEdit}

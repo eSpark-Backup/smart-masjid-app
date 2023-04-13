@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import { useHookstate } from '@hookstate/core';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { GetMasjidIqamahTiming } from '../../../../../../api/masjidController';
 import { EditTimeTable, History } from '../../../../../../assets';
 
 import {
@@ -13,6 +16,7 @@ import {
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { WINDOW_WIDTH } from '../../../../../../constants';
+import { masjidStore } from '../../../../../../store/MasjidStore';
 
 export default function IqamahTimings({
   setFlag,
@@ -20,12 +24,20 @@ export default function IqamahTimings({
   setFlag: (value: string) => void;
 }) {
   const [edit, setEdit] = useState(false);
+  const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
+  const [data, setData] = useState<any>({});
+
+  useEffect(() => {
+    GetMasjidIqamahTiming('1');
+  }, []);
+
 
   return (
     <>
       <GapView length={30} />
       <View style={{ flex: 1, marginTop: 70 }}>
-        <ScrollView contentContainerStyle={{paddingBottom: 30, paddingTop: 10}}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}>
           <TimeTable
             header={
               <>
@@ -38,7 +50,9 @@ export default function IqamahTimings({
                       paddingHorizontal: 5,
                     }}>
                     <View>
-                      <MyText text="Change Date: 02-24-2023" />
+                      <MyText
+                        text={`Change Date: ${iqamahTimings?.changeDate}`}
+                      />
                     </View>
                     <View
                       style={{
@@ -48,7 +62,12 @@ export default function IqamahTimings({
                       }}>
                       <History onPress={() => setFlag('iHist')} />
                       <GapView mode="horizontal" length={20} />
-                      <EditTimeTable onPress={() => setEdit(true)} />
+                      <EditTimeTable
+                        onPress={() => {
+                          setEdit(true);
+                          setData(iqamahTimings ?? {});
+                        }}
+                      />
                     </View>
                   </View>
                 ) : (
@@ -57,24 +76,92 @@ export default function IqamahTimings({
                       title={''}
                       placeholder="Select Iqama Type"
                       items={[
-                        { id: 1, name: 'type 1' },
-                        { id: 2, name: 'type 2' },
+                        { id: 1, name: 'F' },
+                        { id: 2, name: 'D' },
                       ]}
+                      defaultValue={{
+                        id: iqamahTimings?.type == 'F' ? 1 : 2,
+                        name: iqamahTimings?.type ?? '',
+                      }}
                       width={WINDOW_WIDTH - 65}
+                      onChangeValue={e => setData({ ...data, type: e.name })}
                     />
                     <GapView />
-                    <MyDatePicker onDateChange={() => {}} />
+                    <MyDatePicker
+                      currentDate={new Date(data?.changeDate ?? new Date())}
+                      onDateChange={date => {
+                        setData({
+                          ...data,
+                          changeDate: moment(date).format('YYYY-MM-DD'),
+                        });
+                      }}
+                    />
                     <GapView length={20} />
                   </View>
                 )}
               </>
             }
             data={[
-              { name: 'Fajr', iqamahTiming: '6:00' },
-              { name: 'Dhur', iqamahTiming: '1:30' },
-              { name: 'Asr', iqamahTiming: '4:10' },
-              { name: 'Mugrib', iqamahTiming: '5:50' },
-              { name: 'Isha', iqamahTiming: '8:15' },
+              {
+                name: 'Fajr',
+                iqamahTiming: moment(iqamahTimings?.fajr, 'HH:mm:ss')
+                  .add('minute', iqamahTimings?.fajrDelay ?? 0)
+                  .format('hh:mm'),
+                onChange: value => {
+                  setData({
+                    ...data,
+                    fajr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                  });
+                },
+              },
+              {
+                name: 'Dhur',
+                iqamahTiming: moment(iqamahTimings?.dhuhr, 'HH:mm:ss')
+                  .add('minute', iqamahTimings?.dhuhrDelay ?? 0)
+                  .format('hh:mm'),
+                onChange: value => {
+                  setData({
+                    ...data,
+                    dhuhr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                  });
+                },
+              },
+              {
+                name: 'Asr',
+                iqamahTiming: moment(iqamahTimings?.asr, 'HH:mm:ss')
+                  .add('minute', iqamahTimings?.asrDelay ?? 0)
+                  .format('hh:mm'),
+                onChange: value => {
+                  setData({
+                    ...data,
+                    asr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                  });
+                },
+              },
+              {
+                name: 'Mugrib',
+                iqamahTiming: moment(iqamahTimings?.fajr, 'HH:mm:ss')
+                  .add('minute', iqamahTimings?.maghribDelay ?? 0)
+                  .format('hh:mm'),
+                onChange: value => {
+                  setData({
+                    ...data,
+                    fajr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                  });
+                },
+              },
+              {
+                name: 'Isha',
+                iqamahTiming: moment(iqamahTimings?.isha, 'HH:mm:ss')
+                  .add('minute', iqamahTimings?.ishaDelay ?? 0)
+                  .format('hh:mm'),
+                onChange: value => {
+                  setData({
+                    ...data,
+                    isha: moment(value, 'hh:mm').format('HH:mm:ss'),
+                  });
+                },
+              },
             ]}
             headings={['Salah', 'Iqamah']}
             editView={edit}

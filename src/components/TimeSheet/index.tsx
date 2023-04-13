@@ -4,7 +4,7 @@ import MyText from '../MyText';
 
 interface Props {
   heading: string;
-  values: Array<string>;
+  values: Array<string | null>;
 }
 
 export default function TimeSheet({ data }: { data: Array<Props> }) {
@@ -29,7 +29,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
             }}
           />
         </View>
-        {item.values.map((val: string, index: number) => (
+        {item.values.map((val: string | null, index: number) => (
           <View
             key={index}
             style={{
@@ -39,7 +39,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
               borderWidth: 0.25,
             }}>
             <MyText
-              text={val}
+              text={val ?? ''}
               textStyle={{
                 fontSize: 16,
                 color: '#3E3E3E',
