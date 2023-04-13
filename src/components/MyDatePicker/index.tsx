@@ -13,22 +13,22 @@ import MyText from '../MyText';
 export default function MyDatePicker({
   onDateChange = (e: any) => {},
   type = 'box',
-  currentDate = new Date(),
+  currentDate = null,
   minimumDate = undefined,
   maximumDate = undefined,
 }: {
   onDateChange: (e: any) => void;
   type?: 'box' | 'standard';
-  currentDate?: Date;
+  currentDate?: Date | null;
   minimumDate?: Date | undefined;
   maximumDate?: Date | undefined;
 }) {
-  const [date, setDate] = useState<any>(currentDate);
+  const [date, setDate] = useState<any>(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    setDate(currentDate);
+    if(currentDate) setDate(currentDate);
   }, [currentDate]);
 
   const onChange = (selectedDate: any) => {

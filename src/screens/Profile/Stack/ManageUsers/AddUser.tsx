@@ -34,6 +34,7 @@ export default function AddUsers({
   }) => {
     try {
       setLoading(true);
+      // Check if user already exists
       const data: any = await CheckUserExists(values.email, values.phone);
       const obj: CreateUserRequest = {
         ...values,
@@ -41,11 +42,13 @@ export default function AddUsers({
         userType: 'Masjid Admin',
         masjidId: '1',
       };
+      // If user already exists so direct add to masjid
       if (data) {
         const res = await AddAdminIntoMasjid(data?.id?.toString(), '1');
         setLoading(false);
         if (res) setFlag('mUsers');
       } else {
+        // Else Create User with current masjid
         const createUserResp: any = await api.post('/users', obj);
         if (createUserResp.data) {
           setLoading(false);
