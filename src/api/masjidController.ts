@@ -1,21 +1,19 @@
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
-
+import { IqamahTime } from '../types/masjidControllerTypes';
 
 /**
  *
  * @description Get masjid info
  * @returns get data of masjid and save to masjidStore
  */
- export const GetMasjid = async (masjidId: string) => {
+export const GetMasjid = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}`);
     if (result.status == 200) {
-        masjidStore.masjid.set(result.data)
+      masjidStore.masjid.set(result.data);
     }
-  } catch (error) {
-
-  }
+  } catch (error) {}
 };
 
 /**
@@ -27,81 +25,84 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/adhan/config`);
     if (result.status == 200) {
-        masjidStore.adhanConfig.set(result.data)
+      masjidStore.adhanConfig.set(result.data);
     }
-  } catch (error) {
-
-  }
+  } catch (error) {}
 };
-
 
 /**
  *
  * @description Get Adhan Configuration
  * @returns get data of masjid adhan config and save to masjidStore
  */
- export const GetMasjidIqamahTiming = async (masjidId: string) => {
-    try {
-      const result: any = await api.get(`/masjid/${masjidId}/iqama`);
-      if (result.status == 200) {
-          masjidStore.iqamahTime.set(result.data)
-      }
-    } catch (error) {
-        console.log("error", error);
+export const GetMasjidIqamahTiming = async (masjidId: string) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/iqama`);
+    if (result.status == 200) {
+      masjidStore.iqamahTime.set(result.data);
     }
-  };
+  } catch (error) {
+    console.log('error', error);
+  }
+};
 
+/**
+ *
+ * @description Get Adhan Configuration
+ * @returns get data of masjid adhan config and save to masjidStore
+ */
+export const UpdatedMasjidIqamahTiming = async (masjidId: string, data: IqamahTime) => {
+  try {
+    const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
+    if (result.status == 200) {
+      masjidStore.iqamahTime.set(result.data);
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
 
 /**
  *
  * @description Get Iqamah history
  * @returns get Iqamah history of masjid and save to masjidStore
  */
- export const GetIqamahHistory = async (masjidId: string) => {
+export const GetIqamahHistory = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/iqama/history`);
     if (result.status == 200) {
-        masjidStore.iqamahHistory.set(result.data)
+      masjidStore.iqamahHistory.set(result.data);
     }
-  } catch (error) {
-
-  }
+  } catch (error) {}
 };
-
-
-
 
 /**
  *
  * @description Get Jummah Configuration
  * @returns get data of masjid Jummah and save to masjidStore
  */
- export const GetMasjidJummahTiming = async (masjidId: string) => {
+export const GetMasjidJummahTiming = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/jumuah`);
-    console.log("result", result);
-    
+
     if (result.status == 200) {
-        masjidStore.JummahTime.set(result.data)
+      masjidStore.JummahTime.set(result.data);
     }
   } catch (error) {
-      console.log("error", error);
+    console.log('error', error);
   }
 };
-
 
 /**
  *
  * @description Get Jummah history
  * @returns get Jummah history of masjid and save to masjidStore
  */
- export const GetJummahHistory = async (masjidId: string) => {
+export const GetJummahHistory = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/jumuah/history`);
     if (result.status == 200) {
-        masjidStore.JummahHistory.set(result.data)
+      masjidStore.JummahHistory.set(result.data);
     }
-  } catch (error) {
-
-  }
+  } catch (error) {}
 };

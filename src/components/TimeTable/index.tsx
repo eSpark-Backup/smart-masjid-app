@@ -13,6 +13,7 @@ import { Rounded } from '../Buttons';
 import GapView from '../GapView';
 import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
+import MyInput from '../MyInput';
 import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
 import TextLabel from '../TextLabel';
@@ -32,6 +33,7 @@ const RowItem = ({
   isMute,
   onSubmitEditing,
   edit = false,
+  type,
 }: any) => {
   const [toggleMute, setToggleMute] = useState(true);
   return (
@@ -39,23 +41,42 @@ const RowItem = ({
       activeOpacity={0.9}
       key={`${item?.name}-${index}`}
       style={!edit ? {} : styles.editContentRow}>
-      <View style={[styles.contentRow, {marginVertical: edit ? 0 : 10}]}>
+      <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
-          if(key == 'onChange') return
+          if (key == 'onChange') return;
           return (
             <React.Fragment key={index}>
               {index != 0 && edit ? (
-                <MyTimePicker onTimeChanged={item?.onChange} initialValue={item[key]} />
+                <>
+                  {type == 'F' && item[key]?.search(':') != -1 ? (
+                    <MyTimePicker
+                      onTimeChanged={item?.onChange}
+                      initialValue={item[key]}
+                    />
+                  ) : (
+                    <MyInput
+                      inputStyle={{
+                        borderWidth: 0.5,
+                        width: 152,
+                        left: 10,
+                        borderColor: '#3E3E3E',
+                        borderRadius: 12,
+                        height: 40,
+                        alignSelf: 'center',
+                      }}
+                      containerStyle={{ bottom: 10, }}
+                      value={item[key]}
+                      onChangeText={item?.onChange}
+                    />
+                  )}
+                </>
               ) : (
                 <View key={key} style={styles.contentCol}>
-                  <MyText
-                    text={item[key]}
-                    size={16}
-                  />
+                  <MyText text={item[key]} size={16} />
                 </View>
               )}
             </React.Fragment>
-          )
+          );
         })}
         {isMute && (
           <View style={styles.contentIcon}>
@@ -90,7 +111,8 @@ export default function TimeTable({
     console.log('submit');
   },
   editView = false,
-  footer = <></>
+  footer = <></>,
+  type = 'F',
 }: {
   data: DataProps[];
   isMute?: boolean;
@@ -103,6 +125,7 @@ export default function TimeTable({
   onSubmitEditing?: () => void;
   editView?: boolean;
   footer?: React.ReactNode;
+  type?: 'F' | 'D';
 }) {
   return (
     <View style={styles.container}>
@@ -138,9 +161,10 @@ export default function TimeTable({
           isMute={isMute}
           onSubmitEditing={onSubmitEditing}
           edit={editView}
+          type={type}
         />
       ))}
-       {footer && (
+      {footer && (
         <>
           <GapView />
           {footer}

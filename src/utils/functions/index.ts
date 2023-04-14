@@ -200,7 +200,6 @@ function convertResponseToData(
         key !== 'createdDate' &&
         key !== 'fajrDelay' &&
         key !== 'dhuhrDelay' &&
-        key !== 'maghribDelay' &&
         key !== 'ishaDelay' &&
         key !== 'asrDelay'
       ) {
@@ -210,7 +209,7 @@ function convertResponseToData(
         );
 
         // get the value of the key and slice it to remove the seconds part
-        const value = curr[key] ? curr[key]?.slice(0, -3) : null;
+        const value = typeof curr[key] != "string" ? curr[key] : (curr[key] ? curr[key]?.slice(0, -3) : null);
 
         // if the key already exists in the accumulator array, push the value to its values array
         if (index > -1) {
