@@ -8,8 +8,10 @@ import { DeviceSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
 export default function DeviceNicknameForm({
+  setNickName,
   setStep,
 }: {
+  setNickName: (value: string) => void;
   setStep: (value: number) => void;
 }) {
   return (
@@ -22,8 +24,9 @@ export default function DeviceNicknameForm({
       <Formik
         initialValues={{ nickName: '' }}
         validationSchema={DeviceSetupSchema.deviceNickName}
-        onSubmit={values => {
+        onSubmit={({ nickName }) => {
           setStep(4);
+          setNickName(nickName);
         }}>
         {({
           handleChange,
@@ -44,7 +47,11 @@ export default function DeviceNicknameForm({
             {errors.nickName && touched.nickName && (
               <MyText
                 text={errors.nickName}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4 }}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 110,
+                  marginTop: 4,
+                }}
               />
             )}
             <View style={{ marginTop: 80, marginBottom: 40 }}>

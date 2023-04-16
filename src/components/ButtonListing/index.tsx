@@ -19,9 +19,11 @@ interface ListItem {
 export default function ButtonListing({
   data = [],
   radius = 0,
+  titleWidth,
 }: {
   data: ListItem[];
   radius?: number;
+  titleWidth?: string | number;
 }) {
   return (
     <Card radius={radius} width={275} height={216}>
@@ -29,7 +31,7 @@ export default function ButtonListing({
         style={{ maxHeight: 216 }}
         data={data}
         renderItem={({ item, index }) => {
-          return <ListCard item={item} index={index} />;
+          return <ListCard titleWidth={titleWidth} item={item} index={index} />;
         }}
         ItemSeparatorComponent={() => {
           return <MyDivider height={0.25} />;
@@ -39,9 +41,17 @@ export default function ButtonListing({
   );
 }
 
-const ListCard = ({ item, index }: { item: ListItem; index: number }) => {
+const ListCard = ({
+  item,
+  index,
+  titleWidth,
+}: {
+  item: ListItem;
+  index: number;
+  titleWidth?: string | number;
+}) => {
   const theme: Theme = useTheme();
-  const styles = makeStyles(theme, item);
+  const styles = makeStyles(theme, item, titleWidth);
 
   return (
     <TouchableOpacity
@@ -51,7 +61,9 @@ const ListCard = ({ item, index }: { item: ListItem; index: number }) => {
       style={styles.cardContainer}>
       {item.leftIcon && item?.leftIcon}
       {item.leftIcon && <GapView mode="horizontal" length={15} />}
-      <MyText text={item?.title} size={16} />
+      <View style={styles.titleWidth}>
+        <MyText text={item?.title} size={16} />
+      </View>
       <GapView
         mode="horizontal"
         length={item.leftIcon ? 50 : WINDOW_WIDTH / 8.5}
@@ -63,7 +75,11 @@ const ListCard = ({ item, index }: { item: ListItem; index: number }) => {
   );
 };
 
-const makeStyles = (theme: Theme, props: ListItem) => {
+const makeStyles = (
+  theme: Theme,
+  props: ListItem,
+  titleWidth?: string | number,
+) => {
   const { colors } = theme;
   const { rightChild } = props;
   return StyleSheet.create({
@@ -73,6 +89,9 @@ const makeStyles = (theme: Theme, props: ListItem) => {
       height: 54,
       alignItems: 'center',
       justifyContent: !rightChild ? 'flex-start' : 'space-between',
+    },
+    titleWidth: {
+      width: titleWidth ?? '100%',
     },
   });
 };

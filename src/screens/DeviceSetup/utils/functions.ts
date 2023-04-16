@@ -1,6 +1,143 @@
-import BleManager from 'react-native-ble-manager';
+import { NativeModules, NativeEventEmitter } from 'react-native';
+import BleManager, {
+  Peripheral,
+  PeripheralInfo,
+} from 'react-native-ble-manager';
+
+//@ts-ignore
+import { bytesToString, stringToBytes } from 'convert-string';
+
+import { DeviceInfo } from '../../../types';
+
+const scanTime = 10;
+
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export async function _startBluetooth() {
   await BleManager.start({ showAlert: false });
   console.log('Ble Module Intialized');
+}
+
+export async function _scanBleDevices(time?: number) {
+  await BleManager.scan([], time ?? scanTime, true);
+  // Success code
+  console.log('Scan started');
+  return new Promise((resolve: (value: Peripheral[]) => any, reject) => {
+    setTimeout(() => {
+      BleManager.getDiscoveredPeripherals()
+        .then(peripheralsArray => {
+          // Success code
+          resolve(peripheralsArray);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    }, scanTime * 1000);
+  });
+}
+
+export async function _connectBleDevice(devInfo: DeviceInfo) {
+  if (!devInfo.macId) {
+    return;
+  }
+  return new Promise((resolve: (value: PeripheralInfo) => any, reject) => {
+    BleManager.connect(devInfo?.macId!!)
+      .then(() => {
+        // Success code
+        console.log('Connected');
+        BleManager.retrieveServices(devInfo?.macId!!)
+          .then(peripheralInfo => {
+            // Success code
+            resolve(peripheralInfo);
+          })
+          .catch(err => {
+            reject(err);
+            console.log('error while retrieve services', err);
+          });
+      })
+      .catch(error => {
+        // Failure code
+        reject(error);
+        console.log('error while connecting', error);
+      });
+  });
+}
+
+export async function _disconnectBleDevice(devInfo: DeviceInfo) {
+  if (!devInfo.macId) {
+    BleManager.getConnectedPeripherals([]).then(peripheralsArray => {
+      // Success code
+      console.log('Connected peripherals: ' + JSON.stringify(peripheralsArray));
+      const dev: Peripheral | undefined = peripheralsArray.find(item =>
+        item.name?.includes('MYESP'),
+      );
+      if (!dev) {
+        return;
+      }
+      BleManager.disconnect(dev?.id)
+        .then(() => {
+          // Success code
+          console.log('Disconnected from Connected');
+        })
+        .catch(error => {
+          // Failure code
+          console.log('error while disconnecting', error);
+        });
+    });
+  } else {
+    BleManager.disconnect(devInfo?.macId!!)
+      .then(() => {
+        // Success code
+        console.log('Disconnected');
+      })
+      .catch(error => {
+        // Failure code
+        console.log('error while disconnecting', error);
+      });
+  }
+}
+
+export async function _readFromDevice(
+  devInfo: DeviceInfo,
+  serviceUUID: string,
+  charUUID: string,
+) {
+  return new Promise((resolve: (value: string) => any, reject) => {
+    BleManager.read(devInfo?.macId!!, serviceUUID, charUUID)
+      .then(readData => {
+        // Success code
+        const strData = bytesToString(readData);
+        resolve(strData);
+      })
+      .catch(error => {
+        // Failure code
+        console.log(error);
+      });
+  });
+}
+
+export async function _writeToDevice(
+  devInfo: DeviceInfo,
+  serviceUUID: string,
+  charUUID: string,
+) {
+  // return new Promise((resolve, reject) => {
+  const string = JSON.stringify({
+    ssid: devInfo?.ssid,
+    pass: devInfo?.password,
+  });
+  const data = stringToBytes(string);
+  console.log('device info1', string);
+  BleManager.write(devInfo?.macId!!, serviceUUID, charUUID, data, 64)
+    .then(async () => {
+      // Success code
+      console.log('Write Successfully');
+    })
+    .catch(error => {
+      // Failure code
+      // reject(error)
+      console.log(error);
+    });
+  // });
 }

@@ -78,17 +78,6 @@ async function _requestBlePermissions(): Promise<Boolean> {
     PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
     PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
   ]);
-  console.log(
-    'check Status',
-    checkStatus[
-      (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
-    ] === 'denied',
-  );
-
   if (
     checkStatus[
       (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
@@ -112,6 +101,7 @@ async function _requestBlePermissions(): Promise<Boolean> {
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
       PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
     ]);
+    console.log('hello', requestStatus);
     return (
       requestStatus[
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
@@ -122,7 +112,7 @@ async function _requestBlePermissions(): Promise<Boolean> {
       ] === 'granted'
     );
   } else {
-    return false;
+    return true;
   }
 }
 
