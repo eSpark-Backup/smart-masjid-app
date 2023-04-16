@@ -116,8 +116,8 @@ export default function App() {
             </Stack.Group>
           ) : (
             <Stack.Group>
-              <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
               <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+              <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
             </Stack.Group>
           )}
         </Stack.Navigator>

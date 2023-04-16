@@ -1,3 +1,5 @@
+import Toast from 'react-native-toast-message';
+
 import { api } from '.';
 import {
   CreateUserRequest,
@@ -7,7 +9,6 @@ import {
   UserResponse,
 } from '../types/userControllerApiResponse';
 import { userStore } from '../store/UserStore';
-import Toast from 'react-native-toast-message';
 import {
   removeDatafromLocalStorage,
   setDataInLocalStorage,

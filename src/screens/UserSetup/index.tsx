@@ -79,9 +79,10 @@ export default function UserSetupScreen() {
         res?.id.toString(),
       );
     }
-    
+
     if (res?.id) {
-      navigation.navigate('HomeBottomTab');
+      // navigation.navigate('HomeBottomTab'); //TODO: Change it later
+      navigation.navigate('DSetup');
     }
   };
 

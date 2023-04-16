@@ -24,6 +24,16 @@ export type UserStoreProps = {
   userData: UserResponse | null;
 };
 
+export type DeviceInfo = {
+  macId?: string;
+  nickName?: string;
+  ssid?: string;
+  password?: string;
+  device_model?: string;
+  mac_address?: string;
+  firmware_rev?: string;
+};
+
 export interface IPrayerTimeForPeriod {
   id: number;
   date: string;
@@ -64,4 +74,3 @@ export interface IPrayerTimeForPeriod {
   maghribCalled: boolean;
   ishaCalled: boolean;
 }
-
