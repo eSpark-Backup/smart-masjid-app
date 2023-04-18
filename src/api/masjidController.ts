@@ -51,7 +51,10 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
  * @description Get Adhan Configuration
  * @returns get data of masjid adhan config and save to masjidStore
  */
-export const UpdatedMasjidIqamahTiming = async (masjidId: string, data: IqamahTime) => {
+export const UpdatedMasjidIqamahTiming = async (
+  masjidId: string,
+  data: IqamahTime,
+) => {
   try {
     const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
     if (result.status == 200) {
@@ -105,4 +108,29 @@ export const GetJummahHistory = async (masjidId: string) => {
       masjidStore.JummahHistory.set(result.data);
     }
   } catch (error) {}
+};
+
+/**
+ *
+ * @description Search Masjid by Zip Code and Location
+ * @returns get masjid and and return masjid list
+ */
+export const SearchMasjidByLocation = async (
+  zipcode: string | number = '',
+  lat: string | number = 0,
+  long: string | number = 0,
+) => {
+  try {
+    const result = await api.get(
+      `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&distance=100`,
+    );
+    console.log('result', result);
+    
+    if(result.status == 200 && result.data) {
+      return result.data
+    }
+  } catch (error) {
+    console.log("error SearchMasjidByLocation", error);
+    
+  }
 };

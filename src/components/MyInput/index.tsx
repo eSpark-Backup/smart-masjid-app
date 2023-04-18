@@ -29,7 +29,7 @@ interface MyInputProps {
   placeholderColor?: string;
   title?: string;
   searchBar?: boolean;
-  onSearch?: () => void;
+  onSearch?: (text: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
   value?: string;
@@ -133,7 +133,7 @@ export default function MyInput(props: MyInputProps) {
         </View>
         {searchBar && (
           <TouchableOpacity
-            onPress={onSearch}
+            onPress={() => onSearch?.(text ?? '')}
             activeOpacity={0.9}
             style={[styles.searchBarContainer]}>
             <II name="search-outline" size={24} color="#fff" />
