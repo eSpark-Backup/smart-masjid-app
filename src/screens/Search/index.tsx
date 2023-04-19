@@ -63,32 +63,38 @@ export default function Search() {
     setLoading(false);
   };
   return (
-    <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
+    <>
       <OverlayLoader isShow={loading} />
-      {step == 0 && (
-        <SearchListing
-          onPress={(masjidDetails: Masjid) => {
-            setStep(1);
-            setSelectedMasjid(masjidDetails);
-          }}
-        />
-      )}
-      {step == 1 && (
-        <MasjidDetails
-          masjidDetails={selectedMasjid}
-          onSubscribe={() => setStep(2)}
-        />
-      )}
-      {step == 2 && (
-        <DeviceListing
-          onPress={device =>
-            onSubscribe(
-              device.id.toString(),
-              selectedMasjid?.id.toString() ?? '',
-            )
-          }
-        />
-      )}
-    </Wrapper>
+
+      <Wrapper
+        onBackPress={onBackPress}
+        showFooter={false}
+        bgImageSpacer={false}>
+        {step == 0 && (
+          <SearchListing
+            onPress={(masjidDetails: Masjid) => {
+              setStep(1);
+              setSelectedMasjid(masjidDetails);
+            }}
+          />
+        )}
+        {step == 1 && (
+          <MasjidDetails
+            masjidDetails={selectedMasjid}
+            onSubscribe={() => setStep(2)}
+          />
+        )}
+        {step == 2 && (
+          <DeviceListing
+            onPress={device =>
+              onSubscribe(
+                device.id.toString(),
+                selectedMasjid?.id.toString() ?? '',
+              )
+            }
+          />
+        )}
+      </Wrapper>
+    </>
   );
 }

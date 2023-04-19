@@ -11,7 +11,11 @@ import Geocoder from 'react-native-geocoding';
 
 Geocoder.init('AIzaSyDPO63dIpxQVdsZPynkYi0Ee8FxW_mwti8'); // use a valid API key
 
-const SearchListing = ({ onPress }: { onPress?: (masjidDetail: Masjid) => void }) => {
+const SearchListing = ({
+  onPress,
+}: {
+  onPress?: (masjidDetail: Masjid) => void;
+}) => {
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
 
   useEffect(() => {
@@ -58,7 +62,10 @@ const SearchListing = ({ onPress }: { onPress?: (masjidDetail: Masjid) => void }
       <GapView length={30} />
       <FlatList
         data={masjidList}
-        contentContainerStyle={{ paddingBottom: 240, paddingTop: 10 }}
+        contentContainerStyle={{
+          paddingBottom: 240,
+          paddingTop: 10,
+        }}
         renderItem={({ item, index }) => (
           <MasjidListCard
             onPress={() => onPress?.(item)}

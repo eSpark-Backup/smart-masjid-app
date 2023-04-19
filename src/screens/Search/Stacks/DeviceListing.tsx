@@ -5,6 +5,8 @@ import {
   DeviceListItem,
   GapView,
   MyDivider,
+  MyText,
+  MyTitle,
   TextLabel,
 } from '../../../components';
 import { Card } from '../../../containers';
@@ -46,6 +48,11 @@ const DeviceListing = ({ onPress }: { onPress?: (device: Device) => void }) => {
                   width: '100%',
                 }}
               />
+            )}
+            ListEmptyComponent={() => (
+              <View style={{padding: 10, alignItems: 'center'}}>
+                <MyText text="You have not setup any device till now" />
+              </View>
             )}
           />
         </View>
