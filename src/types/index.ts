@@ -1,3 +1,4 @@
+import { Device } from './deviceControllerTypes';
 import {
   AdhanConfig,
   IqamahTime,
@@ -38,6 +39,10 @@ export type MasjidStoreProps = {
   iqamahHistory: IqamahTime[];
   JummahTime: JummahTime | null;
   JummahHistory: JummahTime[];
+};
+
+export type DeviceStoreProps = {
+  devices: Device[]
 };
 
 export interface IPrayerTimeForPeriod {
