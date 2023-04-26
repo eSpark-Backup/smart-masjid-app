@@ -19,6 +19,15 @@ export async function _startBluetooth() {
   console.log('Ble Module Intialized');
 }
 
+export function checkBleStatus() {
+  return new Promise((resolve: (value: string) => any, reject) => {
+    BleManager.checkState().then(state => {
+      console.log(`current BLE state = '${state}'.`);
+      resolve(state);
+    });
+  });
+}
+
 export async function _scanBleDevices(time?: number) {
   await BleManager.scan([], time ?? scanTime, true);
   // Success code

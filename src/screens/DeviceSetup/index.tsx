@@ -30,6 +30,7 @@ import {
   _scanBleDevices,
   _startBluetooth,
   _writeToDevice,
+  checkBleStatus,
 } from './utils/functions';
 import { _saveDevice, _saveDeviceToUser } from '../../api/deviceController';
 
@@ -43,6 +44,7 @@ export default function DeviceSetupScreen() {
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
   const isFocused = useIsFocused();
+  const [bleStatus, setBleStatus] = useState<string | undefined>();
   const [step, setStep] = useState(1);
   const [devInfo, setDevInfo] = useState<DeviceInfo>({});
   const [scannedDevices, setScannedDevices] = useState<
@@ -64,15 +66,38 @@ export default function DeviceSetupScreen() {
 
   useEffect(() => {
     setStep(1);
-    handlePermissions();
     setConnFlag(true);
+    checker();
+    handlePermissions();
   }, [isFocused]);
 
+  async function checker() {
+    const res = await checkBleStatus();
+    console.log('kia a', res);
+    setBleStatus(res);
+  }
+
+  //?<< exit point
   useEffect(() => {
     return () => {
       _disconnectBleDevice(devInfo);
     };
   }, []);
+
+  useEffect(() => {
+    if (bleStatus === 'off') {
+      console.log('chala ha ye');
+      setStep(8);
+    } else if (bleStatus === 'on') {
+      setToastContent(state => ({
+        ...state,
+        onPress: () => {
+          setStep(1);
+          handlePermissions();
+        },
+      }));
+    }
+  }, [bleStatus]);
 
   useEffect(() => {
     console.log('milgaya parent ko', devInfo);
@@ -141,6 +166,7 @@ export default function DeviceSetupScreen() {
 
   const handlePermissions = async () => {
     const status = await _requestBlePermissions();
+    const res = await checkBleStatus();
     console.log(status);
     if (!status) {
       setStep(8);
@@ -153,7 +179,8 @@ export default function DeviceSetupScreen() {
         },
       });
       return;
-    } else {
+    }
+    if (res === 'on') {
       await _startBluetooth();
       const res = await _scanBleDevices();
       console.log('devices found', res.length);
@@ -164,7 +191,12 @@ export default function DeviceSetupScreen() {
       });
       console.log('ESP devices found', newArr);
       setScannedDevices(newArr);
-      setStep(2);
+      if (newArr.length === 0) {
+        setStep(8);
+        setToastContent(state => ({ ...state, onPress: () => setStep(1) }));
+      } else {
+        setStep(2);
+      }
     }
   };
 
