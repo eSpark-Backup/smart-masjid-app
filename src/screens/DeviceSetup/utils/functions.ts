@@ -1,9 +1,16 @@
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import {
+  NativeModules,
+  NativeEventEmitter,
+  DeviceEventEmitter,
+} from 'react-native';
 import BleManager, {
   Peripheral,
   PeripheralInfo,
 } from 'react-native-ble-manager';
+import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 
+//@ts-ignore
+import RNSettings from 'react-native-settings';
 //@ts-ignore
 import { bytesToString, stringToBytes } from 'convert-string';
 
@@ -17,6 +24,44 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 export async function _startBluetooth() {
   await BleManager.start({ showAlert: false });
   console.log('Ble Module Intialized');
+}
+
+export function _startLocationCheck(callback: (e: Event) => void) {
+  DeviceEventEmitter.addListener(RNSettings.GPS_PROVIDER_EVENT, callback);
+}
+
+export function _stopLocationCheck() {
+  DeviceEventEmitter.removeAllListeners(RNSettings.GPS_PROVIDER_EVENT);
+}
+
+export function _startCheckBle(callback: (e: Event) => void) {
+  BluetoothStateManager.onStateChange(callback, true);
+}
+
+export function _checkBleStatus() {
+  return new Promise((resolve: (value: boolean) => any, reject) => {
+    BleManager.checkState().then(state => {
+      console.log(`current BLE state = '${state}'.`);
+      if (state == 'on') {
+        resolve(true);
+      }
+      if (state == 'off') {
+        resolve(false);
+      }
+    });
+  });
+}
+
+export function _checkLocationStatus() {
+  return new Promise((resolve: (value: boolean) => any, reject) => {
+    RNSettings.getSetting(RNSettings.LOCATION_SETTING).then((result: any) => {
+      if (result == RNSettings.ENABLED) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+  });
 }
 
 export async function _scanBleDevices(time?: number) {
