@@ -1,7 +1,10 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { GetMasjidJummahTiming } from '../../../../../../api/masjidController';
+import {
+  GetMasjidJummahTiming,
+  UpdatedMasjidJummahTiming,
+} from '../../../../../../api/masjidController';
 import {
   Clock,
   EditTimeTable,
@@ -12,12 +15,14 @@ import {
   GapView,
   MyDivider,
   MyText,
+  OverlayLoader,
   ProfileAvatar,
   Rounded,
   TimeTable,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { masjidStore } from '../../../../../../store/MasjidStore';
+import moment from 'moment';
 
 export default function JummaTimings({
   setFlag,
@@ -26,12 +31,14 @@ export default function JummaTimings({
 }) {
   const [edit, setEdit] = useState(false);
   const jummahTimings: any = useHookstate(masjidStore.JummahTime).get();
+  const [data, setData] = useState<any>({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     GetMasjidJummahTiming('1');
   }, []);
 
-  const data: any = {
+  const data1: any = {
     id: 0,
     changeDate: '2023-12-13',
     jumuah1: '06:15:00',
@@ -42,7 +49,7 @@ export default function JummaTimings({
   };
 
   // Here we Convert the single object to an arrays of jumuah timings
-  
+
   // Here we initialize an empty array to hold the extracted jumuah timings
   var arr: any = [];
 
@@ -57,18 +64,37 @@ export default function JummaTimings({
         key !== 'id' &&
         key !== 'changeDate' &&
         key !== 'createdBy' &&
-        key !== 'createdDate'
+        key !== 'createdDate' &&
+        jummahTimings[key] != null
       ) {
         // If the key is a valid jumuah timing, add it to the arr array as an object
-        arr.push({ name: key, azanTiming: jummahTimings[key] });
+        arr.push({
+          name: key,
+          azanTiming: moment(jummahTimings[key], 'HH:mm:ss').format('hh:mm'),
+          onChange: (value: any) => {
+            setData({
+              ...data,
+              [key]: moment(value, 'hh:mm').format('HH:mm:ss'),
+            });
+          },
+        });
       }
     });
   }
 
+  const onUpdate = async () => {
+    console.log('data', data);
+    setLoading(true);
+    await UpdatedMasjidJummahTiming('1', data);
+    setLoading(false);
+    setEdit(false);
+    setData(null);
+  };
   return (
     <>
       <GapView length={30} />
       <View style={{ flex: 1, marginTop: 70 }}>
+        <OverlayLoader isShow={loading} />
         <TimeTable
           header={
             <>
@@ -91,12 +117,24 @@ export default function JummaTimings({
                     }}>
                     <History onPress={() => setFlag('jHist')} />
                     <GapView mode="horizontal" length={20} />
-                    <EditTimeTable onPress={() => setEdit(true)} />
+                    <EditTimeTable
+                      onPress={() => {
+                        setEdit(true);
+                        setData(jummahTimings ?? {});
+                      }}
+                    />
                   </View>
                 </View>
               ) : (
                 <View>
-                  <MyDatePicker onDateChange={() => {}} />
+                  <MyDatePicker
+                    onDateChange={date => {
+                      setData({
+                        ...data,
+                        changeDate: moment(date).format('YYYY-MM-DD'),
+                      });
+                    }}
+                  />
                   <GapView length={20} />
                 </View>
               )}
@@ -110,7 +148,12 @@ export default function JummaTimings({
               {edit && (
                 <View style={{ alignSelf: 'center' }}>
                   <GapView />
-                  <Rounded label="Save" onPress={() => setEdit(false)} />
+                  <Rounded
+                    label="Save"
+                    onPress={() => {
+                      onUpdate();
+                    }}
+                  />
                 </View>
               )}
             </>

@@ -17,6 +17,7 @@ import MyInput from '../MyInput';
 import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
 import TextLabel from '../TextLabel';
+import { TextInput } from 'react-native';
 
 interface DataProps {
   name?: string;
@@ -40,7 +41,11 @@ const RowItem = ({
     <TouchableOpacity
       activeOpacity={0.9}
       key={`${item?.name}-${index}`}
-      style={!edit ? {} : styles.editContentRow}>
+      style={
+        !edit
+          ? {}
+          : [styles.editContentRow, { paddingHorizontal: type == 'D' ? 0 : 10 }]
+      }>
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
           if (key == 'onChange') return;
@@ -54,20 +59,22 @@ const RowItem = ({
                       initialValue={item[key]}
                     />
                   ) : (
-                    <MyInput
-                      inputStyle={{
-                        borderWidth: 0.5,
-                        width: 152,
-                        left: 10,
-                        borderColor: '#3E3E3E',
-                        borderRadius: 12,
-                        height: 40,
-                        alignSelf: 'center',
-                      }}
-                      containerStyle={{ bottom: 10, }}
-                      value={item[key]}
-                      onChangeText={item?.onChange}
-                    />
+                    <View style={[styles.contentCol, {flexDirection: 'row', width: 80}]}>
+                      <TextInput
+                        defaultValue={item[key]}
+                        onChangeText={item?.onChange}
+                        style={{
+                          borderWidth: 0.5,
+                          borderColor: '#3E3E3E',
+                          borderRadius: 5,
+                          height: 40,
+                          width: 40,
+                          textAlign: 'center',
+                        }}
+                      />
+                      <GapView mode='horizontal' />
+                      <MyText text='Mins' />
+                    </View>
                   )}
                 </>
               ) : (

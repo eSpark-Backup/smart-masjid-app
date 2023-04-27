@@ -1,6 +1,6 @@
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
-import { IqamahTime } from '../types/masjidControllerTypes';
+import { IqamahTime, JummahTime } from '../types/masjidControllerTypes';
 
 /**
  *
@@ -108,6 +108,25 @@ export const GetJummahHistory = async (masjidId: string) => {
       masjidStore.JummahHistory.set(result.data);
     }
   } catch (error) {}
+};
+
+/**
+ *
+ * @description Get Adhan Configuration
+ * @returns get data of masjid adhan config and save to masjidStore
+ */
+export const UpdatedMasjidJummahTiming = async (
+  masjidId: string,
+  data: JummahTime,
+) => {
+  try {
+    const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
+    if (result.status == 200) {
+      masjidStore.JummahTime.set(result.data);
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
 };
 
 /**

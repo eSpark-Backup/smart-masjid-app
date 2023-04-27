@@ -209,17 +209,37 @@ function convertResponseToData(
         );
 
         // get the value of the key and slice it to remove the seconds part
-        const value = typeof curr[key] != "string" ? curr[key] : (curr[key] ? curr[key]?.slice(0, -3) : null);
+        var value = null;
+
+        const currValue = curr[key];
+
+        if (typeof currValue === 'string') {
+          // check if it is a valid date string
+          const dateValue = new Date(currValue);
+          if (isNaN(dateValue.getTime())) {
+            // it is not a valid date string, so leave it as is
+            value = currValue?.slice(0, -3);
+          } else {
+            // it is a valid date string, so extract the date part
+            value = dateValue.toISOString().slice(0, 10);
+          }
+        } else if (currValue instanceof Date) {
+          // it is a Date object, so extract the date part
+          value = currValue.toISOString().slice(0, 10);
+        } else {
+          // it is neither a string nor a Date object, so leave it as is
+          value = currValue;
+        }
 
         // if the key already exists in the accumulator array, push the value to its values array
         if (index > -1) {
-          acc[index].values.push(value);
+          acc[index].values.push(value ?? '-');
         }
         // otherwise, add a new object to the accumulator array
         else {
           acc.push({
             heading: key?.charAt(0)?.toUpperCase() + key?.slice(1),
-            values: [value],
+            values: [value ?? '-'],
           });
         }
       }
