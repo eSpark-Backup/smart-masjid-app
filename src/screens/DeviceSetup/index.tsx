@@ -24,7 +24,6 @@ import {
   RootStackParamList,
 } from '../../types';
 import { DLoader, MyToast, SLoader } from '../../components';
-import { _requestBlePermissions } from '../../utils/functions';
 import {
   _checkBleStatus,
   _checkLocationStatus,
@@ -39,7 +38,7 @@ import {
   _writeToDevice,
 } from './utils/functions';
 import { _saveDevice, _saveDeviceToUser } from '../../api/deviceController';
-import Toast from 'react-native-toast-message';
+import { useUpdateEffect, _requestBlePermissions } from '../../utils';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -74,7 +73,6 @@ export default function DeviceSetupScreen() {
   });
 
   function _handleGPSProviderEvent(e: any) {
-    console.log('what is the location status xxxx', e);
     if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
       setlocationStatus(false);
     } else {
@@ -94,25 +92,25 @@ export default function DeviceSetupScreen() {
 
   const checkStatus = async () => {
     const ble = await _checkBleStatus();
-    setBleStatus(ble);
     const loc = await _checkLocationStatus();
+    setBleStatus(ble);
     setlocationStatus(loc);
+    setStep(1);
+    setConnFlag(true);
+    await handlePermissions(ble, loc);
   };
 
   useEffect(() => {
     checkStatus();
     _startLocationCheck(_handleGPSProviderEvent);
     _startCheckBle(_handleBleStateEvent);
-    setStep(1);
-    setConnFlag(true);
-    handlePermissions();
     return () => {
       _stopLocationCheck();
     };
   }, [isFocused]);
 
-  useEffect(() => {
-    if (!locationStatus) {
+  useUpdateEffect(() => {
+    if (locationStatus === false) {
       setStep(8);
       setToastContent({
         message: 'Enable Location',
@@ -121,7 +119,7 @@ export default function DeviceSetupScreen() {
         },
       });
     }
-    if (!bleStatus) {
+    if (bleStatus === false) {
       setStep(8);
       setToastContent({
         message: 'Enable Ble Adapter',
@@ -140,7 +138,6 @@ export default function DeviceSetupScreen() {
   }, []);
 
   useEffect(() => {
-    console.log('what is ble status');
     if (retry) {
       setStep(1);
       setConnFlag(true);
@@ -214,8 +211,10 @@ export default function DeviceSetupScreen() {
     }
   };
 
-  const handlePermissions = async () => {
+  const handlePermissions = async (ble?: boolean, location?: boolean) => {
     const status = await _requestBlePermissions();
+    const bleCheck = ble ?? bleStatus;
+    const locationCheck = location ?? locationStatus;
     console.log(status);
     if (!status) {
       setStep(8);
@@ -229,7 +228,7 @@ export default function DeviceSetupScreen() {
       });
       return;
     }
-    if (bleStatus && locationStatus) {
+    if (bleCheck && locationCheck) {
       await _startBluetooth();
       const res = await _scanBleDevices();
       console.log('devices found', res.length);
@@ -244,19 +243,26 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({ ...state, onPress: () => setStep(1) }));
       } else {
-        setStep(2);
+        if (!bleCheck || !locationCheck) {
+          setStep(8);
+        } else {
+          setStep(2);
+        }
       }
     } else {
-      setStep(8);
-      setToastContent(state => ({
-        ...state,
-        onPress: () => setRetry(true),
-      }));
+      if (locationStatus === false || bleStatus === false) {
+        setStep(8);
+        setToastContent(state => ({
+          ...state,
+          message: 'Check the Location/Bluetooth adapter',
+          onPress: () => setRetry(true),
+        }));
+      }
     }
   };
 
   return (
-    <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
+    <Wrapper onBackPress={() => disable && setStep(handleBack)}>
       <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
         {step == 1 && <DLoader />}
         {step == 2 && (
