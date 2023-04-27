@@ -30,20 +30,20 @@ export type AdhanConfig = {
 };
 
 export type IqamahTime = {
-  id: number;
+  id?: number;
   type: string;
   changeDate: string;
-  fajr: string;
-  dhuhr: string;
-  asr: string;
-  isha: string;
-  fajrDelay: number | null;
-  dhuhrDelay: number | null;
-  maghribDelay: number | null;
-  ishaDelay: number | null;
-  createdBy: string;
-  createdDate: string;
-  asrDelay: number | null;
+  fajr?: string;
+  dhuhr?: string;
+  asr?: string;
+  isha?: string;
+  fajrDelay?: number | null;
+  dhuhrDelay?: number | null;
+  maghribDelay?: number | null;
+  ishaDelay?: number | null;
+  createdBy?: string;
+  createdDate?: string;
+  asrDelay?: number | null;
 };
 
 export type JummahTime = {
@@ -58,19 +58,19 @@ export type JummahTime = {
 type SubscriptionCategory = {
   id: number;
   name: string;
-}
+};
 
 type SubscriptionType = {
   id: number;
   subscriptionCategory: SubscriptionCategory;
   name: string;
   topic: string;
-}
+};
 
 type Location = {
   type: string;
   coordinates: number[];
-}
+};
 
 export type Masjid = {
   id: number;
@@ -98,4 +98,4 @@ export type Masjid = {
   createdDate: string;
   updatedBy: string | null;
   updatedDate: string | null;
-}
+};

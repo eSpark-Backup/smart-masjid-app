@@ -2,14 +2,19 @@ import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { GetMasjidIqamahTiming } from '../../../../../../api/masjidController';
+import {
+  GetMasjidIqamahTiming,
+  UpdatedMasjidIqamahTiming,
+} from '../../../../../../api/masjidController';
 import { EditTimeTable, History } from '../../../../../../assets';
+import Toast from 'react-native-toast-message';
 
 import {
   GapView,
   MyDivider,
   MyDropDown,
   MyText,
+  OverlayLoader,
   ProfileAvatar,
   Rounded,
   TimeTable,
@@ -17,6 +22,7 @@ import {
 import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import { masjidStore } from '../../../../../../store/MasjidStore';
+import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 
 export default function IqamahTimings({
   setFlag,
@@ -26,19 +32,70 @@ export default function IqamahTimings({
   const [edit, setEdit] = useState(false);
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [data, setData] = useState<any>({});
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     GetMasjidIqamahTiming('1');
   }, []);
 
+  const onUpdate = async () => {
+    var dataObj: IqamahTime = data;
+    console.log('dataObj dataObj', dataObj);
 
+    if (dataObj.type == 'F') {
+      setLoading(true);
+      await UpdatedMasjidIqamahTiming('1', {
+        changeDate: dataObj.changeDate,
+        type: dataObj.type,
+        asr: dataObj.asr,
+        fajr: dataObj.fajr,
+        dhuhr: dataObj.dhuhr,
+        isha: dataObj.isha,
+        maghribDelay: dataObj.maghribDelay,
+      });
+      setLoading(false);
+      setEdit(false);
+      setData(null);
+    } else {
+      if (
+        !Boolean(dataObj.fajrDelay) ||
+        !Boolean(dataObj.dhuhrDelay) ||
+        !Boolean(dataObj.asrDelay) ||
+        !Boolean(dataObj.maghribDelay) ||
+        !Boolean(dataObj.ishaDelay)
+      ) {
+        Toast.show({
+          text2: 'delay value should be greater than zero',
+          type: 'error',
+        });
+        return;
+      }
+      setLoading(true);
+      await UpdatedMasjidIqamahTiming('1', {
+        changeDate: dataObj.changeDate,
+        type: dataObj.type,
+        fajrDelay: dataObj.fajrDelay,
+        dhuhrDelay: dataObj.dhuhrDelay,
+        asrDelay: dataObj.asrDelay,
+        maghribDelay: dataObj.maghribDelay,
+        ishaDelay: dataObj.ishaDelay,
+      });
+      setLoading(false);
+      setEdit(false);
+      setData(null);
+    }
+  };
+
+  const type = data?.type ?? iqamahTimings?.type;
   return (
     <>
       <GapView length={30} />
       <View style={{ flex: 1, marginTop: 70 }}>
         <ScrollView
           contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}>
+          <OverlayLoader isShow={loading} />
+
           <TimeTable
+            type={data?.type ?? iqamahTimings?.type}
             header={
               <>
                 <GapView />
@@ -80,8 +137,8 @@ export default function IqamahTimings({
                         { id: 2, name: 'D' },
                       ]}
                       defaultValue={{
-                        id: iqamahTimings?.type == 'F' ? 1 : 2,
-                        name: iqamahTimings?.type ?? '',
+                        id: data?.type == 'F' ? 1 : 2,
+                        name: data?.type ?? '',
                       }}
                       width={WINDOW_WIDTH - 65}
                       onChangeValue={e => setData({ ...data, type: e.name })}
@@ -104,61 +161,75 @@ export default function IqamahTimings({
             data={[
               {
                 name: 'Fajr',
-                iqamahTiming: moment(iqamahTimings?.fajr, 'HH:mm:ss')
-                  .add('minute', iqamahTimings?.fajrDelay ?? 0)
-                  .format('hh:mm'),
+                iqamahTiming:
+                  type == 'F'
+                    ? moment(iqamahTimings?.fajr, 'HH:mm:ss').format('hh:mm')
+                    : iqamahTimings?.fajrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,
-                    fajr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                    [type == 'F' ? 'fajr' : 'fajrDelay']:
+                      data?.type == 'D'
+                        ? value
+                        : moment(value, 'hh:mm').format('HH:mm:ss'),
                   });
                 },
               },
               {
                 name: 'Dhur',
-                iqamahTiming: moment(iqamahTimings?.dhuhr, 'HH:mm:ss')
-                  .add('minute', iqamahTimings?.dhuhrDelay ?? 0)
-                  .format('hh:mm'),
+                iqamahTiming:
+                  type == 'F'
+                    ? moment(iqamahTimings?.dhuhr, 'HH:mm:ss').format('hh:mm')
+                    : iqamahTimings?.dhuhrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,
-                    dhuhr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                    [type == 'F' ? 'dhuhr' : 'dhuhrDelay']:
+                      data?.type == 'D'
+                        ? value
+                        : moment(value, 'hh:mm').format('HH:mm:ss'),
                   });
                 },
               },
               {
                 name: 'Asr',
-                iqamahTiming: moment(iqamahTimings?.asr, 'HH:mm:ss')
-                  .add('minute', iqamahTimings?.asrDelay ?? 0)
-                  .format('hh:mm'),
+                iqamahTiming:
+                  type == 'F'
+                    ? moment(iqamahTimings?.asr, 'HH:mm:ss').format('hh:mm')
+                    : iqamahTimings?.asrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,
-                    asr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                    [type == 'F' ? 'asr' : 'asrDelay']:
+                      data?.type == 'D'
+                        ? value
+                        : moment(value, 'hh:mm').format('HH:mm:ss'),
                   });
                 },
               },
               {
                 name: 'Mugrib',
-                iqamahTiming: moment(iqamahTimings?.fajr, 'HH:mm:ss')
-                  .add('minute', iqamahTimings?.maghribDelay ?? 0)
-                  .format('hh:mm'),
+                iqamahTiming: iqamahTimings?.maghribDelay?.toString(),
                 onChange: value => {
                   setData({
                     ...data,
-                    fajr: moment(value, 'hh:mm').format('HH:mm:ss'),
+                    maghribDelay: value,
                   });
                 },
               },
               {
                 name: 'Isha',
-                iqamahTiming: moment(iqamahTimings?.isha, 'HH:mm:ss')
-                  .add('minute', iqamahTimings?.ishaDelay ?? 0)
-                  .format('hh:mm'),
+                iqamahTiming:
+                  type == 'F'
+                    ? moment(iqamahTimings?.isha, 'HH:mm:ss').format('hh:mm')
+                    : iqamahTimings?.ishaDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,
-                    isha: moment(value, 'hh:mm').format('HH:mm:ss'),
+                    [type == 'F' ? 'isha' : 'ishaDelay']:
+                      data?.type == 'D'
+                        ? value
+                        : moment(value, 'hh:mm').format('HH:mm:ss'),
                   });
                 },
               },
@@ -170,7 +241,7 @@ export default function IqamahTimings({
                 {edit && (
                   <View style={{ alignSelf: 'center' }}>
                     <GapView />
-                    <Rounded label="Save" onPress={() => setEdit(false)} />
+                    <Rounded label="Save" onPress={onUpdate} />
                   </View>
                 )}
               </>

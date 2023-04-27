@@ -38,7 +38,11 @@
     <true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Smart Masjid needs location permission to search masjid near you</string>
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  <string>Smart Masjid needs location permission to search masjid near you</string>
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>Smart Masjid needs location permission to search masjid near you</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

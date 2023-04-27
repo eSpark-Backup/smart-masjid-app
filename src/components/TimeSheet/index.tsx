@@ -60,6 +60,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
         contentContainerStyle={{ flexDirection: 'row' }}>
         <FlatList
           horizontal
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 30 }}
           data={data ?? []}
           renderItem={renderTable}

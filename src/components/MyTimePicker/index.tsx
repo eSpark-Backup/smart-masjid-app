@@ -47,7 +47,7 @@ export default function MyTimePicker({
           styles.contentCol,
           {
             borderWidth: 0.5,
-            width: 152,
+            width: 100,
             left: 10,
             borderColor: '#3E3E3E',
             borderRadius: 12,
