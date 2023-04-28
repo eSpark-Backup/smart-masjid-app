@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useHookstate } from '@hookstate/core';
+import { ImmutableObject, useHookstate } from '@hookstate/core';
 
 import { PlusSvg } from '../../assets';
 import { GapView, MyText, TextLabel, DeviceCard } from '../../components';
@@ -16,6 +16,8 @@ import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { DeviceSetting } from './Stacks';
 import { userStore } from '../../store/UserStore';
+import { deviceStore } from '../../store/DeviceStore';
+import { Device as DeviceType } from '../../types/deviceControllerTypes';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -49,7 +51,7 @@ export default function Device() {
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('MyDevice');
   const user = useHookstate(userStore?.userData)?.get();
-
+  const devices: any = useHookstate(deviceStore?.devices)?.get();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const isFocused = useIsFocused();
   const theme: Theme = useTheme();
@@ -57,6 +59,7 @@ export default function Device() {
   useEffect(() => {
     setStep(0);
     console.log('what is the user info', user?.userType?.name);
+    console.log('what is the user info', devices);
   }, [isFocused]);
 
   const onBackPress = () => {
@@ -68,6 +71,13 @@ export default function Device() {
   };
 
   const data = Array(4).fill(10);
+  const realData = devices.filter((item: DeviceType) => {
+    if (activeTab == 'MasjidDevice') {
+      return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
+    } else {
+      return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
+    }
+  });
   return (
     <Wrapper
       onBackPress={onBackPress}
@@ -106,7 +116,7 @@ export default function Device() {
                   />
                 )}
             </TouchableOpacity>
-            {user?.userType.name === 'Masjid Admin' && (
+            {user?.userType?.name === 'Masjid Admin' && (
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setActiveTab('MasjidDevice')}>
@@ -138,19 +148,27 @@ export default function Device() {
               paddingVertical: 20,
             }}
             numColumns={2}
-            data={data}
-            renderItem={({ index }) => {
+            data={realData}
+            renderItem={({
+              item,
+              index,
+            }: {
+              item: DeviceType;
+              index: number;
+            }) => {
               if (index != data?.length - 1) {
                 return (
                   <DeviceCard
-                    type={activeTab === 'MyDevice' ? 'speaker' : 'button'}
+                    deviceData={item}
                     onPress={() => setStep(1)}
+                    activeTab={activeTab}
                   />
                 );
               } else {
                 return <AddDevice />;
               }
             }}
+            ListEmptyComponent={EmptyComponent}
             ItemSeparatorComponent={GapView}
           />
         </>
@@ -159,6 +177,22 @@ export default function Device() {
     </Wrapper>
   );
 }
+
+const EmptyComponent = () => {
+  return (
+    <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 100,
+      }}>
+      <MyText
+        text="No Device Found!"
+        textStyle={{ fontSize: 16, fontWeight: 'bold', color: '#006870' }}
+      />
+    </View>
+  );
+};
 
 const makeStyles = (theme: Theme) => {
   const { colors } = theme;
