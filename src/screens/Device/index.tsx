@@ -70,7 +70,6 @@ export default function Device() {
     }
   };
 
-  const data = Array(4).fill(10);
   const realData = devices.filter((item: DeviceType) => {
     if (activeTab == 'MasjidDevice') {
       return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
@@ -156,19 +155,17 @@ export default function Device() {
               item: DeviceType;
               index: number;
             }) => {
-              if (index != data?.length - 1) {
-                return (
+              return (
+                <>
                   <DeviceCard
                     deviceData={item}
                     onPress={() => setStep(1)}
                     activeTab={activeTab}
                   />
-                );
-              } else {
-                return <AddDevice />;
-              }
+                  <AddDevice />
+                </>
+              );
             }}
-            ListEmptyComponent={EmptyComponent}
             ItemSeparatorComponent={GapView}
           />
         </>
@@ -177,22 +174,6 @@ export default function Device() {
     </Wrapper>
   );
 }
-
-const EmptyComponent = () => {
-  return (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 100,
-      }}>
-      <MyText
-        text="No Device Found!"
-        textStyle={{ fontSize: 16, fontWeight: 'bold', color: '#006870' }}
-      />
-    </View>
-  );
-};
 
 const makeStyles = (theme: Theme) => {
   const { colors } = theme;
