@@ -309,11 +309,14 @@ export default function DeviceSetupScreen() {
           <MyToast
             isSuccess={true}
             btnText={route.params?.from ? 'Awesome' : 'Search Masjid'}
-            onPress={() =>
+            onPress={() => {
+              if (userStore.currentRegisterUser.get()) {
+                userStore.userData.set(userStore.currentRegisterUser.get());
+              }
               navigation.navigate('HomeBottomTab', {
                 screen: route.params?.from ? 'Device' : 'Home',
-              })
-            }
+              });
+            }}
             title="Device setup complete!"
             message={'Your device is connected successfully.' + masjidSetupText}
           />

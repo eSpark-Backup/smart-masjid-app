@@ -7,10 +7,11 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
 
 import { globalStore } from '../../store/GlobalStates';
 import { IPrayerTimeForPeriod } from '../../types';
+import moment from 'moment';
+import { IqamahTime, JummahTime } from '../../types/masjidControllerTypes';
 
 /**
  *
@@ -227,6 +228,83 @@ function getCurrentMonthAdhanData(): IPrayerTimeForPeriod[] {
   return monthPrayerTimings;
 }
 
+interface ConvertedData {
+  heading: string;
+  values: (string | null)[];
+}
+
+/**
+ * Converts an array of IqamahTime and JummahTime objects into an array of ConvertedData objects
+ * @param arr Array of IqamahTime and JummahTime objects
+ * @returns Array of ConvertedData objects
+ */
+function convertResponseToData(
+  arr: (IqamahTime & JummahTime)[],
+): ConvertedData[] {
+  const data = arr.reduce<ConvertedData[]>((acc, curr: any) => {
+    const keys = Object.keys(curr);
+
+    // loop through each key of the current object
+    keys.forEach(key => {
+      // check if the key is not one of the unwanted keys
+      if (
+        key !== 'id' &&
+        key !== 'type' &&
+        key !== 'createdBy' &&
+        key !== 'createdDate' &&
+        key !== 'fajrDelay' &&
+        key !== 'dhuhrDelay' &&
+        key !== 'ishaDelay' &&
+        key !== 'asrDelay'
+      ) {
+        // find the index of the key in the accumulator array
+        const index = acc.findIndex(
+          item => item.heading === key.charAt(0).toUpperCase() + key.slice(1),
+        );
+
+        // get the value of the key and slice it to remove the seconds part
+        var value = null;
+
+        const currValue = curr[key];
+
+        if (typeof currValue === 'string') {
+          // check if it is a valid date string
+          const dateValue = new Date(currValue);
+          if (isNaN(dateValue.getTime())) {
+            // it is not a valid date string, so leave it as is
+            value = currValue?.slice(0, -3);
+          } else {
+            // it is a valid date string, so extract the date part
+            value = dateValue.toISOString().slice(0, 10);
+          }
+        } else if (currValue instanceof Date) {
+          // it is a Date object, so extract the date part
+          value = currValue.toISOString().slice(0, 10);
+        } else {
+          // it is neither a string nor a Date object, so leave it as is
+          value = currValue;
+        }
+
+        // if the key already exists in the accumulator array, push the value to its values array
+        if (index > -1) {
+          acc[index].values.push(value ?? '-');
+        }
+        // otherwise, add a new object to the accumulator array
+        else {
+          acc.push({
+            heading: key?.charAt(0)?.toUpperCase() + key?.slice(1),
+            values: [value ?? '-'],
+          });
+        }
+      }
+    });
+
+    return acc;
+  }, []);
+
+  return data;
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
@@ -236,4 +314,5 @@ export {
   getDataFromLocalStorage,
   removeDatafromLocalStorage,
   getCurrentMonthAdhanData,
+  convertResponseToData,
 };

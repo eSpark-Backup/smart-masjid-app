@@ -8,13 +8,24 @@ import {
   TextLabel,
   TimeTable,
 } from '../../../components';
+import { Masjid } from '../../../types/masjidControllerTypes';
 
-const MasjidDetails = ({ onSubscribe }: { onSubscribe: () => void }) => {
+const MasjidDetails = ({
+  onSubscribe,
+  masjidDetails,
+}: {
+  onSubscribe: () => void;
+  masjidDetails?: Masjid;
+}) => {
   const [subscribe, setSubscribe] = useState(false);
+
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <GapView length={45} />
-      <TextLabel label="Masjid Ar - Rahman" textStyle={{ paddingBottom: 5 }} />
+      <TextLabel
+        label={masjidDetails?.name ?? '-'}
+        textStyle={{ paddingBottom: 5 }}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>
@@ -22,7 +33,9 @@ const MasjidDetails = ({ onSubscribe }: { onSubscribe: () => void }) => {
         <MyText text="Method: Islamic Society of North America" size={16} />
         <GapView length={5} />
         <MyText
-          text="Jurisdiction: Standard (Shafi, Hanbali, Maliki)"
+          text={`Jurisdiction: ${
+            masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name ?? '-'
+          }`}
           size={16}
         />
         <GapView length={20} />

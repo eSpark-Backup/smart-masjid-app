@@ -1,35 +1,33 @@
-import React from 'react';
+import { useHookstate } from '@hookstate/core';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { GetJummahHistory } from '../../../../../../api/masjidController';
 
 import { MyText, TimeSheet } from '../../../../../../components';
+import { masjidStore } from '../../../../../../store/MasjidStore';
+import { JummahTime } from '../../../../../../types/masjidControllerTypes';
+import { convertResponseToData } from '../../../../../../utils/functions';
 
 export default function History({
   setFlag,
 }: {
   setFlag: (value: string) => void;
 }) {
+  const jummahHistory: any = useHookstate<JummahTime[]>(
+    masjidStore.JummahHistory,
+  ).get();
+
+  useEffect(() => {
+    GetJummahHistory('1');
+  }, []);
+
   return (
     <View style={{ flex: 1, marginTop: 70, alignItems: 'center' }}>
       <MyText
         text="Jummah history"
         textStyle={{ fontWeight: '400', fontSize: 16 }}
       />
-      <TimeSheet
-        data={[
-          {
-            heading: 'Change Date',
-            values: ['12/02/2021', '12/02/2021', '12/02/2021'],
-          },
-          {
-            heading: 'Jumma 1',
-            values: ['06:00', '06:00', '06:00'],
-          },
-          {
-            heading: 'Jumma 2',
-            values: ['06:00', '06:00', '06:00'],
-          },
-        ]}
-      />
+      <TimeSheet data={convertResponseToData(jummahHistory) ?? []} />
     </View>
   );
 }

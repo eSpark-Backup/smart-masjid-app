@@ -15,7 +15,7 @@ export default function MapBox({
       <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
-        mapPadding={{ bottom: 100, top: 100, left: 100, right: 100 }}
+        // mapPadding={{ bottom: 100, top: 100, left: 100, right: 100 }}
         region={{
           latitude: latitude,
           longitude: longitude,
@@ -30,6 +30,6 @@ export default function MapBox({
 const styles = StyleSheet.create({
   map: {
     height: 180,
-    borderRadius: 100,
+    // borderRadius: 100,
   },
 });

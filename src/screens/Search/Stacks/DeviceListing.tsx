@@ -1,14 +1,20 @@
+import { useHookstate } from '@hookstate/core';
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import {
   DeviceListItem,
   GapView,
   MyDivider,
+  MyText,
+  MyTitle,
   TextLabel,
 } from '../../../components';
 import { Card } from '../../../containers';
+import { deviceStore } from '../../../store/DeviceStore';
+import { Device } from '../../../types/deviceControllerTypes';
 
-const DeviceListing = ({ onPress }: { onPress?: () => void }) => {
+const DeviceListing = ({ onPress }: { onPress?: (device: Device) => void }) => {
+  const devices: any = useHookstate(deviceStore.devices).get();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <GapView length={45} />
@@ -22,20 +28,14 @@ const DeviceListing = ({ onPress }: { onPress?: () => void }) => {
       <Card>
         <View>
           <FlatList
-            data={[
-              { name: 'Home', subscription: 'No Subscription', online: true },
-              { name: 'Home', subscription: 'No Subscription', online: false },
-              { name: 'Home', subscription: 'Masjid Al Aqsa', online: true },
-            ]}
-            renderItem={({ item }) => (
+            data={devices}
+            renderItem={({ item }: { item: Device }) => (
               <DeviceListItem
-                onPress={onPress}
-                title={item.name}
-                subTitle={item.subscription}
-                disabled={
-                  !(item.subscription == 'No Subscription' && item.online)
-                }
-                online={item.online}
+                onPress={() => onPress?.(item)}
+                title={item.deviceType.name}
+                subTitle={item.masjid ? item.masjid.name : 'No Subscription'}
+                disabled={!!item.masjid}
+                online={Boolean(item.deviceTelemetry)}
               />
             )}
             ItemSeparatorComponent={() => (
@@ -48,6 +48,11 @@ const DeviceListing = ({ onPress }: { onPress?: () => void }) => {
                   width: '100%',
                 }}
               />
+            )}
+            ListEmptyComponent={() => (
+              <View style={{padding: 10, alignItems: 'center'}}>
+                <MyText text="You have not setup any device till now" />
+              </View>
             )}
           />
         </View>

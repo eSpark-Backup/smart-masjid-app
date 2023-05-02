@@ -113,11 +113,12 @@ export default function App() {
             <Stack.Group>
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="USetup" component={UserSetupScreen} />
+              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
           ) : (
             <Stack.Group>
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
               <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
+              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
           )}
         </Stack.Navigator>
