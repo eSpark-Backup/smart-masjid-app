@@ -25,3 +25,4 @@ export { default as OverlayLoader } from './OverlayLoader';
 export { default as DeviceListItem } from './DeviceListItem';
 export { default as SwipeableTimeTable } from './TimeTable/SwipeableTimeTable';
 export { default as DeviceCard } from './DeviceCard';
+export { default as DeviceSettingSectionList } from './DeviceSettingSectionList';
