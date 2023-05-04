@@ -113,6 +113,7 @@ export default function App() {
             <Stack.Group>
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="USetup" component={UserSetupScreen} />
+              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
           ) : (
             <Stack.Group>
@@ -132,7 +133,7 @@ export default function App() {
 const styles = StyleSheet.create({
   successStyle: { width: '90%', borderLeftColor: '#98c379' },
   errorStyle: { width: '90%', borderLeftColor: '#cf6362' },
-  warningStyle: { width: '90%', borderLeftColor: '#f2ee6a' },
+  warningStyle: { width: '90%', borderLeftColor: '#f2be09' },
   text1Style: {
     fontFamily: 'roboto',
     fontSize: 14,

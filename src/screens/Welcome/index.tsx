@@ -38,7 +38,7 @@ export default function App() {
         <GapView length={80} />
         <Joined
           containerStyle={{ alignSelf: 'center' }}
-          onPress1={() => navigation.navigate('USetup', { type: 'setup' })}
+          onPress1={() => {}}
           onPress2={() => navigation.navigate('USetup', { type: 'setup' })}
         />
         <GapView length={80} />

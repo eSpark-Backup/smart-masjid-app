@@ -1,3 +1,5 @@
+import Toast from 'react-native-toast-message';
+
 import { api } from '.';
 import {
   CreateUserRequest,
@@ -7,7 +9,6 @@ import {
   UserResponse,
 } from '../types/userControllerApiResponse';
 import { userStore } from '../store/UserStore';
-import Toast from 'react-native-toast-message';
 import {
   removeDatafromLocalStorage,
   setDataInLocalStorage,
@@ -45,7 +46,7 @@ export const CreateUser = async (
 ): Promise<UserResponse | undefined> => {
   try {
     const result: any = await api.post<UserResponse>('/users', data);
-    if (result.data) userStore.userData.set(result.data);
+    if (result.data) userStore.currentRegisterUser.set(result.data);
     return result.data;
   } catch (error) {
     console.log('error CreateUser', error, 'Request', data);
@@ -109,15 +110,14 @@ export const CheckUserExists = async (email: string, phone: string) => {
         phone ? '%2B1' + phone : ''
       }`,
     );
-   
-    if(result.status == 200 && result.data) {
+
+    if (result.status == 200 && result.data) {
       return result.data;
-    }else {
-      return null
+    } else {
+      return null;
     }
   } catch (err) {}
 };
-
 
 /**
  *
@@ -215,10 +215,7 @@ export const DeleteAdminFromMasjid = async (
  * @description Add Admin into Masjid
  * @returns returns message whether success or error
  */
- export const AddAdminIntoMasjid = async (
-  userId: string,
-  masjidId: string,
-) => {
+export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
   try {
     const result: any = await api.post(`/users/${userId}/masjid/${masjidId}`);
     if (result.status === 200) {
@@ -227,7 +224,7 @@ export const DeleteAdminFromMasjid = async (
         type: 'success',
       });
       GetMasjidAdmins(masjidId);
-      return true
+      return true;
     } else {
       Toast.show({
         text2: result.data?.message,

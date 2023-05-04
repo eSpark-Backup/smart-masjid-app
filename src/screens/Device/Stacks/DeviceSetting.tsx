@@ -1,6 +1,7 @@
-import { Theme, useTheme } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
+
 import {
   Attention,
   Battery,
@@ -13,9 +14,12 @@ import {
 import { GapView, MyText, TextLabel } from '../../../components';
 import DeviceSettingSectionList from '../../../components/DeviceSettingSectionList';
 import { WINDOW_WIDTH } from '../../../constants';
+import { Device } from '../../../types/deviceControllerTypes';
 
-const DeviceSetting = () => {
+const DeviceSetting = ({ device }: { device?: Device }) => {
   const theme: Theme = useTheme();
+  console.log('deive selectedx ??', device);
+
   const styles = useMemo(() => makeStyles(theme), []);
   return (
     <>
@@ -126,4 +130,3 @@ const makeStyles = (theme: Theme) => {
 };
 
 export default DeviceSetting;
-
