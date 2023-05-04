@@ -18,6 +18,7 @@ import { DeviceSetting } from './Stacks';
 import { userStore } from '../../store/UserStore';
 import { deviceStore } from '../../store/DeviceStore';
 import { Device as DeviceType } from '../../types/deviceControllerTypes';
+import { GetUserDevices } from '../../api/deviceController';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -50,16 +51,19 @@ const AddDevice = () => {
 export default function Device() {
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('MyDevice');
+  const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
   const user = useHookstate(userStore?.userData)?.get();
   const devices: any = useHookstate(deviceStore?.devices)?.get();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const isFocused = useIsFocused();
   const theme: Theme = useTheme();
   const { colors } = theme;
+
   useEffect(() => {
     setStep(0);
     console.log('what is the user info', user?.userType?.name);
-    console.log('what is the user info', devices);
+    console.log('what is the user info++++', devices);
+    GetUserDevices(user?.id.toString() ?? '');
   }, [isFocused]);
 
   const onBackPress = () => {
@@ -77,6 +81,9 @@ export default function Device() {
       return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
     }
   });
+
+  console.log('devices', realData);
+
   return (
     <Wrapper
       onBackPress={onBackPress}
@@ -147,7 +154,7 @@ export default function Device() {
               paddingVertical: 20,
             }}
             numColumns={2}
-            data={realData}
+            data={[...realData, 1]}
             renderItem={({
               item,
               index,
@@ -155,22 +162,28 @@ export default function Device() {
               item: DeviceType;
               index: number;
             }) => {
-              return (
-                <>
-                  <DeviceCard
-                    deviceData={item}
-                    onPress={() => setStep(1)}
-                    activeTab={activeTab}
-                  />
-                  <AddDevice />
-                </>
-              );
+              if (index != realData?.length) {
+                return (
+                  <>
+                    <DeviceCard
+                      deviceData={item}
+                      onPress={() => {
+                        setStep(1);
+                        setSelectedDevice(item);
+                      }}
+                      activeTab={activeTab}
+                    />
+                  </>
+                );
+              } else {
+                return <AddDevice />;
+              }
             }}
             ItemSeparatorComponent={GapView}
           />
         </>
       )}
-      {step == 1 && <DeviceSetting />}
+      {step == 1 && <DeviceSetting device={selectedDevice} />}
     </Wrapper>
   );
 }

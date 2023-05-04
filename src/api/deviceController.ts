@@ -46,7 +46,7 @@ export async function _saveDevice(devInfo: DeviceInfo) {
   console.log('Device info in api???', devInfo);
   try {
     const res = await api.post('devices', {
-      macAddress: mac_address + '2', //FIXME: delete this hardcoded string later
+      macAddress: mac_address + '1d', //FIXME: delete this hardcoded string later
       name: nickName,
       modelNumber: device_model,
       firmwareVersion: firmware_rev,

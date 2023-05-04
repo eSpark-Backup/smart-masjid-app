@@ -69,7 +69,7 @@ export default function DeviceSetupScreen() {
     title: undefined,
     message: undefined,
     btnText: undefined,
-    onPress: () => setStep(2),
+    onPress: () => setStep(1),
   });
 
   function _handleGPSProviderEvent(e: any) {
@@ -130,7 +130,6 @@ export default function DeviceSetupScreen() {
     }
   }, [locationStatus, bleStatus]);
 
-  //?<< exit point
   useEffect(() => {
     return () => {
       _disconnectBleDevice(devInfo);
@@ -146,9 +145,9 @@ export default function DeviceSetupScreen() {
     }
   }, [retry]);
 
-  useEffect(() => {
-    console.log('milgaya parent ko', devInfo);
-  }, [devInfo]);
+  // useEffect(() => {
+  //   console.log('milgaya parent ko', devInfo);
+  // }, [devInfo]);
 
   useEffect(() => {
     console.log('step current?', step);
@@ -222,8 +221,7 @@ export default function DeviceSetupScreen() {
         title: 'Accept Permissions',
         message: 'Accept All Permission to Continue to Scan for BLE devices',
         onPress: () => {
-          handlePermissions();
-          setStep(1);
+          setRetry(true);
         },
       });
       return;
@@ -241,7 +239,12 @@ export default function DeviceSetupScreen() {
       setScannedDevices(newArr);
       if (newArr.length === 0) {
         setStep(8);
-        setToastContent(state => ({ ...state, onPress: () => setStep(1) }));
+        setToastContent(state => ({
+          ...state,
+          onPress: () => {
+            setRetry(true);
+          },
+        }));
       } else {
         if (!bleCheck || !locationCheck) {
           setStep(8);
