@@ -17,6 +17,7 @@ export default function MasjidDetails({ setStep }: any) {
   const { colors }: Theme = useTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
+      <GapView length={20} />
       <TextLabel label="Masjid Ar - Rahman" />
       <GapView length={5} />
       <TouchableOpacity
@@ -29,11 +30,11 @@ export default function MasjidDetails({ setStep }: any) {
         <MyText text="MY HOME DEVICE " textStyle={{ color: colors.primary }} />
         <SyncSvg />
       </TouchableOpacity>
-      <GapView length={15} />
+      {/* <GapView length={15} />
       <MyText text="Next Adhan in" textStyle={{ fontWeight: 'bold' }} />
       <GapView length={5} />
-      <MyTitle text="06 : 09 : 00" style={{ fontSize: 32 }} />
-      <GapView length={25} />
+      <MyTitle text="06 : 09 : 00" style={{ fontSize: 32 }} /> */}
+      <GapView length={30} />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

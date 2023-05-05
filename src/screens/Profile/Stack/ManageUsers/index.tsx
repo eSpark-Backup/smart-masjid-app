@@ -45,7 +45,7 @@ export default function ManageUsers({
   };
 
   return (
-    <View style={{ flex: 1, marginTop: 110, alignItems: 'center' }}>
+    <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
       <LogoutModal
         message="Are you sure yo want to delete this admin?"
         visible={Boolean(isVisible)}
@@ -56,8 +56,9 @@ export default function ManageUsers({
         }}
       />
       <OverlayLoader isShow={loading} />
-      <TextLabel label="Manage Users" />
       <GapView length={20} />
+      <TextLabel label="Manage Users" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={50} />
       <FlatList
         contentContainerStyle={{ flexGrow: 1, width: WINDOW_WIDTH }}
         data={admins ?? []}

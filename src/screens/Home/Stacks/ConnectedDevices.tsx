@@ -18,18 +18,18 @@ export default function ConnectedDevicesComponent() {
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <TextLabel label="Masjid Ar - Rahman" />
+      {/* <TextLabel label="Masjid Ar - Rahman" />
       <GapView length={5} />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <MyText text="Home " />
         <SyncSvg />
-      </View>
-      <GapView length={60} />
+      </View> */}
+      <GapView length={110} />
       <TextLabel
         label="Select Device"
         textStyle={{ color: '#3E3E3E', alignSelf: 'center' }}
       />
-      <GapView length={80} />
+      <GapView length={60} />
       <Card>
         <View>
           <FlatList

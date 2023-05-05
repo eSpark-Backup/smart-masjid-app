@@ -2,7 +2,12 @@ import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { SearchMasjidByLocation } from '../../../api/masjidController';
-import { GapView, MasjidListCard, MyInput } from '../../../components';
+import {
+  GapView,
+  MasjidListCard,
+  MyInput,
+  TextLabel,
+} from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
@@ -43,23 +48,25 @@ const SearchListing = ({
   return (
     <View
       style={{
-        top: 60,
         alignSelf: 'center',
         alignContent: 'center',
         justifyContent: 'center',
         width: WINDOW_WIDTH,
       }}>
+      <GapView length={20} />
+      <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={60} />
       <View style={{}}>
-        <Card width={300}>
+        <Card width={WINDOW_WIDTH - 40}>
           <MyInput
             searchBar
-            inputStyle={{ width: 250 }}
+            inputStyle={{ width: WINDOW_WIDTH - 80 }}
             placeholder="Enter Zip Code"
             onSearch={onSearch}
           />
         </Card>
       </View>
-      <GapView length={30} />
+      <GapView />
       <FlatList
         data={masjidList}
         contentContainerStyle={{

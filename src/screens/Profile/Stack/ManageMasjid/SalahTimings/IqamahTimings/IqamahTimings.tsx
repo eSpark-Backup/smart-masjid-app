@@ -17,6 +17,7 @@ import {
   OverlayLoader,
   ProfileAvatar,
   Rounded,
+  TextLabel,
   TimeTable,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
@@ -88,10 +89,11 @@ export default function IqamahTimings({
   const type = data?.type ?? iqamahTimings?.type;
   return (
     <>
-      <GapView length={30} />
-      <View style={{ flex: 1, marginTop: 70 }}>
+      <View style={{ flex: 1, marginTop: 20 }}>
+        <TextLabel label="Iqama Timings" textStyle={{ alignSelf: 'center' }} />
+        <GapView length={55} />
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}>
+          contentContainerStyle={{ paddingBottom: 30, paddingTop: 20 }}>
           <OverlayLoader isShow={loading} />
 
           <TimeTable

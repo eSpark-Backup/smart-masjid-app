@@ -8,6 +8,7 @@ import {
   MyDivider,
   ProfileAvatar,
   ProfileSectionlist,
+  TextLabel,
 } from '../../../../components';
 
 export default function ManageMasjid({
@@ -17,6 +18,9 @@ export default function ManageMasjid({
 }) {
   return (
     <View style={{ flex: 1 }}>
+      <GapView length={20} />
+      <TextLabel label="Manage Masjid" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={55} />
       <ProfileSectionlist
         data={[
           {

@@ -43,21 +43,21 @@ export default function ProfileSectionlist({
           return <SectionCard item={item} index={index} />;
         } else return <View />;
       }}
-      renderSectionHeader={({ section: { title, icon, onIconPress } }) => (
-        <View
-          style={{
-            ...styles.sectionHeader,
-            justifyContent: icon ? 'space-between' : 'center',
-          }}>
-          {icon && <GapView mode="horizontal" length={19} />}
-          <TextLabel label={title ?? ''} />
-          {icon && (
-            <TouchableOpacity activeOpacity={0.9} onPress={onIconPress}>
-              {icon}
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+      // renderSectionHeader={({ section: { title, icon, onIconPress } }) => (
+      //   <View
+      //     style={{
+      //       ...styles.sectionHeader,
+      //       justifyContent: icon ? 'space-between' : 'center',
+      //     }}>
+      //     {icon && <GapView mode="horizontal" length={19} />}
+      //     <TextLabel label={title ?? ''} />
+      //     {icon && (
+      //       <TouchableOpacity activeOpacity={0.9} onPress={onIconPress}>
+      //         {icon}
+      //       </TouchableOpacity>
+      //     )}
+      //   </View>
+      // )}
       renderSectionFooter={({ section: { title } }) => {
         return (
           <View style={{ marginTop: 184 }}>
@@ -105,6 +105,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
   },
 });

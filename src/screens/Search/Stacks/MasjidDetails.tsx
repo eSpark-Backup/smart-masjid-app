@@ -21,11 +21,12 @@ const MasjidDetails = ({
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <GapView length={45} />
+      <GapView length={20} />
       <TextLabel
         label={masjidDetails?.name ?? '-'}
         textStyle={{ paddingBottom: 5 }}
       />
+      <GapView length={45} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>

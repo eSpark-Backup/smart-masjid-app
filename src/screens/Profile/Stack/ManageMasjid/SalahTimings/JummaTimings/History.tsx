@@ -3,7 +3,12 @@ import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { GetJummahHistory } from '../../../../../../api/masjidController';
 
-import { MyText, TimeSheet } from '../../../../../../components';
+import {
+  GapView,
+  MyText,
+  TextLabel,
+  TimeSheet,
+} from '../../../../../../components';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { JummahTime } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
@@ -22,11 +27,10 @@ export default function History({
   }, []);
 
   return (
-    <View style={{ flex: 1, marginTop: 70, alignItems: 'center' }}>
-      <MyText
-        text="Jummah history"
-        textStyle={{ fontWeight: '400', fontSize: 16 }}
-      />
+    <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
+      <GapView length={20} />
+      <TextLabel label="Jummah History" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={55} />
       <TimeSheet data={convertResponseToData(jummahHistory) ?? []} />
     </View>
   );

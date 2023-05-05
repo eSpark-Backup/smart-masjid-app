@@ -17,9 +17,9 @@ export default function MasjidListing({
   return (
     <View>
       <View style={{ alignSelf: 'center' }}>
-        <GapView length={40} />
-        <TextLabel label="Masjid Subscriptions" />
         <GapView length={20} />
+        <TextLabel label="Masjid Subscriptions" />
+        <GapView length={50} />
       </View>
       <FlatList
         data={data}

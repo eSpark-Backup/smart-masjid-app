@@ -17,14 +17,14 @@ const DeviceListing = ({ onPress }: { onPress?: (device: Device) => void }) => {
   const devices: any = useHookstate(deviceStore.devices).get();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <GapView length={45} />
-      <TextLabel label="Masjid Ar - Rahman" textStyle={{ paddingBottom: 5 }} />
-      <GapView length={60} />
+      {/* <GapView length={45} />
+      <TextLabel label="Masjid Ar - Rahman" textStyle={{ paddingBottom: 5 }} /> */}
+      <GapView length={120} />
       <TextLabel
         label="Select Device"
         textStyle={{ color: '#3E3E3E', alignSelf: 'center' }}
       />
-      <GapView length={80} />
+      <GapView length={60} />
       <Card>
         <View>
           <FlatList
