@@ -10,6 +10,7 @@ import { Peripheral } from 'react-native-ble-manager';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
+
 import { userStore } from '../../store/UserStore';
 import { Wrapper } from '../../containers';
 import {
@@ -234,6 +235,9 @@ export default function DeviceSetupScreen() {
         if (item.name?.includes('MYESP32')) {
           return item;
         }
+        // if (item.name?.includes('SMSPKR' || 'SMBTN')) {
+        //   return item;
+        // }
       });
       console.log('ESP devices found', newArr);
       setScannedDevices(newArr);
