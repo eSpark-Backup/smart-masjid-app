@@ -3,4 +3,6 @@ import { UserStoreProps } from '../types';
 
 export const userStore = hookstate<UserStoreProps>({
   userData: null,
+  masjidAdmins: [],
+  currentRegisterUser: null,
 });

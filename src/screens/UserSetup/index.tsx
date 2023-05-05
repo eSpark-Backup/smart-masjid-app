@@ -19,6 +19,7 @@ import {
 import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
+import Toast from 'react-native-toast-message';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -37,13 +38,13 @@ export default function UserSetupScreen() {
     userType: 'Customer',
   });
 
-  useEffect(() => {
-    if (step == 4) {
-      setTimeout(() => {
-        setStep(step + 1);
-      }, 3000);
-    }
-  }, [step]);
+  // useEffect(() => {
+  // if (step == 4) {
+  //   setTimeout(() => {
+  //     setStep(step + 1);
+  //   }, 3000);
+  // }
+  // }, [step]);
 
   const handleBack = () => {
     if (step == 1.1) {
@@ -58,14 +59,23 @@ export default function UserSetupScreen() {
 
   const onSubmit = async (dataObj: CreateUserRequest) => {
     setStep(4);
-    const res: UserResponse | undefined = await CreateUser(dataObj);
+    const res: UserResponse | undefined | any = await CreateUser(dataObj);
+    console.log('res', res);
+
     if (res?.id && phoneId) {
       await RegisterUserPhone(
         { deviceId: phoneId, fcmToken: fcmToken as string },
         res?.id.toString(),
       );
+      setStep(5);
+    } else {
+      setStep(3);
+      Toast.show({
+        text2: res?.message,
+        type: 'error',
+        autoHide: true,
+      });
     }
-    setStep(5);
   };
 
   const onLogin = async (email: string, phone: string) => {
@@ -81,8 +91,8 @@ export default function UserSetupScreen() {
     }
 
     if (res?.id) {
-      // navigation.navigate('HomeBottomTab'); //TODO: Change it later
-      navigation.navigate('DSetup');
+      navigation.navigate('HomeBottomTab'); //TODO: Change it later
+      // navigation.navigate('DSetup');
     }
   };
 

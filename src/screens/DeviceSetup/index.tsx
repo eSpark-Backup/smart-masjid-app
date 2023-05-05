@@ -10,6 +10,7 @@ import { Peripheral } from 'react-native-ble-manager';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
+
 import { userStore } from '../../store/UserStore';
 import { Wrapper } from '../../containers';
 import {
@@ -69,7 +70,7 @@ export default function DeviceSetupScreen() {
     title: undefined,
     message: undefined,
     btnText: undefined,
-    onPress: () => setStep(2),
+    onPress: () => setStep(1),
   });
 
   function _handleGPSProviderEvent(e: any) {
@@ -130,7 +131,6 @@ export default function DeviceSetupScreen() {
     }
   }, [locationStatus, bleStatus]);
 
-  //?<< exit point
   useEffect(() => {
     return () => {
       _disconnectBleDevice(devInfo);
@@ -146,9 +146,9 @@ export default function DeviceSetupScreen() {
     }
   }, [retry]);
 
-  useEffect(() => {
-    console.log('milgaya parent ko', devInfo);
-  }, [devInfo]);
+  // useEffect(() => {
+  //   console.log('milgaya parent ko', devInfo);
+  // }, [devInfo]);
 
   useEffect(() => {
     console.log('step current?', step);
@@ -222,8 +222,7 @@ export default function DeviceSetupScreen() {
         title: 'Accept Permissions',
         message: 'Accept All Permission to Continue to Scan for BLE devices',
         onPress: () => {
-          handlePermissions();
-          setStep(1);
+          setRetry(true);
         },
       });
       return;
@@ -236,12 +235,20 @@ export default function DeviceSetupScreen() {
         if (item.name?.includes('MYESP32')) {
           return item;
         }
+        // if (item.name?.includes('SMSPKR' || 'SMBTN')) {
+        //   return item;
+        // }
       });
       console.log('ESP devices found', newArr);
       setScannedDevices(newArr);
       if (newArr.length === 0) {
         setStep(8);
-        setToastContent(state => ({ ...state, onPress: () => setStep(1) }));
+        setToastContent(state => ({
+          ...state,
+          onPress: () => {
+            setRetry(true);
+          },
+        }));
       } else {
         if (!bleCheck || !locationCheck) {
           setStep(8);
@@ -309,11 +316,14 @@ export default function DeviceSetupScreen() {
           <MyToast
             isSuccess={true}
             btnText={route.params?.from ? 'Awesome' : 'Search Masjid'}
-            onPress={() =>
+            onPress={() => {
+              if (userStore.currentRegisterUser.get()) {
+                userStore.userData.set(userStore.currentRegisterUser.get());
+              }
               navigation.navigate('HomeBottomTab', {
                 screen: route.params?.from ? 'Device' : 'Home',
-              })
-            }
+              });
+            }}
             title="Device setup complete!"
             message={'Your device is connected successfully.' + masjidSetupText}
           />

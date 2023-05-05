@@ -1,5 +1,6 @@
 import React from 'react';
 import { SectionList, StyleSheet, View } from 'react-native';
+
 import { DeviceEdit } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
@@ -36,9 +37,7 @@ export default function DeviceSettingSectionList({
               <MyDivider />
             </View>
             <GapView length={30} />
-            <TextLabel
-              label={title ?? ''}
-            />
+            <TextLabel label={title ?? ''} />
             <GapView length={20} />
           </>
         )}

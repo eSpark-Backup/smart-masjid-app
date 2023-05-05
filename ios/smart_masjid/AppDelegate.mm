@@ -2,12 +2,14 @@
 #import <Firebase.h>
 
 #import <React/RCTBundleURLProvider.h>
+#import <GoogleMaps/GoogleMaps.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [FIRApp configure];
+  [GMSServices provideAPIKey:@"AIzaSyDPO63dIpxQVdsZPynkYi0Ee8FxW_mwti8"];
   self.moduleName = @"smart_masjid";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

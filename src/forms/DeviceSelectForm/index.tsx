@@ -15,7 +15,7 @@ export default function DeviceSelectForm({
   setDevMacId?: (value?: string) => void;
 }) {
   const newArr = data.map(item => {
-    const isBtn = item?.name?.includes('Btn');
+    const isBtn = item?.name?.includes('SMBTN');
     return {
       ...item,
       leftIcon: isBtn ? <AdhanButton /> : <DeviceSvg />,

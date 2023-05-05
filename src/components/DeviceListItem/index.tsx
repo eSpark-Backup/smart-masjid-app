@@ -18,16 +18,17 @@ const DeviceListItem = ({
   online?: boolean;
   onPress?: () => void;
 }) => {
+  const isDisabled = disabled || !online
   return (
     <>
       <TouchableOpacity
-        disabled={disabled}
+        disabled={isDisabled}
         activeOpacity={.8}
         onPress={onPress}
         style={{
           paddingHorizontal: 20,
           paddingVertical: 15,
-          opacity: disabled ? .5 : 1
+          opacity: isDisabled ? .5 : 1
         }}>
         <View
           style={{
@@ -53,7 +54,7 @@ const DeviceListItem = ({
                   textStyle={{
                     color: '#3E3E3E',
                     fontWeight: '400',
-                    fontSize: 16,
+                    fontSize: 14,
                   }}
                 />
               )}

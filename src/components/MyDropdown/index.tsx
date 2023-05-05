@@ -9,14 +9,13 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import II from 'react-native-vector-icons/Ionicons';
 
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
 import { ArrowDown } from '../../assets';
-import { useLayoutAnimation } from '../../utils/hooks/useLayoutAnimation';
+import { useLayoutAnimation } from '../../utils/hooks';
 
 interface Item {
   id: number;
@@ -66,6 +65,8 @@ export default function MyDropdown({
   containerPadding = 15,
   onChangeValue = (value: Item) => {},
   width = WINDOW_WIDTH - 40,
+  disabled = false,
+  defaultValue = null,
 }: {
   items: Item[];
   title?: string;
@@ -74,10 +75,16 @@ export default function MyDropdown({
   containerPadding?: number;
   onChangeValue?: (value: Item) => void;
   width?: number | string | undefined;
+  disabled?: boolean;
+  defaultValue?: Item | null;
 }) {
   const [show, setShow] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(defaultValue);
   const [data, setData] = useState(items);
+
+  useEffect(() => {
+    if (defaultValue) setSelectedItem(defaultValue);
+  }, [defaultValue]);
 
   const onSearch = (text: string) => {
     if (selectedItem != null) {
@@ -100,13 +107,16 @@ export default function MyDropdown({
       <View
         style={{ ...styles.container, paddingHorizontal: containerPadding }}>
         <MyInput
+          disabled={disabled}
           title={title}
           onChangeText={onSearch}
           onFocus={() => {
+            if (disabled) return;
             useLayoutAnimation(200);
             setShow(true);
           }}
           onBlur={() => {
+            if (disabled) return;
             useLayoutAnimation(200);
             setShow(false);
           }}
@@ -126,6 +136,7 @@ export default function MyDropdown({
         />
         <ArrowDown
           onPress={() => {
+            if (disabled) return;
             useLayoutAnimation(200);
             setShow(!show);
             Keyboard.dismiss();
@@ -156,6 +167,7 @@ export default function MyDropdown({
                 key={`${item?.name}-${index}`}
                 activeOpacity={0.9}
                 onPress={() => {
+                  if (disabled) return;
                   setSelectedItem(item);
                   onChangeValue(item);
                   setShow(false);
