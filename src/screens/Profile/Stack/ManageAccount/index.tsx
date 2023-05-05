@@ -31,6 +31,9 @@ export default function ManageAccount({
   const userData = userObj?.get();
   return (
     <View style={{ flex: 1 }}>
+      <GapView length={20} />
+      <TextLabel label="Manage Account" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={45} />
       <ProfileSectionlist
         scroll={false}
         data={[

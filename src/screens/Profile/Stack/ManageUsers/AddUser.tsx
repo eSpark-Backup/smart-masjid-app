@@ -59,8 +59,11 @@ export default function AddUsers({
     } catch (error) {}
   };
   return (
-    <ScrollView style={{ flexGrow: 1, marginTop: 90 }}>
+    <ScrollView style={{ flexGrow: 1, marginTop: 0 }}>
       <OverlayLoader isShow={loading} />
+      <GapView length={20} />
+      <TextLabel label="Add New User" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={50} />
       <Formik
         initialValues={{ firstName: '', lastName: '', email: '', phone: '' }}
         validationSchema={AddAdminForSchema.AddAdminForSchema}
@@ -74,14 +77,14 @@ export default function AddUsers({
           touched,
         }) => (
           <>
-            <View
+            {/* <View
               style={{
                 padding: 20,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
               <TextLabel label={'Add New User'} />
-            </View>
+            </View> */}
             <View style={{ paddingHorizontal: 25 }}>
               <GapView />
               <Card width={345} radius={12}>

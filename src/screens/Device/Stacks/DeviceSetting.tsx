@@ -11,8 +11,12 @@ import {
   IP,
   WifiSvg,
 } from '../../../assets';
-import { GapView, MyText, TextLabel } from '../../../components';
-import DeviceSettingSectionList from '../../../components/DeviceSettingSectionList';
+import {
+  GapView,
+  MyText,
+  TextLabel,
+  DeviceSettingSectionList,
+} from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
 
@@ -47,14 +51,20 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                 data: [
                   {
                     title: 'Nick Name',
-                    subtitle: 'Home Device',
+                    subtitle: device?.name,
                     icon: <DeviceSvg />,
                     isEditable: true,
                   },
-                  { title: 'Battery', subtitle: '20%', icon: <Battery /> },
+                  {
+                    title: 'Battery',
+                    subtitle:
+                      device?.deviceTelemetry?.batteryLife.toString() ??
+                      '??' + ' %',
+                    icon: <Battery />,
+                  },
                   {
                     title: 'Subscription',
-                    subtitle: 'Masjid Al Noor',
+                    subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart />,
                     isEditable: true,
                   },
@@ -65,18 +75,18 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                 data: [
                   {
                     title: 'Wifi',
-                    subtitle: 'My_wifi_SSID',
+                    subtitle: device?.wifiSsid,
                     icon: <WifiSvg />,
                     isEditable: true,
                   },
                   {
                     title: 'Firmware Version',
-                    subtitle: 'Version 1.0',
+                    subtitle: device?.firmwareVersion,
                     icon: <Clock />,
                   },
                   {
                     title: 'MAC Address',
-                    subtitle: 'aa:12:bc:dd:ee:87',
+                    subtitle: device?.macAddress,
                     icon: <Heart />,
                   },
                   {

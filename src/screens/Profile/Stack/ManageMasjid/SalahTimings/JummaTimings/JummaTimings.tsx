@@ -18,6 +18,7 @@ import {
   OverlayLoader,
   ProfileAvatar,
   Rounded,
+  TextLabel,
   TimeTable,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
@@ -92,9 +93,11 @@ export default function JummaTimings({
   };
   return (
     <>
-      <GapView length={30} />
-      <View style={{ flex: 1, marginTop: 70 }}>
+      <View style={{ flex: 1, marginTop: 0 }}>
         <OverlayLoader isShow={loading} />
+        <GapView length={20} />
+        <TextLabel label="Jumuah Timings" textStyle={{ alignSelf: 'center' }} />
+        <GapView length={65} />
         <TimeTable
           header={
             <>
