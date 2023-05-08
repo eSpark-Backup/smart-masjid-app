@@ -4,7 +4,7 @@ import { DeviceSvg } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
-import Online from '../Online';
+import DeviceStatus from '../DeviceStatus';
 
 const DeviceListItem = ({
   title = '',
@@ -61,7 +61,7 @@ const DeviceListItem = ({
               )}
             </View>
           </View>
-          <Online online={online} />
+          <DeviceStatus online={online} />
         </View>
       </TouchableOpacity>
     </>
