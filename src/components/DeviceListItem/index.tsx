@@ -4,6 +4,7 @@ import { DeviceSvg } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
+import Online from '../Online';
 
 const DeviceListItem = ({
   title = '',
@@ -60,26 +61,7 @@ const DeviceListItem = ({
               )}
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <View
-              style={{
-                top: 0.5,
-                height: 10,
-                width: 10,
-                borderRadius: 100,
-                borderWidth: 2,
-                borderColor: '#9E9F9F',
-                backgroundColor: online ? '#1DF126' : '#FF6464',
-              }}
-            />
-            <GapView length={5} mode="horizontal" />
-            <MyText text={online ? "Online" : "Offline"} textStyle={{ color: '#9E9F9F' }} />
-          </View>
+          <Online online={online} />
         </View>
       </TouchableOpacity>
     </>
