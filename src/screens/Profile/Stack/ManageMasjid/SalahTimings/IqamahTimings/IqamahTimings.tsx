@@ -110,7 +110,7 @@ export default function IqamahTimings({
                     }}>
                     <View>
                       <MyText
-                        text={`Change Date: ${iqamahTimings?.changeDate}`}
+                        text={`Effective Date: ${iqamahTimings?.changeDate}`}
                       />
                     </View>
                     <View
@@ -211,7 +211,9 @@ export default function IqamahTimings({
               },
               {
                 name: 'Mugrib',
-                iqamahTiming: iqamahTimings?.maghribDelay?.toString(),
+                iqamahTiming: edit
+                  ? iqamahTimings?.maghribDelay?.toString()
+                  : `+${iqamahTimings?.maghribDelay?.toString()} Mins`,
                 onChange: value => {
                   setData({
                     ...data,
