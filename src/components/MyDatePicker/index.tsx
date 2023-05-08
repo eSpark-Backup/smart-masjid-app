@@ -64,7 +64,7 @@ export default function MyDatePicker({
             justifyContent: 'space-between',
             paddingHorizontal: 10,
             borderWidth: 0.5,
-            borderRadius: 12,
+            borderRadius: 3,
             height: 38,
           }}>
           {show && (

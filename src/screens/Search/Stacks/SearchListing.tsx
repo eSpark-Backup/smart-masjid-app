@@ -14,7 +14,7 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import Geocoder from 'react-native-geocoding';
 
-Geocoder.init('AIzaSyDPO63dIpxQVdsZPynkYi0Ee8FxW_mwti8'); // use a valid API key
+Geocoder.init('AIzaSyBWMdT85xmnbY1hSvHgcrxToYnnRlzfpX0'); // use a valid API key
 
 const SearchListing = ({
   onPress,
@@ -22,21 +22,30 @@ const SearchListing = ({
   onPress?: (masjidDetail: Masjid) => void;
 }) => {
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
+  const [zipCode, setZipCode] = useState('');
 
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
-      console.log('Locaations: ', info);
       // Search by geo-location (reverse geo-code)
       Geocoder.from(info.coords.latitude, info.coords.longitude)
         .then(json => {
-          var addressComponent = json?.results[0]?.address_components[0];
-          console.log(addressComponent, json);
+          var addressComponent = json?.results[0]?.address_components?.find(
+            values => {
+              if (values.types.includes('postal_code')) {
+                return true;
+              }
+            },
+          );
+          onSearch(
+            addressComponent?.long_name ?? addressComponent?.short_name ?? '',
+          );
         })
         .catch(error => console.warn(error));
     });
   }, []);
 
   const onSearch = async (zipCode: string) => {
+    setZipCode(zipCode);
     const res: any = await SearchMasjidByLocation(zipCode);
     if (res?.length > 0) {
       setMasjidList(res);
@@ -63,6 +72,7 @@ const SearchListing = ({
             inputStyle={{ width: WINDOW_WIDTH - 80 }}
             placeholder="Enter Zip Code"
             onSearch={onSearch}
+            value={zipCode}
           />
         </Card>
       </View>
