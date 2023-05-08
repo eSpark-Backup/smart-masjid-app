@@ -14,16 +14,9 @@ import {
 import { Card } from '../../../containers';
 
 export default function ConnectedDevicesComponent() {
-  const navigation: any = useNavigation();
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      {/* <TextLabel label="Masjid Ar - Rahman" />
-      <GapView length={5} />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <MyText text="Home " />
-        <SyncSvg />
-      </View> */}
       <GapView length={110} />
       <TextLabel
         label="Select Device"

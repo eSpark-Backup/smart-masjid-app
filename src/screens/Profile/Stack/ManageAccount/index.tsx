@@ -1,7 +1,7 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { LogoutUser } from '../../../../api/userController';
+import { LogoutUser, UpdateUser } from '../../../../api/userController';
 
 import {
   EditVector,
@@ -14,12 +14,18 @@ import {
   GapView,
   LogoutModal,
   MyDivider,
+  MyInput,
+  MyText,
+  OverlayLoader,
   ProfileAvatar,
   ProfileSectionlist,
+  Rounded,
   TextLabel,
 } from '../../../../components';
 import { userStore } from '../../../../store/UserStore';
 import { removeDatafromLocalStorage } from '../../../../utils/functions';
+import { WINDOW_WIDTH } from '../../../../constants';
+import { Card } from '../../../../containers';
 
 export default function ManageAccount({
   setFlag,
@@ -29,42 +35,141 @@ export default function ManageAccount({
   const [isVisible, setIsVisible] = useState(false);
   const userObj = useHookstate(userStore.userData);
   const userData = userObj?.get();
+  const [data, setData] = useState<any>({
+    firstName: userData?.firstName,
+    lastName: userData?.lastName,
+    email: userData?.email,
+    phone: userData?.phone,
+  });
+  const [loading, setLoading] = useState(false);
+  const [displayData, setDisplayingData] = useState([
+    {
+      title: 'First Name',
+      icon: <ProfileUser />,
+      key: 'firstName',
+      editable: false,
+    },
+    {
+      title: 'Last Name',
+      icon: <ProfileUser />,
+      key: 'lastName',
+      editable: false,
+    },
+    {
+      title: 'Email',
+      icon: <Email />,
+      key: 'email',
+      editable: false,
+    },
+    {
+      title: 'Phone',
+      icon: <Phone />,
+      key: 'phone',
+      editable: false,
+    },
+  ]);
+
+  const onEditPress = (key: string) => {
+    const newData = displayData.map(data => {
+      if (data.key == key) {
+        return {
+          ...data,
+          editable: true,
+        };
+      } else {
+        return {
+          ...data,
+          editable: false,
+        };
+      }
+    });
+
+    setDisplayingData([...newData]);
+  };
+
   return (
     <View style={{ flex: 1 }}>
+      <OverlayLoader isShow={loading} />
       <GapView length={20} />
       <TextLabel label="Manage Account" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={45} />
-      <ProfileSectionlist
-        scroll={false}
-        data={[
-          {
-            title: 'Manage Account',
-            icon: <EditVector />,
-            onIconPress: () => setFlag('modAcc'),
-            data: [
-              {
-                title: 'Name',
-                value: userData?.firstName + ' ' + userData?.lastName,
-                icon: <ProfileUser />,
-                onPress: () => console.log('no effect'),
-              },
-              {
-                title: 'Email',
-                value: userData?.email ?? '-',
-                icon: <Email />,
-                onPress: () => console.log('no effect'),
-              },
-              {
-                title: 'Phone',
-                value: userData?.phone ?? '-',
-                icon: <Phone />,
-                onPress: () => console.log('no effect'),
-              },
-            ],
-          },
-        ]}
-      />
-      <View style={{ marginHorizontal: 15, marginBottom: 30 }}>
+      <GapView length={55} />
+      {displayData.map((val, ind) => {
+        if (!val.editable) {
+          return (
+            <View
+              key={ind}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: WINDOW_WIDTH - 60,
+                alignSelf: 'center',
+                paddingVertical: 15,
+              }}>
+              <View style={{ flexDirection: 'row' }}>
+                {val.icon}
+                <GapView mode="horizontal" />
+                <MyText text={val.title} textStyle={{ fontSize: 16 }} />
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => onEditPress(val.key)}>
+                <MyText
+                  text={data[val?.key] ?? '-'}
+                  textStyle={{ fontSize: 14, color: '#6E6E6E' }}
+                />
+              </TouchableOpacity>
+            </View>
+          );
+        } else {
+          return (
+            <View
+              key={ind}
+              style={{
+                width: WINDOW_WIDTH - 60,
+                alignSelf: 'center',
+              }}>
+              <Card>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <GapView mode="horizontal" />
+                  {val.icon}
+                  <GapView mode="horizontal" />
+                  <MyInput
+                    placeholderColor="#CFCFCF"
+                    onChangeText={(value: string) =>
+                      setData({ ...data, [val.key]: value })
+                    }
+                    value={data[val.key]}
+                    dividerColor="rgba(158, 159, 159, 1)"
+                  />
+                </View>
+              </Card>
+            </View>
+          );
+        }
+      })}
+      <View
+        style={{
+          marginHorizontal: 15,
+          marginBottom: 30,
+          bottom: 0,
+          position: 'absolute',
+          width: 250,
+          alignSelf: 'center',
+        }}>
+        {displayData.some(val => val.editable) && (
+          <Rounded
+            onPress={async () => {
+              setLoading(true);
+              await UpdateUser(userData?.id?.toString() || '', {
+                ...data,
+              });
+              onEditPress('')
+              setLoading(false);
+            }}
+            label="Save"
+          />
+        )}
+        <GapView />
         <TouchableOpacity
           activeOpacity={0.9}
           style={{

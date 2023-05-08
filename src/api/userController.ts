@@ -153,7 +153,7 @@ export const UpdateUser = async (
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
 
-    if (result.data) {
+    if (result.data && result.status == 200) {
       userStore.userData.set(result.data);
       await setDataInLocalStorage('user', JSON.stringify(result.data));
       Toast.show({
