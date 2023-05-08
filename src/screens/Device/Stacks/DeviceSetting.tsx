@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 
@@ -16,6 +16,7 @@ import {
   MyText,
   TextLabel,
   DeviceSettingSectionList,
+  ErrorModal,
   DeviceStatus,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
@@ -23,11 +24,24 @@ import { Device } from '../../../types/deviceControllerTypes';
 
 const DeviceSetting = ({ device }: { device?: Device }) => {
   const theme: Theme = useTheme();
+  const [errorShow, setErrorShow] = useState<boolean>(false);
   console.log('deive selectedx ??', device);
 
   const styles = useMemo(() => makeStyles(theme), []);
   return (
     <>
+      <ErrorModal
+        visible={errorShow}
+        message="Looks like your device is offline, what would you like to do ?"
+        onClose={() => console.log('pressed cancel')}
+        options={[
+          { label: 'Update Password', onPress: () => console.log('option 1') },
+          {
+            label: 'Connect new Wi-Fi',
+            onPress: () => console.log('option 2'),
+          },
+        ]}
+      />
       <GapView length={80} />
       <ScrollView>
         <View style={styles.deviceSettingContainer}>
@@ -94,6 +108,7 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
+                    onPress: () => {},
                     icon: <Attention height={24} width={24} />,
                   },
                 ],
