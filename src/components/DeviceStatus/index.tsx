@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { GapView, MyText } from '../index';
 
-const Online = ({ online = false }: { online?: boolean }) => {
+const DeviceStatus = ({ online = false }: { online?: boolean }) => {
   return (
     <View
       style={{
@@ -28,4 +28,4 @@ const Online = ({ online = false }: { online?: boolean }) => {
   );
 };
 
-export default Online;
+export default DeviceStatus;

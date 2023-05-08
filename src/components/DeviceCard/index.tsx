@@ -7,7 +7,7 @@ import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import { Device } from '../../types/deviceControllerTypes';
-import Online from '../Online';
+import DeviceStatus from '../DeviceStatus';
 
 export default function DeviceCard({
   deviceData,
@@ -51,7 +51,7 @@ export default function DeviceCard({
                 />
               )}
               <GapView length={25} />
-              <Online online />
+              <DeviceStatus online />
             </View>
           </View>
         </TouchableOpacity>
