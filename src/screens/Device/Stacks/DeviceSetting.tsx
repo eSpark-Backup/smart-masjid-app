@@ -17,6 +17,7 @@ import {
   TextLabel,
   DeviceSettingSectionList,
   ErrorModal,
+  DeviceStatus,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
@@ -51,11 +52,7 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
           <GapView length={20} />
           <View style={styles.subHeader}>
             <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />
-            <View style={styles.row}>
-              <View style={styles.activeStatus} />
-              <GapView mode="horizontal" length={5} />
-              <MyText text="Online" />
-            </View>
+            <DeviceStatus online />
           </View>
           <GapView length={20} />
           <DeviceSettingSectionList
