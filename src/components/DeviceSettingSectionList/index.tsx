@@ -1,6 +1,6 @@
 import React from 'react';
 import { SectionList, StyleSheet, View } from 'react-native';
-import { DeviceEdit } from '../../assets';
+import { Caution, DeviceEdit, EditHeavy } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
@@ -9,13 +9,16 @@ import TextLabel from '../TextLabel';
 
 interface DataItem {
   title?: string;
-  data: {
-    title: string;
-    subtitle?: string;
-    icon: JSX.Element;
-    onPress?: () => void;
-    isEditable?: boolean;
-  }[];
+  data: DataProp[];
+}
+
+interface DataProp {
+  title: string;
+  subtitle?: string;
+  icon: JSX.Element;
+  onPress?: () => void;
+  isEditable?: boolean;
+  danger?: boolean;
 }
 
 export default function DeviceSettingSectionList({
@@ -36,9 +39,7 @@ export default function DeviceSettingSectionList({
               <MyDivider />
             </View>
             <GapView length={30} />
-            <TextLabel
-              label={title ?? ''}
-            />
+            <TextLabel label={title ?? ''} />
             <GapView length={20} />
           </>
         )}
@@ -47,7 +48,7 @@ export default function DeviceSettingSectionList({
   );
 }
 
-const SectionCard = ({ item }: { item: any }) => {
+const SectionCard = ({ item }: { item: DataProp }) => {
   return (
     <>
       <GapView />
@@ -59,11 +60,21 @@ const SectionCard = ({ item }: { item: any }) => {
             <View>
               <MyText text={item?.title} />
               <GapView mode="horizontal" length={5} />
-              <MyText text={item?.subtitle} />
+              <MyText
+                text={
+                  item?.danger
+                    ? item?.subtitle!! + ' Battery Low'
+                    : item?.subtitle!!
+                }
+                textStyle={{ color: item?.danger ? '#ff6464' : 'black' }}
+              />
             </View>
           </View>
         </View>
-        <View>{item?.isEditable && <DeviceEdit />}</View>
+        <View>
+          {item?.isEditable && <EditHeavy />}
+          {item?.danger && <Caution />}
+        </View>
       </View>
       <GapView />
     </>

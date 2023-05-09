@@ -5,10 +5,15 @@ import { Theme, useTheme } from '@react-navigation/native';
 import {
   Attention,
   Battery,
+  BatteryBar,
   Clock,
+  DeviceObject,
+  DeviceReset,
   DeviceSvg,
   Heart,
   IP,
+  Version,
+  Wifi,
   WifiSvg,
 } from '../../../assets';
 import {
@@ -63,7 +68,7 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Nick Name',
                     subtitle: device?.name,
-                    icon: <DeviceSvg />,
+                    icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                   },
                   {
@@ -71,12 +76,13 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                     subtitle:
                       device?.deviceTelemetry?.batteryLife.toString() ??
                       '??' + ' %',
-                    icon: <Battery />,
+                    icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
+                    danger: true,
                   },
                   {
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
-                    icon: <Heart />,
+                    icon: <Heart style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                   },
                 ],
@@ -87,29 +93,24 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Wifi',
                     subtitle: device?.wifiSsid,
-                    icon: <WifiSvg />,
+                    icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                   },
                   {
                     title: 'Firmware Version',
                     subtitle: device?.firmwareVersion,
-                    icon: <Clock />,
+                    icon: <Version style={{ padding: 10, bottom: 2 }} />,
                   },
                   {
                     title: 'MAC Address',
                     subtitle: device?.macAddress,
-                    icon: <Heart />,
-                  },
-                  {
-                    title: 'IP Address',
-                    subtitle: '192.168.0.15',
-                    icon: <IP />,
+                    icon: <DeviceObject style={{ padding: 10, bottom: 2 }} />,
                   },
                   {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
                     onPress: () => {},
-                    icon: <Attention height={24} width={24} />,
+                    icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
                   },
                 ],
               },
