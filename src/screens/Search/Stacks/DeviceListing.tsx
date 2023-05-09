@@ -12,6 +12,7 @@ import {
 import { Card } from '../../../containers';
 import { deviceStore } from '../../../store/DeviceStore';
 import { Device } from '../../../types/deviceControllerTypes';
+import { WINDOW_WIDTH } from '../../../constants';
 
 const DeviceListing = ({ onPress }: { onPress?: (device: Device) => void }) => {
   const devices: any = useHookstate(deviceStore.devices).get();
@@ -25,7 +26,7 @@ const DeviceListing = ({ onPress }: { onPress?: (device: Device) => void }) => {
         textStyle={{ color: '#3E3E3E', alignSelf: 'center' }}
       />
       <GapView length={60} />
-      <Card>
+      <Card width={WINDOW_WIDTH - 28}>
         <View>
           <FlatList
             data={devices}

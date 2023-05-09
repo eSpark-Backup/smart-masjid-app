@@ -66,7 +66,7 @@ const SearchListing = ({
       <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
       <GapView length={60} />
       <View style={{}}>
-        <Card width={WINDOW_WIDTH - 40}>
+        <Card width={WINDOW_WIDTH - 28}>
           <MyInput
             searchBar
             inputStyle={{ width: WINDOW_WIDTH - 80 }}

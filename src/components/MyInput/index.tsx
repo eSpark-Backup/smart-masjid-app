@@ -11,6 +11,7 @@ import {
 import II from 'react-native-vector-icons/Ionicons';
 import { WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
+import { SearchWhite } from '../../assets';
 
 interface MyInputProps {
   isDivider?: boolean;
@@ -136,7 +137,7 @@ export default function MyInput(props: MyInputProps) {
             onPress={() => onSearch?.(text ?? '')}
             activeOpacity={0.9}
             style={[styles.searchBarContainer]}>
-            <II name="search-outline" size={24} color="#fff" />
+            <SearchWhite />
           </TouchableOpacity>
         )}
       </View>

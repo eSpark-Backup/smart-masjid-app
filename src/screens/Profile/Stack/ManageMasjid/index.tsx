@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { VolumeUp } from '../../../../assets';
+import { SalahTimingsSVG, VolumeUp } from '../../../../assets';
 
 import {
   GapView,
@@ -33,7 +33,7 @@ export default function ManageMasjid({
               },
               {
                 title: 'Salah Timings',
-                icon: <VolumeUp />,
+                icon: <SalahTimingsSVG />,
                 onPress: () => setFlag('sTime'),
               },
             ],

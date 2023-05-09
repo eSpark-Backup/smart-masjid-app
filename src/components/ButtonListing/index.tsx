@@ -26,7 +26,7 @@ export default function ButtonListing({
   titleWidth?: string | number;
 }) {
   return (
-    <Card radius={radius} width={275} height={216}>
+    <Card radius={radius} width={WINDOW_WIDTH - 28} height={216}>
       <FlatList
         style={{ maxHeight: 216 }}
         data={data}

@@ -207,7 +207,7 @@ export default function SwipeableTimeTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <TextLabel label={value} />
+            <MyText text={value} size={16} textStyle={{fontWeight: '700'}} />
           </View>
         ))}
         {isMute && !isInfo && <View style={styles.headerIcon} />}
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 3,
     borderRadius: 12,
-    width: WINDOW_WIDTH - 45,
+    width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
   },
   headerRow: {

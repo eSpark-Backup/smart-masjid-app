@@ -305,6 +305,9 @@ function convertResponseToData(
   return data;
 }
 
+function isValidPhoneNumber(number: string) {
+  return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
+}
 export {
   _getPhoneId,
   _getFCMToken,
@@ -315,4 +318,5 @@ export {
   removeDatafromLocalStorage,
   getCurrentMonthAdhanData,
   convertResponseToData,
+  isValidPhoneNumber
 };

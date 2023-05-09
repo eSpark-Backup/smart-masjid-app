@@ -2,6 +2,7 @@ import React from 'react';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet } from 'react-native';
 import { Card } from '../../containers';
+import { WINDOW_WIDTH } from '../../constants';
 
 export default function MapBox({
   latitude = 37.78825,
@@ -11,7 +12,7 @@ export default function MapBox({
   longitude?: number;
 }) {
   return (
-    <Card>
+    <Card width={WINDOW_WIDTH - 28}>
       <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}

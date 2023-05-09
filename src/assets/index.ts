@@ -37,6 +37,7 @@ export { default as PlusSvg } from './images/plus.svg';
 export { default as ThreeDotSvg } from './images/3dot.svg';
 export { default as DeviceEdit } from './images/DeviceEdit.svg';
 export { default as SujudSvg } from './images/Sujud.svg';
+export { default as SalahTimingsSVG } from './images/SalahTimings.svg';
 
 //* vector icons
 export { default as AccountGear } from './vectors/account-gear.svg';
@@ -70,3 +71,5 @@ export { default as ArrowDown } from './vectors/ArrowDown.svg';
 export { default as History } from './vectors/History.svg';
 export { default as ManageUser } from './vectors/manage-user.svg';
 export { default as Delete } from './vectors/Delete.svg';
+export { default as ArrowLeft } from './vectors/ArrowLeft.svg';
+export { default as SearchWhite } from './vectors/SearchWhite.svg';

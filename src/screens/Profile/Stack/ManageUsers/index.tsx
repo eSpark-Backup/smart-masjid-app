@@ -38,7 +38,7 @@ export default function ManageUsers({
   }, []);
 
   const onDelete = async () => {
-    setIsVisible('')
+    setIsVisible('');
     setLoading(true);
     await DeleteAdminFromMasjid(isVisible, '1');
     setLoading(false);
@@ -60,7 +60,7 @@ export default function ManageUsers({
       <TextLabel label="Manage Users" textStyle={{ alignSelf: 'center' }} />
       <GapView length={50} />
       <FlatList
-        contentContainerStyle={{ flexGrow: 1, width: WINDOW_WIDTH }}
+        contentContainerStyle={{ flexGrow: 1, width: WINDOW_WIDTH, paddingBottom: 20 }}
         data={admins ?? []}
         renderItem={({
           item,
@@ -97,7 +97,7 @@ const UserCard = ({
 }) => {
   return (
     <View style={{ marginTop: 10 }}>
-      <Card>
+      <Card width={WINDOW_WIDTH - 28}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={onPress}

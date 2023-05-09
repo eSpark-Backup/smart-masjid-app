@@ -31,8 +31,8 @@ const AddDevice = () => {
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
 
   return (
-    <View style={{ marginHorizontal: 10 }}>
-      <Card height={161} width={165}>
+    <View>
+      <Card height={161} width={172}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => navigation.navigate('DSetup', { from: 'Device' })}
@@ -85,12 +85,12 @@ export default function Device() {
   console.log('devices', realData);
 
   return (
-    <Wrapper
-      onBackPress={onBackPress}
-      showFooter={false}
-      bgImageSpacer={step == 1 ? false : true}>
+    <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
       {step == 0 && (
         <>
+          <GapView length={30} />
+          <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
+          <GapView length={45} />
           <View
             style={{
               flexDirection: 'row',
@@ -148,39 +148,57 @@ export default function Device() {
               </TouchableOpacity>
             )}
           </View>
-          <FlatList
-            contentContainerStyle={{
-              paddingHorizontal: 10,
-              paddingVertical: 20,
-            }}
-            numColumns={2}
-            data={[...realData, 1]}
-            renderItem={({
-              item,
-              index,
-            }: {
-              item: DeviceType;
-              index: number;
-            }) => {
-              if (index != realData?.length) {
-                return (
-                  <>
-                    <DeviceCard
-                      deviceData={item}
-                      onPress={() => {
-                        setStep(1);
-                        setSelectedDevice(item);
-                      }}
-                      activeTab={activeTab}
-                    />
-                  </>
-                );
-              } else {
-                return <AddDevice />;
-              }
-            }}
-            ItemSeparatorComponent={GapView}
-          />
+          <View
+            style={{
+              flex: 1,
+              alignItems: realData?.length > 0 ? 'center' : 'flex-start',
+            }}>
+            <FlatList
+              contentContainerStyle={{
+                // backgroundColor: 'pink',
+                // alignItems: 'center',
+                // justifyContent: 'center',
+                // paddingHorizontal: 10,
+                // alignSelf: 'center',
+                paddingVertical: 20,
+                flexGrow: 1,
+              }}
+              numColumns={2}
+              data={[...realData, 1]}
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: DeviceType;
+                index: number;
+              }) => {
+                if (index != realData?.length) {
+                  return (
+                    <View style={{ marginHorizontal: 5 }}>
+                      <DeviceCard
+                        deviceData={item}
+                        onPress={() => {
+                          setStep(1);
+                          setSelectedDevice(item);
+                        }}
+                        activeTab={activeTab}
+                      />
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View
+                      style={{
+                        marginHorizontal: realData?.length < 1 ? 25 : 5,
+                      }}>
+                      <AddDevice />
+                    </View>
+                  );
+                }
+              }}
+              ItemSeparatorComponent={GapView}
+            />
+          </View>
         </>
       )}
       {step == 1 && <DeviceSetting device={selectedDevice} />}

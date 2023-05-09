@@ -23,9 +23,13 @@ import {
   TextLabel,
 } from '../../../../components';
 import { userStore } from '../../../../store/UserStore';
-import { removeDatafromLocalStorage } from '../../../../utils/functions';
+import {
+  isValidPhoneNumber,
+  removeDatafromLocalStorage,
+} from '../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
+import Toast from 'react-native-toast-message';
 
 export default function ManageAccount({
   setFlag,
@@ -83,16 +87,45 @@ export default function ManageAccount({
         };
       }
     });
-
+    setData({
+      ...{
+        firstName: userData?.firstName,
+        lastName: userData?.lastName,
+        email: userData?.email,
+        phone: userData?.phone,
+      },
+    });
     setDisplayingData([...newData]);
   };
 
+  const onSave = async () => {
+    setLoading(true);
+    if (data.phone) {
+      const isValid = isValidPhoneNumber(data.phone?.replace('+1',''));
+      if (!isValid) {
+        Toast.show({
+          text2: 'Phone number is not valid',
+          type: 'error',
+        });
+        setLoading(false);
+        return;
+      }
+    }
+    await UpdateUser(userData?.id?.toString() || '', {
+      ...data,
+      phone: `${data.phone}`,
+    });
+    onEditPress('');
+    setLoading(false);
+  };
   return (
     <View style={{ flex: 1 }}>
       <OverlayLoader isShow={loading} />
       <GapView length={20} />
       <TextLabel label="Manage Account" textStyle={{ alignSelf: 'center' }} />
       <GapView length={55} />
+      <MyText text="Tap to edit" textStyle={{ alignSelf: 'center' }} />
+      <GapView />
       {displayData.map((val, ind) => {
         if (!val.editable) {
           return (
@@ -129,19 +162,29 @@ export default function ManageAccount({
                 alignSelf: 'center',
               }}>
               <Card>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <GapView mode="horizontal" />
-                  {val.icon}
-                  <GapView mode="horizontal" />
+                {val.key != 'phone' ? (
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <GapView mode="horizontal" />
+                    {val.icon}
+                    <GapView mode="horizontal" />
+                    <MyInput
+                      placeholderColor="#CFCFCF"
+                      onChangeText={(value: string) =>
+                        setData({ ...data, [val.key]: value })
+                      }
+                      value={data[val.key]}
+                    />
+                  </View>
+                ) : (
                   <MyInput
+                    isPhoneCode
                     placeholderColor="#CFCFCF"
                     onChangeText={(value: string) =>
                       setData({ ...data, [val.key]: value })
                     }
                     value={data[val.key]}
-                    dividerColor="rgba(158, 159, 159, 1)"
                   />
-                </View>
+                )}
               </Card>
             </View>
           );
@@ -156,35 +199,28 @@ export default function ManageAccount({
           width: 250,
           alignSelf: 'center',
         }}>
-        {displayData.some(val => val.editable) && (
-          <Rounded
-            onPress={async () => {
-              setLoading(true);
-              await UpdateUser(userData?.id?.toString() || '', {
-                ...data,
-              });
-              onEditPress('')
-              setLoading(false);
-            }}
-            label="Save"
-          />
+        {displayData.some(val => val.editable) ? (
+          <Rounded onPress={onSave} label="Save" />
+        ) : (
+          <>
+            <GapView />
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={{
+                height: 41,
+                width: '100%',
+                backgroundColor: '#FF6464',
+                borderRadius: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}
+              onPress={() => setIsVisible(true)}>
+              <Power style={{ right: 15 }} />
+              <TextLabel label="Logout" textStyle={{ color: '#ffffff' }} />
+            </TouchableOpacity>
+          </>
         )}
-        <GapView />
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={{
-            height: 41,
-            width: '100%',
-            backgroundColor: '#FF6464',
-            borderRadius: 50,
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-          }}
-          onPress={() => setIsVisible(true)}>
-          <Power style={{ right: 15 }} />
-          <TextLabel label="Logout" textStyle={{ color: '#ffffff' }} />
-        </TouchableOpacity>
       </View>
       <LogoutModal
         message="Do you wish to logout?"

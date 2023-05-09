@@ -160,6 +160,11 @@ export const UpdateUser = async (
         text2: 'User Updated Successfully',
         type: 'success',
       });
+    }else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+      });
     }
     return result.data;
   } catch (error) {

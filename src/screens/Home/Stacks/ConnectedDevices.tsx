@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { View, FlatList } from 'react-native';
 
 import { DeviceSvg, SyncSvg } from '../../../assets';
@@ -12,18 +12,31 @@ import {
   TextLabel,
 } from '../../../components';
 import { Card } from '../../../containers';
+import { WINDOW_WIDTH } from '../../../constants';
 
 export default function ConnectedDevicesComponent() {
-
+  const { colors }: Theme = useTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <GapView length={110} />
-      <TextLabel
-        label="Select Device"
-        textStyle={{ color: '#3E3E3E', alignSelf: 'center' }}
+      <GapView length={20} />
+      <TextLabel label="Masjid Ar - Rahman" />
+      <GapView length={5} />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <MyText text="MY HOME DEVICE " textStyle={{ color: colors.primary }} />
+        <SyncSvg />
+      </View>
+      <GapView length={50} />
+      <MyText
+        text="Select Device"
+        size={16}
+        textStyle={{ color: '#3E3E3E', alignSelf: 'center', fontWeight: '700' }}
       />
       <GapView length={60} />
-      <Card>
+      <Card width={WINDOW_WIDTH - 28}>
         <View>
           <FlatList
             data={Array('Home', 'Office', 'Shop', "Gradma's House")}

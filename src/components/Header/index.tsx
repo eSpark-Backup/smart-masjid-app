@@ -3,6 +3,7 @@ import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import AD from 'react-native-vector-icons/AntDesign';
 import { WINDOW_HEIGHT } from '../../constants';
+import { ArrowLeft } from '../../assets';
 
 export default function Header({ onBackPress }: { onBackPress?: () => void }) {
   const { colors } = useTheme();
@@ -14,13 +15,7 @@ export default function Header({ onBackPress }: { onBackPress?: () => void }) {
         justifyContent: 'center',
         paddingHorizontal: 25,
       }}>
-      <AD
-        name="arrowleft"
-        color={colors.card}
-        style={{ alignSelf: 'flex-start' }}
-        size={36}
-        onPress={onBackPress}
-      />
+      <ArrowLeft />
     </View>
   );
 }
