@@ -9,14 +9,13 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import II from 'react-native-vector-icons/Ionicons';
 
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
 import { ArrowDown } from '../../assets';
-import { useLayoutAnimation } from '../../utils/hooks/useLayoutAnimation';
+import { useLayoutAnimation } from '../../utils/hooks';
 
 interface Item {
   id: number;
@@ -86,7 +85,7 @@ export default function MyDropdown({
   useEffect(() => {
     if (defaultValue) setSelectedItem(defaultValue);
   }, [defaultValue]);
-  
+
   const onSearch = (text: string) => {
     if (selectedItem != null) {
       setSelectedItem(null);

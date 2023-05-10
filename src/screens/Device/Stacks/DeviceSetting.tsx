@@ -90,11 +90,6 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                     icon: <Heart />,
                   },
                   {
-                    title: 'IP Address',
-                    subtitle: '192.168.0.15',
-                    icon: <IP />,
-                  },
-                  {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
                     icon: <Attention height={24} width={24} />,

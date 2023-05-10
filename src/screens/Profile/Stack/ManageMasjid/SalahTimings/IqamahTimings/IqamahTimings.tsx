@@ -209,7 +209,9 @@ export default function IqamahTimings({
               },
               {
                 name: 'Mugrib',
-                iqamahTiming: iqamahTimings?.maghribDelay?.toString(),
+                iqamahTiming: edit
+                  ? iqamahTimings?.maghribDelay?.toString()
+                  : '+' + iqamahTimings?.maghribDelay?.toString() + ' mins',
                 onChange: value => {
                   setData({
                     ...data,

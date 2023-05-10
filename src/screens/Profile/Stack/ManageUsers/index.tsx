@@ -1,6 +1,7 @@
-import { useHookstate } from '@hookstate/core';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useHookstate } from '@hookstate/core';
+
 import {
   DeleteAdminFromMasjid,
   GetMasjidAdmins,
@@ -23,7 +24,7 @@ export default function ManageUsers({
 }: {
   setFlag: (value: string, user?: UserResponse) => void;
 }) {
-  const admins: any = useHookstate(userStore.masjidAdmins).get();
+  const admins: any = useHookstate(userStore?.masjidAdmins).get();
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState('');
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function ManageUsers({
   }, []);
 
   const onDelete = async () => {
-    setIsVisible('')
+    setIsVisible('');
     setLoading(true);
     await DeleteAdminFromMasjid(isVisible, '1');
     setLoading(false);
@@ -47,7 +48,7 @@ export default function ManageUsers({
   return (
     <View style={{ flex: 1, marginTop: 110, alignItems: 'center' }}>
       <LogoutModal
-        message="Are you sure yo want to delete this admin?"
+        message="Are you sure you want to delete this Masjid Admin?"
         visible={Boolean(isVisible)}
         onAllowed={onDelete}
         onClose={() => {
