@@ -178,7 +178,7 @@ export default function IqamahTimings({
                 },
               },
               {
-                name: 'Dhur',
+                name: 'Dhuhr',
                 iqamahTiming:
                   type == 'F'
                     ? moment(iqamahTimings?.dhuhr, 'HH:mm:ss').format('hh:mm')
@@ -210,7 +210,7 @@ export default function IqamahTimings({
                 },
               },
               {
-                name: 'Mugrib',
+                name: 'Maghrib',
                 iqamahTiming: edit
                   ? iqamahTimings?.maghribDelay?.toString()
                   : `+${iqamahTimings?.maghribDelay?.toString()} mins`,
@@ -238,7 +238,7 @@ export default function IqamahTimings({
                 },
               },
             ]}
-            headings={['Salah', 'Iqamah']}
+            headings={['Salah', 'Iqama']}
             editView={edit}
             footer={
               <>

@@ -116,7 +116,7 @@ export default function TimeTable({
   isMute = false,
   isEdit = false,
   isInfo = false,
-  headings = ['Salah', 'Adhan', 'Iqamah'],
+  headings = ['Salah', 'Adhan', 'Iqama'],
   header = <></>,
   onSubmitEditing = () => {
     console.log('submit');

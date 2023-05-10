@@ -63,11 +63,11 @@ export default function MasjidDetails({ setStep }: any) {
           headings={['Salah', 'Khutba']}
           data={[
             {
-              name: 'Jumma 1',
+              name: 'Jumuah 1',
               azanTiming: '12:10',
             },
             {
-              name: 'Jumma 2',
+              name: 'Jumuah 2',
               azanTiming: '01:10',
             },
           ]}

@@ -68,7 +68,7 @@ const MasjidDetails = ({
                 iqamahTiming: '5:00',
               },
               {
-                name: 'Mugrib',
+                name: 'Maghrib',
                 azanTiming: '5:50',
                 iqamahTiming: '6:00',
               },

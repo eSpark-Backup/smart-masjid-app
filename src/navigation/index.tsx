@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, {
@@ -122,7 +122,7 @@ export default function App() {
             </Stack.Group>
           )}
         </Stack.Navigator>
-        <Toast config={toastConfig} topOffset={25} visibilityTime={2000} />
+        <Toast config={toastConfig} topOffset={StatusBar.currentHeight} visibilityTime={2000} />
       </NavigationContainer>
     );
   } else {
