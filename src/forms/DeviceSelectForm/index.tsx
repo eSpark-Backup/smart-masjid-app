@@ -28,6 +28,11 @@ export default function DeviceSelectForm({
     };
   });
 
+  const fakeDeviceList = [
+    { title: 'Smart Adhan Button', leftIcon: <AdhanButton /> },
+    { title: 'Smart Adhan Speaker', leftIcon: <DeviceSvg /> },
+  ];
+
   console.log(data, 'xxx');
 
   return (
