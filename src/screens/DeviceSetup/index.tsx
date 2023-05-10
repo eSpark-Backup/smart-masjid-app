@@ -326,7 +326,7 @@ export default function DeviceSetupScreen() {
         )}
         {step == 8 && (
           <MyToast
-            isSuccess={true}
+            isSuccess={false}
             btnText={toastContent.btnText ?? 'Try Again'}
             onPress={toastContent.onPress}
             title={toastContent.title ?? 'Oops! Device not found.'}
