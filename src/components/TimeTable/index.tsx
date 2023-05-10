@@ -70,7 +70,7 @@ const RowItem = ({
                         style={{
                           borderWidth: 0.5,
                           borderColor: '#3E3E3E',
-                          borderRadius: 5,
+                          borderRadius: 3,
                           height: 40,
                           width: 40,
                           textAlign: 'center',

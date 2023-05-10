@@ -88,7 +88,7 @@ export default function Device() {
     <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
       {step == 0 && (
         <>
-          <GapView length={30} />
+          <GapView length={20} />
           <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
           <GapView length={45} />
           <View

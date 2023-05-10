@@ -26,4 +26,5 @@ export { default as DeviceListItem } from './DeviceListItem';
 export { default as SwipeableTimeTable } from './TimeTable/SwipeableTimeTable';
 export { default as DeviceCard } from './DeviceCard';
 export { default as DeviceSettingSectionList } from './DeviceSettingSectionList';
+export { default as ErrorModal } from './ErrorModal';
 export { default as DeviceStatus } from './DeviceStatus';

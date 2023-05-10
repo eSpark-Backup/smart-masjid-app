@@ -216,7 +216,7 @@ export default function ManageAccount({
                 flexDirection: 'row',
               }}
               onPress={() => setIsVisible(true)}>
-              <Power style={{ right: 15 }} />
+              {/* <Power style={{ right: 15 }} /> */}
               <TextLabel label="Logout" textStyle={{ color: '#ffffff' }} />
             </TouchableOpacity>
           </>

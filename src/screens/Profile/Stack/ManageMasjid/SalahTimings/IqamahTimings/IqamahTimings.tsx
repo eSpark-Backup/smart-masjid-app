@@ -142,7 +142,7 @@ export default function IqamahTimings({
                         id: data?.type == 'F' ? 1 : 2,
                         name: data?.type ?? '',
                       }}
-                      width={WINDOW_WIDTH - 65}
+                      width={WINDOW_WIDTH - 50}
                       onChangeValue={e => setData({ ...data, type: e.name })}
                     />
                     <GapView />
@@ -213,7 +213,7 @@ export default function IqamahTimings({
                 name: 'Mugrib',
                 iqamahTiming: edit
                   ? iqamahTimings?.maghribDelay?.toString()
-                  : `+${iqamahTimings?.maghribDelay?.toString()} Mins`,
+                  : `+${iqamahTimings?.maghribDelay?.toString()} mins`,
                 onChange: value => {
                   setData({
                     ...data,

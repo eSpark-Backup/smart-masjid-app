@@ -15,7 +15,7 @@ export default function Header({ onBackPress }: { onBackPress?: () => void }) {
         justifyContent: 'center',
         paddingHorizontal: 25,
       }}>
-      <ArrowLeft />
+      <ArrowLeft onPress={onBackPress} />
     </View>
   );
 }
