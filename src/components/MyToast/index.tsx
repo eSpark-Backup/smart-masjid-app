@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Image, StyleSheet, Animated } from 'react-native';
 
-import { CheckSvg, CrossSvg } from '../../assets';
+import { CheckSvg, Exclimation } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
@@ -48,7 +48,7 @@ export default function MyToast({
           {title && <TextLabel label={title!!} textStyle={{ fontSize: 24 }} />}
           <View
             style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
-            {isSuccess ? <CheckSvg /> : <CrossSvg />}
+            {isSuccess ? <CheckSvg /> : <Exclimation />}
             <View
               style={{
                 width: 10,

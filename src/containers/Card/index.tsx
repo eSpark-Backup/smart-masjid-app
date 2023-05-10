@@ -19,7 +19,7 @@ export default function Card(props: CardProps) {
       <ShadowFlex
         style={{
           ...styles.shadowContainer,
-          width: props?.width ?? WINDOW_WIDTH - 45,
+          width: props?.width ?? WINDOW_WIDTH - 28,
           maxHeight: height,
           borderRadius: radius,
         }}>
