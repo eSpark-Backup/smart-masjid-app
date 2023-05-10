@@ -87,7 +87,7 @@ export default function App() {
     try {
       const check: any = await _checkPhoneId(res);
       if (check?.deviceId) {
-        console.log('hoa', check.deviceId);
+        console.log('phone device is registered already!', check.deviceId);
         state.isDeviceRegistered.set(true);
         setCheckedId(true);
       } else {
