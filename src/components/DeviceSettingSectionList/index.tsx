@@ -36,8 +36,10 @@ export default function DeviceSettingSectionList({
               <MyDivider />
             </View>
             <GapView length={30} />
-            <TextLabel
-              label={title ?? ''}
+            <MyText
+              text={title ?? ''}
+              size={16}
+              textStyle={{fontWeight: '700'}}
             />
             <GapView length={20} />
           </>

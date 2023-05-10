@@ -86,6 +86,7 @@ export default function Search() {
         )}
         {step == 2 && (
           <DeviceListing
+            masjidDetails={selectedMasjid}
             onPress={device =>
               onSubscribe(
                 device.id.toString(),

@@ -50,7 +50,7 @@ const SearchListing = ({
     if (res?.length > 0) {
       setMasjidList(res);
     } else {
-      setMasjidList([]);
+    setMasjidList([]);
     }
   };
 

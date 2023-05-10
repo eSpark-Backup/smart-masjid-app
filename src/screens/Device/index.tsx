@@ -102,11 +102,13 @@ export default function Device() {
               activeOpacity={0.9}
               disabled={user?.userType?.name === 'Customer' ? true : false}
               onPress={() => setActiveTab('MyDevice')}>
-              <TextLabel
-                label="My Devices"
+              <MyText
+                text="My Devices"
                 textStyle={{
                   color: activeTab == 'MyDevice' ? colors.primary : '#9E9F9F',
+                  fontWeight: '700'
                 }}
+                size={16}
               />
               {activeTab == 'MyDevice' &&
                 user?.userType?.name === 'Masjid Admin' && (
@@ -126,12 +128,14 @@ export default function Device() {
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setActiveTab('MasjidDevice')}>
-                <TextLabel
-                  label="Masjid Devices"
+                <MyText
+                  text="Masjid Devices"
                   textStyle={{
                     color:
                       activeTab == 'MasjidDevice' ? colors.primary : '#9E9F9F',
+                      fontWeight: '700'
                   }}
+                  size={16}
                 />
                 {activeTab == 'MasjidDevice' && (
                   <View

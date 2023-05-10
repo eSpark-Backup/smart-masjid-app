@@ -73,3 +73,5 @@ export { default as ManageUser } from './vectors/manage-user.svg';
 export { default as Delete } from './vectors/Delete.svg';
 export { default as ArrowLeft } from './vectors/ArrowLeft.svg';
 export { default as SearchWhite } from './vectors/SearchWhite.svg';
+export { default as AdhanCalculation } from './vectors/AdhanCalculation.svg';
+export { default as AdhanJuristic } from './vectors/AdhanJuristic.svg';
