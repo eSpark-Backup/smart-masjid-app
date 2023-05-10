@@ -269,7 +269,9 @@ export default function DeviceSetupScreen() {
   };
 
   return (
-    <Wrapper onBackPress={() => disable && setStep(handleBack)}>
+    <Wrapper
+      bgImageSpacer={false}
+      onBackPress={() => disable && setStep(handleBack)}>
       <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
         {step == 1 && <DLoader />}
         {step == 2 && (
@@ -308,7 +310,8 @@ export default function DeviceSetupScreen() {
         )}
         {step == 6 && (
           <SLoader
-            title="Setting Up Device"
+            title="Device Setup"
+            subtitle="Connecting..."
             message="Connecting to wifi network..."
           />
         )}

@@ -45,7 +45,12 @@ export default function MyToast({
           },
         ]}>
         <View style={styles.container}>
-          {title && <TextLabel label={title!!} textStyle={{ fontSize: 24 }} />}
+          {title && (
+            <MyText
+              text={title!!}
+              textStyle={{ fontSize: 16, fontWeight: '400' }}
+            />
+          )}
           <View
             style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
             {isSuccess ? <CheckSvg /> : <Exclimation />}
@@ -81,7 +86,7 @@ export default function MyToast({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 120,
     alignSelf: 'center',
     alignItems: 'center',
   },

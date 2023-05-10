@@ -59,9 +59,12 @@ export default function PasswordForm({
   return (
     <View style={styles.container}>
       <OverlayLoader isShow={loading} />
-      <TextLabel
-        label="Enter Wi-Fi password"
-        textStyle={{ alignSelf: 'center' }}
+      <GapView length={20} />
+      <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={80} />
+      <MyText
+        text="Enter Wi-Fi password"
+        textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
       />
       <GapView length={20} />
       <MyText text={'Connecting to : ' + ssid} textStyle={styles.text} />

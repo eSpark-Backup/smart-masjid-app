@@ -8,21 +8,33 @@ import TextLabel from '../TextLabel';
 
 export default function SLoader({
   title,
+  subtitle,
   message,
 }: {
   title?: string;
+  subtitle?: string;
   message: string;
 }) {
   return (
     <View style={styles.container}>
-      {title && <TextLabel label={title!!} />}
-      <View style={{ alignSelf: 'center', marginTop: 60, marginBottom: 50 }}>
+      <GapView length={20} />
+      {title && (
+        <TextLabel label={title!!} textStyle={{ alignSelf: 'center' }} />
+      )}
+      <GapView length={80} />
+      {subtitle && (
+        <MyText
+          text={subtitle!!}
+          textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
+        />
+      )}
+      <View style={{ alignSelf: 'center', marginTop: 20, marginBottom: 50 }}>
         <MyText
           text="Please wait"
           pressable={false}
           textStyle={{ fontWeight: '400', fontSize: 16 }}
         />
-        <GapView length={50} />
+        <GapView length={60} />
         <Image source={GLoad} style={styles.loader} resizeMode="contain" />
         <View
           style={{
@@ -35,6 +47,7 @@ export default function SLoader({
           }}
         />
       </View>
+      <GapView length={20} />
       <MyText text={message} textStyle={{ fontWeight: '400', fontSize: 16 }} />
     </View>
   );

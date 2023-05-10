@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Peripheral } from 'react-native-ble-manager';
 
 import { AdhanButton, DeviceSvg } from '../../assets';
-import { ButtonListing, GapView, TextLabel } from '../../components';
+import { ButtonListing, GapView, MyText, TextLabel } from '../../components';
 
 export default function DeviceSelectForm({
   data = [],
@@ -38,8 +38,12 @@ export default function DeviceSelectForm({
   return (
     <View style={{ alignItems: 'center' }}>
       <GapView length={20} />
-      <TextLabel label="Select your device" />
-      <GapView length={50} />
+      <TextLabel label="Device Setup" />
+      <GapView length={80} />
+      <MyText
+        text="Select Your Device"
+        textStyle={{ fontSize: 16, fontWeight: '400', alignSelf: 'center' }}
+      />
       <ButtonListing radius={12} data={newArr} />
     </View>
   );
