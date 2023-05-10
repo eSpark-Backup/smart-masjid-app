@@ -47,13 +47,11 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
           },
         ]}
       />
-      <GapView length={80} />
+      <GapView length={20} />
+      <TextLabel label="Device Settings" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={45} />
       <ScrollView>
         <View style={styles.deviceSettingContainer}>
-          <TextLabel
-            label="Device  Settings"
-            textStyle={{ paddingVertical: 20 }}
-          />
           <GapView length={20} />
           <View style={styles.subHeader}>
             <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />

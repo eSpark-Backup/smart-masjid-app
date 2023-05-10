@@ -259,7 +259,7 @@ function convertResponseToData(
       ) {
         // find the index of the key in the accumulator array
         const index = acc.findIndex(
-          item => item.heading === key.charAt(0).toUpperCase() + key.slice(1),
+          item => item.heading === (key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate' ? "Effective Date" : key?.charAt(0)?.toUpperCase() + key?.slice(1)),
         );
 
         // get the value of the key and slice it to remove the seconds part
@@ -292,7 +292,7 @@ function convertResponseToData(
         // otherwise, add a new object to the accumulator array
         else {
           acc.push({
-            heading: key?.charAt(0)?.toUpperCase() + key?.slice(1),
+            heading: key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate' ? "Effective Date" : key?.charAt(0)?.toUpperCase() + key?.slice(1),
             values: [value ?? '-'],
           });
         }
@@ -305,6 +305,9 @@ function convertResponseToData(
   return data;
 }
 
+function isValidPhoneNumber(number: string) {
+  return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
+}
 export {
   _getPhoneId,
   _getFCMToken,
@@ -315,4 +318,5 @@ export {
   removeDatafromLocalStorage,
   getCurrentMonthAdhanData,
   convertResponseToData,
+  isValidPhoneNumber
 };

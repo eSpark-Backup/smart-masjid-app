@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { VolumeUp } from '../../../../../assets';
+import { SalahTimingsSVG, VolumeUp } from '../../../../../assets';
 import {
   GapView,
   ProfileSectionlist,
@@ -24,12 +24,12 @@ export default function SalahSettings({
             data: [
               {
                 title: 'Iqamah Timings',
-                icon: <VolumeUp />,
+                icon: <SalahTimingsSVG />,
                 onPress: () => setFlag('iTime'),
               },
               {
                 title: 'Jumma Timings',
-                icon: <VolumeUp />,
+                icon: <SalahTimingsSVG />,
                 onPress: () => setFlag('jTime'),
               },
             ],

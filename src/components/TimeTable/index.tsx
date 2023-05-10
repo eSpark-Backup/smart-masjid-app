@@ -59,21 +59,25 @@ const RowItem = ({
                       initialValue={item[key]}
                     />
                   ) : (
-                    <View style={[styles.contentCol, {flexDirection: 'row', width: 80}]}>
+                    <View
+                      style={[
+                        styles.contentCol,
+                        { flexDirection: 'row', width: 80 },
+                      ]}>
                       <TextInput
                         defaultValue={item[key]}
                         onChangeText={item?.onChange}
                         style={{
                           borderWidth: 0.5,
                           borderColor: '#3E3E3E',
-                          borderRadius: 5,
+                          borderRadius: 3,
                           height: 40,
                           width: 40,
                           textAlign: 'center',
                         }}
                       />
-                      <GapView mode='horizontal' />
-                      <MyText text='Mins' />
+                      <GapView mode="horizontal" />
+                      <MyText text="Mins" />
                     </View>
                   )}
                 </>
@@ -145,7 +149,7 @@ export default function TimeTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <TextLabel label={value} />
+            <MyText text={value} size={16} textStyle={{ fontWeight: '700' }} />
           </View>
         ))}
         {isMute && !isInfo && <View style={styles.headerIcon} />}
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 3,
     borderRadius: 12,
-    width: WINDOW_WIDTH - 45,
+    width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
   },
   headerRow: {

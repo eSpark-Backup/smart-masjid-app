@@ -50,13 +50,13 @@ export default function MasjidListCard(
   const styles = useMemo(() => makeStyles(props), []);
   const [mute, setMute] = useState(false);
   return (
-    <Card width={WINDOW_WIDTH - 38}>
+    <Card width={WINDOW_WIDTH - 28}>
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={onPress}
         style={styles.container}>
         <View>
-          <TextLabel label={masjidName ?? 'Masjid Ar - Rahman'} />
+          <MyText text={masjidName ?? 'Masjid Ar - Rahman'} size={16} textStyle={{fontWeight: '700'}}  />
           <GapView />
           {isSearch ? (
             <>
@@ -82,7 +82,7 @@ export default function MasjidListCard(
                   ...styles.row,
                   width: '95%',
                   alignItems: 'center',
-                  flexWrap: 'wrap',
+                  // flexWrap: 'wrap',
                 }}>
                 <SujudSvg />
                 <GapView mode="horizontal" length={5} />
@@ -123,7 +123,7 @@ export default function MasjidListCard(
           />
         </View>
       </TouchableOpacity>
-    </Card>
+    </Card> 
   );
 }
 
@@ -132,8 +132,9 @@ const makeStyles = (props: MasjidHomeProps & MasjidSearchProps) => {
     container: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: 15,
+      padding: 10,
       alignItems: 'center',
+      paddingVertical: 15
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     imageStyle: { height: 60, width: 60 },

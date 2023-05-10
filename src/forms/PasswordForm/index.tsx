@@ -83,7 +83,7 @@ export default function PasswordForm({
           touched,
         }) => (
           <>
-            <Card width={315} radius={12}>
+            <Card width={WINDOW_WIDTH - 28} radius={12}>
               <MyInput
                 placeholder="Password"
                 onChangeText={handleChange('password')}

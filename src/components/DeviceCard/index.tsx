@@ -19,8 +19,8 @@ export default function DeviceCard({
   onPress?: () => void;
 }) {
   return (
-    <View style={{ marginHorizontal: 10 }}>
-      <Card height={161} width={165}>
+    <View>
+      <Card height={161} width={172}>
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.9}

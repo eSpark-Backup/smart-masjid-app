@@ -28,7 +28,7 @@ export default function MyDatePicker({
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if(currentDate) setDate(currentDate);
+    if (currentDate) setDate(currentDate);
   }, [currentDate]);
 
   const onChange = (selectedDate: any) => {
@@ -111,10 +111,14 @@ export default function MyDatePicker({
           {moment(date).isAfter(minimumDate) && (
             <II onPress={prevDate} name="md-chevron-back" size={24} />
           )}
+          {/* <GapView length={10} mode="horizontal" />
+          <Calendar /> */}
           <GapView length={10} mode="horizontal" />
-          <Calendar />
-          <GapView length={10} mode="horizontal" />
-          <TextLabel label={moment(date)?.format('MMM-DD, YYYY')} />
+          <MyText
+            text={moment(date)?.format('MMM-DD, YYYY')}
+            size={16}
+            textStyle={{ fontWeight: '700' }}
+          />
           <GapView length={10} mode="horizontal" />
           {moment(date).isBefore(maximumDate) && (
             <II onPress={nextDate} name="md-chevron-forward" size={24} />

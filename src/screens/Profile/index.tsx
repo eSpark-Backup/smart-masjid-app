@@ -7,6 +7,7 @@ import {
   About,
   AccountGear,
   Help,
+  InfoCircle,
   ManageUser,
   MasjidGear,
   Privacy,
@@ -199,7 +200,7 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
         footerData={[
           {
             title: 'Help',
-            icon: <About />,
+            icon: <Help />,
             onPress: () => console.log('pressed'),
           },
           {
@@ -209,7 +210,7 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
           },
           {
             title: 'About us',
-            icon: <Help />,
+            icon: <InfoCircle />,
             onPress: () => console.log('pressed'),
           },
         ]}

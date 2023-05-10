@@ -37,7 +37,7 @@ export default function DeviceNicknameForm({
           touched,
         }) => (
           <>
-            <Card width={315}>
+            <Card width={WINDOW_WIDTH - 28}>
               <MyInput
                 placeholder="Nick Name"
                 onChangeText={handleChange('nickName')}

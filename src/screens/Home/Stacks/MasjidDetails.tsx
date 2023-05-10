@@ -43,11 +43,7 @@ export default function MasjidDetails({ setStep }: any) {
           paddingBottom: 20,
           padding: 5,
         }}>
-        <SwipeableTimeTable
-          isMute
-          isInfo
-          data={getCurrentMonthAdhanData()}
-        />
+        <SwipeableTimeTable isMute isInfo data={getCurrentMonthAdhanData()} />
         <GapView length={20} />
 
         <TimeTable
@@ -57,7 +53,11 @@ export default function MasjidDetails({ setStep }: any) {
               style={{
                 alignItems: 'center',
               }}>
-              <TextLabel label="Jumuah" />
+              <MyText
+                text="Jumuah"
+                size={16}
+                textStyle={{ fontWeight: '700' }}
+              />
             </View>
           }
           headings={['Salah', 'Khutba']}
