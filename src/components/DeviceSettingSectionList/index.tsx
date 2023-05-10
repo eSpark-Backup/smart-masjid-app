@@ -1,12 +1,11 @@
 import React from 'react';
 import { SectionList, StyleSheet, View } from 'react-native';
+
 import { Caution, DeviceEdit, EditHeavy } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
-import TextLabel from '../TextLabel';
-
 interface DataItem {
   title?: string;
   data: DataProp[];
@@ -42,7 +41,7 @@ export default function DeviceSettingSectionList({
             <MyText
               text={title ?? ''}
               size={16}
-              textStyle={{fontWeight: '700'}}
+              textStyle={{ fontWeight: '700' }}
             />
             <GapView length={20} />
           </>

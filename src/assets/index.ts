@@ -83,3 +83,4 @@ export { default as DeviceReset } from './vectors/device-reset.svg';
 export { default as DeviceObject } from './vectors/data-object.svg';
 export { default as Caution } from './vectors/Caution.svg';
 export { default as Close } from './vectors/Close.svg';
+export { default as Exclimation } from './vectors/Exclimation.svg';

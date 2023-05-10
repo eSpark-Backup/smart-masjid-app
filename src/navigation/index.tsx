@@ -87,7 +87,7 @@ export default function App() {
     try {
       const check: any = await _checkPhoneId(res);
       if (check?.deviceId) {
-        console.log('hoa', check.deviceId);
+        console.log('phone device is registered already!', check.deviceId);
         state.isDeviceRegistered.set(true);
         setCheckedId(true);
       } else {
@@ -122,7 +122,11 @@ export default function App() {
             </Stack.Group>
           )}
         </Stack.Navigator>
-        <Toast config={toastConfig} topOffset={StatusBar.currentHeight} visibilityTime={2000} />
+        <Toast
+          config={toastConfig}
+          topOffset={StatusBar.currentHeight}
+          visibilityTime={2000}
+        />
       </NavigationContainer>
     );
   } else {
@@ -132,7 +136,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   successStyle: { width: '90%', borderLeftColor: '#98c379' },
-  errorStyle: { width: '90%', borderLeftColor: '#cf6362' },
+  errorStyle: { width: '90%', borderLeftColor: '#FF6464' },
   warningStyle: { width: '90%', borderLeftColor: '#f2be09' },
   text1Style: {
     fontFamily: 'roboto',
