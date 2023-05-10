@@ -1,6 +1,4 @@
-import { UIManager } from 'react-native';
-import { Platform } from 'react-native';
-import { LayoutAnimation, LayoutAnimationConfig } from 'react-native';
+import { LayoutAnimation, Platform, UIManager } from 'react-native';
 
 const useLayoutAnimation = (duration?: number) => {
   if (Platform.OS === 'android') {

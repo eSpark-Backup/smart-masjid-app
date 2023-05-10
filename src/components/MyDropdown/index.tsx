@@ -9,7 +9,6 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import II from 'react-native-vector-icons/Ionicons';
 
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
