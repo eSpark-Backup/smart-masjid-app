@@ -1,6 +1,7 @@
-import { Theme, useTheme } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
+
 import {
   Attention,
   Battery,
@@ -10,12 +11,19 @@ import {
   IP,
   WifiSvg,
 } from '../../../assets';
-import { GapView, MyText, TextLabel } from '../../../components';
-import DeviceSettingSectionList from '../../../components/DeviceSettingSectionList';
+import {
+  GapView,
+  MyText,
+  TextLabel,
+  DeviceSettingSectionList,
+} from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
+import { Device } from '../../../types/deviceControllerTypes';
 
-const DeviceSetting = () => {
+const DeviceSetting = ({ device }: { device?: Device }) => {
   const theme: Theme = useTheme();
+  console.log('deive selectedx ??', device);
+
   const styles = useMemo(() => makeStyles(theme), []);
   return (
     <>
@@ -43,14 +51,20 @@ const DeviceSetting = () => {
                 data: [
                   {
                     title: 'Nick Name',
-                    subtitle: 'Home Device',
+                    subtitle: device?.name,
                     icon: <DeviceSvg />,
                     isEditable: true,
                   },
-                  { title: 'Battery', subtitle: '20%', icon: <Battery /> },
+                  {
+                    title: 'Battery',
+                    subtitle:
+                      device?.deviceTelemetry?.batteryLife.toString() ??
+                      '??' + ' %',
+                    icon: <Battery />,
+                  },
                   {
                     title: 'Subscription',
-                    subtitle: 'Masjid Al Noor',
+                    subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart />,
                     isEditable: true,
                   },
@@ -61,24 +75,19 @@ const DeviceSetting = () => {
                 data: [
                   {
                     title: 'Wifi',
-                    subtitle: 'My_wifi_SSID',
+                    subtitle: device?.wifiSsid,
                     icon: <WifiSvg />,
                     isEditable: true,
                   },
                   {
                     title: 'Firmware Version',
-                    subtitle: 'Version 1.0',
+                    subtitle: device?.firmwareVersion,
                     icon: <Clock />,
                   },
                   {
                     title: 'MAC Address',
-                    subtitle: 'aa:12:bc:dd:ee:87',
+                    subtitle: device?.macAddress,
                     icon: <Heart />,
-                  },
-                  {
-                    title: 'IP Address',
-                    subtitle: '192.168.0.15',
-                    icon: <IP />,
                   },
                   {
                     title: 'Factory Reset',
@@ -126,4 +135,3 @@ const makeStyles = (theme: Theme) => {
 };
 
 export default DeviceSetting;
-

@@ -29,6 +29,7 @@ export type GlobalProps = {
 
 export type UserStoreProps = {
   userData: UserResponse | null;
+  currentRegisterUser: UserResponse | null;
   masjidAdmins: UserResponse[];
 };
 
@@ -42,7 +43,17 @@ export type MasjidStoreProps = {
 };
 
 export type DeviceStoreProps = {
-  devices: Device[]
+  devices: Device[];
+};
+
+export type DeviceInfo = {
+  macId?: string;
+  nickName?: string;
+  ssid?: string;
+  password?: string;
+  device_model?: string;
+  mac_address?: string;
+  firmware_rev?: string;
 };
 
 export interface IPrayerTimeForPeriod {

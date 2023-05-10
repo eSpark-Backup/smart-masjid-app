@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Theme,
   useIsFocused,
@@ -5,32 +7,18 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
-import {
-  Attention,
-  Battery,
-  Clock,
-  DeviceSvg,
-  Heart,
-  IP,
-  PlusSvg,
-  SettingGreen,
-  WifiSvg,
-} from '../../assets';
-import { GapView, MyText, TextLabel } from '../../components';
-import DeviceCard from '../../components/DeviceCard';
-import DeviceSettingSectionList from '../../components/DeviceSettingSectionList';
+import { ImmutableObject, useHookstate } from '@hookstate/core';
+
+import { PlusSvg } from '../../assets';
+import { GapView, MyText, TextLabel, DeviceCard } from '../../components';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { DeviceSetting } from './Stacks';
+import { userStore } from '../../store/UserStore';
+import { deviceStore } from '../../store/DeviceStore';
+import { Device as DeviceType } from '../../types/deviceControllerTypes';
+import { GetUserDevices } from '../../api/deviceController';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -63,13 +51,19 @@ const AddDevice = () => {
 export default function Device() {
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('MyDevice');
-
+  const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
+  const user = useHookstate(userStore?.userData)?.get();
+  const devices: any = useHookstate(deviceStore?.devices)?.get();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const isFocused = useIsFocused();
   const theme: Theme = useTheme();
   const { colors } = theme;
+
   useEffect(() => {
     setStep(0);
+    console.log('what is the user info', user?.userType?.name);
+    console.log('what is the user info++++', devices);
+    GetUserDevices(user?.id.toString() ?? '');
   }, [isFocused]);
 
   const onBackPress = () => {
@@ -79,7 +73,17 @@ export default function Device() {
       navigation.goBack();
     }
   };
-  const data = Array(4).fill(10);
+
+  const realData = devices.filter((item: DeviceType) => {
+    if (activeTab == 'MasjidDevice') {
+      return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
+    } else {
+      return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
+    }
+  });
+
+  console.log('devices', realData);
+
   return (
     <Wrapper
       onBackPress={onBackPress}
@@ -96,6 +100,7 @@ export default function Device() {
             }}>
             <TouchableOpacity
               activeOpacity={0.9}
+              disabled={user?.userType?.name === 'Customer' ? true : false}
               onPress={() => setActiveTab('MyDevice')}>
               <TextLabel
                 label="My Devices"
@@ -103,42 +108,45 @@ export default function Device() {
                   color: activeTab == 'MyDevice' ? colors.primary : '#9E9F9F',
                 }}
               />
-              {activeTab == 'MyDevice' && (
-                <View
-                  style={{
-                    height: 5,
-                    width: 5,
-                    backgroundColor: colors.primary,
-                    borderRadius: 10,
-                    alignSelf: 'center',
-                    marginTop: 5,
+              {activeTab == 'MyDevice' &&
+                user?.userType?.name === 'Masjid Admin' && (
+                  <View
+                    style={{
+                      height: 5,
+                      width: 5,
+                      backgroundColor: colors.primary,
+                      borderRadius: 10,
+                      alignSelf: 'center',
+                      marginTop: 5,
+                    }}
+                  />
+                )}
+            </TouchableOpacity>
+            {user?.userType?.name === 'Masjid Admin' && (
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => setActiveTab('MasjidDevice')}>
+                <TextLabel
+                  label="Masjid Devices"
+                  textStyle={{
+                    color:
+                      activeTab == 'MasjidDevice' ? colors.primary : '#9E9F9F',
                   }}
                 />
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => setActiveTab('MasjidDevice')}>
-              <TextLabel
-                label="Masjid Devices"
-                textStyle={{
-                  color:
-                    activeTab == 'MasjidDevice' ? colors.primary : '#9E9F9F',
-                }}
-              />
-              {activeTab == 'MasjidDevice' && (
-                <View
-                  style={{
-                    height: 5,
-                    width: 5,
-                    backgroundColor: colors.primary,
-                    borderRadius: 10,
-                    alignSelf: 'center',
-                    marginTop: 5,
-                  }}
-                />
-              )}
-            </TouchableOpacity>
+                {activeTab == 'MasjidDevice' && (
+                  <View
+                    style={{
+                      height: 5,
+                      width: 5,
+                      backgroundColor: colors.primary,
+                      borderRadius: 10,
+                      alignSelf: 'center',
+                      marginTop: 5,
+                    }}
+                  />
+                )}
+              </TouchableOpacity>
+            )}
           </View>
           <FlatList
             contentContainerStyle={{
@@ -146,14 +154,26 @@ export default function Device() {
               paddingVertical: 20,
             }}
             numColumns={2}
-            data={data}
-            renderItem={({ index }) => {
-              if (index != data?.length - 1) {
+            data={[...realData, 1]}
+            renderItem={({
+              item,
+              index,
+            }: {
+              item: DeviceType;
+              index: number;
+            }) => {
+              if (index != realData?.length) {
                 return (
-                  <DeviceCard
-                    type={activeTab === 'MyDevice' ? 'speaker' : 'button'}
-                    onPress={() => setStep(1)}
-                  />
+                  <>
+                    <DeviceCard
+                      deviceData={item}
+                      onPress={() => {
+                        setStep(1);
+                        setSelectedDevice(item);
+                      }}
+                      activeTab={activeTab}
+                    />
+                  </>
                 );
               } else {
                 return <AddDevice />;
@@ -163,7 +183,7 @@ export default function Device() {
           />
         </>
       )}
-      {step == 1 && <DeviceSetting />}
+      {step == 1 && <DeviceSetting device={selectedDevice} />}
     </Wrapper>
   );
 }

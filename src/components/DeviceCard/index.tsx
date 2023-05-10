@@ -6,12 +6,15 @@ import { Card } from '../../containers';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
+import { Device } from '../../types/deviceControllerTypes';
 
 export default function DeviceCard({
-  type,
+  deviceData,
+  activeTab,
   onPress = () => {},
 }: {
-  type: 'button' | 'speaker';
+  deviceData: Device;
+  activeTab: string;
   onPress?: () => void;
 }) {
   return (
@@ -25,13 +28,15 @@ export default function DeviceCard({
             <GapView mode="horizontal" length={15} />
             <View>
               <TextLabel
-                label={
-                  type == 'speaker' ? 'My Home Speaker' : 'My Masjid Button'
-                }
-                textStyle={{ alignItems: 'center', fontSize: 14 }}
+                label={deviceData?.name}
+                textStyle={{
+                  alignItems: 'center',
+                  fontSize: 14,
+                  textAlign: 'center',
+                }}
               />
               <GapView length={25} />
-              {type == 'button' ? (
+              {deviceData?.deviceType?.name == 'SMART_BUTTON' ? (
                 <ButtonIcon
                   height={50}
                   width={50}

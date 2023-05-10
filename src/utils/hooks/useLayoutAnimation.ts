@@ -1,8 +1,6 @@
-import {UIManager} from 'react-native';
-import {Platform} from 'react-native';
-import {LayoutAnimation, LayoutAnimationConfig} from 'react-native';
+import { LayoutAnimation, Platform, UIManager } from 'react-native';
 
-export const useLayoutAnimation = (duration?: number) => {
+const useLayoutAnimation = (duration?: number) => {
   if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -20,3 +18,5 @@ export const useLayoutAnimation = (duration?: number) => {
   });
   return true;
 };
+
+export default useLayoutAnimation;
