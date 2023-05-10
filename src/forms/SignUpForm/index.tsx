@@ -1,33 +1,36 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-
+import { StyleSheet, Text, View } from 'react-native';
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
-export default function EmailForm({
-  type,
+export default function SignUpForm({
   setStep,
-  onPhonePress = () => {},
+  type,
+  onEmailPress = (value: number) => {},
 }: {
   type?: 'login' | 'setup';
   setStep: (value: any) => void;
-  onPhonePress?: (value: any) => void;
+  onEmailPress: (value: number) => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
-      <TextLabel
-        label={type != 'setup' ? 'Enter Your Email' : 'Lets create an account'}
-        textStyle={{ alignSelf: 'center' }}
-      />
+      <GapView length={20} />
+      <TextLabel label="Create Account" textStyle={{ alignSelf: 'center' }} />
       <GapView length={80} />
+      <MyText
+        textStyle={{ textAlign: 'center', width: 315 }}
+        text={`Awesome! Please turn on your device. Let’s get your account created.\n\nWhat’s a good email to get started?
+      `}
+      />
+      <GapView length={50} />
       <Formik
-        initialValues={{ email: 'test2@yopmail.com' }}
-        validationSchema={UserSetupSchema.emailForm}
+        initialValues={{ phone: '' }}
+        validationSchema={UserSetupSchema.phoneForm}
         onSubmit={values => {
           setStep(values);
         }}>
@@ -42,14 +45,16 @@ export default function EmailForm({
           <>
             <Card width={315}>
               <MyInput
-                placeholder="Email"
-                onChangeText={handleChange('email')}
-                value={values.email}
+                placeholder="Phone Number"
+                isPhoneCode
+                phoneCodeValue="+ 1"
+                onChangeText={handleChange('phone')}
+                value={values.phone}
               />
             </Card>
-            {errors.email && touched.email && (
+            {errors.phone && touched.phone && (
               <MyText
-                text={errors.email}
+                text={errors.phone}
                 textStyle={{
                   color: 'red',
                   width: WINDOW_WIDTH - 110,
@@ -57,18 +62,19 @@ export default function EmailForm({
                 }}
               />
             )}
-            <View style={{ marginTop: 80, marginBottom: 40 }}>
+            <GapView length={60} />
+            <View>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
           </>
         )}
       </Formik>
-      <GapView length={40} />
+      <GapView length={60} />
       <MyText
-        text="Use phone number instead"
+        text="Use email instead"
         pressable
         textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-        onPress={() => onPhonePress(1.1)}
+        onPress={() => onEmailPress(1)}
       />
     </View>
   );

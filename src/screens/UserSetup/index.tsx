@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
-import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
+import { LoginForm, OtpForm, SignUpForm, PersonalInfoForm } from '../../forms';
 import { RootStackParamList } from '../../types';
 import { MyToast, OverlayLoader, SLoader } from '../../components';
 import {
@@ -99,10 +99,12 @@ export default function UserSetupScreen() {
   return (
     <>
       <OverlayLoader isShow={loader} />
-      <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
+      <Wrapper
+        bgImageSpacer={false}
+        onBackPress={() => !disable && setStep(handleBack)}>
         <ScrollView>
           {step == 1 && (
-            <EmailForm
+            <LoginForm
               type={route.params?.type}
               onPhonePress={value => setStep(value)}
               setStep={values => {
@@ -110,13 +112,13 @@ export default function UserSetupScreen() {
                   setData({ ...data, ...values });
                   setStep(3);
                 } else {
-                  onLogin(values.email, '');
+                  onLogin(values.email, values.phone);
                 }
               }}
             />
           )}
           {step == 1.1 && (
-            <PhoneForm
+            <SignUpForm
               onEmailPress={value => setStep(value)}
               type={route.params?.type}
               setStep={values => {
@@ -124,7 +126,7 @@ export default function UserSetupScreen() {
                   setData({ ...data, phone: `+1${values.phone}` });
                   setStep(3);
                 } else {
-                  onLogin('', values.phone);
+                  onLogin(values.email, values.phone);
                 }
               }}
             />

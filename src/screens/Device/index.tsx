@@ -10,7 +10,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ImmutableObject, useHookstate } from '@hookstate/core';
 
 import { PlusSvg } from '../../assets';
-import { GapView, MyText, TextLabel, DeviceCard } from '../../components';
+import {
+  GapView,
+  MyText,
+  TextLabel,
+  DeviceCard,
+  TabView,
+} from '../../components';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
@@ -50,7 +56,7 @@ const AddDevice = () => {
 
 export default function Device() {
   const [step, setStep] = useState(0);
-  const [activeTab, setActiveTab] = useState<string>('MyDevice');
+  const [activeTab, setActiveTab] = useState<string>('1');
   const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
   const user = useHookstate(userStore?.userData)?.get();
   const devices: any = useHookstate(deviceStore?.devices)?.get();
@@ -75,14 +81,14 @@ export default function Device() {
   };
 
   const realData = devices.filter((item: DeviceType) => {
-    if (activeTab == 'MasjidDevice') {
+    if (activeTab == '2') {
       return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
     } else {
       return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
     }
   });
 
-  console.log('devices', realData);
+  console.log('devices', activeTab);
 
   return (
     <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
@@ -91,67 +97,23 @@ export default function Device() {
           <GapView length={20} />
           <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
           <GapView length={45} />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              width: WINDOW_WIDTH - 80,
-              alignSelf: 'center',
-            }}>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              disabled={user?.userType?.name === 'Customer' ? true : false}
-              onPress={() => setActiveTab('MyDevice')}>
-              <MyText
-                text="My Devices"
-                textStyle={{
-                  color: activeTab == 'MyDevice' ? colors.primary : '#9E9F9F',
-                  fontWeight: '700'
-                }}
-                size={16}
-              />
-              {activeTab == 'MyDevice' &&
-                user?.userType?.name === 'Masjid Admin' && (
-                  <View
-                    style={{
-                      height: 5,
-                      width: 5,
-                      backgroundColor: colors.primary,
-                      borderRadius: 10,
-                      alignSelf: 'center',
-                      marginTop: 5,
-                    }}
-                  />
-                )}
-            </TouchableOpacity>
-            {user?.userType?.name === 'Masjid Admin' && (
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => setActiveTab('MasjidDevice')}>
-                <MyText
-                  text="Masjid Devices"
-                  textStyle={{
-                    color:
-                      activeTab == 'MasjidDevice' ? colors.primary : '#9E9F9F',
-                      fontWeight: '700'
-                  }}
-                  size={16}
-                />
-                {activeTab == 'MasjidDevice' && (
-                  <View
-                    style={{
-                      height: 5,
-                      width: 5,
-                      backgroundColor: colors.primary,
-                      borderRadius: 10,
-                      alignSelf: 'center',
-                      marginTop: 5,
-                    }}
-                  />
-                )}
-              </TouchableOpacity>
-            )}
-          </View>
+          {user?.userType?.name === 'Customer' ? (
+            <MyText
+              text="My Devices"
+              textStyle={{
+                color: colors.primary,
+                fontWeight: '700',
+                alignSelf: 'center',
+              }}
+              size={16}
+            />
+          ) : (
+            <TabView
+              tab1Title="My Devices"
+              onChange={setActiveTab}
+              tab2Title="Masjid Devices"
+            />
+          )}
           <View
             style={{
               flex: 1,

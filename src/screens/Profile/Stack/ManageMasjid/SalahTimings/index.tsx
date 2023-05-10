@@ -23,12 +23,12 @@ export default function SalahSettings({
             title: 'Salah Settings',
             data: [
               {
-                title: 'Iqamah Timings',
+                title: 'Iqama Timings',
                 icon: <SalahTimingsSVG />,
                 onPress: () => setFlag('iTime'),
               },
               {
-                title: 'Jumma Timings',
+                title: 'Jumuah Timings',
                 icon: <SalahTimingsSVG />,
                 onPress: () => setFlag('jTime'),
               },

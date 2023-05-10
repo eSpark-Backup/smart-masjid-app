@@ -33,7 +33,7 @@ const makeStyles = (props: CardProps) => {
   return StyleSheet.create({
     mainContainer: {
       borderRadius: 12,
-      width: props.width ?? WINDOW_WIDTH - 45,
+      width: props.width ?? WINDOW_WIDTH - 28,
       alignItems: 'center',
       alignSelf: 'center',
       shadowOpacity: 0.09,
