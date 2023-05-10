@@ -23,6 +23,7 @@ import {
   DeviceSettingSectionList,
   ErrorModal,
   DeviceStatus,
+  DeviceErrorBox,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
@@ -60,6 +61,11 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
             <DeviceStatus online />
           </View>
           <GapView length={20} />
+          <DeviceErrorBox
+            show={true}
+            onClose={() => console.log('on Close Box')}
+            message="Looks like your device se.Cupidatat sint sint elit nostrud mollit ad sunt cupidatat ex duis est."
+          />
           <DeviceSettingSectionList
             data={[
               {

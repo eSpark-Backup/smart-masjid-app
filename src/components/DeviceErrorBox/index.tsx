@@ -1,25 +1,50 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import { Card } from '../../containers';
 import MyText from '../MyText';
 import { Close } from '../../assets';
 
 export default function DeviceErrorBox({
+  show,
   message,
   onClose,
 }: {
-  message: string;
+  show: boolean;
+  message?: string;
   onClose?: () => void;
 }) {
-  return (
-    <Card>
-      <View>
-        <MyText text={message} />
-        <Close onPress={onClose} />
+  if (show) {
+    return (
+      <View style={{ marginBottom: 15, paddingHorizontal: 10 }}>
+        <Card width={325}>
+          <View style={{ padding: 10 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}>
+              <MyText
+                text={message!!}
+                textStyle={{
+                  color: '#FF6464',
+                  fontSize: 14,
+                  lineHeight: 24,
+                  width: 273,
+                }}
+              />
+              <TouchableWithoutFeedback onPress={onClose}>
+                <Close />
+              </TouchableWithoutFeedback>
+            </View>
+          </View>
+        </Card>
       </View>
-    </Card>
-  );
+    );
+  } else {
+    return null;
+  }
 }
 
 const styles = StyleSheet.create({});
