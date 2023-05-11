@@ -47,7 +47,7 @@ type DSetupNavigationProps = NativeStackScreenProps<
 >;
 
 export default function DeviceSetupScreen() {
-  console.log('User ka bta id mili ha?', userStore.get()?.userData?.id);
+  console.log('User ka bta id mili ha?', userStore.get());
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
   const isFocused = useIsFocused();
@@ -70,7 +70,10 @@ export default function DeviceSetupScreen() {
     title: undefined,
     message: undefined,
     btnText: undefined,
-    onPress: () => setStep(1),
+    onPress: () => {
+      setStep(1);
+      setRetry(true);
+    },
   });
 
   function _handleGPSProviderEvent(e: any) {
@@ -276,6 +279,7 @@ export default function DeviceSetupScreen() {
         {step == 1 && <DLoader />}
         {step == 2 && (
           <DeviceSelectForm
+            userInfo={userStore.get()?.currentRegisterUser?.userType?.name}
             data={scannedDevices}
             setStep={(value: number) => setStep(value)}
             setDevMacId={(value?: string) =>
