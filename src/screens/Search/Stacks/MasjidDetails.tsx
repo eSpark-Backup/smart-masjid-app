@@ -19,13 +19,12 @@ const MasjidDetails = ({
   masjidDetails?: Masjid;
 }) => {
   const [subscribe, setSubscribe] = useState(false);
-  
+  console.log('masjidDetails?.location', masjidDetails?.location);
+
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <GapView length={20} />
-      <TextLabel
-        label={masjidDetails?.name ?? '-'}
-      />
+      <TextLabel label={masjidDetails?.name ?? '-'} />
       <GapView length={55} />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -47,7 +46,10 @@ const MasjidDetails = ({
           />
         </View>
         <GapView length={20} />
-        <MapBox />
+        <MapBox
+          latitude={masjidDetails?.location.coordinates[0]}
+          longitude={masjidDetails?.location.coordinates[1]}
+        />
         <GapView length={10} />
         <View style={{ padding: 10 }}>
           <TimeTable
