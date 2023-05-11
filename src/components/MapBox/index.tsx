@@ -16,13 +16,16 @@ export default function MapBox({
       <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
-        // mapPadding={{ bottom: 100, top: 100, left: 100, right: 100 }}
         region={{
           latitude: latitude,
           longitude: longitude,
           latitudeDelta: 0.015,
           longitudeDelta: 0.0121,
         }}
+        scrollEnabled={false}
+        zoomEnabled
+        rotateEnabled
+        
       />
     </Card>
   );
