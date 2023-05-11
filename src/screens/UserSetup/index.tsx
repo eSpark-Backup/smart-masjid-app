@@ -4,7 +4,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
-import { LoginForm, OtpForm, SignUpForm, PersonalInfoForm } from '../../forms';
+import {
+  LoginForm,
+  OtpForm,
+  SignUpForm,
+  PersonalInfoForm,
+  AddPhoneForm,
+} from '../../forms';
 import { RootStackParamList } from '../../types';
 import { MyToast, OverlayLoader, SLoader } from '../../components';
 import {
@@ -38,13 +44,13 @@ export default function UserSetupScreen() {
     userType: 'Customer',
   });
 
-  // useEffect(() => {
-  // if (step == 4) {
-  //   setTimeout(() => {
-  //     setStep(step + 1);
-  //   }, 3000);
-  // }
-  // }, [step]);
+  useEffect(() => {
+    if (route.params?.type == 'setup') {
+      setStep(2);
+    } else {
+      setStep(1);
+    }
+  }, [route.params?.type]);
 
   const handleBack = () => {
     if (step == 1.1) {
@@ -58,7 +64,7 @@ export default function UserSetupScreen() {
   };
 
   const onSubmit = async (dataObj: CreateUserRequest) => {
-    setStep(4);
+    setStep(7);
     const res: UserResponse | undefined | any = await CreateUser(dataObj);
     console.log('res', res);
 
@@ -67,9 +73,9 @@ export default function UserSetupScreen() {
         { deviceId: phoneId, fcmToken: fcmToken as string },
         res?.id.toString(),
       );
-      setStep(5);
+      setStep(8);
     } else {
-      setStep(3);
+      setStep(6);
       Toast.show({
         text2: res?.message,
         type: 'error',
@@ -112,32 +118,45 @@ export default function UserSetupScreen() {
                   setData({ ...data, ...values });
                   setStep(3);
                 } else {
-                  onLogin(values.email, values.phone);
-                }
-              }}
-            />
-          )}
-          {step == 1.1 && (
-            <SignUpForm
-              onEmailPress={value => setStep(value)}
-              type={route.params?.type}
-              setStep={values => {
-                if (route.params?.type == 'setup') {
-                  setData({ ...data, phone: `+1${values.phone}` });
-                  setStep(3);
-                } else {
-                  onLogin(values.email, values.phone);
+                  onLogin(values.email?.toLowerCase(), values.phone);
                 }
               }}
             />
           )}
           {step == 2 && (
-            <OtpForm
+            <SignUpForm
+              onEmailPress={value => setStep(value)}
               type={route.params?.type}
-              setStep={(value: number) => setStep(value)}
+              setStep={values => {
+                setData({ ...data, email: values.email?.toLowerCase() });
+                setStep(4);
+              }}
             />
           )}
           {step == 3 && (
+            <OtpForm
+              title="Create Account"
+              type={route.params?.type}
+              setStep={(value: number) => setStep(4)}
+            />
+          )}
+          {step == 4 && (
+            <AddPhoneForm
+              type={route.params?.type}
+              setStep={(value: number, values: any) => {
+                setStep(6);
+                // setData({ ...data, phone: values?.phone ?? '' });
+              }}
+            />
+          )}
+          {step == 5 && (
+            <OtpForm
+              title="Create Account"
+              type={route.params?.type}
+              setStep={(value: number) => setStep(6)}
+            />
+          )}
+          {step == 6 && (
             <PersonalInfoForm
               setStep={values => {
                 setData({ ...data, ...values });
@@ -145,7 +164,7 @@ export default function UserSetupScreen() {
               }}
             />
           )}
-          {step == 4 && (
+          {step == 7 && (
             <SLoader
               title={
                 route.params?.type == 'login' ? 'Loggin In' : 'Creating Account'
@@ -157,7 +176,7 @@ export default function UserSetupScreen() {
               }
             />
           )}
-          {step == 5 && (
+          {step == 8 && (
             <MyToast
               isSuccess={true}
               onPress={() => navigation.navigate('DSetup')}

@@ -98,9 +98,11 @@ export default function LoginForm({
                     isPhoneCode
                   />
                 </Card>
-                {errors.email && touched.email && (
+                {/* @ts-ignore */}
+                {errors.phone && touched.phone && (
                   <MyText
-                    text={errors.email}
+                    // @ts-ignore
+                    text={errors.phone}
                     textStyle={{
                       color: 'red',
                       width: WINDOW_WIDTH - 110,
@@ -111,7 +113,7 @@ export default function LoginForm({
               </>
             )}
             <GapView length={60} />
-            <View style={{alignSelf: 'center'}}>
+            <View style={{ alignSelf: 'center' }}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
           </>
@@ -124,7 +126,7 @@ export default function LoginForm({
           text="Create account"
           pressable
           textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-          onPress={() => onPhonePress(1.1)}
+          onPress={() => onPhonePress(2)}
         />
       </View>
     </View>
