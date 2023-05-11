@@ -20,18 +20,20 @@ export default function DeviceSelectForm({
     const isBtn = item?.name?.includes('SMBTN');
     const isAdmin = userInfo === 'Masjid Admin';
     if (!isAdmin) {
-      return !isBtn
-        ? {
-            ...item,
-            leftIcon: <DeviceSvg />,
-            title: 'Smart Adhan Speaker',
-            onPress: () => {
-              console.log('selected macId', item?.id);
-              setStep(3);
-              setDevMacId?.(item?.id);
-            },
-          }
-        : { ...item, title: 'null' };
+      if (!isBtn) {
+        return {
+          ...item,
+          leftIcon: <DeviceSvg />,
+          title: 'Smart Adhan Speaker',
+          onPress: () => {
+            console.log('selected macId', item?.id);
+            setStep(3);
+            setDevMacId?.(item?.id);
+          },
+        };
+      } else {
+        return { ...item, title: 'null' };
+      }
     } else {
       return {
         ...item,
