@@ -6,3 +6,4 @@ export { default as DeviceSelectForm } from './DeviceSelectForm';
 export { default as WifiSelectForm } from './WifiSelectForm';
 export { default as PasswordForm } from './PasswordForm';
 export { default as DeviceNicknameForm } from './DeviceNicknameForm';
+export { default as AddPhoneForm } from './AddPhoneForm';

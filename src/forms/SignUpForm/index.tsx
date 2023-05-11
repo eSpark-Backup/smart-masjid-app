@@ -29,8 +29,8 @@ export default function SignUpForm({
       />
       <GapView length={50} />
       <Formik
-        initialValues={{ phone: '' }}
-        validationSchema={UserSetupSchema.phoneForm}
+        initialValues={{ email: '' }}
+        validationSchema={UserSetupSchema.emailForm}
         onSubmit={values => {
           setStep(values);
         }}>
@@ -45,16 +45,14 @@ export default function SignUpForm({
           <>
             <Card width={315}>
               <MyInput
-                placeholder="Phone Number"
-                isPhoneCode
-                phoneCodeValue="+ 1"
-                onChangeText={handleChange('phone')}
-                value={values.phone}
+                placeholder="Email"
+                onChangeText={handleChange('email')}
+                value={values.email}
               />
             </Card>
-            {errors.phone && touched.phone && (
+            {errors.email && touched.email && (
               <MyText
-                text={errors.phone}
+                text={errors.email}
                 textStyle={{
                   color: 'red',
                   width: WINDOW_WIDTH - 110,
@@ -63,19 +61,22 @@ export default function SignUpForm({
               />
             )}
             <GapView length={60} />
-            <View>
+            <View style={{alignItems: 'center'}}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
           </>
         )}
       </Formik>
       <GapView length={60} />
-      <MyText
-        text="Use email instead"
-        pressable
-        textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-        onPress={() => onEmailPress(1)}
-      />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <MyText text="Already have account? " />
+        <MyText
+          text="Login"
+          pressable
+          textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
+          onPress={() => onEmailPress(1)}
+        />
+      </View>
     </View>
   );
 }
@@ -83,6 +84,6 @@ export default function SignUpForm({
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
 });

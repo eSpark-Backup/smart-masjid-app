@@ -2,21 +2,26 @@ import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 
-import { GapView, MyText, Rounded } from '../../components';
+import { GapView, MyText, Rounded, TextLabel } from '../../components';
 import { MyLightTheme } from '../../theme';
 import { Theme, useTheme } from '@react-navigation/native';
 
 export default function OtpForm({
   type,
   setStep,
+  title = 'OTP Form',
 }: {
   type?: 'login' | 'setup';
   setStep: (value: number) => void;
+  title?: string;
 }) {
   const otpRef: any = useRef(null);
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
+      <GapView length={20} />
+      <TextLabel label={title} textStyle={{ alignSelf: 'center' }} />
+      <GapView length={80} />
       <MyText
         text="You'll recieve a verification code shortly"
         textStyle={{ fontSize: 16, fontWeight: '400' }}
