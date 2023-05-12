@@ -96,6 +96,10 @@ export default function LoginForm({
                     // @ts-ignore
                     value={values?.phone}
                     isPhoneCode
+                    phoneCodeValue="US"
+                    onPhoneCodeChange={e => {
+                      console.log('e', e);
+                    }}
                   />
                 </Card>
                 {/* @ts-ignore */}

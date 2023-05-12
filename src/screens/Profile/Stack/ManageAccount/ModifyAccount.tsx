@@ -39,7 +39,7 @@ export default function ModifyAccount({
 
   return (
     <ScrollView style={{ flex: 1 }}>
-      <OverlayLoader isShow={loading}  />
+      <OverlayLoader isShow={loading} />
       <View
         style={{ padding: 20, justifyContent: 'center', alignItems: 'center' }}>
         <TextLabel label={'Modify Account'} />
@@ -53,7 +53,9 @@ export default function ModifyAccount({
               placeholderColor="#CFCFCF"
               isDivider
               dividerWidth={0.25}
-              onChangeText={(value: string) => setData({...data, firstName: value})}
+              onChangeText={(value: string) =>
+                setData({ ...data, firstName: value })
+              }
               value={data.firstName}
               dividerColor="rgba(158, 159, 159, 1)"
             />
@@ -61,14 +63,18 @@ export default function ModifyAccount({
               placeholder="Ahmed"
               placeholderColor="#CFCFCF"
               isDivider
-              onChangeText={(value: string) => setData({...data, lastName: value})}
+              onChangeText={(value: string) =>
+                setData({ ...data, lastName: value })
+              }
               value={data.lastName}
               dividerWidth={0.25}
               dividerColor="rgba(158, 159, 159, 1)"
             />
             <MyInput
               placeholder="muk.ahmed@gmail.com"
-              onChangeText={(value: string) => setData({...data, email: value})}
+              onChangeText={(value: string) =>
+                setData({ ...data, email: value })
+              }
               placeholderColor="#CFCFCF"
               value={data.email}
             />
@@ -78,11 +84,11 @@ export default function ModifyAccount({
             initialValues={{ phone: data.phone?.replace('+1', '') }}
             validationSchema={UserSetupSchema.phoneForm}
             onSubmit={async values => {
-              setLoading(true)
+              setLoading(true);
               await UpdateUser(userData?.id?.toString() || '', {
-                phone: `+1${values.phone}`
+                phone: `+1${values.phone}`,
               });
-              setLoading(false)
+              setLoading(false);
             }}>
             {({
               handleChange,
@@ -97,7 +103,7 @@ export default function ModifyAccount({
                   <MyInput
                     placeholder="Phone Number"
                     isPhoneCode
-                    phoneCodeValue="+ 1"
+                    phoneCodeValue="US"
                     onChangeText={handleChange('phone')}
                     value={values.phone?.replace('+1', '')}
                   />
@@ -109,7 +115,7 @@ export default function ModifyAccount({
                       color: 'red',
                       width: WINDOW_WIDTH - 110,
                       marginTop: 4,
-                      left: 15
+                      left: 15,
                     }}
                   />
                 )}
@@ -148,14 +154,14 @@ export default function ModifyAccount({
           }}>
           <Rounded
             label="Update"
-            onPress={async() => {
-              setLoading(true)
+            onPress={async () => {
+              setLoading(true);
               await UpdateUser(userData?.id?.toString() || '', {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,
               });
-              setLoading(false)
+              setLoading(false);
             }}
           />
           <GapView length={40} />

@@ -46,6 +46,18 @@ export type DeviceStoreProps = {
   devices: Device[];
 };
 
+export type ExternalStoreProps = {
+  countryCodes: CountryCodes[];
+};
+
+export type CountryCodes = {
+  id: number;
+  country: string;
+  code: string;
+  enabled: boolean;
+  iso_code: string;
+};
+
 export type DeviceInfo = {
   macId?: string;
   nickName?: string;
