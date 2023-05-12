@@ -38,6 +38,7 @@ export { default as ThreeDotSvg } from './images/3dot.svg';
 export { default as DeviceEdit } from './images/DeviceEdit.svg';
 export { default as SujudSvg } from './images/Sujud.svg';
 export { default as SalahTimingsSVG } from './images/SalahTimings.svg';
+export { default as USFlag } from './images/USFlag.svg';
 
 //* vector icons
 export { default as AccountGear } from './vectors/account-gear.svg';

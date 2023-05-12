@@ -30,3 +30,4 @@ export { default as ErrorModal } from './ErrorModal';
 export { default as DeviceStatus } from './DeviceStatus';
 export { default as TabView } from './TabView';
 export { default as DeviceErrorBox } from './DeviceErrorBox';
+export { default as CountryPickerModal } from './CountryPickerModal';

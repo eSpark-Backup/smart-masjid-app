@@ -21,6 +21,7 @@ import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
 import { userStore } from '../store/UserStore';
 import { UserResponse } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
+import { GetCountryCodes } from '../api/externalControllers';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -69,6 +70,7 @@ export default function App() {
   const userData = useHookstate(userStore.userData);
   const [loader, setLoader] = useState<boolean>(false);
   useEffect(() => {
+    GetCountryCodes()
     handleDeviceIdCheck();
     _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {
