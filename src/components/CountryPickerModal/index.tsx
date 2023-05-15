@@ -10,6 +10,7 @@ import {
   TextInput,
   Platform,
   TextStyle,
+  SafeAreaView,
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { CrossSvg } from '../../assets';
@@ -43,7 +44,7 @@ export default function CountryModal({
   const countries = useHookstate(externalStore.countryCodes).get();
   const [data, setData] = useState(countries);
   const { colors }: Theme = useTheme();
-  
+
   const close = (e: CountryCodes) => {
     onSetValue(e);
     onCross();
@@ -84,46 +85,48 @@ export default function CountryModal({
       onRequestClose={onCross}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <View style={styles.crossView}>
-            <TouchableOpacity activeOpacity={0.8} onPress={onCross}>
-              <CrossSvg height={25} width={25} />
-            </TouchableOpacity>
-            {isSearch && (
-              <View style={styles.inputserach}>
-                <TextInput
-                  onChangeText={onSearch}
-                  style={[styles.inputStyle]}
-                  placeholder={searchPlaceholder}
-                  placeholderTextColor="#cacaca"
-                />
-              </View>
+          <SafeAreaView>
+            <View style={styles.crossView}>
+              <TouchableOpacity activeOpacity={0.8} onPress={onCross}>
+                <CrossSvg height={25} width={25} />
+              </TouchableOpacity>
+              {isSearch && (
+                <View style={styles.inputserach}>
+                  <TextInput
+                    onChangeText={onSearch}
+                    style={[styles.inputStyle]}
+                    placeholder={searchPlaceholder}
+                    placeholderTextColor="#cacaca"
+                  />
+                </View>
+              )}
+            </View>
+            {data?.length !== 0 ? (
+              <FlatList
+                contentContainerStyle={[styles.listView, { width: width - 50 }]}
+                data={data}
+                renderItem={({ item, index }) => {
+                  // @ts-ignore
+                  const Flag = CountryFlags[item.iso_code] ?? UnknownFlag;
+                  return (
+                    <TouchableOpacity
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                      onPress={() => close(item)}>
+                      <Flag height={26} width={26} />
+                      <GapView mode="horizontal" length={5} />
+                      <MyText text={`(${item.code})`} />
+                      <GapView mode="horizontal" length={5} />
+                      <Text style={[styles.defaultTextStyle, textStyle]}>
+                        {item.country}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            ) : (
+              <Text style={[styles.defaultTextStyleEmpty]}>{EmptyMessage}</Text>
             )}
-          </View>
-          {data?.length !== 0 ? (
-            <FlatList
-              contentContainerStyle={[styles.listView, { width: width - 50 }]}
-              data={data}
-              renderItem={({ item, index }) => {
-                // @ts-ignore
-                const Flag = CountryFlags[item.iso_code] ?? UnknownFlag;
-                return (
-                  <TouchableOpacity
-                    style={{ flexDirection: 'row', alignItems: 'center' }}
-                    onPress={() => close(item)}>
-                    <Flag height={26} width={26} />
-                    <GapView mode="horizontal" length={5} />
-                    <MyText text={`(${item.code})`} />
-                    <GapView mode="horizontal" length={5} />
-                    <Text style={[styles.defaultTextStyle, textStyle]}>
-                      {item.country}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          ) : (
-            <Text style={[styles.defaultTextStyleEmpty]}>{EmptyMessage}</Text>
-          )}
+          </SafeAreaView>
         </View>
       </View>
     </Modal>
