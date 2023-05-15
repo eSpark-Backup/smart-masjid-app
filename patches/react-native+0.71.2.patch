@@ -78,9 +78,17 @@ index f556fa3..086534f 100644
  };
  
  if (__DEV__) {
+diff --git a/node_modules/react-native/scripts/.packager.bat b/node_modules/react-native/scripts/.packager.bat
+new file mode 100644
+index 0000000..e89260e
+--- /dev/null
++++ b/node_modules/react-native/scripts/.packager.bat
+@@ -0,0 +1 @@
++set RCT_METRO_PORT=8081
+\ No newline at end of file
 diff --git a/node_modules/react-native/scripts/.packager.env b/node_modules/react-native/scripts/.packager.env
 new file mode 100644
-index 0000000..21a13cf
+index 0000000..c8fe450
 --- /dev/null
 +++ b/node_modules/react-native/scripts/.packager.env
 @@ -0,0 +1 @@
