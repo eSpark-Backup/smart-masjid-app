@@ -110,7 +110,7 @@ export default function JummaTimings({
                     paddingHorizontal: 5,
                   }}>
                   <View>
-                    <MyText text="Effective Date: 02-24-2023" />
+                    <MyText text={`Effective Date: ${jummahTimings?.changeDate}`} />
                   </View>
                   <View
                     style={{
