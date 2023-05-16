@@ -14,15 +14,16 @@ import {
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { CrossSvg } from '../../assets';
-import { CountryFlags, WINDOW_HEIGHT } from '../../constants';
+import { CountryFlags, WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { useHookstate } from '@hookstate/core';
 import { externalStore } from '../../store/ExternalStore';
 import { CountryCodes } from '../../types';
 import MyText from '../MyText';
 import GapView from '../GapView';
 import { Theme, useTheme } from '@react-navigation/native';
+import { Card, Wrapper } from '../../containers';
+import MyInput from '../MyInput';
 
-const { width, height } = Dimensions.get('screen');
 
 export default function CountryModal({
   visibleState = false,
@@ -78,55 +79,79 @@ export default function CountryModal({
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       statusBarTranslucent={true}
       visible={visibleState}
       onRequestClose={onCross}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <SafeAreaView>
-            <View style={styles.crossView}>
-              <TouchableOpacity activeOpacity={0.8} onPress={onCross}>
-                <CrossSvg height={25} width={25} />
-              </TouchableOpacity>
-              {isSearch && (
-                <View style={styles.inputserach}>
-                  <TextInput
-                    onChangeText={onSearch}
-                    style={[styles.inputStyle]}
+          <Wrapper
+            showFooter={false}
+            bgImageSpacer={false}
+            onBackPress={onCross}>
+            <View
+              style={{
+                width: WINDOW_WIDTH - 40,
+                alignSelf: 'center',
+              }}>
+              <View style={styles.crossView}>
+                <Card width={WINDOW_WIDTH - 80}>
+                  <MyInput
                     placeholder={searchPlaceholder}
-                    placeholderTextColor="#cacaca"
+                    onChangeText={onSearch}
                   />
-                </View>
-              )}
+                </Card>
+              </View>
+              <GapView />
+              <View>
+                {data?.length !== 0 ? (
+                  <FlatList
+                    contentContainerStyle={[
+                      {
+                        flexGrow: 1,
+                        width: WINDOW_WIDTH - 80,
+                        alignSelf: 'center',
+                        paddingBottom: 400,
+                      },
+                    ]}
+                    data={data}
+                    ItemSeparatorComponent={GapView}
+                    renderItem={({ item, index }) => {
+                      // @ts-ignore
+                      const Flag = CountryFlags[item.iso_code] ?? UnknownFlag;
+                      return (
+                        <Card width={WINDOW_WIDTH - 85}>
+                          <TouchableOpacity
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              margin: 10,
+                            }}
+                            onPress={() => close(item)}>
+                            <Flag height={30} width={30} />
+                            <GapView mode="horizontal" length={10} />
+                            <View>
+                              <MyText
+                                text={item.country}
+                                textStyle={{ fontWeight: '700' }}
+                              />
+                              <MyText text={`(${item.code})`} size={10} />
+                            </View>
+                          </TouchableOpacity>
+                        </Card>
+                      );
+                    }}
+                    showsVerticalScrollIndicator={false}
+                  />
+                ) : (
+                  <Text style={[styles.defaultTextStyleEmpty]}>
+                    {EmptyMessage}
+                  </Text>
+                )}
+              </View>
             </View>
-            {data?.length !== 0 ? (
-              <FlatList
-                contentContainerStyle={[styles.listView, { width: width - 50 }]}
-                data={data}
-                renderItem={({ item, index }) => {
-                  // @ts-ignore
-                  const Flag = CountryFlags[item.iso_code] ?? UnknownFlag;
-                  return (
-                    <TouchableOpacity
-                      style={{ flexDirection: 'row', alignItems: 'center' }}
-                      onPress={() => close(item)}>
-                      <Flag height={26} width={26} />
-                      <GapView mode="horizontal" length={5} />
-                      <MyText text={`(${item.code})`} />
-                      <GapView mode="horizontal" length={5} />
-                      <Text style={[styles.defaultTextStyle, textStyle]}>
-                        {item.country}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                }}
-              />
-            ) : (
-              <Text style={[styles.defaultTextStyleEmpty]}>{EmptyMessage}</Text>
-            )}
-          </SafeAreaView>
+          </Wrapper>
         </View>
       </View>
     </Modal>
@@ -138,22 +163,20 @@ const styles = StyleSheet.create({
     marginTop: -8,
     marginLeft: 8,
     borderBottomWidth: 0.5,
-    width: '90%',
+    width: '100%',
   },
   inputStyle: {
-    width: '95%',
     marginTop: Platform.OS === 'ios' ? 15 : 1,
     marginLeft: 6,
     fontSize: 15,
     color: '#474747',
     borderColor: '#474747',
+    width: '100%',
   },
-  listView: {
-    paddingLeft: 30,
-  },
+
   crossView: {
     marginLeft: 20,
-    marginTop: StatusBar.currentHeight,
+    marginTop: 50,
     paddingBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -165,7 +188,6 @@ const styles = StyleSheet.create({
   },
   defaultTextStyle: {
     fontSize: 16,
-    padding: 5,
   },
   centeredView: {
     flex: 1,
@@ -181,7 +203,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'white',
-    alignItems: 'flex-start',
+    // alignItems: 'flex-start',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
