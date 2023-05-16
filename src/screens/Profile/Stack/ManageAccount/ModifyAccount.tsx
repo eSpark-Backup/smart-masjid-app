@@ -73,7 +73,7 @@ export default function ModifyAccount({
             <MyInput
               placeholder="muk.ahmed@gmail.com"
               onChangeText={(value: string) =>
-                setData({ ...data, email: value })
+                setData({ ...data, email: value?.toLowerCase() })
               }
               placeholderColor="#CFCFCF"
               value={data.email}

@@ -38,6 +38,7 @@ export default function AddUsers({
       const data: any = await CheckUserExists(values.email, values.phone);
       const obj: CreateUserRequest = {
         ...values,
+        email: values.email?.toLowerCase(),
         phone: '+1' + values.phone,
         userType: 'Masjid Admin',
         masjidId: '1',
