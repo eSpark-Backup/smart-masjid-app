@@ -85,6 +85,7 @@ export { default as DeviceObject } from './vectors/data-object.svg';
 export { default as Caution } from './vectors/Caution.svg';
 export { default as Close } from './vectors/Close.svg';
 export { default as Exclimation } from './vectors/Exclimation.svg';
+export { default as Check } from './vectors/Check.svg';
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';
 export { default as AE } from './vectors/flags/ae.svg';
@@ -163,7 +164,3 @@ export { default as UA } from './vectors/flags/ua.svg';
 export { default as US } from './vectors/flags/us.svg';
 export { default as VA } from './vectors/flags/va.svg';
 export { default as YE } from './vectors/flags/ye.svg';
-
-
-
-

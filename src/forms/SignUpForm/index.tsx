@@ -21,13 +21,19 @@ export default function SignUpForm({
     <View style={styles.container}>
       <GapView length={20} />
       <TextLabel label="Create Account" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
+      <MyText
+        textStyle={{ textAlign: 'center', width: 315, fontWeight: '700' }}
+        size={20}
+        text={`Awesome!`}
+      />
+      <GapView length={15} />
       <MyText
         textStyle={{ textAlign: 'center', width: 315 }}
-        text={`Awesome! Please turn on your device. Let’s get your account created.\n\nWhat’s a good email to get started?
+        text={`Let’s get your account created.\n\nWhat’s a good email to get started?
       `}
       />
-      <GapView length={50} />
+      <GapView length={30} />
       <Formik
         initialValues={{ email: '' }}
         validationSchema={UserSetupSchema.emailForm}
@@ -60,14 +66,14 @@ export default function SignUpForm({
                 }}
               />
             )}
-            <GapView length={60} />
-            <View style={{alignItems: 'center'}}>
+            <GapView length={40} />
+            <View style={{ alignItems: 'center' }}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
           </>
         )}
       </Formik>
-      <GapView length={60} />
+      <GapView length={40} />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <MyText text="Already have account? " />
         <MyText

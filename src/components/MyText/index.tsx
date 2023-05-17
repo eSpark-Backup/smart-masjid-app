@@ -21,7 +21,7 @@ export default function MyText({
       <Text
         style={{
           fontFamily: 'roboto',
-          color: colors.text,
+          color: '#0E0E0E',
           fontSize: size ?? 14,
           ...textStyle,
         }}>

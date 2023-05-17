@@ -36,7 +36,7 @@ export default function LoginForm({
     <View style={styles.container}>
       <GapView length={20} />
       <TextLabel label="Login" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
       <TabView
         tab1Title="Email"
         tab2Title="Phone number"
@@ -46,7 +46,7 @@ export default function LoginForm({
         label={type != 'setup' ? 'Enter Your Email' : 'Lets create an account'}
         textStyle={{ alignSelf: 'center' }}
       /> */}
-      <GapView length={60} />
+      <GapView length={40} />
       <Formik
         initialValues={{ email: 'test2@yopmail.com' }}
         validationSchema={
@@ -116,14 +116,14 @@ export default function LoginForm({
                 )}
               </>
             )}
-            <GapView length={60} />
+            <GapView length={40} />
             <View style={{ alignSelf: 'center' }}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
           </>
         )}
       </Formik>
-      <GapView length={60} />
+      <GapView length={40} />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <MyText text="Don’t have account? " />
         <MyText
