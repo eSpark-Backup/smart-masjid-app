@@ -18,7 +18,7 @@ export default function MyToast({
 }: {
   heading?: string;
   title: string;
-  message: React.ReactNode;
+  message: JSX.Element;
   isSuccess: boolean;
   btnText: string;
   onPress?: () => void;

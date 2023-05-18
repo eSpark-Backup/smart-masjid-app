@@ -46,11 +46,6 @@ const MasjidDetails = ({
           />
         </View>
         <GapView length={20} />
-        <MapBox
-          latitude={masjidDetails?.location.coordinates[0]}
-          longitude={masjidDetails?.location.coordinates[1]}
-        />
-        <GapView length={10} />
         <View style={{ padding: 10 }}>
           <TimeTable
             data={[

@@ -44,9 +44,9 @@ const AddDevice = () => {
           onPress={() => navigation.navigate('DSetup', { from: 'Device' })}
           style={styles.AddDeviceContainer}>
           <View style={{ alignItems: 'center' }}>
-            <PlusSvg style={{ color: '#6E6E6E' }} />
+            <PlusSvg style={{ color: theme.colors.primary }} />
             <GapView length={10} />
-            <TextLabel label="Add Device" textStyle={{ color: '#6E6E6E' }} />
+            <TextLabel label="Add Device" textStyle={{ color: theme.colors.primary }} />
           </View>
         </TouchableOpacity>
       </Card>

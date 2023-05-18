@@ -41,17 +41,7 @@ export default function ConnectedDevicesComponent() {
           <FlatList
             data={Array('Home', 'Office', 'Shop', "Gradma's House")}
             renderItem={({ item }) => <DeviceListItem title={item} />}
-            ItemSeparatorComponent={() => (
-              <MyDivider
-                backgroundColor="#9E9F9F"
-                height={0.25}
-                style={{
-                  paddingHorizontal: 20,
-                  alignSelf: 'center',
-                  width: '100%',
-                }}
-              />
-            )}
+          
           />
         </View>
       </Card>

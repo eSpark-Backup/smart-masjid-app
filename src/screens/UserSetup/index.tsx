@@ -52,11 +52,11 @@ export default function UserSetupScreen() {
   });
 
   useEffect(() => {
-    // if (route.params?.type == 'setup') {
-    //   setStep(2);
-    // } else {
-    //   setStep(1);
-    // }
+    if (route.params?.type == 'setup') {
+      setStep(2);
+    } else {
+      setStep(1);
+    }
   }, [route.params?.type]);
 
   const handleBack = () => {

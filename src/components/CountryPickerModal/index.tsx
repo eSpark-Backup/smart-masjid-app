@@ -95,7 +95,7 @@ export default function CountryModal({
                 alignSelf: 'center',
               }}>
               <View style={styles.crossView}>
-                <Card width={WINDOW_WIDTH - 80}>
+                <Card backgroundColor='#fff' width={WINDOW_WIDTH - 80}>
                   <MyInput
                     placeholder={searchPlaceholder}
                     onChangeText={onSearch}

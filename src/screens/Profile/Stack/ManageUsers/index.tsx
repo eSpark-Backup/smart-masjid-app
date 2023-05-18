@@ -18,6 +18,7 @@ import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { userStore } from '../../../../store/UserStore';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
+import { Theme, useTheme } from '@react-navigation/native';
 
 export default function ManageUsers({
   setFlag,
@@ -118,6 +119,7 @@ const UserCard = ({
 };
 
 const AddUserBtn = ({ onPress }: any) => {
+  const { colors }: Theme = useTheme()
   return (
     <View style={{ marginTop: 10 }}>
       <Card>
@@ -125,7 +127,7 @@ const AddUserBtn = ({ onPress }: any) => {
           activeOpacity={0.9}
           onPress={onPress}
           style={styles.cardContainer}>
-          <MyText text="Add New User" />
+          <MyText text="Add New User" textStyle={{color: colors.primary, fontWeight: '700'}} />
           <PlusSvg height={16} width={16} />
         </TouchableOpacity>
       </Card>

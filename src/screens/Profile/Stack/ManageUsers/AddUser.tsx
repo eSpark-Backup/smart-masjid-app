@@ -88,7 +88,7 @@ export default function AddUsers({
             </View> */}
             <View style={{ paddingHorizontal: 25 }}>
               <GapView />
-              <Card width={345} radius={12}>
+              <Card backgroundColor='#ffffff' width={345} radius={12}>
                 <MyInput
                   placeholder="First Name"
                   placeholderColor="#CFCFCF"
