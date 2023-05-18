@@ -12,7 +12,13 @@ import {
   AddPhoneForm,
 } from '../../forms';
 import { RootStackParamList } from '../../types';
-import { GapView, MyText, MyToast, OverlayLoader, SLoader } from '../../components';
+import {
+  GapView,
+  MyText,
+  MyToast,
+  OverlayLoader,
+  SLoader,
+} from '../../components';
 import {
   CreateUser,
   LoginUser,
@@ -36,7 +42,7 @@ export default function UserSetupScreen() {
   const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
   const route = useRoute<Props['route']>();
-  const [step, setStep] = useState(8);
+  const [step, setStep] = useState(1);
   const [disable, setDisable] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [data, setData] = useState<CreateUserRequest>({
@@ -186,14 +192,17 @@ export default function UserSetupScreen() {
                   <GapView length={25} />
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Check height={15} width={15} />
-                    <GapView length={5} mode='horizontal' />
+                    <GapView length={5} mode="horizontal" />
                     <MyText text={`Power on your device`} size={16} />
                   </View>
                   <GapView />
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Check height={15} width={15} />
-                    <GapView length={5} mode='horizontal' />
-                    <MyText text={`Turn on bluetooth on your phone`} size={16} />
+                    <GapView length={5} mode="horizontal" />
+                    <MyText
+                      text={`Turn on bluetooth on your phone`}
+                      size={16}
+                    />
                   </View>
                 </>
               }

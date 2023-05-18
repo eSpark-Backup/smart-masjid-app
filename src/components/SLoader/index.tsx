@@ -28,7 +28,7 @@ export default function SLoader({
           textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
         />
       )}
-      <View style={{ alignSelf: 'center', }}>
+      <View style={{ alignSelf: 'center' }}>
         <GapView length={15} />
         <MyText
           text="Please wait"

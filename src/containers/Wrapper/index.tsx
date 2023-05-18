@@ -10,7 +10,7 @@ import MyText from '../../components/MyText';
 // Like This <Wrapper><YOUR_COMPONENT><YOUR_COMPONENT/></Wrapper>
 export default function Wrapper({
   children,
-  showFooter = true,
+  showFooter = false,
   onBackPress,
   bgImageSpacer = true,
 }: {
