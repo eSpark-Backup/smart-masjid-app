@@ -70,7 +70,7 @@ export default function App() {
   const userData = useHookstate(userStore.userData);
   const [loader, setLoader] = useState<boolean>(false);
   useEffect(() => {
-    GetCountryCodes()
+    GetCountryCodes();
     handleDeviceIdCheck();
     _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {

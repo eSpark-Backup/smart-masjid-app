@@ -55,13 +55,20 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
         <View style={styles.deviceSettingContainer}>
           <GapView length={20} />
           <View style={styles.subHeader}>
-            <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />
+            <MyText
+              text={`Smart ${
+                device?.deviceType?.modelNumber?.includes('SBB')
+                  ? 'Button'
+                  : 'Speaker'
+              } V${device?.firmwareVersion}`}
+              textStyle={styles.deviceName}
+            />
             <DeviceStatus online />
           </View>
           <GapView length={20} />
           <DeviceErrorBox
             show={true}
-            onClose={() => console.log('on Close Box')}
+            onClose={() => console.log('on Close Box', device)}
             message="Looks like your device se.Cupidatat sint sint elit nostrud mollit ad sunt cupidatat ex duis est."
           />
           <DeviceSettingSectionList

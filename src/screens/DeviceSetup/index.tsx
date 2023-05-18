@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DeviceEventEmitter, ScrollView } from 'react-native';
+import { DeviceEventEmitter, ScrollView, Text } from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -63,7 +63,7 @@ export default function DeviceSetupScreen() {
   const [connFlag, setConnFlag] = useState(true);
   const [toastContent, setToastContent] = useState<{
     title?: string;
-    message?: string;
+    message?: JSX.Element;
     btnText?: string;
     onPress?: () => void;
   }>({
@@ -117,7 +117,7 @@ export default function DeviceSetupScreen() {
     if (locationStatus === false) {
       setStep(8);
       setToastContent({
-        message: 'Enable Location',
+        message: <Text>{'Enable Location'}</Text>,
         onPress: () => {
           setRetry(true);
         },
@@ -126,7 +126,7 @@ export default function DeviceSetupScreen() {
     if (bleStatus === false) {
       setStep(8);
       setToastContent({
-        message: 'Enable Ble Adapter',
+        message: <Text>{'Enable Ble Adapter'}</Text>,
         onPress: () => {
           setRetry(true);
         },
@@ -223,7 +223,11 @@ export default function DeviceSetupScreen() {
       setStep(8);
       setToastContent({
         title: 'Accept Permissions',
-        message: 'Accept All Permission to Continue to Scan for BLE devices',
+        message: (
+          <Text>
+            {'Accept All Permission to Continue to Scan for BLE devices'}
+          </Text>
+        ),
         onPress: () => {
           setRetry(true);
         },
@@ -264,7 +268,7 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: 'Check the Location/Bluetooth adapter',
+          message: <Text>{'Check the Location/Bluetooth adapter'}</Text>,
           onPress: () => setRetry(true),
         }));
       }
@@ -279,7 +283,11 @@ export default function DeviceSetupScreen() {
         {step == 1 && <DLoader />}
         {step == 2 && (
           <DeviceSelectForm
-            userInfo={userStore.get()?.currentRegisterUser?.userType?.name}
+            userInfo={
+              userStore.get().currentRegisterUser
+                ? userStore.get().currentRegisterUser?.userType.name
+                : userStore.get().userData?.userType.name
+            }
             data={scannedDevices}
             setStep={(value: number) => setStep(value)}
             setDevMacId={(value?: string) =>
@@ -321,6 +329,7 @@ export default function DeviceSetupScreen() {
         )}
         {step == 7 && (
           <MyToast
+            heading="Device Setup"
             isSuccess={true}
             btnText={route.params?.from ? 'Awesome' : 'Search Masjid'}
             onPress={() => {
@@ -332,19 +341,25 @@ export default function DeviceSetupScreen() {
               });
             }}
             title="Device setup complete!"
-            message={'Your device is connected successfully.' + masjidSetupText}
+            message={
+              <Text>
+                {'Your device is connected successfully.' + masjidSetupText}
+              </Text>
+            }
           />
         )}
         {step == 8 && (
           <MyToast
+            heading="Device Setup"
             isSuccess={false}
             btnText={toastContent.btnText ?? 'Try Again'}
             onPress={toastContent.onPress}
             title={toastContent.title ?? 'Oops! Device not found.'}
             message={
-              toastContent.message ??
-              `Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
-          `
+              toastContent.message ?? (
+                <Text>{`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
+              `}</Text>
+              )
             }
           />
         )}

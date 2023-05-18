@@ -48,7 +48,7 @@ export default function LoginForm({
       /> */}
       <GapView length={40} />
       <Formik
-        initialValues={{ email: 'test2@yopmail.com' }}
+        initialValues={{ email: 'supadmin@yopmail.com' }}
         validationSchema={
           activeTab == '1'
             ? UserSetupSchema.emailForm

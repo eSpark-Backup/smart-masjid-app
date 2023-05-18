@@ -18,7 +18,7 @@ export default function DeviceNicknameForm({
     <View style={styles.container}>
       <GapView length={20} />
       <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
       <MyText
         text="Let’s give your device a nick name"
         textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}

@@ -121,11 +121,6 @@ export default function Device() {
             }}>
             <FlatList
               contentContainerStyle={{
-                // backgroundColor: 'pink',
-                // alignItems: 'center',
-                // justifyContent: 'center',
-                // paddingHorizontal: 10,
-                // alignSelf: 'center',
                 paddingVertical: 20,
                 flexGrow: 1,
               }}

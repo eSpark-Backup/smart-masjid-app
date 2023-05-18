@@ -94,7 +94,7 @@ export default function WifiSelectForm({
       <View style={{ alignItems: 'center' }}>
         <GapView length={20} />
         <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
-        <GapView length={80} />
+        <GapView length={40} />
         <GapView length={20} />
         <MyText
           textStyle={{ alignItems: 'center', fontSize: 16, fontWeight: '400' }}

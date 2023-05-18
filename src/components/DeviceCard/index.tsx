@@ -18,6 +18,10 @@ export default function DeviceCard({
   activeTab: string;
   onPress?: () => void;
 }) {
+  console.log(
+    '🚀 ~ file: index.tsx:63 ~ deviceData?.deviceType:',
+    deviceData?.deviceType,
+  );
   return (
     <View>
       <Card height={161} width={172}>
@@ -37,7 +41,7 @@ export default function DeviceCard({
                 }}
               />
               <GapView length={25} />
-              {deviceData?.deviceType?.name == 'SMART_BUTTON' ? (
+              {deviceData?.deviceType?.modelNumber.includes('SBB') ? (
                 <ButtonIcon
                   height={50}
                   width={50}

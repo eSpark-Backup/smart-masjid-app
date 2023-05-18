@@ -18,9 +18,11 @@ export default function DeviceSelectForm({
 }) {
   const newArr = data.map(item => {
     const isBtn = item?.name?.includes('SMBTN');
+    console.log('===============>>>>>>>>', userInfo);
     const isAdmin = userInfo === 'Masjid Admin';
     if (!isAdmin) {
       if (!isBtn) {
+        console.log('admin nhi button nhi');
         return {
           ...item,
           leftIcon: <DeviceSvg />,
@@ -32,9 +34,11 @@ export default function DeviceSelectForm({
           },
         };
       } else {
+        console.log('admin nhi button hai');
         return { ...item, title: 'null' };
       }
     } else {
+      console.log('admin hai button hai');
       return {
         ...item,
         leftIcon: isBtn ? <AdhanButton /> : <DeviceSvg />,
@@ -69,7 +73,7 @@ export default function DeviceSelectForm({
     <View style={{ alignItems: 'center' }}>
       <GapView length={20} />
       <TextLabel label="Device Setup" />
-      <GapView length={80} />
+      <GapView length={40} />
       <MyText
         text="Select Your Device"
         textStyle={{ fontSize: 16, fontWeight: '400', alignSelf: 'center' }}
