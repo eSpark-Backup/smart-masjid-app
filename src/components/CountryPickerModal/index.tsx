@@ -24,7 +24,6 @@ import { Theme, useTheme } from '@react-navigation/native';
 import { Card, Wrapper } from '../../containers';
 import MyInput from '../MyInput';
 
-
 export default function CountryModal({
   visibleState = false,
   onCross = () => {},
@@ -103,7 +102,7 @@ export default function CountryModal({
                   />
                 </Card>
               </View>
-              <GapView />
+              {/* <GapView /> */}
               <View>
                 {data?.length !== 0 ? (
                   <FlatList
@@ -113,6 +112,7 @@ export default function CountryModal({
                         width: WINDOW_WIDTH - 80,
                         alignSelf: 'center',
                         paddingBottom: 400,
+                        marginTop: 10,
                       },
                     ]}
                     data={data}
