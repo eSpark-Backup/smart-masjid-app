@@ -16,13 +16,13 @@ export default function PersonalInfoForm({
     <View style={styles.container}>
       <GapView length={20} />
       <TextLabel label="Create Account" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
       <MyText
         text="Lets have some details about you"
         size={16}
         textStyle={{ alignSelf: 'center' }}
       />
-      <GapView length={80} />
+      <GapView length={40} />
       <Formik
         initialValues={{ firstName: '', lastName: '' }}
         validationSchema={UserSetupSchema.PersonalInfoForm}
@@ -73,7 +73,7 @@ export default function PersonalInfoForm({
                 }}
               />
             )}
-            <GapView length={80} />
+            <GapView length={40} />
             <View>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>

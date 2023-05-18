@@ -21,14 +21,15 @@ export default function SLoader({
       {title && (
         <TextLabel label={title!!} textStyle={{ alignSelf: 'center' }} />
       )}
-      <GapView length={80} />
+      <GapView length={40} />
       {subtitle && (
         <MyText
           text={subtitle!!}
           textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
         />
       )}
-      <View style={{ alignSelf: 'center', marginTop: 20, marginBottom: 50 }}>
+      <View style={{ alignSelf: 'center', }}>
+        <GapView length={15} />
         <MyText
           text="Please wait"
           pressable={false}
@@ -36,6 +37,7 @@ export default function SLoader({
         />
         <GapView length={60} />
         <Image source={GLoad} style={styles.loader} resizeMode="contain" />
+        <GapView length={40} />
         <View
           style={{
             width: 10,

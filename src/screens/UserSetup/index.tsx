@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -12,7 +12,7 @@ import {
   AddPhoneForm,
 } from '../../forms';
 import { RootStackParamList } from '../../types';
-import { MyToast, OverlayLoader, SLoader } from '../../components';
+import { GapView, MyText, MyToast, OverlayLoader, SLoader } from '../../components';
 import {
   CreateUser,
   LoginUser,
@@ -26,6 +26,7 @@ import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
 import Toast from 'react-native-toast-message';
+import { Check } from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -35,7 +36,7 @@ export default function UserSetupScreen() {
   const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
   const route = useRoute<Props['route']>();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(8);
   const [disable, setDisable] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [data, setData] = useState<CreateUserRequest>({
@@ -45,11 +46,11 @@ export default function UserSetupScreen() {
   });
 
   useEffect(() => {
-    if (route.params?.type == 'setup') {
-      setStep(2);
-    } else {
-      setStep(1);
-    }
+    // if (route.params?.type == 'setup') {
+    //   setStep(2);
+    // } else {
+    //   setStep(1);
+    // }
   }, [route.params?.type]);
 
   const handleBack = () => {
@@ -164,6 +165,7 @@ export default function UserSetupScreen() {
               title={
                 route.params?.type == 'login' ? 'Loggin In' : 'Creating Account'
               }
+              subtitle="Creating Account"
               message={
                 route.params?.type == 'login'
                   ? 'Logging into the System.'
@@ -173,15 +175,27 @@ export default function UserSetupScreen() {
           )}
           {step == 8 && (
             <MyToast
+              heading="Create Account"
               isSuccess={true}
               onPress={() => navigation.navigate('DSetup')}
               btnText={'Connect Device'}
-              title="You’re all set!"
+              title="You’re account is all set!"
               message={
-                'Lets setup your device.' +
-                '\n' +
-                '\n' +
-                'Make sure you power on your device and turn on bluetooth on your phone.'
+                <>
+                  <MyText text={`Lets setup your device`} size={16} />
+                  <GapView length={25} />
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Check height={15} width={15} />
+                    <GapView length={5} mode='horizontal' />
+                    <MyText text={`Power on your device`} size={16} />
+                  </View>
+                  <GapView />
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Check height={15} width={15} />
+                    <GapView length={5} mode='horizontal' />
+                    <MyText text={`Turn on bluetooth on your phone`} size={16} />
+                  </View>
+                </>
               }
             />
           )}

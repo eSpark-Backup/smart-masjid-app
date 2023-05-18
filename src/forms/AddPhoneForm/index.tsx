@@ -19,12 +19,12 @@ export default function AddPhoneForm({
     <View style={styles.container}>
       <GapView length={20} />
       <TextLabel label="Create Account" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
       <MyText
         textStyle={{ textAlign: 'center', width: 315 }}
         text={`Would you like to add a phone number?\n\nYou can skip now add it later as well.`}
       />
-      <GapView length={50} />
+      <GapView length={40} />
       <Formik
         initialValues={{ phone: '' }}
         validationSchema={UserSetupSchema.optionalPhoneForm}
@@ -69,7 +69,7 @@ export default function AddPhoneForm({
               }}
               text="By signing up with Phone number you agree to receive OTP text messages every time you login with it. Message and data rates might apply."
             />
-            <GapView length={60} />
+            <GapView length={40} />
             <View style={{ alignItems: 'center' }}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>

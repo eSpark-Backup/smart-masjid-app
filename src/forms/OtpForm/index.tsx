@@ -21,7 +21,7 @@ export default function OtpForm({
     <View style={styles.container}>
       <GapView length={20} />
       <TextLabel label={title} textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
       <MyText
         text="You'll recieve a verification code shortly"
         textStyle={{ fontSize: 16, fontWeight: '400' }}
@@ -48,7 +48,7 @@ export default function OtpForm({
           console.log(`Code is ${code}, you are good to go!`);
         }}
       />
-      <View style={{ marginTop: 60, marginBottom: 40 }}>
+      <View style={{ marginTop: 40, marginBottom: 40 }}>
         <Rounded label="Next" width={250} onPress={() => setStep(3)} />
       </View>
       <MyText
