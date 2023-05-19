@@ -1,6 +1,7 @@
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+
 import { api } from '.';
 import { deviceStore } from '../store/DeviceStore';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { DeviceInfo } from '../types';
 import { userStore } from '../store/UserStore';
 /**
@@ -79,10 +80,30 @@ export async function _saveDeviceToUser(devID: number) {
       console.log('Success device assigned to user');
       if (res.data) return res.data;
     } else {
-      res.data;
       console.log('Problem status', res.status, res.data);
     }
   } catch (e) {
     console.log('when saving device with user', e);
+  }
+}
+
+/**
+ *
+ * @description Assigns Device on the Server's DataBase to the Given Masjid
+ * @returns Promise<DeviceResponse>
+ * @todo //todo: Delete This later
+ */
+
+export async function _saveDeviceToMasjid(devID: number, masjidID: number) {
+  try {
+    const res = await api.post('devices/' + devID + '/masjid/' + masjidID);
+    if (res?.ok) {
+      console.log('Success device assigned to masjid');
+      if (res.data) return res.data;
+    } else {
+      console.log('Problem status', res.status, res.data);
+    }
+  } catch (e) {
+    console.log('when saving device to masjid', e);
   }
 }
