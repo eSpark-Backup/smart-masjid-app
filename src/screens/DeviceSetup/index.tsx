@@ -24,7 +24,7 @@ import {
   DeviceInfo,
   RootStackParamList,
 } from '../../types';
-import { DLoader, MyToast, SLoader } from '../../components';
+import { DLoader, MyText, MyToast, SLoader } from '../../components';
 import {
   _checkBleStatus,
   _checkLocationStatus,
@@ -117,7 +117,7 @@ export default function DeviceSetupScreen() {
     if (locationStatus === false) {
       setStep(8);
       setToastContent({
-        message: <Text>{'Enable Location'}</Text>,
+        message: <MyText text={'Enable Location'} />,
         onPress: () => {
           setRetry(true);
         },
@@ -126,7 +126,7 @@ export default function DeviceSetupScreen() {
     if (bleStatus === false) {
       setStep(8);
       setToastContent({
-        message: <Text>{'Enable Ble Adapter'}</Text>,
+        message: <MyText text={'Enable Ble Adapter'} />,
         onPress: () => {
           setRetry(true);
         },
@@ -224,9 +224,9 @@ export default function DeviceSetupScreen() {
       setToastContent({
         title: 'Accept Permissions',
         message: (
-          <Text>
-            {'Accept All Permission to Continue to Scan for BLE devices'}
-          </Text>
+          <MyText
+            text={'Accept All Permission to Continue to Scan for BLE devices'}
+          />
         ),
         onPress: () => {
           setRetry(true);
@@ -252,6 +252,12 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
+          message: (
+            <MyText
+              text={`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
+          `}
+            />
+          ),
           onPress: () => {
             setRetry(true);
           },
@@ -268,7 +274,7 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: <Text>{'Check the Location/Bluetooth adapter'}</Text>,
+          message: <MyText text={'Check the Location/Bluetooth adapter'} />,
           onPress: () => setRetry(true),
         }));
       }
@@ -342,9 +348,11 @@ export default function DeviceSetupScreen() {
             }}
             title="Device setup complete!"
             message={
-              <Text>
-                {'Your device is connected successfully.' + masjidSetupText}
-              </Text>
+              <MyText
+                text={
+                  'Your device is connected successfully.' + masjidSetupText
+                }
+              />
             }
           />
         )}
@@ -357,8 +365,10 @@ export default function DeviceSetupScreen() {
             title={toastContent.title ?? 'Oops! Device not found.'}
             message={
               toastContent.message ?? (
-                <Text>{`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
-              `}</Text>
+                <MyText
+                  text={`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
+                `}
+                />
               )
             }
           />
