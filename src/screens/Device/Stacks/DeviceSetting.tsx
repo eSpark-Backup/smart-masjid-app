@@ -120,7 +120,9 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
-                    onPress: () => {},
+                    onPress: () => {
+                      console.log('Reset Device?');
+                    },
                     icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
                   },
                 ],

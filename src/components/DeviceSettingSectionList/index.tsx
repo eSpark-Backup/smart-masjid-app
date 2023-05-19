@@ -1,5 +1,5 @@
 import React from 'react';
-import { SectionList, StyleSheet, View } from 'react-native';
+import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { Caution, DeviceEdit, EditHeavy } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
@@ -55,7 +55,10 @@ const SectionCard = ({ item }: { item: DataProp }) => {
   return (
     <>
       <GapView />
-      <View style={styles.cardContainer}>
+      <TouchableOpacity
+        disabled={Boolean(!item?.onPress)}
+        onPress={item?.onPress}
+        style={{ ...styles.cardContainer }}>
         <View style={styles.row}>
           <View style={styles.leftIcon}>{item?.icon}</View>
           <GapView mode="horizontal" />
@@ -78,7 +81,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
           {item?.isEditable && <EditHeavy />}
           {item?.danger && <Caution />}
         </View>
-      </View>
+      </TouchableOpacity>
       <GapView />
     </>
   );
