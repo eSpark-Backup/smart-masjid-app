@@ -44,7 +44,7 @@ const DeviceListItem = ({
               <TextLabel
                 label={title}
                 textStyle={{
-                  color: '#3E3E3E',
+                  color: '#0E0E0E',
                   fontWeight: '400',
                   fontSize: 16,
                 }}

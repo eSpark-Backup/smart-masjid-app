@@ -69,15 +69,20 @@ export default function MasjidListCard(
                 <LocationSvg />
                 <GapView length={5} mode="horizontal" />
                 <MyText
-                  text={location ?? '1350 Star Ct, Plano, TX 123456'}
+                  text={location ?? ''}
                   size={12}
+                  textStyle={{ width: WINDOW_WIDTH - 150, color: '#3E3E3E' }}
                 />
               </View>
               <GapView />
               <View style={styles.row}>
                 <PeoplesSvg />
                 <GapView length={5} mode="horizontal" />
-                <MyText text={subscribers ?? '2561'} size={12} />
+                <MyText
+                  text={subscribers ?? '2561'}
+                  size={12}
+                  textStyle={{ color: '#3E3E3E' }}
+                />
               </View>
             </>
           ) : (

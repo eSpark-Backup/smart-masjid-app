@@ -32,7 +32,11 @@ const MasjidDetails = ({
         <View style={{ flexDirection: 'row' }}>
           <AdhanCalculation />
           <GapView length={5} mode="horizontal" />
-          <MyText text="Islamic Society of North America" size={16} />
+          <MyText
+            text="Islamic Society of North America"
+            size={16}
+            textStyle={{ color: '#3E3E3E' }}
+          />
         </View>
         <GapView length={5} />
         <View style={{ flexDirection: 'row' }}>
@@ -43,6 +47,7 @@ const MasjidDetails = ({
               masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name ?? '-'
             }`}
             size={16}
+            textStyle={{ color: '#3E3E3E' }}
           />
         </View>
         <GapView length={20} />
