@@ -7,13 +7,15 @@ import { Theme, useTheme } from '@react-navigation/native';
 const TabView = ({
   tab1Title = 'tab 1',
   tab2Title = 'tab 2',
+  currTab = '1',
   onChange = (activeTab: string) => {},
 }: {
   tab1Title?: string;
   tab2Title?: string;
+  currTab?: string;
   onChange?: (activeTab: string) => void;
 }) => {
-  const [activeTab, setActiveTab] = React.useState('1');
+  const [activeTab, setActiveTab] = React.useState(currTab);
   const { colors }: Theme = useTheme();
 
   return (

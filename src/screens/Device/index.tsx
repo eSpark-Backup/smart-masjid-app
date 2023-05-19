@@ -112,6 +112,7 @@ export default function Device() {
               tab1Title="My Devices"
               onChange={setActiveTab}
               tab2Title="Masjid Devices"
+              currTab={activeTab}
             />
           )}
           <View
