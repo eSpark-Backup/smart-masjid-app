@@ -47,7 +47,7 @@ export async function _saveDevice(devInfo: DeviceInfo) {
   console.log('Device info in api???', devInfo);
   try {
     const res = await api.post('devices', {
-      macAddress: mac_address + '1f', //FIXME: delete this hardcoded string later
+      macAddress: mac_address + '2a', //FIXME: delete this hardcoded string later
       name: nickName,
       modelNumber: 'SBB23V1', //FIXME: delete this hardcoded string later
       firmwareVersion: firmware_rev,
@@ -94,7 +94,7 @@ export async function _saveDeviceToUser(devID: number) {
  * @todo //todo: Delete This later
  */
 
-export async function _saveDeviceToMasjid(devID: number, masjidID: number) {
+export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
   try {
     const res = await api.post('devices/' + devID + '/masjid/' + masjidID);
     if (res?.ok) {
