@@ -47,7 +47,7 @@ export default function ModifyAccount({
       <View style={{ paddingHorizontal: 25 }}>
         <GapView />
         {!phoneUpdate ? (
-          <Card width={345} radius={12}>
+          <Card backgroundColor='#ffffff' width={345} radius={12}>
             <MyInput
               placeholder="Mukthar"
               placeholderColor="#CFCFCF"
@@ -99,7 +99,7 @@ export default function ModifyAccount({
               touched,
             }) => (
               <>
-                <Card width={315}>
+                <Card backgroundColor='#ffffff' width={315}>
                   <MyInput
                     placeholder="Phone Number"
                     isPhoneCode

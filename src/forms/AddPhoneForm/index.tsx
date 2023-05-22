@@ -40,7 +40,7 @@ export default function AddPhoneForm({
           touched,
         }) => (
           <>
-            <Card width={315}>
+            <Card backgroundColor="#fff" width={315}>
               <MyInput
                 placeholder="Phone"
                 onChangeText={handleChange('phone')}
@@ -64,7 +64,7 @@ export default function AddPhoneForm({
               size={12}
               textStyle={{
                 color: '#9E9F9F',
-                 width: 315,
+                width: 315,
                 textAlign: 'center',
               }}
               text="By signing up with Phone number you agree to receive OTP text messages every time you login with it. Message and data rates might apply."

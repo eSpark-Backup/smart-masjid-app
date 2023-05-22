@@ -48,7 +48,7 @@ export default function LoginForm({
       /> */}
       <GapView length={40} />
       <Formik
-        initialValues={{ email: 'test2@yopmail.com' }}
+        initialValues={{ email: 'mudassir@gmail.com' }}
         validationSchema={
           activeTab == '1'
             ? UserSetupSchema.emailForm
@@ -69,7 +69,7 @@ export default function LoginForm({
           <>
             {activeTab == '1' ? (
               <>
-                <Card width={315}>
+                <Card backgroundColor="#fff" width={315}>
                   <MyInput
                     placeholder="Email"
                     onChangeText={handleChange('email')}
@@ -89,7 +89,7 @@ export default function LoginForm({
               </>
             ) : (
               <>
-                <Card width={315}>
+                <Card backgroundColor="#fff" width={315}>
                   <MyInput
                     placeholder="Phone"
                     onChangeText={handleChange('phone')}

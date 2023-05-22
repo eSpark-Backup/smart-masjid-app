@@ -9,6 +9,7 @@ interface CardProps {
   height?: number | undefined;
   width?: number;
   radius?: number;
+  backgroundColor?: string;
 }
 export default function Card(props: CardProps) {
   const { children, height = undefined, width, radius = 12 } = props;
@@ -45,7 +46,7 @@ const makeStyles = (props: CardProps) => {
       shadowColor: 'grey',
       shadowRadius: 6,
       borderRadius: 12,
-      backgroundColor: '#fff',
+      backgroundColor: props?.backgroundColor ?? '#F7F9FA',
       justifyContent: 'center',
       overflow: 'hidden',
     },

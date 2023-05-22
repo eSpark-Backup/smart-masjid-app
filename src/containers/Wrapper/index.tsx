@@ -53,7 +53,7 @@ export default function Wrapper({
 const styles = StyleSheet.create({
   imageBackgroundStyle: { minHeight: WINDOW_WIDTH / 1.8, flex: 1 },
   imageStyle: {
-    height: WINDOW_WIDTH / 1.8,
+    height: WINDOW_WIDTH / 1.9,
     width: WINDOW_WIDTH,
   },
 });
