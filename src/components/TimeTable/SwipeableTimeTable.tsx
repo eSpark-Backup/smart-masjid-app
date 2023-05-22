@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#F7F9FA',
     elevation: 3,
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,

@@ -50,7 +50,7 @@ const SearchListing = ({
     if (res?.length > 0) {
       setMasjidList(res);
     } else {
-    setMasjidList([]);
+      setMasjidList([]);
     }
   };
 
@@ -64,9 +64,9 @@ const SearchListing = ({
       }}>
       <GapView length={20} />
       <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={60} />
-      <View style={{}}>
-        <Card width={WINDOW_WIDTH - 28}>
+      <GapView length={50} />
+      <View style={{ paddingTop: 15 }}>
+        <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
           <MyInput
             searchBar
             inputStyle={{ width: WINDOW_WIDTH - 80 }}

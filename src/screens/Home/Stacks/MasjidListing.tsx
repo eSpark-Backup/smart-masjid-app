@@ -23,7 +23,7 @@ export default function MasjidListing({
       </View>
       <FlatList
         data={data}
-        contentContainerStyle={{ paddingBottom: 210, paddingTop: 10 }}
+        contentContainerStyle={{ paddingBottom: 210, paddingTop: 15 }}
         renderItem={({ index }) => (
           <MasjidListCard
             key={index}

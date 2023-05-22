@@ -41,7 +41,7 @@ export default function DeviceSettingSectionList({
             <MyText
               text={title ?? ''}
               size={16}
-              textStyle={{ fontWeight: '700' }}
+              textStyle={{ fontWeight: '700', color: '#3E3E3E' }}
             />
             <GapView length={20} />
           </>
@@ -72,7 +72,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                     ? item?.subtitle!! + ' Battery Low'
                     : item?.subtitle!!
                 }
-                textStyle={{ color: item?.danger ? '#ff6464' : 'black' }}
+                textStyle={{ color: item?.danger ? '#ff6464' : '#9E9F9F' }}
               />
             </View>
           </View>

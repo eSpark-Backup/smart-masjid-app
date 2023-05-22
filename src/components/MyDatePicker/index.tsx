@@ -9,6 +9,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import { TouchableOpacity } from 'react-native';
 import MyText from '../MyText';
+import { Theme, useTheme } from '@react-navigation/native';
 
 export default function MyDatePicker({
   onDateChange = (e: any) => {},
@@ -26,7 +27,7 @@ export default function MyDatePicker({
   const [date, setDate] = useState<any>(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
-
+  const { colors }: Theme = useTheme();
   useEffect(() => {
     if (currentDate) setDate(currentDate);
   }, [currentDate]);
@@ -109,7 +110,12 @@ export default function MyDatePicker({
             />
           )}
           {moment(date).isAfter(minimumDate) && (
-            <II onPress={prevDate} name="md-chevron-back" size={24} />
+            <II
+              onPress={prevDate}
+              color={colors.primary}
+              name="md-chevron-back"
+              size={24}
+            />
           )}
           {/* <GapView length={10} mode="horizontal" />
           <Calendar /> */}
@@ -117,11 +123,16 @@ export default function MyDatePicker({
           <MyText
             text={moment(date)?.format('MMM-DD, YYYY')}
             size={16}
-            textStyle={{ fontWeight: '700' }}
+            textStyle={{ fontWeight: '700', color: colors.primary }}
           />
           <GapView length={10} mode="horizontal" />
           {moment(date).isBefore(maximumDate) && (
-            <II onPress={nextDate} name="md-chevron-forward" size={24} />
+            <II
+              color={colors.primary}
+              onPress={nextDate}
+              name="md-chevron-forward"
+              size={24}
+            />
           )}
         </TouchableOpacity>
       </>

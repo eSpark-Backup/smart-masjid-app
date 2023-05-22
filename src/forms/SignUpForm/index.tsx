@@ -49,7 +49,7 @@ export default function SignUpForm({
           touched,
         }) => (
           <>
-            <Card width={315}>
+            <Card backgroundColor="#fff" width={315}>
               <MyInput
                 placeholder="Email"
                 onChangeText={handleChange('email')}
