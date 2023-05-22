@@ -122,6 +122,7 @@ export default function DeviceSetupScreen() {
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
     }
     if (bleStatus === false) {
@@ -131,6 +132,7 @@ export default function DeviceSetupScreen() {
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
     }
   }, [locationStatus, bleStatus]);
@@ -228,6 +230,7 @@ export default function DeviceSetupScreen() {
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
       return;
     }
@@ -271,8 +274,9 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: 'Check the Location/Bluetooth adapter',
+          message: 'Please Check',
           onPress: () => setRetry(true),
+          points: ['Location Enabled on Phone', 'Bluetooth Enabled on Phone'],
         }));
       }
     }
@@ -356,7 +360,6 @@ export default function DeviceSetupScreen() {
             onPress={toastContent.onPress}
             title={toastContent.title ?? 'Oops! Device not found.'}
             message={toastContent.message ?? 'Please check:'}
-            // message={toastContent.message ?? `Please check:`}
             points={[
               'Device is powered on',
               'Bluetooth on your phone is turned on',

@@ -84,7 +84,7 @@ export default function MyToast({
               text={message}
             />
           </View>
-          {points && (
+          {points?.length!! > 0 && (
             <>
               <GapView length={25} />
               <Points data={points} />
@@ -100,10 +100,10 @@ export default function MyToast({
   );
 }
 
-const Points = ({ data }: { data: string[] }) => {
+const Points = ({ data }: { data?: string[] }) => {
   return (
     <>
-      {data.map((item: string) => (
+      {data?.map((item: string) => (
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Check height={15} width={15} />
