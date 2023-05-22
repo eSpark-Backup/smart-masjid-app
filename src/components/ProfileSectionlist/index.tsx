@@ -49,7 +49,7 @@ export default function ProfileSectionlist({
       ListFooterComponent={
         <View>
           {footerData?.map((item, index) => {
-            return <SectionCard item={item} index={index} />;
+            return <SectionCard key={index} item={item} index={index} />;
           })}
         </View>
       }
