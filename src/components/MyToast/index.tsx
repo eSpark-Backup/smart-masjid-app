@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Image, StyleSheet, Animated } from 'react-native';
 
-import { CheckSvg, Exclimation } from '../../assets';
+import { Check, CheckSvg, Exclimation } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
@@ -15,13 +15,17 @@ export default function MyToast({
   isSuccess = true,
   btnText,
   onPress,
+  points,
+  center,
 }: {
   heading?: string;
   title: string;
-  message: JSX.Element;
+  message: string;
   isSuccess: boolean;
   btnText: string;
   onPress?: () => void;
+  points?: string[];
+  center?: boolean;
 }) {
   const startValue = useRef(new Animated.Value(0)).current;
   const endValue = 1;
@@ -60,34 +64,61 @@ export default function MyToast({
           {title && (
             <MyText
               text={title!!}
-              textStyle={{ fontSize: 20, fontWeight: '700', textAlign: 'center' }}
+              textStyle={{
+                fontSize: 20,
+                fontWeight: '700',
+                textAlign: 'center',
+              }}
             />
           )}
           <View
             style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
             {isSuccess ? <CheckSvg /> : <Exclimation />}
           </View>
-          {/* <GapView length={30} /> */}
-          <View>
-            {message}
+          <View
+            style={
+              center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
+            }>
+            <MyText
+              textStyle={{ fontSize: 16, fontWeight: '400' }}
+              text={message}
+            />
           </View>
+          {points && (
+            <>
+              <GapView length={25} />
+              <Points data={points} />
+            </>
+          )}
           <GapView length={40} />
-          <Rounded onPress={onPress} label={btnText!!} />
+          <View style={{ alignSelf: 'center' }}>
+            <Rounded onPress={onPress} label={btnText!!} />
+          </View>
         </View>
       </Animated.View>
     </Animatable.View>
   );
 }
 
+const Points = ({ data }: { data: string[] }) => {
+  return (
+    <>
+      {data.map((item: string) => (
+        <View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Check height={15} width={15} />
+            <GapView length={5} mode="horizontal" />
+            <MyText text={item} size={16} textStyle={{ color: '#3e3e3e' }} />
+          </View>
+        </View>
+      ))}
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    // alignItems: 'center',
-  },
-  loader: {
-    height: 60,
-    width: 60,
-    alignSelf: 'center',
-    backgroundColor: '#fff',
+    width: '85%',
   },
 });

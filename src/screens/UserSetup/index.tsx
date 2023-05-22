@@ -186,26 +186,11 @@ export default function UserSetupScreen() {
               onPress={() => navigation.navigate('DSetup')}
               btnText={'Connect Device'}
               title="You’re account is all set!"
-              message={
-                <>
-                  <MyText text={`Lets setup your device`} size={16} />
-                  <GapView length={25} />
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Check height={15} width={15} />
-                    <GapView length={5} mode="horizontal" />
-                    <MyText text={`Power on your device`} size={16} />
-                  </View>
-                  <GapView />
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Check height={15} width={15} />
-                    <GapView length={5} mode="horizontal" />
-                    <MyText
-                      text={`Turn on bluetooth on your phone`}
-                      size={16}
-                    />
-                  </View>
-                </>
-              }
+              message={`Lets setup your device`}
+              points={[
+                'Power on your device',
+                'Turn on bluetooth on your phone',
+              ]}
             />
           )}
         </ScrollView>

@@ -322,7 +322,7 @@ export default function DeviceSetupScreen() {
         {step == 7 && (
           <MyToast
             isSuccess={true}
-            btnText={route.params?.from ? 'Awesome' : 'Search Masjid'}
+            btnText={route.params?.from ? 'Done' : 'Search Masjid'}
             onPress={() => {
               if (userStore.currentRegisterUser.get()) {
                 userStore.userData.set(userStore.currentRegisterUser.get());
@@ -333,6 +333,7 @@ export default function DeviceSetupScreen() {
             }}
             title="Device setup complete!"
             message={'Your device is connected successfully.' + masjidSetupText}
+            center
           />
         )}
         {step == 8 && (
@@ -341,11 +342,12 @@ export default function DeviceSetupScreen() {
             btnText={toastContent.btnText ?? 'Try Again'}
             onPress={toastContent.onPress}
             title={toastContent.title ?? 'Oops! Device not found.'}
-            message={
-              toastContent.message ??
-              `Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
-          `
-            }
+            message={toastContent.message ?? `Please check:`}
+            points={[
+              'Device is powered on',
+              'Bluetooth on your phone is turned on',
+              'Device LED is blinking yellow',
+            ]}
           />
         )}
       </ScrollView>
