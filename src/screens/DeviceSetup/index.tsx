@@ -38,7 +38,11 @@ import {
   _stopLocationCheck,
   _writeToDevice,
 } from './utils/functions';
-import { _saveDevice, _saveDeviceToUser } from '../../api/deviceController';
+import {
+  _saveDevice,
+  _saveDeviceBtnToMasjid,
+  _saveDeviceToUser,
+} from '../../api/deviceController';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
 
 type DSetupNavigationProps = NativeStackScreenProps<
@@ -205,12 +209,23 @@ export default function DeviceSetupScreen() {
   };
 
   const registerDevice = async (deviceInfo: DeviceInfo) => {
+    const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
+    const isBtn = dev?.name?.includes('SMBTN');
     const devRes: any = await _saveDevice(deviceInfo);
-    const userDevRes = await _saveDeviceToUser(devRes?.id);
-    if (userDevRes) {
-      setStep(7);
+    if (isBtn) {
+      // const masjidDevRes = await _saveDeviceBtnToMasjid(devRes?.id, );
+      // if (userDevRes) {
+      //   setStep(7);
+      // } else {
+      //   setStep(8);
+      // }
     } else {
-      setStep(8);
+      const userDevRes = await _saveDeviceToUser(devRes?.id);
+      if (userDevRes) {
+        setStep(7);
+      } else {
+        setStep(8);
+      }
     }
   };
 
