@@ -44,6 +44,8 @@ import {
   _saveDeviceToUser,
 } from '../../api/deviceController';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
+import jwtDecode from 'jwt-decode';
+import { UserToken } from '../../types/userControllerApiResponse';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -52,6 +54,7 @@ type DSetupNavigationProps = NativeStackScreenProps<
 
 export default function DeviceSetupScreen() {
   console.log('User ka bta id mili ha?', userStore.get());
+
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
   const isFocused = useIsFocused();
@@ -216,12 +219,21 @@ export default function DeviceSetupScreen() {
     const isBtn = dev?.name?.includes('SMBTN');
     const devRes: any = await _saveDevice(deviceInfo);
     if (isBtn) {
-      // const masjidDevRes = await _saveDeviceBtnToMasjid(devRes?.id, );
-      // if (userDevRes) {
-      //   setStep(7);
-      // } else {
-      //   setStep(8);
-      // }
+      const USER_TOKEN: any = userStore.get().token;
+      const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+      console.log(
+        'kia ha decoded string========??????',
+        JSON.stringify(jwtDecodedObj),
+      );
+      const masjidDevRes = await _saveDeviceBtnToMasjid(
+        devRes?.id,
+        jwtDecodedObj.masjidId,
+      );
+      if (masjidDevRes) {
+        setStep(7);
+      } else {
+        setStep(8);
+      }
     } else {
       const userDevRes = await _saveDeviceToUser(devRes?.id);
       if (userDevRes) {

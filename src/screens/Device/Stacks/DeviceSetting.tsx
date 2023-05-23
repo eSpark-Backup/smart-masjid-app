@@ -56,11 +56,11 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
           <GapView length={20} />
           <View style={styles.subHeader}>
             <MyText
-              text={`Smart ${
+              text={`Smart Adhan ${
                 device?.deviceType?.modelNumber?.includes('SBB')
                   ? 'Button'
                   : 'Speaker'
-              } V${device?.firmwareVersion}`}
+              }`}
               textStyle={styles.deviceName}
             />
             <DeviceStatus online />
@@ -94,7 +94,8 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    isEditable: true,
+                    rightArrow: true,
+                    onPress: () => console.log('Edit Subscription'),
                   },
                 ],
               },
@@ -150,9 +151,8 @@ const makeStyles = (theme: Theme) => {
       justifyContent: 'space-between',
     },
     deviceName: {
-      color: colors.primary,
       fontSize: 16,
-      fontWeight: '500',
+      fontWeight: '600',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     activeStatus: {

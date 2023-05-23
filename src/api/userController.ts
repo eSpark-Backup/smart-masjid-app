@@ -109,6 +109,7 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
       userStore.userData.set(result.data);
       setDataInLocalStorage('user', JSON.stringify(result.data));
       setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
+      console.log('token', JSON.stringify(token?.data?.token));
       return result.data;
     } else {
       Toast.show({

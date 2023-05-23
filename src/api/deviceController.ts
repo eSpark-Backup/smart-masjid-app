@@ -4,16 +4,31 @@ import { api } from '.';
 import { deviceStore } from '../store/DeviceStore';
 import { DeviceInfo } from '../types';
 import { userStore } from '../store/UserStore';
+
 /**
  *
  * @description Get User Devices
- * @returns get devices and save to deviceStore
+ * @returns get devices and save to deviceStore.devices
  */
 export const GetUserDevices = async (userId: string) => {
   try {
     const result: any = await api.get(`/devices/user/${userId}`);
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
+    }
+  } catch (error) {}
+};
+
+/**
+ *
+ * @description Get Masjid Devices
+ * @returns get devices and save to deviceStore.masjidDevices
+ */
+export const GetMasjidDevices = async (masjidId: string) => {
+  try {
+    const result: any = await api.get(`/devices/masjid/${masjidId}`);
+    if (result.status == 200) {
+      deviceStore.masjidDevices.set(result.data);
     }
   } catch (error) {}
 };
@@ -47,7 +62,7 @@ export async function _saveDevice(devInfo: DeviceInfo) {
   console.log('Device info in api???', devInfo);
   try {
     const res = await api.post('devices', {
-      macAddress: mac_address + '2a', //FIXME: delete this hardcoded string later
+      macAddress: mac_address + '2b', //FIXME: delete this hardcoded string later
       name: nickName,
       modelNumber: 'SBB23V1', //FIXME: delete this hardcoded string later
       firmwareVersion: firmware_rev,
