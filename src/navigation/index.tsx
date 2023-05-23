@@ -68,6 +68,7 @@ export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
+  const userToken = useHookstate(userStore.token);
   const [loader, setLoader] = useState<boolean>(false);
   useEffect(() => {
     GetCountryCodes();
@@ -77,6 +78,12 @@ export default function App() {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);
         userData.set(data);
+      }
+    });
+    getDataFromLocalStorage('token').then((res: any) => {
+      if (res != null) {
+        const token = JSON.parse(res);
+        userStore.token.set(token);
       }
     });
   }, []);

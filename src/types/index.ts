@@ -30,6 +30,7 @@ export type GlobalProps = {
 export type UserStoreProps = {
   userData: UserResponse | null;
   currentRegisterUser: UserResponse | null;
+  token: UserResponse | null;
   masjidAdmins: UserResponse[];
 };
 
