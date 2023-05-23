@@ -239,10 +239,7 @@ export default function DeviceSetupScreen() {
       const res = await _scanBleDevices();
       console.log('devices found', res.length);
       const newArr = res.filter(item => {
-        // if (item.name?.includes('MYESP32')) {
-        //   return item;
-        // }
-        if (item.name?.includes('SMBTN') || item.name?.includes('SMSPKR')) {
+        if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
           return item;
         }
       });
@@ -355,6 +352,7 @@ export default function DeviceSetupScreen() {
         {step == 8 && (
           <MyToast
             heading="Device Setup"
+            titleSize={16}
             isSuccess={false}
             btnText={toastContent.btnText ?? 'Try Again'}
             onPress={toastContent.onPress}

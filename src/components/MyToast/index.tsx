@@ -17,6 +17,7 @@ export default function MyToast({
   onPress,
   points,
   center,
+  titleSize,
 }: {
   heading?: string;
   title: string;
@@ -26,6 +27,7 @@ export default function MyToast({
   onPress?: () => void;
   points?: string[];
   center?: boolean;
+  titleSize?: number;
 }) {
   const startValue = useRef(new Animated.Value(0)).current;
   const endValue = 1;
@@ -65,7 +67,7 @@ export default function MyToast({
             <MyText
               text={title!!}
               textStyle={{
-                fontSize: 20,
+                fontSize: titleSize ?? 20,
                 fontWeight: '700',
                 textAlign: 'center',
               }}
