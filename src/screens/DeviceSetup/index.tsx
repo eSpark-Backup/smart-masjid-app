@@ -67,9 +67,10 @@ export default function DeviceSetupScreen() {
   const [connFlag, setConnFlag] = useState(true);
   const [toastContent, setToastContent] = useState<{
     title?: string;
-    message?: JSX.Element;
+    message?: string;
     btnText?: string;
     onPress?: () => void;
+    points?: string[];
   }>({
     title: undefined,
     message: undefined,
@@ -121,19 +122,21 @@ export default function DeviceSetupScreen() {
     if (locationStatus === false) {
       setStep(8);
       setToastContent({
-        message: <MyText text={'Enable Location'} />,
+        message: 'Enable Location',
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
     }
     if (bleStatus === false) {
       setStep(8);
       setToastContent({
-        message: <MyText text={'Enable Ble Adapter'} />,
+        message: 'Enable Ble Adapter',
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
     }
   }, [locationStatus, bleStatus]);
@@ -238,14 +241,11 @@ export default function DeviceSetupScreen() {
       setStep(8);
       setToastContent({
         title: 'Accept Permissions',
-        message: (
-          <MyText
-            text={'Accept All Permission to Continue to Scan for BLE devices'}
-          />
-        ),
+        message: 'Accept All Permission to Continue to Scan for BLE devices',
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
       return;
     }
@@ -254,10 +254,7 @@ export default function DeviceSetupScreen() {
       const res = await _scanBleDevices();
       console.log('devices found', res.length);
       const newArr = res.filter(item => {
-        // if (item.name?.includes('MYESP32')) {
-        //   return item;
-        // }
-        if (item.name?.includes('SMBTN') || item.name?.includes('SMSPKR')) {
+        if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
           return item;
         }
       });
@@ -267,12 +264,12 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: (
-            <MyText
-              text={`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
-          `}
-            />
-          ),
+          message: 'Please check: ',
+          points: [
+            'Device is powered on',
+            'Bluetooth on your phone is turned on',
+            'Device LED is blinking yellow',
+          ],
           onPress: () => {
             setRetry(true);
           },
@@ -289,8 +286,9 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: <MyText text={'Check the Location/Bluetooth adapter'} />,
+          message: 'Please Check',
           onPress: () => setRetry(true),
+          points: ['Location Enabled on Phone', 'Bluetooth Enabled on Phone'],
         }));
       }
     }
@@ -352,7 +350,7 @@ export default function DeviceSetupScreen() {
           <MyToast
             heading="Device Setup"
             isSuccess={true}
-            btnText={route.params?.from ? 'Awesome' : 'Search Masjid'}
+            btnText={route.params?.from ? 'Done' : 'Search Masjid'}
             onPress={() => {
               if (userStore.currentRegisterUser.get()) {
                 userStore.userData.set(userStore.currentRegisterUser.get());
@@ -362,30 +360,24 @@ export default function DeviceSetupScreen() {
               });
             }}
             title="Device setup complete!"
-            message={
-              <MyText
-                text={
-                  'Your device is connected successfully.' + masjidSetupText
-                }
-              />
-            }
+            message={'Your device is connected successfully.' + masjidSetupText}
+            center
           />
         )}
         {step == 8 && (
           <MyToast
             heading="Device Setup"
+            titleSize={16}
             isSuccess={false}
             btnText={toastContent.btnText ?? 'Try Again'}
             onPress={toastContent.onPress}
             title={toastContent.title ?? 'Oops! Device not found.'}
-            message={
-              toastContent.message ?? (
-                <MyText
-                  text={`Please make sure your device and\nyour phone Bluetooth is turned ON.\n \nAlso check if the device LED is\nblinking yellow.
-                `}
-                />
-              )
-            }
+            message={toastContent.message ?? 'Please check:'}
+            points={[
+              'Device is powered on',
+              'Bluetooth on your phone is turned on',
+              'Device LED is blinking yellow',
+            ]}
           />
         )}
       </ScrollView>

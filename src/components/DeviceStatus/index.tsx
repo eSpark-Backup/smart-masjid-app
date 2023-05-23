@@ -22,7 +22,7 @@ const DeviceStatus = ({ online = false }: { online?: boolean }) => {
       <GapView length={5} mode="horizontal" />
       <MyText
         text={online ? 'Online' : 'Offline'}
-        textStyle={{ color: '#9E9F9F' }}
+        textStyle={{ color: '#3E3E3E' }}
       />
     </View>
   );

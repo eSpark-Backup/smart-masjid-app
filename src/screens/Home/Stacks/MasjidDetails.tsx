@@ -34,7 +34,7 @@ export default function MasjidDetails({ setStep }: any) {
       <MyText text="Next Adhan in" textStyle={{ fontWeight: 'bold' }} />
       <GapView length={5} />
       <MyTitle text="06 : 09 : 00" style={{ fontSize: 32 }} /> */}
-      <GapView length={30} />
+      <GapView length={20} />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

@@ -27,7 +27,7 @@ const DeviceListing = ({
     <View style={{ flex: 1, alignItems: 'center' }}>
       <GapView length={20} />
       <TextLabel label={masjidDetails?.name ?? '-'} />
-      <GapView length={60} />
+      <GapView length={40} />
       <MyText
         text="Which device would you like to subscribe?"
         textStyle={{ color: '#3E3E3E', alignSelf: 'center', paddingVertical: 10 }}
@@ -44,17 +44,6 @@ const DeviceListing = ({
                 subTitle={item.masjid ? item.masjid.name : 'No Subscription'}
                 disabled={!!item.masjid}
                 online={Boolean(item.deviceTelemetry)}
-              />
-            )}
-            ItemSeparatorComponent={() => (
-              <MyDivider
-                backgroundColor="#9E9F9F"
-                height={0.25}
-                style={{
-                  paddingHorizontal: 20,
-                  alignSelf: 'center',
-                  width: '100%',
-                }}
               />
             )}
             ListEmptyComponent={() => (

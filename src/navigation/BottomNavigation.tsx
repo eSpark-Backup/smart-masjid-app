@@ -22,21 +22,21 @@ const TabIcon = (screen: string, isFocused: boolean) => {
   switch (screen) {
     case 'Home':
       if (isFocused) {
-        return <HomeActiveSvg />;
+        return <HomeActiveSvg height={26} width={26} />;
       } else {
-        return <HomeSvg />;
+        return <HomeSvg height={26} width={26} />;
       }
     case 'Search':
       if (isFocused) {
-        return <SearchActiveSvg />;
+        return <SearchActiveSvg height={26} width={26} />;
       } else {
-        return <SearchSvg />;
+        return <SearchSvg height={26} width={26} />;
       }
     case 'Device':
       if (isFocused) {
-        return <DeviceActiveSvg />;
+        return <DeviceActiveSvg height={26} width={26} />;
       } else {
-        return <DeviceTabSvg />;
+        return <DeviceTabSvg height={26} width={26} />;
       }
     case 'Profile':
       if (isFocused) {
@@ -85,7 +85,7 @@ const makeStyles = (theme: Theme) => {
       shadowRadius: 16.0,
       elevation: 24,
       borderTopWidth: 0,
-      height: 90,
+      height: 65,
       alignItems: 'center',
       justifyContent: 'center',
     },

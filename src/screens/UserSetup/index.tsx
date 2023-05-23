@@ -20,9 +20,12 @@ import {
   SLoader,
 } from '../../components';
 import {
+  CheckUserExists,
   CreateUser,
   LoginUser,
   RegisterUserPhone,
+  SendOTP,
+  ValidateOTP,
 } from '../../api/userController';
 import {
   CreateUserRequest,
@@ -41,8 +44,10 @@ export default function UserSetupScreen() {
   const phoneId = useHookstate(globalStore.phoneId).get();
   const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
+  const [activeFlow, setActiveFlow] = useState('login');
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
+  const [otp, setOTP] = useState('');
   const [disable, setDisable] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [data, setData] = useState<CreateUserRequest>({
@@ -52,11 +57,11 @@ export default function UserSetupScreen() {
   });
 
   useEffect(() => {
-    // if (route.params?.type == 'setup') {
-    //   setStep(2);
-    // } else {
-    //   setStep(1);
-    // }
+    if (route.params?.type == 'setup') {
+      setStep(2);
+    } else {
+      setStep(1);
+    }
   }, [route.params?.type]);
 
   const handleBack = () => {
@@ -70,9 +75,9 @@ export default function UserSetupScreen() {
     return 1;
   };
 
-  const onSubmit = async (dataObj: CreateUserRequest) => {
+  const onSubmit = async (dataObj: CreateUserRequest, otp: string) => {
     setStep(7);
-    const res: UserResponse | undefined | any = await CreateUser(dataObj);
+    const res: UserResponse | undefined | any = await CreateUser(dataObj, otp);
     console.log('res', res);
 
     if (res?.id && phoneId) {
@@ -91,11 +96,9 @@ export default function UserSetupScreen() {
     }
   };
 
-  const onLogin = async (email: string, phone: string) => {
+  const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     setLoader(true);
-    const res = await LoginUser(email, phone);
-    setLoader(false);
-
+    const res = await LoginUser(email, phone, OTPvalue);
     if (res?.id && phoneId && !isDeviceRegistered) {
       await RegisterUserPhone(
         { deviceId: phoneId, fcmToken: fcmToken as string },
@@ -107,6 +110,41 @@ export default function UserSetupScreen() {
       navigation.navigate('HomeBottomTab'); //TODO: Change it later
       // navigation.navigate('DSetup');
     }
+    setLoader(false);
+  };
+
+  const CheckIsUserExist = async (email?: string, phone?: string) => {
+    setLoader(true);
+    const res: any = await CheckUserExists(email ?? '', phone ?? '');
+    if (activeFlow == 'signup') {
+      if (res?.id) {
+        Toast.show({
+          text2: 'User Already Exist',
+          type: 'error',
+        });
+      } else {
+        const result = await SendOTP(email, phone);
+        if (result) {
+          setData({ ...data, email: email ?? '', phone: phone ?? '' });
+          setStep(3);
+        }
+      }
+    } else {
+      if (res?.id) {
+        const result = await SendOTP(email, phone);
+        if (result) {
+          setData({ ...data, email: email ?? '', phone: phone ?? '' });
+          setStep(3);
+        }
+      } else {
+        Toast.show({
+          text2: 'User not found!',
+          type: 'error',
+        });
+      }
+    }
+
+    setLoader(false);
   };
 
   return (
@@ -121,7 +159,8 @@ export default function UserSetupScreen() {
               type={route.params?.type}
               onPhonePress={value => setStep(value)}
               setStep={values => {
-                onLogin(values.email?.toLowerCase(), values.phone);
+                CheckIsUserExist(values.email?.toLowerCase(), values.phone);
+                setActiveFlow('login');
               }}
             />
           )}
@@ -130,8 +169,8 @@ export default function UserSetupScreen() {
               onEmailPress={value => setStep(value)}
               type={route.params?.type}
               setStep={values => {
-                setData({ ...data, email: values.email?.toLowerCase() });
-                setStep(4);
+                CheckIsUserExist(values.email?.toLowerCase());
+                setActiveFlow('signup');
               }}
             />
           )}
@@ -139,7 +178,20 @@ export default function UserSetupScreen() {
             <OtpForm
               title="Create Account"
               type={route.params?.type}
-              setStep={(value: number) => setStep(4)}
+              setStep={async (value: string) => {
+                setLoader(true);
+                const isVerified = await ValidateOTP(value, data.email ?? '', data.phone ?? '');
+                if (isVerified) {
+                  if (activeFlow == 'signup') {
+                    setStep(4);
+                    setOTP(value);
+                    setLoader(false);
+                  } else {
+                    setOTP(value);
+                    onLogin(data?.email?.toLowerCase() ?? '', data.phone ?? '', value);
+                  }
+                }
+              }}
             />
           )}
           {step == 4 && (
@@ -155,14 +207,14 @@ export default function UserSetupScreen() {
             <OtpForm
               title="Create Account"
               type={route.params?.type}
-              setStep={(value: number) => setStep(6)}
+              setStep={(value: string) => setStep(6)}
             />
           )}
           {step == 6 && (
             <PersonalInfoForm
               setStep={values => {
                 setData({ ...data, ...values });
-                onSubmit({ ...data, ...values });
+                onSubmit({ ...data, ...values }, otp);
               }}
             />
           )}
@@ -186,26 +238,11 @@ export default function UserSetupScreen() {
               onPress={() => navigation.navigate('DSetup')}
               btnText={'Connect Device'}
               title="You’re account is all set!"
-              message={
-                <>
-                  <MyText text={`Lets setup your device`} size={16} />
-                  <GapView length={25} />
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Check height={15} width={15} />
-                    <GapView length={5} mode="horizontal" />
-                    <MyText text={`Power on your device`} size={16} />
-                  </View>
-                  <GapView />
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Check height={15} width={15} />
-                    <GapView length={5} mode="horizontal" />
-                    <MyText
-                      text={`Turn on bluetooth on your phone`}
-                      size={16}
-                    />
-                  </View>
-                </>
-              }
+              message={`Lets setup your device`}
+              points={[
+                'Power on your device',
+                'Turn on bluetooth on your phone',
+              ]}
             />
           )}
         </ScrollView>

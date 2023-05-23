@@ -161,7 +161,7 @@ export default function ManageAccount({
                 width: WINDOW_WIDTH - 60,
                 alignSelf: 'center',
               }}>
-              <Card>
+              <Card backgroundColor='#ffffff' >
                 {val.key != 'phone' ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <GapView mode="horizontal" />

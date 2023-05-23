@@ -6,6 +6,7 @@ import {
   MasjidSample,
   MuteSvg,
   PeoplesSvg,
+  Speaker,
   SujudSvg,
   TimeCircleSvg,
   UnMuteSvg,
@@ -56,7 +57,11 @@ export default function MasjidListCard(
         onPress={onPress}
         style={styles.container}>
         <View>
-          <MyText text={masjidName ?? 'Masjid Ar - Rahman'} size={16} textStyle={{fontWeight: '700'}}  />
+          <MyText
+            text={masjidName ?? 'Masjid Ar - Rahman'}
+            size={16}
+            textStyle={{ fontWeight: '700' }}
+          />
           <GapView />
           {isSearch ? (
             <>
@@ -64,15 +69,20 @@ export default function MasjidListCard(
                 <LocationSvg />
                 <GapView length={5} mode="horizontal" />
                 <MyText
-                  text={location ?? '1350 Star Ct, Plano, TX 123456'}
+                  text={location ?? ''}
                   size={12}
+                  textStyle={{ width: WINDOW_WIDTH - 150, color: '#3E3E3E' }}
                 />
               </View>
               <GapView />
               <View style={styles.row}>
                 <PeoplesSvg />
                 <GapView length={5} mode="horizontal" />
-                <MyText text={subscribers ?? '2561'} size={12} />
+                <MyText
+                  text={subscribers ?? '2561'}
+                  size={12}
+                  textStyle={{ color: '#3E3E3E' }}
+                />
               </View>
             </>
           ) : (
@@ -89,19 +99,7 @@ export default function MasjidListCard(
                 <MyText text={'Maghrib'} />
                 <GapView mode="horizontal" length={5} />
                 <View style={styles.row}>
-                  {!mute ? (
-                    <UnMuteSvg
-                      onPress={() => {
-                        setMute(!mute);
-                      }}
-                    />
-                  ) : (
-                    <MuteSvg
-                      onPress={() => {
-                        setMute(!mute);
-                      }}
-                    />
-                  )}
+                  <Speaker height={20} width={20} />
                   <GapView mode="horizontal" length={5} />
                   <MyText text={azanTime ?? '5:50 am'} />
                 </View>
@@ -123,7 +121,7 @@ export default function MasjidListCard(
           />
         </View>
       </TouchableOpacity>
-    </Card> 
+    </Card>
   );
 }
 
@@ -134,7 +132,7 @@ const makeStyles = (props: MasjidHomeProps & MasjidSearchProps) => {
       justifyContent: 'space-between',
       padding: 10,
       alignItems: 'center',
-      paddingVertical: 15
+      paddingVertical: 15,
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     imageStyle: { height: 60, width: 60 },

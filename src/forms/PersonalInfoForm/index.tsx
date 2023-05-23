@@ -38,7 +38,7 @@ export default function PersonalInfoForm({
           touched,
         }) => (
           <>
-            <Card width={WINDOW_WIDTH - 28} radius={12}>
+            <Card backgroundColor="#fff" width={WINDOW_WIDTH - 28} radius={12}>
               <MyInput
                 placeholder="First Name"
                 isDivider

@@ -165,7 +165,6 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
       <ProfileSectionlist
         data={[
           {
-            // title: 'User Information',
             data: [
               {
                 title: 'Manage Account',
