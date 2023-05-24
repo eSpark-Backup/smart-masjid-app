@@ -309,6 +309,7 @@ export default function DeviceSetupScreen() {
   return (
     <Wrapper
       bgImageSpacer={false}
+      showBack={disable}
       onBackPress={() => disable && setStep(handleBack)}>
       <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
         {step == 1 && <DLoader />}
