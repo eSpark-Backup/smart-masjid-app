@@ -8,6 +8,7 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ImmutableObject, useHookstate } from '@hookstate/core';
+import jwtDecode from 'jwt-decode';
 
 import { PlusSvg } from '../../assets';
 import {
@@ -24,7 +25,8 @@ import { DeviceSetting } from './Stacks';
 import { userStore } from '../../store/UserStore';
 import { deviceStore } from '../../store/DeviceStore';
 import { Device as DeviceType } from '../../types/deviceControllerTypes';
-import { GetUserDevices } from '../../api/deviceController';
+import { GetMasjidDevices, GetUserDevices } from '../../api/deviceController';
+import { UserToken } from '../../types/userControllerApiResponse';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -46,7 +48,10 @@ const AddDevice = () => {
           <View style={{ alignItems: 'center' }}>
             <PlusSvg style={{ color: theme.colors.primary }} />
             <GapView length={10} />
-            <TextLabel label="Add Device" textStyle={{ color: theme.colors.primary }} />
+            <TextLabel
+              label="Add Device"
+              textStyle={{ color: theme.colors.primary }}
+            />
           </View>
         </TouchableOpacity>
       </Card>
@@ -59,17 +64,21 @@ export default function Device() {
   const [activeTab, setActiveTab] = useState<string>('1');
   const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
   const user = useHookstate(userStore?.userData)?.get();
+  const USER_TOKEN: any = useHookstate(userStore?.token)?.get();
   const devices: any = useHookstate(deviceStore?.devices)?.get();
+  const masjidDevices: any = useHookstate(deviceStore?.masjidDevices)?.get();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const isFocused = useIsFocused();
   const theme: Theme = useTheme();
   const { colors } = theme;
 
   useEffect(() => {
+    const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
     setStep(0);
     console.log('what is the user info', user?.userType?.name);
     console.log('what is the user info++++', devices);
     GetUserDevices(user?.id.toString() ?? '');
+    GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
   }, [isFocused]);
 
   const onBackPress = () => {
@@ -80,15 +89,17 @@ export default function Device() {
     }
   };
 
-  const realData = devices.filter((item: DeviceType) => {
-    if (activeTab == '2') {
-      return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
-    } else {
-      return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
-    }
-  });
+  // const realData = devices.filter((item: DeviceType) => {
+  //   if (activeTab == '2') {
+  //     return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
+  //   } else {
+  //     return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
+  //   }
+  // });
 
-  console.log('devices', activeTab);
+  const finalData = activeTab == '1' ? devices : masjidDevices;
+
+  console.log('devices', activeTab == '1' ? devices : masjidDevices);
 
   return (
     <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
@@ -118,7 +129,7 @@ export default function Device() {
           <View
             style={{
               flex: 1,
-              alignItems: realData?.length > 0 ? 'center' : 'flex-start',
+              alignItems: finalData?.length > 0 ? 'center' : 'flex-start',
             }}>
             <FlatList
               contentContainerStyle={{
@@ -126,7 +137,7 @@ export default function Device() {
                 flexGrow: 1,
               }}
               numColumns={2}
-              data={[...realData, 1]}
+              data={[...finalData, 1]}
               renderItem={({
                 item,
                 index,
@@ -134,7 +145,7 @@ export default function Device() {
                 item: DeviceType;
                 index: number;
               }) => {
-                if (index != realData?.length) {
+                if (index != finalData?.length) {
                   return (
                     <View style={{ marginHorizontal: 5 }}>
                       <DeviceCard
@@ -151,7 +162,7 @@ export default function Device() {
                   return (
                     <View
                       style={{
-                        marginHorizontal: realData?.length < 1 ? 25 : 5,
+                        marginHorizontal: finalData?.length < 1 ? 25 : 5,
                       }}>
                       <AddDevice />
                     </View>

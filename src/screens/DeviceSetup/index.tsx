@@ -38,8 +38,14 @@ import {
   _stopLocationCheck,
   _writeToDevice,
 } from './utils/functions';
-import { _saveDevice, _saveDeviceToUser } from '../../api/deviceController';
+import {
+  _saveDevice,
+  _saveDeviceBtnToMasjid,
+  _saveDeviceToUser,
+} from '../../api/deviceController';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
+import jwtDecode from 'jwt-decode';
+import { UserToken } from '../../types/userControllerApiResponse';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -48,6 +54,7 @@ type DSetupNavigationProps = NativeStackScreenProps<
 
 export default function DeviceSetupScreen() {
   console.log('User ka bta id mili ha?', userStore.get());
+
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
   const isFocused = useIsFocused();
@@ -208,12 +215,32 @@ export default function DeviceSetupScreen() {
   };
 
   const registerDevice = async (deviceInfo: DeviceInfo) => {
+    const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
+    const isBtn = dev?.name?.includes('SMBTN');
     const devRes: any = await _saveDevice(deviceInfo);
-    const userDevRes = await _saveDeviceToUser(devRes?.id);
-    if (userDevRes) {
-      setStep(7);
+    if (isBtn) {
+      const USER_TOKEN: any = userStore.get().token;
+      const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+      console.log(
+        'kia ha decoded string========??????',
+        JSON.stringify(jwtDecodedObj),
+      );
+      const masjidDevRes = await _saveDeviceBtnToMasjid(
+        devRes?.id,
+        jwtDecodedObj.masjidId,
+      );
+      if (masjidDevRes) {
+        setStep(7);
+      } else {
+        setStep(8);
+      }
     } else {
-      setStep(8);
+      const userDevRes = await _saveDeviceToUser(devRes?.id);
+      if (userDevRes) {
+        setStep(7);
+      } else {
+        setStep(8);
+      }
     }
   };
 

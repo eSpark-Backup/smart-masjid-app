@@ -1,7 +1,7 @@
 import React from 'react';
 import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Caution, DeviceEdit, EditHeavy } from '../../assets';
+import { Caution, Chevron_Right, DeviceEdit, EditHeavy } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
@@ -17,6 +17,7 @@ interface DataProp {
   icon: JSX.Element;
   onPress?: () => void;
   isEditable?: boolean;
+  rightArrow?: boolean;
   danger?: boolean;
 }
 
@@ -78,6 +79,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
           </View>
         </View>
         <View>
+          {item?.rightArrow && <Chevron_Right />}
           {item?.isEditable && <EditHeavy />}
           {item?.danger && <Caution />}
         </View>

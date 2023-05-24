@@ -22,6 +22,7 @@ import { userStore } from '../store/UserStore';
 import { UserResponse } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
 import { GetCountryCodes } from '../api/externalControllers';
+import { api } from '../api';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -83,6 +84,9 @@ export default function App() {
     getDataFromLocalStorage('token').then((res: any) => {
       if (res != null) {
         const token = JSON.parse(res);
+        api.setHeaders({
+          Authorization: `Bearer ${token}`,
+        });
         userStore.token.set(token);
       }
     });

@@ -119,5 +119,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-  text: { fontSize: 16, fontWeight: '400' },
+  text: { fontSize: 16, fontWeight: '400', textAlign: 'center' },
 });

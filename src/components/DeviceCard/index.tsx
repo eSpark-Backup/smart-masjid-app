@@ -29,7 +29,7 @@ export default function DeviceCard({
           onPress={onPress}
           activeOpacity={0.9}
           style={styles.container}>
-          <View style={{ alignItems: 'center', width: '100%' }}>
+          <View style={{ width: '100%', paddingHorizontal: 10 }}>
             <GapView mode="horizontal" length={15} />
             <View>
               <TextLabel
@@ -55,7 +55,13 @@ export default function DeviceCard({
                 />
               )}
               <GapView length={25} />
-              <DeviceStatus online />
+              <View
+                style={{
+                  alignItems: 'flex-start',
+                  bottom: 5,
+                }}>
+                <DeviceStatus online />
+              </View>
             </View>
           </View>
         </TouchableOpacity>

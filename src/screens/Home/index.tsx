@@ -78,7 +78,11 @@ export default function Home() {
   };
 
   return (
-    <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
+    <Wrapper
+      showBack={step == 0 ? false : true}
+      onBackPress={onBackPress}
+      showFooter={false}
+      bgImageSpacer={false}>
       {step == 0 && <MasjidListing setStep={setStep} data={data} />}
       {step == 1 && <MasjidDetails setStep={setStep} />}
       {step == 2 && <ConnectedDevices />}

@@ -78,6 +78,7 @@ export { default as AdhanCalculation } from './vectors/AdhanCalculation.svg';
 export { default as AdhanJuristic } from './vectors/AdhanJuristic.svg';
 export { default as BatteryBar } from './vectors/battery-bar.svg';
 export { default as EditHeavy } from './vectors/edit-heavy.svg';
+export { default as Chevron_Right } from './vectors/chevron_right.svg';
 export { default as Wifi } from './vectors/Wifi.svg';
 export { default as Version } from './vectors/Version.svg';
 export { default as DeviceReset } from './vectors/device-reset.svg';
@@ -86,7 +87,7 @@ export { default as Caution } from './vectors/Caution.svg';
 export { default as Close } from './vectors/Close.svg';
 export { default as Exclimation } from './vectors/Exclimation.svg';
 export { default as Check } from './vectors/Check.svg';
-export { default as Speaker} from './vectors/Speaker.svg'
+export { default as Speaker } from './vectors/Speaker.svg';
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';
