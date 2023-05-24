@@ -20,10 +20,12 @@ export default function ButtonListing({
   data = [],
   radius = 0,
   titleWidth,
+  lines,
 }: {
   data: ListItem[];
   radius?: number;
   titleWidth?: string | number;
+  lines?: number;
 }) {
   return (
     <Card radius={radius} width={WINDOW_WIDTH - 28} height={216}>
@@ -31,7 +33,14 @@ export default function ButtonListing({
         style={{ maxHeight: 216 }}
         data={data}
         renderItem={({ item, index }) => {
-          return <ListCard titleWidth={titleWidth} item={item} index={index} />;
+          return (
+            <ListCard
+              titleWidth={titleWidth}
+              item={item}
+              index={index}
+              lines={lines}
+            />
+          );
         }}
         ItemSeparatorComponent={() => {
           return <MyDivider height={0.25} />;
@@ -45,10 +54,12 @@ const ListCard = ({
   item,
   index,
   titleWidth,
+  lines,
 }: {
   item: ListItem;
   index: number;
   titleWidth?: string | number;
+  lines?: number;
 }) => {
   const theme: Theme = useTheme();
   const styles = makeStyles(theme, item, titleWidth);
@@ -62,7 +73,7 @@ const ListCard = ({
       {item.leftIcon && item?.leftIcon}
       {item.leftIcon && <GapView mode="horizontal" length={15} />}
       <View style={styles.titleWidth}>
-        <MyText text={item?.title} size={16} />
+        <MyText text={item?.title} size={16} lines={lines} />
       </View>
       <GapView
         mode="horizontal"
