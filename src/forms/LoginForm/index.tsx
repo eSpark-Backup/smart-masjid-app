@@ -42,21 +42,17 @@ export default function LoginForm({
         tab2Title="Phone number"
         onChange={setActiveTab}
       />
-      {/* <TextLabel
-        label={type != 'setup' ? 'Enter Your Email' : 'Lets create an account'}
-        textStyle={{ alignSelf: 'center' }}
-      /> */}
+
       <GapView length={40} />
       <Formik
-        initialValues={{ email: 'mudassir@gmail.com' }}
+        initialValues={{ email: 'faraz@esparkconsultants.com' }}
         validationSchema={
           activeTab == '1'
             ? UserSetupSchema.emailForm
             : UserSetupSchema.phoneForm
         }
-        onSubmit={values => {
-          // @ts-ignore
-          setStep({ email: values.email ?? '', phone: values.phone ?? '' });
+        onSubmit={({ email, phone }: { email?: string; phone?: string }) => {
+          setStep({ email: email ?? '', phone: phone ?? '' });
         }}>
         {({
           handleChange,
@@ -93,7 +89,6 @@ export default function LoginForm({
                   <MyInput
                     placeholder="Phone"
                     onChangeText={handleChange('phone')}
-                    // @ts-ignore
                     value={values?.phone}
                     isPhoneCode
                     phoneCodeValue="US"
@@ -102,10 +97,8 @@ export default function LoginForm({
                     }}
                   />
                 </Card>
-                {/* @ts-ignore */}
                 {errors.phone && touched.phone && (
                   <MyText
-                    // @ts-ignore
                     text={errors.phone}
                     textStyle={{
                       color: 'red',
@@ -140,6 +133,5 @@ export default function LoginForm({
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    // alignItems: 'center',
   },
 });

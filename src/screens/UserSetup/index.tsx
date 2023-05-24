@@ -180,7 +180,11 @@ export default function UserSetupScreen() {
               type={route.params?.type}
               setStep={async (value: string) => {
                 setLoader(true);
-                const isVerified = await ValidateOTP(value, data.email ?? '', data.phone ?? '');
+                const isVerified = await ValidateOTP(
+                  value,
+                  data.email ?? '',
+                  data.phone ?? '',
+                );
                 if (isVerified) {
                   if (activeFlow == 'signup') {
                     setStep(4);
@@ -188,7 +192,11 @@ export default function UserSetupScreen() {
                     setLoader(false);
                   } else {
                     setOTP(value);
-                    onLogin(data?.email?.toLowerCase() ?? '', data.phone ?? '', value);
+                    onLogin(
+                      data?.email?.toLowerCase() ?? '',
+                      data.phone ?? '',
+                      value,
+                    );
                   }
                 }
               }}
