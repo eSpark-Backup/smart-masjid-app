@@ -5,7 +5,13 @@ import AD from 'react-native-vector-icons/AntDesign';
 import { WINDOW_HEIGHT } from '../../constants';
 import { ArrowLeft } from '../../assets';
 
-export default function Header({ onBackPress }: { onBackPress?: () => void }) {
+export default function Header({
+  onBackPress,
+  showBack = true,
+}: {
+  onBackPress?: () => void;
+  showBack?: boolean;
+}) {
   const { colors } = useTheme();
   return (
     <View
@@ -15,7 +21,7 @@ export default function Header({ onBackPress }: { onBackPress?: () => void }) {
         justifyContent: 'center',
         paddingHorizontal: 25,
       }}>
-      <ArrowLeft onPress={onBackPress} />
+      {showBack && <ArrowLeft onPress={onBackPress} />}
     </View>
   );
 }

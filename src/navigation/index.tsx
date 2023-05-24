@@ -22,6 +22,7 @@ import { userStore } from '../store/UserStore';
 import { UserResponse } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
 import { GetCountryCodes } from '../api/externalControllers';
+import { api } from '../api';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -68,15 +69,25 @@ export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
+  const userToken = useHookstate(userStore.token);
   const [loader, setLoader] = useState<boolean>(false);
   useEffect(() => {
-    GetCountryCodes()
+    GetCountryCodes();
     handleDeviceIdCheck();
     _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);
         userData.set(data);
+      }
+    });
+    getDataFromLocalStorage('token').then((res: any) => {
+      if (res != null) {
+        const token = JSON.parse(res);
+        api.setHeaders({
+          Authorization: `Bearer ${token}`,
+        });
+        userStore.token.set(token);
       }
     });
   }, []);
