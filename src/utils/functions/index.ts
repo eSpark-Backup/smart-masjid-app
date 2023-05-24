@@ -1,8 +1,12 @@
 import { getUniqueId } from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
 import {
+  check,
   checkMultiple,
+  openSettings,
+  Permission,
   PERMISSIONS,
+  request,
   requestMultiple,
   RESULTS,
 } from 'react-native-permissions';
@@ -58,10 +62,52 @@ async function _requestUserPermission() {
     console.log('Authorization status:', authStatus);
   }
 
-  checkMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]).then(statuses => {
-    if (statuses[PERMISSIONS.ANDROID.POST_NOTIFICATIONS] != 'granted') {
-      requestMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]);
+  checkMultiple([
+    PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
+    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+    PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+    PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+  ]).then(statuses => {
+    _openSettingIsBlocked(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    _openSettingIsBlocked(PERMISSIONS.ANDROID.BLUETOOTH_SCAN);
+    _openSettingIsBlocked(PERMISSIONS.ANDROID.BLUETOOTH_CONNECT);
+    _openSettingIsBlocked(PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE);
+    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+    if (
+      statuses[
+        (PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+      ] != 'granted'
+    ) {
+      requestMultiple([
+        PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+      ]);
     }
+  });
+}
+
+/**
+ * @description If Given Permission is Blocked so It open Setting Otherwise ask permission
+ */
+async function _openSettingIsBlocked(permission: Permission) {
+  check(permission).then(statuses => {
+    if (statuses == 'blocked') {
+      openSettings();
+      return;
+    }
+    request(permission);
   });
 }
 
@@ -259,7 +305,11 @@ function convertResponseToData(
       ) {
         // find the index of the key in the accumulator array
         const index = acc.findIndex(
-          item => item.heading === (key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate' ? "Effective Date" : key?.charAt(0)?.toUpperCase() + key?.slice(1)),
+          item =>
+            item.heading ===
+            (key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate'
+              ? 'Effective Date'
+              : key?.charAt(0)?.toUpperCase() + key?.slice(1)),
         );
 
         // get the value of the key and slice it to remove the seconds part
@@ -292,7 +342,10 @@ function convertResponseToData(
         // otherwise, add a new object to the accumulator array
         else {
           acc.push({
-            heading: key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate' ? "Effective Date" : key?.charAt(0)?.toUpperCase() + key?.slice(1),
+            heading:
+              key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate'
+                ? 'Effective Date'
+                : key?.charAt(0)?.toUpperCase() + key?.slice(1),
             values: [value ?? '-'],
           });
         }
@@ -318,5 +371,5 @@ export {
   removeDatafromLocalStorage,
   getCurrentMonthAdhanData,
   convertResponseToData,
-  isValidPhoneNumber
+  isValidPhoneNumber,
 };
