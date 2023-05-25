@@ -30,7 +30,7 @@ const RowItem = ({
   item,
   isMute,
 }: {
-  item: { name: string; adhan: string; iqamah: string };
+  item: { name: string; adhan: string; Iqama: string };
   isMute: boolean;
 }) => {
   const [toggleMute, setToggleMute] = useState(true);
@@ -44,7 +44,7 @@ const RowItem = ({
           <MyText text={item.adhan} size={16} />
         </View>
         <View style={styles.contentCol}>
-          <MyText text={item.iqamah} size={16} />
+          <MyText text={item.Iqama} size={16} />
         </View>
         {isMute && (
           <View style={styles.contentIcon}>
@@ -82,7 +82,7 @@ export default function SwipeableTimeTable({
   isMute = false,
   isEdit = false,
   isInfo = false,
-  headings = ['Salah', 'Adhan', 'Iqamah'],
+  headings = ['Salah', 'Adhan', 'Iqama'],
   header = <></>,
   onSubmitEditing = () => {
     console.log('submit');
@@ -120,13 +120,13 @@ export default function SwipeableTimeTable({
   const renderItem = useCallback(
     ({ item, index }: { item: IPrayerTimeForPeriod; index: number }) => {
       return (
-        <View key={index} style={{ width: WINDOW_WIDTH - 70 }}>
+        <View key={index} style={{ width: WINDOW_WIDTH - 50 }}>
           <RowItem
             // key={`${index}-fajr`}
             item={{
               name: 'Fajr',
               adhan: `${item.fajr.hour}:${item.fajr.minute}`,
-              iqamah: `${item.fajr.hour}:${item.fajr.minute}`,
+              Iqama: `${item.fajr.hour}:${item.fajr.minute}`,
             }}
             isMute={isMute}
           />
@@ -135,7 +135,7 @@ export default function SwipeableTimeTable({
             item={{
               name: 'Dhuhr',
               adhan: `${item.dhuhr.hour}:${item.dhuhr.minute}`,
-              iqamah: `${item.dhuhr.hour}:${item.dhuhr.minute}`,
+              Iqama: `${item.dhuhr.hour}:${item.dhuhr.minute}`,
             }}
             isMute={isMute}
           />
@@ -144,16 +144,16 @@ export default function SwipeableTimeTable({
             item={{
               name: 'Asr',
               adhan: `${item.asr.hour}:${item.asr.minute}`,
-              iqamah: `${item.asr.hour}:${item.asr.minute}`,
+              Iqama: `${item.asr.hour}:${item.asr.minute}`,
             }}
             isMute={isMute}
           />
           <RowItem
             // key={`${index}-maghrib`}
             item={{
-              name: 'Mugrib',
+              name: 'Maghrib',
               adhan: `${item.maghrib.hour}:${item.maghrib.minute}`,
-              iqamah: `${item.maghrib.hour}:${item.maghrib.minute}`,
+              Iqama: `${item.maghrib.hour}:${item.maghrib.minute}`,
             }}
             isMute={isMute}
           />
@@ -162,7 +162,7 @@ export default function SwipeableTimeTable({
             item={{
               name: 'Isha',
               adhan: `${item.isha.hour}:${item.isha.minute}`,
-              iqamah: `${item.isha.hour}:${item.isha.minute}`,
+              Iqama: `${item.isha.hour}:${item.isha.minute}`,
             }}
             isMute={isMute}
           />
@@ -207,7 +207,7 @@ export default function SwipeableTimeTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <TextLabel label={value} />
+            <MyText text={value} size={16} textStyle={{fontWeight: '700'}} />
           </View>
         ))}
         {isMute && !isInfo && <View style={styles.headerIcon} />}
@@ -226,7 +226,7 @@ export default function SwipeableTimeTable({
         data={data}
         horizontal
         pagingEnabled
-        snapToInterval={WINDOW_WIDTH - 70}
+        snapToInterval={WINDOW_WIDTH - 50}
         decelerationRate={0}
         pinchGestureEnabled={true}
         scrollEventThrottle={0}
@@ -258,10 +258,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#F7F9FA',
     elevation: 3,
     borderRadius: 12,
-    width: WINDOW_WIDTH - 45,
+    width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
   },
   headerRow: {

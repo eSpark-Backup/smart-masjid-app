@@ -30,6 +30,7 @@ export type GlobalProps = {
 export type UserStoreProps = {
   userData: UserResponse | null;
   currentRegisterUser: UserResponse | null;
+  token: UserResponse | null;
   masjidAdmins: UserResponse[];
 };
 
@@ -44,6 +45,19 @@ export type MasjidStoreProps = {
 
 export type DeviceStoreProps = {
   devices: Device[];
+  masjidDevices: Device[];
+};
+
+export type ExternalStoreProps = {
+  countryCodes: CountryCodes[];
+};
+
+export type CountryCodes = {
+  id: number;
+  country: string;
+  code: string;
+  enabled: boolean;
+  iso_code: string;
 };
 
 export type DeviceInfo = {

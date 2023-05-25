@@ -67,8 +67,8 @@ export const UpdatedMasjidIqamahTiming = async (
 
 /**
  *
- * @description Get Iqamah history
- * @returns get Iqamah history of masjid and save to masjidStore
+ * @description Get Iqama history
+ * @returns get Iqama history of masjid and save to masjidStore
  */
 export const GetIqamahHistory = async (masjidId: string) => {
   try {

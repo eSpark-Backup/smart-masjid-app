@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, {
@@ -21,6 +21,8 @@ import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
 import { userStore } from '../store/UserStore';
 import { UserResponse } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
+import { GetCountryCodes } from '../api/externalControllers';
+import { api } from '../api';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -67,14 +69,25 @@ export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
+  const userToken = useHookstate(userStore.token);
   const [loader, setLoader] = useState<boolean>(false);
   useEffect(() => {
+    GetCountryCodes();
     handleDeviceIdCheck();
     _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);
         userData.set(data);
+      }
+    });
+    getDataFromLocalStorage('token').then((res: any) => {
+      if (res != null) {
+        const token = JSON.parse(res);
+        api.setHeaders({
+          Authorization: `Bearer ${token}`,
+        });
+        userStore.token.set(token);
       }
     });
   }, []);
@@ -122,7 +135,11 @@ export default function App() {
             </Stack.Group>
           )}
         </Stack.Navigator>
-        <Toast config={toastConfig} topOffset={25} visibilityTime={2000} />
+        <Toast
+          config={toastConfig}
+          topOffset={StatusBar.currentHeight}
+          visibilityTime={2000}
+        />
       </NavigationContainer>
     );
   } else {
@@ -132,7 +149,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   successStyle: { width: '90%', borderLeftColor: '#98c379' },
-  errorStyle: { width: '90%', borderLeftColor: '#cf6362' },
+  errorStyle: { width: '90%', borderLeftColor: '#FF6464' },
   warningStyle: { width: '90%', borderLeftColor: '#f2be09' },
   text1Style: {
     fontFamily: 'roboto',

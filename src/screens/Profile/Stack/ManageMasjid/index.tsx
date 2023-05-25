@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { VolumeUp } from '../../../../assets';
+import { SalahTimingsSVG, VolumeUp } from '../../../../assets';
 
 import {
   GapView,
   MyDivider,
   ProfileAvatar,
   ProfileSectionlist,
+  TextLabel,
 } from '../../../../components';
 
 export default function ManageMasjid({
@@ -17,6 +18,9 @@ export default function ManageMasjid({
 }) {
   return (
     <View style={{ flex: 1 }}>
+      <GapView length={20} />
+      <TextLabel label="Manage Masjid" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={55} />
       <ProfileSectionlist
         data={[
           {
@@ -29,7 +33,7 @@ export default function ManageMasjid({
               },
               {
                 title: 'Salah Timings',
-                icon: <VolumeUp />,
+                icon: <SalahTimingsSVG />,
                 onPress: () => setFlag('sTime'),
               },
             ],

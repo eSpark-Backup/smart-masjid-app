@@ -10,14 +10,16 @@ import MyText from '../../components/MyText';
 // Like This <Wrapper><YOUR_COMPONENT><YOUR_COMPONENT/></Wrapper>
 export default function Wrapper({
   children,
-  showFooter = true,
+  showFooter = false,
   onBackPress,
   bgImageSpacer = true,
+  showBack = true,
 }: {
   children: React.ReactNode;
   showFooter?: boolean;
   onBackPress?: () => void;
   bgImageSpacer?: boolean;
+  showBack?: boolean;
 }) {
   return (
     <View style={{ flex: 1 }}>
@@ -28,7 +30,7 @@ export default function Wrapper({
           imageStyle={styles.imageStyle}
           source={HeaderBackgroundImage}>
           <View style={{ height: WINDOW_WIDTH / 10 }} />
-          <Header onBackPress={onBackPress} />
+          <Header onBackPress={onBackPress} showBack={showBack} />
           {bgImageSpacer && (
             <View
               style={{
@@ -53,7 +55,7 @@ export default function Wrapper({
 const styles = StyleSheet.create({
   imageBackgroundStyle: { minHeight: WINDOW_WIDTH / 1.8, flex: 1 },
   imageStyle: {
-    height: WINDOW_WIDTH / 1.8,
+    height: WINDOW_WIDTH / 1.9,
     width: WINDOW_WIDTH,
   },
 });

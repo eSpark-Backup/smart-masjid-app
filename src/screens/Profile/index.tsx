@@ -7,11 +7,12 @@ import {
   About,
   AccountGear,
   Help,
+  InfoCircle,
   ManageUser,
   MasjidGear,
   Privacy,
 } from '../../assets';
-import { ProfileSectionlist } from '../../components';
+import { GapView, ProfileSectionlist, TextLabel } from '../../components';
 import { Wrapper } from '../../containers';
 import {
   AdhanSettings,
@@ -102,7 +103,7 @@ export default function Profile() {
 
   return (
     <Wrapper
-      bgImageSpacer={handleSpacing(flag)}
+      bgImageSpacer={false}
       showFooter={false}
       onBackPress={() => handleBack(flag)}>
       {flag == 'uInfo' && (
@@ -158,10 +159,12 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
 
   return (
     <View style={{ flex: 1 }}>
+      <GapView length={20} />
+      <TextLabel label="User Information" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={45} />
       <ProfileSectionlist
         data={[
           {
-            title: 'User Information',
             data: [
               {
                 title: 'Manage Account',
@@ -196,7 +199,7 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
         footerData={[
           {
             title: 'Help',
-            icon: <About />,
+            icon: <Help />,
             onPress: () => console.log('pressed'),
           },
           {
@@ -206,7 +209,7 @@ function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
           },
           {
             title: 'About us',
-            icon: <Help />,
+            icon: <InfoCircle />,
             onPress: () => console.log('pressed'),
           },
         ]}

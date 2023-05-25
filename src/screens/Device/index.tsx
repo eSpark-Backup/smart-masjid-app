@@ -8,9 +8,16 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ImmutableObject, useHookstate } from '@hookstate/core';
+import jwtDecode from 'jwt-decode';
 
 import { PlusSvg } from '../../assets';
-import { GapView, MyText, TextLabel, DeviceCard } from '../../components';
+import {
+  GapView,
+  MyText,
+  TextLabel,
+  DeviceCard,
+  TabView,
+} from '../../components';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
@@ -18,7 +25,8 @@ import { DeviceSetting } from './Stacks';
 import { userStore } from '../../store/UserStore';
 import { deviceStore } from '../../store/DeviceStore';
 import { Device as DeviceType } from '../../types/deviceControllerTypes';
-import { GetUserDevices } from '../../api/deviceController';
+import { GetMasjidDevices, GetUserDevices } from '../../api/deviceController';
+import { UserToken } from '../../types/userControllerApiResponse';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -31,16 +39,19 @@ const AddDevice = () => {
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
 
   return (
-    <View style={{ marginHorizontal: 10 }}>
-      <Card height={161} width={165}>
+    <View>
+      <Card height={161} width={172}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => navigation.navigate('DSetup', { from: 'Device' })}
           style={styles.AddDeviceContainer}>
           <View style={{ alignItems: 'center' }}>
-            <PlusSvg style={{ color: '#6E6E6E' }} />
+            <PlusSvg style={{ color: theme.colors.primary }} />
             <GapView length={10} />
-            <TextLabel label="Add Device" textStyle={{ color: '#6E6E6E' }} />
+            <TextLabel
+              label="Add Device"
+              textStyle={{ color: theme.colors.primary }}
+            />
           </View>
         </TouchableOpacity>
       </Card>
@@ -50,20 +61,24 @@ const AddDevice = () => {
 
 export default function Device() {
   const [step, setStep] = useState(0);
-  const [activeTab, setActiveTab] = useState<string>('MyDevice');
+  const [activeTab, setActiveTab] = useState<string>('1');
   const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
   const user = useHookstate(userStore?.userData)?.get();
+  const USER_TOKEN: any = useHookstate(userStore?.token)?.get();
   const devices: any = useHookstate(deviceStore?.devices)?.get();
+  const masjidDevices: any = useHookstate(deviceStore?.masjidDevices)?.get();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const isFocused = useIsFocused();
   const theme: Theme = useTheme();
   const { colors } = theme;
 
   useEffect(() => {
+    const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
     setStep(0);
     console.log('what is the user info', user?.userType?.name);
     console.log('what is the user info++++', devices);
     GetUserDevices(user?.id.toString() ?? '');
+    GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
   }, [isFocused]);
 
   const onBackPress = () => {
@@ -74,113 +89,89 @@ export default function Device() {
     }
   };
 
-  const realData = devices.filter((item: DeviceType) => {
-    if (activeTab == 'MasjidDevice') {
-      return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
-    } else {
-      return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
-    }
-  });
+  // const realData = devices.filter((item: DeviceType) => {
+  //   if (activeTab == '2') {
+  //     return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
+  //   } else {
+  //     return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
+  //   }
+  // });
 
-  console.log('devices', realData);
+  const finalData = activeTab == '1' ? devices : masjidDevices;
+
+  console.log('devices', activeTab == '1' ? devices : masjidDevices);
 
   return (
-    <Wrapper
-      onBackPress={onBackPress}
-      showFooter={false}
-      bgImageSpacer={step == 1 ? false : true}>
+    <Wrapper onBackPress={onBackPress} showFooter={false} bgImageSpacer={false}>
       {step == 0 && (
         <>
+          <GapView length={20} />
+          <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
+          <GapView length={45} />
+          {user?.userType?.name === 'Customer' ? (
+            <MyText
+              text="My Devices"
+              textStyle={{
+                color: colors.primary,
+                fontWeight: '700',
+                alignSelf: 'center',
+              }}
+              size={16}
+            />
+          ) : (
+            <TabView
+              tab1Title="My Devices"
+              onChange={setActiveTab}
+              tab2Title="Masjid Devices"
+              currTab={activeTab}
+            />
+          )}
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              width: WINDOW_WIDTH - 80,
-              alignSelf: 'center',
+              flex: 1,
+              alignItems: finalData?.length > 0 ? 'center' : 'flex-start',
             }}>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              disabled={user?.userType?.name === 'Customer' ? true : false}
-              onPress={() => setActiveTab('MyDevice')}>
-              <TextLabel
-                label="My Devices"
-                textStyle={{
-                  color: activeTab == 'MyDevice' ? colors.primary : '#9E9F9F',
-                }}
-              />
-              {activeTab == 'MyDevice' &&
-                user?.userType?.name === 'Masjid Admin' && (
-                  <View
-                    style={{
-                      height: 5,
-                      width: 5,
-                      backgroundColor: colors.primary,
-                      borderRadius: 10,
-                      alignSelf: 'center',
-                      marginTop: 5,
-                    }}
-                  />
-                )}
-            </TouchableOpacity>
-            {user?.userType?.name === 'Masjid Admin' && (
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => setActiveTab('MasjidDevice')}>
-                <TextLabel
-                  label="Masjid Devices"
-                  textStyle={{
-                    color:
-                      activeTab == 'MasjidDevice' ? colors.primary : '#9E9F9F',
-                  }}
-                />
-                {activeTab == 'MasjidDevice' && (
-                  <View
-                    style={{
-                      height: 5,
-                      width: 5,
-                      backgroundColor: colors.primary,
-                      borderRadius: 10,
-                      alignSelf: 'center',
-                      marginTop: 5,
-                    }}
-                  />
-                )}
-              </TouchableOpacity>
-            )}
+            <FlatList
+              contentContainerStyle={{
+                paddingVertical: 20,
+                flexGrow: 1,
+              }}
+              numColumns={2}
+              data={[...finalData, 1]}
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: DeviceType;
+                index: number;
+              }) => {
+                if (index != finalData?.length) {
+                  return (
+                    <View style={{ marginHorizontal: 5 }}>
+                      <DeviceCard
+                        deviceData={item}
+                        onPress={() => {
+                          setStep(1);
+                          setSelectedDevice(item);
+                        }}
+                        activeTab={activeTab}
+                      />
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View
+                      style={{
+                        marginHorizontal: finalData?.length < 1 ? 25 : 5,
+                      }}>
+                      <AddDevice />
+                    </View>
+                  );
+                }
+              }}
+              ItemSeparatorComponent={GapView}
+            />
           </View>
-          <FlatList
-            contentContainerStyle={{
-              paddingHorizontal: 10,
-              paddingVertical: 20,
-            }}
-            numColumns={2}
-            data={[...realData, 1]}
-            renderItem={({
-              item,
-              index,
-            }: {
-              item: DeviceType;
-              index: number;
-            }) => {
-              if (index != realData?.length) {
-                return (
-                  <>
-                    <DeviceCard
-                      deviceData={item}
-                      onPress={() => {
-                        setStep(1);
-                        setSelectedDevice(item);
-                      }}
-                      activeTab={activeTab}
-                    />
-                  </>
-                );
-              } else {
-                return <AddDevice />;
-              }
-            }}
-            ItemSeparatorComponent={GapView}
-          />
         </>
       )}
       {step == 1 && <DeviceSetting device={selectedDevice} />}

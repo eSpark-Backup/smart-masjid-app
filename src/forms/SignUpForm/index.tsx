@@ -1,32 +1,41 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-
+import { StyleSheet, Text, View } from 'react-native';
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 
-export default function EmailForm({
-  type,
+export default function SignUpForm({
   setStep,
-  onPhonePress = () => {},
+  type,
+  onEmailPress = (value: number) => {},
 }: {
   type?: 'login' | 'setup';
   setStep: (value: any) => void;
-  onPhonePress?: (value: any) => void;
+  onEmailPress: (value: number) => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
-      <TextLabel
-        label={type != 'setup' ? 'Enter Your Email' : 'Lets create an account'}
-        textStyle={{ alignSelf: 'center' }}
+      <GapView length={20} />
+      <TextLabel label="Create Account" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={40} />
+      <MyText
+        textStyle={{ textAlign: 'center', width: 315, fontWeight: '700' }}
+        size={20}
+        text={`Awesome!`}
       />
-      <GapView length={80} />
+      <GapView length={15} />
+      <MyText
+        textStyle={{ textAlign: 'center', width: 315 }}
+        text={`Let’s get your account created.\n\nWhat’s a good email to get started?
+      `}
+      />
+      <GapView length={30} />
       <Formik
-        initialValues={{ email: 'test2@yopmail.com' }}
+        initialValues={{ email: '' }}
         validationSchema={UserSetupSchema.emailForm}
         onSubmit={values => {
           setStep(values);
@@ -40,7 +49,7 @@ export default function EmailForm({
           touched,
         }) => (
           <>
-            <Card width={315}>
+            <Card backgroundColor="#fff" width={315}>
               <MyInput
                 placeholder="Email"
                 onChangeText={handleChange('email')}
@@ -57,19 +66,23 @@ export default function EmailForm({
                 }}
               />
             )}
-            <View style={{ marginTop: 80, marginBottom: 40 }}>
+            <GapView length={40} />
+            <View style={{ alignItems: 'center' }}>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
           </>
         )}
       </Formik>
       <GapView length={40} />
-      <MyText
-        text="Use phone number instead"
-        pressable
-        textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-        onPress={() => onPhonePress(1.1)}
-      />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <MyText text="Already have account? " />
+        <MyText
+          text="Login"
+          pressable
+          textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
+          onPress={() => onEmailPress(1)}
+        />
+      </View>
     </View>
   );
 }
@@ -77,6 +90,6 @@ export default function EmailForm({
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
 });

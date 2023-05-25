@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Image, StyleSheet, Animated } from 'react-native';
 
-import { CheckSvg, CrossSvg } from '../../assets';
+import { Check, CheckSvg, Exclimation } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
@@ -9,17 +9,25 @@ import * as Animatable from 'react-native-animatable';
 import GapView from '../GapView';
 
 export default function MyToast({
+  heading,
   title,
   message,
   isSuccess = true,
   btnText,
   onPress,
+  points,
+  center,
+  titleSize,
 }: {
+  heading?: string;
   title: string;
   message: string;
   isSuccess: boolean;
   btnText: string;
   onPress?: () => void;
+  points?: string[];
+  center?: boolean;
+  titleSize?: number;
 }) {
   const startValue = useRef(new Animated.Value(0)).current;
   const endValue = 1;
@@ -45,50 +53,74 @@ export default function MyToast({
           },
         ]}>
         <View style={styles.container}>
-          {title && <TextLabel label={title!!} textStyle={{ fontSize: 24 }} />}
-          <View
-            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
-            {isSuccess ? <CheckSvg /> : <CrossSvg />}
-            <View
-              style={{
-                width: 10,
-                height: 2,
-                backgroundColor: '#ffffff',
-                position: 'absolute',
-                bottom: 0,
-                left: 10,
-              }}
-            />
-          </View>
-          <GapView length={30} />
-          <View style={{ paddingHorizontal: 30, marginBottom: 20 }}>
+          <GapView length={20} />
+          {heading && (
+            <>
+              <TextLabel
+                label={heading!!}
+                textStyle={{ alignSelf: 'center' }}
+              />
+              <GapView length={40} />
+            </>
+          )}
+          {title && (
             <MyText
-              text={message}
+              text={title!!}
               textStyle={{
-                fontWeight: '400',
-                fontSize: 16,
+                fontSize: titleSize ?? 20,
+                fontWeight: '700',
                 textAlign: 'center',
               }}
             />
+          )}
+          <View
+            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
+            {isSuccess ? <CheckSvg /> : <Exclimation />}
           </View>
-          <GapView length={70} />
-          <Rounded onPress={onPress} label={btnText!!} />
+          <View
+            style={
+              center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
+            }>
+            <MyText
+              textStyle={{ fontSize: 16, fontWeight: '400' }}
+              text={message}
+            />
+          </View>
+          {points?.length!! > 0 && (
+            <>
+              <GapView length={25} />
+              <Points data={points} />
+            </>
+          )}
+          <GapView length={40} />
+          <View style={{ alignSelf: 'center' }}>
+            <Rounded onPress={onPress} label={btnText!!} />
+          </View>
         </View>
       </Animated.View>
     </Animatable.View>
   );
 }
 
+const Points = ({ data }: { data?: string[] }) => {
+  return (
+    <>
+      {data?.map((item: string) => (
+        <View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Check height={15} width={15} />
+            <GapView length={5} mode="horizontal" />
+            <MyText text={item} size={16} textStyle={{ color: '#3e3e3e' }} />
+          </View>
+        </View>
+      ))}
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
     alignSelf: 'center',
-    alignItems: 'center',
-  },
-  loader: {
-    height: 60,
-    width: 60,
-    alignSelf: 'center',
-    backgroundColor: '#fff',
+    width: '85%',
   },
 });

@@ -28,6 +28,7 @@
     "convert-string": "^0.1.0",
     "deprecated-react-native-prop-types": "^4.0.0",
     "formik": "^2.2.9",
+    "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
     "patch-package": "^6.5.1",
     "postinstall-postinstall": "^2.1.0",

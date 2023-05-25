@@ -17,6 +17,7 @@ export default function MasjidDetails({ setStep }: any) {
   const { colors }: Theme = useTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
+      <GapView length={20} />
       <TextLabel label="Masjid Ar - Rahman" />
       <GapView length={5} />
       <TouchableOpacity
@@ -29,11 +30,11 @@ export default function MasjidDetails({ setStep }: any) {
         <MyText text="MY HOME DEVICE " textStyle={{ color: colors.primary }} />
         <SyncSvg />
       </TouchableOpacity>
-      <GapView length={15} />
+      {/* <GapView length={15} />
       <MyText text="Next Adhan in" textStyle={{ fontWeight: 'bold' }} />
       <GapView length={5} />
-      <MyTitle text="06 : 09 : 00" style={{ fontSize: 32 }} />
-      <GapView length={25} />
+      <MyTitle text="06 : 09 : 00" style={{ fontSize: 32 }} /> */}
+      <GapView length={20} />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -42,11 +43,7 @@ export default function MasjidDetails({ setStep }: any) {
           paddingBottom: 20,
           padding: 5,
         }}>
-        <SwipeableTimeTable
-          isMute
-          isInfo
-          data={getCurrentMonthAdhanData()}
-        />
+        <SwipeableTimeTable isMute isInfo data={getCurrentMonthAdhanData()} />
         <GapView length={20} />
 
         <TimeTable
@@ -56,17 +53,21 @@ export default function MasjidDetails({ setStep }: any) {
               style={{
                 alignItems: 'center',
               }}>
-              <TextLabel label="Jumuah" />
+              <MyText
+                text="Jumuah"
+                size={16}
+                textStyle={{ fontWeight: '700' }}
+              />
             </View>
           }
           headings={['Salah', 'Khutba']}
           data={[
             {
-              name: 'Jumma 1',
+              name: 'Jumuah 1',
               azanTiming: '12:10',
             },
             {
-              name: 'Jumma 2',
+              name: 'Jumuah 2',
               azanTiming: '01:10',
             },
           ]}

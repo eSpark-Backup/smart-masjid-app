@@ -2,14 +2,16 @@ import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { SearchMasjidByLocation } from '../../../api/masjidController';
-import { GapView, MasjidListCard, MyInput } from '../../../components';
+import {
+  GapView,
+  MasjidListCard,
+  MyInput,
+  TextLabel,
+} from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
-import Geocoder from 'react-native-geocoding';
-
-Geocoder.init('AIzaSyDPO63dIpxQVdsZPynkYi0Ee8FxW_mwti8'); // use a valid API key
 
 const SearchListing = ({
   onPress,
@@ -17,21 +19,16 @@ const SearchListing = ({
   onPress?: (masjidDetail: Masjid) => void;
 }) => {
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
+  const [zipCode, setZipCode] = useState('');
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(info => {
-      console.log('Locaations: ', info);
-      // Search by geo-location (reverse geo-code)
-      Geocoder.from(info.coords.latitude, info.coords.longitude)
-        .then(json => {
-          var addressComponent = json?.results[0]?.address_components[0];
-          console.log(addressComponent, json);
-        })
-        .catch(error => console.warn(error));
-    });
+    // Geolocation.getCurrentPosition(info => {
+    //   // Search by geo-location (reverse geo-code)
+    // });
   }, []);
 
   const onSearch = async (zipCode: string) => {
+    setZipCode(zipCode);
     const res: any = await SearchMasjidByLocation(zipCode);
     if (res?.length > 0) {
       setMasjidList(res);
@@ -43,23 +40,26 @@ const SearchListing = ({
   return (
     <View
       style={{
-        top: 60,
         alignSelf: 'center',
         alignContent: 'center',
         justifyContent: 'center',
         width: WINDOW_WIDTH,
       }}>
-      <View style={{}}>
-        <Card width={300}>
+      <GapView length={20} />
+      <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={50} />
+      <View style={{ paddingTop: 15 }}>
+        <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
           <MyInput
             searchBar
-            inputStyle={{ width: 250 }}
+            inputStyle={{ width: WINDOW_WIDTH - 80 }}
             placeholder="Enter Zip Code"
             onSearch={onSearch}
+            value={zipCode}
           />
         </Card>
       </View>
-      <GapView length={30} />
+      <GapView />
       <FlatList
         data={masjidList}
         contentContainerStyle={{

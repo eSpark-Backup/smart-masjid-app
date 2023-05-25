@@ -64,7 +64,7 @@ export default function MyDropdown({
   placeholderColor,
   containerPadding = 15,
   onChangeValue = (value: Item) => {},
-  width = WINDOW_WIDTH - 40,
+  width = WINDOW_WIDTH - 28,
   disabled = false,
   defaultValue = null,
 }: {
@@ -120,7 +120,7 @@ export default function MyDropdown({
             useLayoutAnimation(200);
             setShow(false);
           }}
-          placeholderColor={placeholderColor ?? '#000000'}
+          placeholderColor={placeholderColor ?? '#9E9F9F'}
           placeholder={placeholder}
           value={selectedItem?.name ?? ''}
           isDivider={false}

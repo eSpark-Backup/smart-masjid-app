@@ -17,6 +17,7 @@ import {
   OverlayLoader,
   ProfileAvatar,
   Rounded,
+  TextLabel,
   TimeTable,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
@@ -88,10 +89,11 @@ export default function IqamahTimings({
   const type = data?.type ?? iqamahTimings?.type;
   return (
     <>
-      <GapView length={30} />
-      <View style={{ flex: 1, marginTop: 70 }}>
+      <View style={{ flex: 1, marginTop: 20 }}>
+        <TextLabel label="Iqama Timings" textStyle={{ alignSelf: 'center' }} />
+        <GapView length={55} />
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}>
+          contentContainerStyle={{ paddingBottom: 30, paddingTop: 20 }}>
           <OverlayLoader isShow={loading} />
 
           <TimeTable
@@ -108,7 +110,7 @@ export default function IqamahTimings({
                     }}>
                     <View>
                       <MyText
-                        text={`Change Date: ${iqamahTimings?.changeDate}`}
+                        text={`Effective Date: ${iqamahTimings?.changeDate}`}
                       />
                     </View>
                     <View
@@ -140,7 +142,7 @@ export default function IqamahTimings({
                         id: data?.type == 'F' ? 1 : 2,
                         name: data?.type ?? '',
                       }}
-                      width={WINDOW_WIDTH - 65}
+                      width={WINDOW_WIDTH - 50}
                       onChangeValue={e => setData({ ...data, type: e.name })}
                     />
                     <GapView />
@@ -176,7 +178,7 @@ export default function IqamahTimings({
                 },
               },
               {
-                name: 'Dhur',
+                name: 'Dhuhr',
                 iqamahTiming:
                   type == 'F'
                     ? moment(iqamahTimings?.dhuhr, 'HH:mm:ss').format('hh:mm')
@@ -208,10 +210,10 @@ export default function IqamahTimings({
                 },
               },
               {
-                name: 'Mugrib',
+                name: 'Maghrib',
                 iqamahTiming: edit
                   ? iqamahTimings?.maghribDelay?.toString()
-                  : '+' + iqamahTimings?.maghribDelay?.toString() + ' mins',
+                  : `+${iqamahTimings?.maghribDelay?.toString()} mins`,
                 onChange: value => {
                   setData({
                     ...data,
@@ -236,7 +238,7 @@ export default function IqamahTimings({
                 },
               },
             ]}
-            headings={['Salah', 'Iqamah']}
+            headings={['Salah', 'Iqama']}
             editView={edit}
             footer={
               <>

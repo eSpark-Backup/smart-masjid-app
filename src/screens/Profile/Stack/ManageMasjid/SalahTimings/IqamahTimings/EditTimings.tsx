@@ -48,9 +48,9 @@ export default function EditIqamah({
         headings={['Salah', 'Iqama']}
         data={[
           { name: 'Fajr', iqamahTiming: '6:00' },
-          { name: 'Dhur', iqamahTiming: '1:30' },
+          { name: 'Dhuhr', iqamahTiming: '1:30' },
           { name: 'Asr', iqamahTiming: '4:10' },
-          { name: 'Mugrib', iqamahTiming: '5:50' },
+          { name: 'Maghrib', iqamahTiming: '5:50' },
           { name: 'Isha', iqamahTiming: '8:15' },
         ]}
         btnLabel={'Save'}

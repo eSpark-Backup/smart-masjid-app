@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Wrapper } from '../../containers';
-import { EmailForm, OtpForm, PhoneForm, PersonalInfoForm } from '../../forms';
-import { RootStackParamList } from '../../types';
-import { MyToast, OverlayLoader, SLoader } from '../../components';
 import {
+  LoginForm,
+  OtpForm,
+  SignUpForm,
+  PersonalInfoForm,
+  AddPhoneForm,
+} from '../../forms';
+import { RootStackParamList } from '../../types';
+import {
+  GapView,
+  MyText,
+  MyToast,
+  OverlayLoader,
+  SLoader,
+} from '../../components';
+import {
+  CheckUserExists,
   CreateUser,
   LoginUser,
   RegisterUserPhone,
+  SendOTP,
+  ValidateOTP,
 } from '../../api/userController';
 import {
   CreateUserRequest,
@@ -20,6 +35,7 @@ import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
 import Toast from 'react-native-toast-message';
+import { Check } from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -28,8 +44,10 @@ export default function UserSetupScreen() {
   const phoneId = useHookstate(globalStore.phoneId).get();
   const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
+  const [activeFlow, setActiveFlow] = useState('login');
   const route = useRoute<Props['route']>();
   const [step, setStep] = useState(1);
+  const [otp, setOTP] = useState('');
   const [disable, setDisable] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [data, setData] = useState<CreateUserRequest>({
@@ -38,13 +56,13 @@ export default function UserSetupScreen() {
     userType: 'Customer',
   });
 
-  // useEffect(() => {
-  // if (step == 4) {
-  //   setTimeout(() => {
-  //     setStep(step + 1);
-  //   }, 3000);
-  // }
-  // }, [step]);
+  useEffect(() => {
+    if (route.params?.type == 'setup') {
+      setStep(2);
+    } else {
+      setStep(1);
+    }
+  }, [route.params?.type]);
 
   const handleBack = () => {
     if (step == 1.1) {
@@ -57,9 +75,9 @@ export default function UserSetupScreen() {
     return 1;
   };
 
-  const onSubmit = async (dataObj: CreateUserRequest) => {
-    setStep(4);
-    const res: UserResponse | undefined | any = await CreateUser(dataObj);
+  const onSubmit = async (dataObj: CreateUserRequest, otp: string) => {
+    setStep(7);
+    const res: UserResponse | undefined | any = await CreateUser(dataObj, otp);
     console.log('res', res);
 
     if (res?.id && phoneId) {
@@ -67,9 +85,9 @@ export default function UserSetupScreen() {
         { deviceId: phoneId, fcmToken: fcmToken as string },
         res?.id.toString(),
       );
-      setStep(5);
+      setStep(8);
     } else {
-      setStep(3);
+      setStep(6);
       Toast.show({
         text2: res?.message,
         type: 'error',
@@ -78,11 +96,9 @@ export default function UserSetupScreen() {
     }
   };
 
-  const onLogin = async (email: string, phone: string) => {
+  const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     setLoader(true);
-    const res = await LoginUser(email, phone);
-    setLoader(false);
-
+    const res = await LoginUser(email, phone, OTPvalue);
     if (res?.id && phoneId && !isDeviceRegistered) {
       await RegisterUserPhone(
         { deviceId: phoneId, fcmToken: fcmToken as string },
@@ -94,60 +110,140 @@ export default function UserSetupScreen() {
       navigation.navigate('HomeBottomTab'); //TODO: Change it later
       // navigation.navigate('DSetup');
     }
+    setLoader(false);
+  };
+
+  const CheckIsUserExist = async (
+    email?: string,
+    phone?: string,
+    type?: string,
+  ) => {
+    setLoader(true);
+    const res: any = await CheckUserExists(email ?? '', phone ?? '');
+    if (type == 'signup') {
+      if (res?.id) {
+        Toast.show({
+          text2: 'User Already Exist',
+          type: 'error',
+        });
+      } else {
+        const result = await SendOTP(email, phone);
+        if (result) {
+          setData({ ...data, email: email ?? '', phone: phone ?? '' });
+          setStep(3);
+        }
+      }
+    } else {
+      if (res?.id) {
+        const result = await SendOTP(email, phone);
+        if (result) {
+          setData({ ...data, email: email ?? '', phone: phone ?? '' });
+          setStep(3);
+        }
+      } else {
+        Toast.show({
+          text2: 'User not found!',
+          type: 'error',
+        });
+      }
+    }
+
+    setLoader(false);
   };
 
   return (
     <>
       <OverlayLoader isShow={loader} />
-      <Wrapper onBackPress={() => !disable && setStep(handleBack)}>
+      <Wrapper
+        bgImageSpacer={false}
+        onBackPress={() => !disable && setStep(handleBack)}>
         <ScrollView>
           {step == 1 && (
-            <EmailForm
+            <LoginForm
               type={route.params?.type}
               onPhonePress={value => setStep(value)}
               setStep={values => {
-                if (route.params?.type == 'setup') {
-                  setData({ ...data, ...values });
-                  setStep(3);
-                } else {
-                  onLogin(values.email, '');
-                }
-              }}
-            />
-          )}
-          {step == 1.1 && (
-            <PhoneForm
-              onEmailPress={value => setStep(value)}
-              type={route.params?.type}
-              setStep={values => {
-                if (route.params?.type == 'setup') {
-                  setData({ ...data, phone: `+1${values.phone}` });
-                  setStep(3);
-                } else {
-                  onLogin('', values.phone);
-                }
+                CheckIsUserExist(
+                  values.email?.toLowerCase(),
+                  values.phone,
+                  'login',
+                );
+                setActiveFlow('login');
               }}
             />
           )}
           {step == 2 && (
-            <OtpForm
+            <SignUpForm
+              onEmailPress={value => setStep(value)}
               type={route.params?.type}
-              setStep={(value: number) => setStep(value)}
+              setStep={values => {
+                CheckIsUserExist(
+                  values.email?.toLowerCase(),
+                  undefined,
+                  'signup',
+                );
+                setActiveFlow('signup');
+              }}
             />
           )}
           {step == 3 && (
-            <PersonalInfoForm
-              setStep={values => {
-                setData({ ...data, ...values });
-                onSubmit({ ...data, ...values });
+            <OtpForm
+              title="Create Account"
+              type={route.params?.type}
+              setStep={async (value: string) => {
+                setLoader(true);
+                const isVerified = await ValidateOTP(
+                  value,
+                  data.email ?? '',
+                  data.phone ?? '',
+                );
+                if (isVerified) {
+                  if (activeFlow == 'signup') {
+                    setStep(4);
+                    setOTP(value);
+                    setLoader(false);
+                  } else {
+                    setOTP(value);
+                    onLogin(
+                      data?.email?.toLowerCase() ?? '',
+                      data.phone ?? '',
+                      value,
+                    );
+                  }
+                }
               }}
             />
           )}
           {step == 4 && (
+            <AddPhoneForm
+              type={route.params?.type}
+              setStep={(value: number, values: any) => {
+                setStep(6);
+                // setData({ ...data, phone: values?.phone ?? '' });
+              }}
+            />
+          )}
+          {step == 5 && (
+            <OtpForm
+              title="Create Account"
+              type={route.params?.type}
+              setStep={(value: string) => setStep(6)}
+            />
+          )}
+          {step == 6 && (
+            <PersonalInfoForm
+              setStep={values => {
+                setData({ ...data, ...values });
+                onSubmit({ ...data, ...values }, otp);
+              }}
+            />
+          )}
+          {step == 7 && (
             <SLoader
               title={
                 route.params?.type == 'login' ? 'Loggin In' : 'Creating Account'
               }
+              subtitle="Creating Account"
               message={
                 route.params?.type == 'login'
                   ? 'Logging into the System.'
@@ -155,18 +251,18 @@ export default function UserSetupScreen() {
               }
             />
           )}
-          {step == 5 && (
+          {step == 8 && (
             <MyToast
+              heading="Create Account"
               isSuccess={true}
               onPress={() => navigation.navigate('DSetup')}
               btnText={'Connect Device'}
-              title="You’re all set!"
-              message={
-                'Lets setup your device.' +
-                '\n' +
-                '\n' +
-                'Make sure you power on your device and turn on bluetooth on your phone.'
-              }
+              title="You’re account is all set!"
+              message={`Lets setup your device`}
+              points={[
+                'Power on your device',
+                'Turn on bluetooth on your phone',
+              ]}
             />
           )}
         </ScrollView>

@@ -1,22 +1,24 @@
 import React from 'react';
-import { SectionList, StyleSheet, View } from 'react-native';
+import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { DeviceEdit } from '../../assets';
+import { Caution, Chevron_Right, DeviceEdit, EditHeavy } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
-import TextLabel from '../TextLabel';
-
 interface DataItem {
   title?: string;
-  data: {
-    title: string;
-    subtitle?: string;
-    icon: JSX.Element;
-    onPress?: () => void;
-    isEditable?: boolean;
-  }[];
+  data: DataProp[];
+}
+
+interface DataProp {
+  title: string;
+  subtitle?: string;
+  icon: JSX.Element;
+  onPress?: () => void;
+  isEditable?: boolean;
+  rightArrow?: boolean;
+  danger?: boolean;
 }
 
 export default function DeviceSettingSectionList({
@@ -37,7 +39,11 @@ export default function DeviceSettingSectionList({
               <MyDivider />
             </View>
             <GapView length={30} />
-            <TextLabel label={title ?? ''} />
+            <MyText
+              text={title ?? ''}
+              size={16}
+              textStyle={{ fontWeight: '700', color: '#3E3E3E' }}
+            />
             <GapView length={20} />
           </>
         )}
@@ -46,11 +52,14 @@ export default function DeviceSettingSectionList({
   );
 }
 
-const SectionCard = ({ item }: { item: any }) => {
+const SectionCard = ({ item }: { item: DataProp }) => {
   return (
     <>
       <GapView />
-      <View style={styles.cardContainer}>
+      <TouchableOpacity
+        disabled={Boolean(!item?.onPress)}
+        onPress={item?.onPress}
+        style={{ ...styles.cardContainer }}>
         <View style={styles.row}>
           <View style={styles.leftIcon}>{item?.icon}</View>
           <GapView mode="horizontal" />
@@ -58,12 +67,23 @@ const SectionCard = ({ item }: { item: any }) => {
             <View>
               <MyText text={item?.title} />
               <GapView mode="horizontal" length={5} />
-              <MyText text={item?.subtitle} />
+              <MyText
+                text={
+                  item?.danger
+                    ? item?.subtitle!! + ' Battery Low'
+                    : item?.subtitle!!
+                }
+                textStyle={{ color: item?.danger ? '#ff6464' : '#9E9F9F' }}
+              />
             </View>
           </View>
         </View>
-        <View>{item?.isEditable && <DeviceEdit />}</View>
-      </View>
+        <View>
+          {item?.rightArrow && <Chevron_Right />}
+          {item?.isEditable && <EditHeavy />}
+          {item?.danger && <Caution />}
+        </View>
+      </TouchableOpacity>
       <GapView />
     </>
   );

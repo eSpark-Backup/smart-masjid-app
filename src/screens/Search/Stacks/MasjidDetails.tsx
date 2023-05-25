@@ -9,6 +9,7 @@ import {
   TimeTable,
 } from '../../../components';
 import { Masjid } from '../../../types/masjidControllerTypes';
+import { AdhanCalculation, AdhanJuristic } from '../../../assets';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -18,29 +19,38 @@ const MasjidDetails = ({
   masjidDetails?: Masjid;
 }) => {
   const [subscribe, setSubscribe] = useState(false);
+  console.log('masjidDetails?.location', masjidDetails?.location);
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <GapView length={45} />
-      <TextLabel
-        label={masjidDetails?.name ?? '-'}
-        textStyle={{ paddingBottom: 5 }}
-      />
+      <GapView length={20} />
+      <TextLabel label={masjidDetails?.name ?? '-'} />
+      <GapView length={55} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>
-        <GapView length={15} />
-        <MyText text="Method: Islamic Society of North America" size={16} />
+        <View style={{ flexDirection: 'row' }}>
+          <AdhanCalculation />
+          <GapView length={5} mode="horizontal" />
+          <MyText
+            text="Islamic Society of North America"
+            size={16}
+            textStyle={{ color: '#3E3E3E' }}
+          />
+        </View>
         <GapView length={5} />
-        <MyText
-          text={`Jurisdiction: ${
-            masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name ?? '-'
-          }`}
-          size={16}
-        />
+        <View style={{ flexDirection: 'row' }}>
+          <AdhanJuristic />
+          <GapView length={5} mode="horizontal" />
+          <MyText
+            text={`Jurisdiction: ${
+              masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name ?? '-'
+            }`}
+            size={16}
+            textStyle={{ color: '#3E3E3E' }}
+          />
+        </View>
         <GapView length={20} />
-        <MapBox />
-        <GapView length={10} />
         <View style={{ padding: 10 }}>
           <TimeTable
             data={[
@@ -60,7 +70,7 @@ const MasjidDetails = ({
                 iqamahTiming: '5:00',
               },
               {
-                name: 'Mugrib',
+                name: 'Maghrib',
                 azanTiming: '5:50',
                 iqamahTiming: '6:00',
               },

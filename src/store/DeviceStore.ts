@@ -3,4 +3,5 @@ import { DeviceStoreProps } from '../types';
 
 export const deviceStore = hookstate<DeviceStoreProps>({
   devices: [],
+  masjidDevices: [],
 });

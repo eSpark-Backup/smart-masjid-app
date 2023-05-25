@@ -38,6 +38,7 @@ export default function AdhanSettings({
           }}>
           <TextLabel label={'Adhan Settings'} />
         </View>
+        <GapView length={20} />
         <MyDropDown
           disabled
           title="Calculation"

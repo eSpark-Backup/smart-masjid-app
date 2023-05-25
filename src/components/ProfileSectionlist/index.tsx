@@ -4,6 +4,7 @@ import { StyleSheet, View, SectionList, TouchableOpacity } from 'react-native';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
+import { WINDOW_HEIGHT } from '../../constants';
 
 interface DataItem {
   title?: string;
@@ -37,36 +38,21 @@ export default function ProfileSectionlist({
     <SectionList
       sections={data ?? []}
       scrollEnabled={scroll}
+      contentContainerStyle={{ height: '100%' }}
       keyExtractor={(item, index) => item.title + index}
       renderItem={({ item, index }) => {
         if (!item.hidden) {
           return <SectionCard item={item} index={index} />;
         } else return <View />;
       }}
-      renderSectionHeader={({ section: { title, icon, onIconPress } }) => (
-        <View
-          style={{
-            ...styles.sectionHeader,
-            justifyContent: icon ? 'space-between' : 'center',
-          }}>
-          {icon && <GapView mode="horizontal" length={19} />}
-          <TextLabel label={title ?? ''} />
-          {icon && (
-            <TouchableOpacity activeOpacity={0.9} onPress={onIconPress}>
-              {icon}
-            </TouchableOpacity>
-          )}
+      ListFooterComponentStyle={{ position: 'absolute', bottom: 0 }}
+      ListFooterComponent={
+        <View>
+          {footerData?.map((item, index) => {
+            return <SectionCard key={index} item={item} index={index} />;
+          })}
         </View>
-      )}
-      renderSectionFooter={({ section: { title } }) => {
-        return (
-          <View style={{ marginTop: 184 }}>
-            {footerData?.map((item, index) => {
-              return <SectionCard item={item} index={index} />;
-            })}
-          </View>
-        );
-      }}
+      }
     />
   );
 }
@@ -105,6 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
   },
 });

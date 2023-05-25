@@ -14,16 +14,20 @@ export default function PersonalInfoForm({
 }) {
   return (
     <View style={styles.container}>
-      <TextLabel
-        label="Lets have some details about you"
+      <GapView length={20} />
+      <TextLabel label="Create Account" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={40} />
+      <MyText
+        text="Lets have some details about you"
+        size={16}
         textStyle={{ alignSelf: 'center' }}
       />
-      <GapView length={56} />
+      <GapView length={40} />
       <Formik
         initialValues={{ firstName: '', lastName: '' }}
         validationSchema={UserSetupSchema.PersonalInfoForm}
         onSubmit={values => {
-          setStep(values)
+          setStep(values);
         }}>
         {({
           handleChange,
@@ -34,7 +38,7 @@ export default function PersonalInfoForm({
           touched,
         }) => (
           <>
-            <Card width={315} radius={12}>
+            <Card backgroundColor="#fff" width={WINDOW_WIDTH - 28} radius={12}>
               <MyInput
                 placeholder="First Name"
                 isDivider
@@ -52,16 +56,25 @@ export default function PersonalInfoForm({
             {errors.firstName && touched.firstName && (
               <MyText
                 text={errors.firstName}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4  }}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 50,
+                  marginTop: 4,
+                }}
               />
             )}
             {errors.lastName && touched.lastName && (
               <MyText
                 text={errors.lastName}
-                textStyle={{ color: 'red', width: WINDOW_WIDTH - 110, marginTop: 4  }}
+                textStyle={{
+                  color: 'red',
+                  width: WINDOW_WIDTH - 50,
+                  marginTop: 4,
+                }}
               />
             )}
-            <View style={{ marginTop: 60, marginBottom: 40 }}>
+            <GapView length={40} />
+            <View>
               <Rounded label="Next" width={250} onPress={handleSubmit} />
             </View>
           </>

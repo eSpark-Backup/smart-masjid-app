@@ -1,14 +1,19 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 
 import {
   Attention,
   Battery,
+  BatteryBar,
   Clock,
+  DeviceObject,
+  DeviceReset,
   DeviceSvg,
   Heart,
   IP,
+  Version,
+  Wifi,
   WifiSvg,
 } from '../../../assets';
 import {
@@ -16,34 +21,56 @@ import {
   MyText,
   TextLabel,
   DeviceSettingSectionList,
+  ErrorModal,
+  DeviceStatus,
+  DeviceErrorBox,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
 
 const DeviceSetting = ({ device }: { device?: Device }) => {
   const theme: Theme = useTheme();
+  const [errorShow, setErrorShow] = useState<boolean>(false);
   console.log('deive selectedx ??', device);
 
   const styles = useMemo(() => makeStyles(theme), []);
   return (
     <>
-      <GapView length={80} />
+      <ErrorModal
+        visible={errorShow}
+        message="Looks like your device is offline, what would you like to do ?"
+        onClose={() => console.log('pressed cancel')}
+        options={[
+          { label: 'Update Password', onPress: () => console.log('option 1') },
+          {
+            label: 'Connect new Wi-Fi',
+            onPress: () => console.log('option 2'),
+          },
+        ]}
+      />
+      <GapView length={20} />
+      <TextLabel label="Device Settings" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={45} />
       <ScrollView>
         <View style={styles.deviceSettingContainer}>
-          <TextLabel
-            label="Device  Settings"
-            textStyle={{ paddingVertical: 20 }}
-          />
           <GapView length={20} />
           <View style={styles.subHeader}>
-            <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />
-            <View style={styles.row}>
-              <View style={styles.activeStatus} />
-              <GapView mode="horizontal" length={5} />
-              <MyText text="Online" />
-            </View>
+            <MyText
+              text={`Smart Adhan ${
+                device?.deviceType?.modelNumber?.includes('SBB')
+                  ? 'Button'
+                  : 'Speaker'
+              }`}
+              textStyle={styles.deviceName}
+            />
+            <DeviceStatus online />
           </View>
           <GapView length={20} />
+          <DeviceErrorBox
+            show={true}
+            onClose={() => console.log('on Close Box', device)}
+            message="Looks like your device se.Cupidatat sint sint elit nostrud mollit ad sunt cupidatat ex duis est."
+          />
           <DeviceSettingSectionList
             data={[
               {
@@ -52,7 +79,7 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Nick Name',
                     subtitle: device?.name,
-                    icon: <DeviceSvg />,
+                    icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                   },
                   {
@@ -60,13 +87,15 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                     subtitle:
                       device?.deviceTelemetry?.batteryLife.toString() ??
                       '??' + ' %',
-                    icon: <Battery />,
+                    icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
+                    danger: true,
                   },
                   {
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
-                    icon: <Heart />,
-                    isEditable: true,
+                    icon: <Heart style={{ padding: 10, bottom: 2 }} />,
+                    rightArrow: true,
+                    onPress: () => console.log('Edit Subscription'),
                   },
                 ],
               },
@@ -76,23 +105,26 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Wifi',
                     subtitle: device?.wifiSsid,
-                    icon: <WifiSvg />,
+                    icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                   },
                   {
                     title: 'Firmware Version',
                     subtitle: device?.firmwareVersion,
-                    icon: <Clock />,
+                    icon: <Version style={{ padding: 10, bottom: 2 }} />,
                   },
                   {
                     title: 'MAC Address',
                     subtitle: device?.macAddress,
-                    icon: <Heart />,
+                    icon: <DeviceObject style={{ padding: 10, bottom: 2 }} />,
                   },
                   {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
-                    icon: <Attention height={24} width={24} />,
+                    onPress: () => {
+                      console.log('Reset Device?');
+                    },
+                    icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
                   },
                 ],
               },
@@ -119,9 +151,8 @@ const makeStyles = (theme: Theme) => {
       justifyContent: 'space-between',
     },
     deviceName: {
-      color: colors.primary,
       fontSize: 16,
-      fontWeight: '500',
+      fontWeight: '600',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     activeStatus: {

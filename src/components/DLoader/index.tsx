@@ -3,10 +3,14 @@ import { View, Image, StyleSheet } from 'react-native';
 import { DeviceLoaderGif } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
+import TextLabel from '../TextLabel';
 
 export default function DLoader() {
   return (
     <View style={styles.container}>
+      <GapView length={20} />
+      <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={40} />
       <MyText
         text={`Searching for your device\nplease wait....`}
         pressable={false}

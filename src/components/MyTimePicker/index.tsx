@@ -50,7 +50,7 @@ export default function MyTimePicker({
             width: 100,
             left: 10,
             borderColor: '#3E3E3E',
-            borderRadius: 12,
+            borderRadius: 3,
             height: 40,
             justifyContent: 'center',
           },

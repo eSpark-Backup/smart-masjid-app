@@ -18,6 +18,7 @@ import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { userStore } from '../../../../store/UserStore';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
+import { Theme, useTheme } from '@react-navigation/native';
 
 export default function ManageUsers({
   setFlag,
@@ -46,7 +47,7 @@ export default function ManageUsers({
   };
 
   return (
-    <View style={{ flex: 1, marginTop: 110, alignItems: 'center' }}>
+    <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
       <LogoutModal
         message="Are you sure you want to delete this Masjid Admin?"
         visible={Boolean(isVisible)}
@@ -57,10 +58,11 @@ export default function ManageUsers({
         }}
       />
       <OverlayLoader isShow={loading} />
-      <TextLabel label="Manage Users" />
       <GapView length={20} />
+      <TextLabel label="Manage Users" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={50} />
       <FlatList
-        contentContainerStyle={{ flexGrow: 1, width: WINDOW_WIDTH }}
+        contentContainerStyle={{ flexGrow: 1, width: WINDOW_WIDTH, paddingBottom: 20 }}
         data={admins ?? []}
         renderItem={({
           item,
@@ -97,7 +99,7 @@ const UserCard = ({
 }) => {
   return (
     <View style={{ marginTop: 10 }}>
-      <Card>
+      <Card width={WINDOW_WIDTH - 28}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={onPress}
@@ -117,6 +119,7 @@ const UserCard = ({
 };
 
 const AddUserBtn = ({ onPress }: any) => {
+  const { colors }: Theme = useTheme()
   return (
     <View style={{ marginTop: 10 }}>
       <Card>
@@ -124,7 +127,7 @@ const AddUserBtn = ({ onPress }: any) => {
           activeOpacity={0.9}
           onPress={onPress}
           style={styles.cardContainer}>
-          <MyText text="Add New User" />
+          <MyText text="Add New User" textStyle={{color: colors.primary, fontWeight: '700'}} />
           <PlusSvg height={16} width={16} />
         </TouchableOpacity>
       </Card>

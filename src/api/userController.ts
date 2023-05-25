@@ -43,11 +43,27 @@ export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
 
 export const CreateUser = async (
   data: CreateUserRequest,
+  otp: string,
 ): Promise<UserResponse | undefined> => {
   try {
-    const result: any = await api.post<UserResponse>('/users', data);
-    if (result.data) userStore.currentRegisterUser.set(result.data);
-    return result.data;
+    const result: any = await api.post<UserResponse>(
+      '/external/user/account',
+      data,
+    );
+    if (result.status == 200 && result.data) {
+      const token: any = await api.post(`/external/auth/token/create`, {
+        application: 'MOBILE',
+        userId: result.data.id,
+        lastOTPVerified: otp,
+      });
+      userStore.token.set(token?.data?.token);
+      userStore.currentRegisterUser.set(result.data);
+      api.setHeaders({
+        Authorization: `Bearer ${token?.data?.token}`,
+      });
+      await setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
+      return result.data;
+    }
   } catch (error) {
     console.log('error CreateUser', error, 'Request', data);
   }
@@ -73,7 +89,7 @@ export const RegisterUserPhone = async (
  * @description Checking User exists with given Email/Phone
  * @returns get data of user and save to userStore
  */
-export const LoginUser = async (email: string, phone: string) => {
+export const LoginUser = async (email: string, phone: string, otp: string) => {
   try {
     const result: any = await api.get(
       `/external/users/exists?email=${email}&phone=${
@@ -84,8 +100,19 @@ export const LoginUser = async (email: string, phone: string) => {
       await api.put(`/users/${result?.data?.id}/login`, {
         phoneDeviceId: globalStore.phoneId?.get(),
       });
+      const token: any = await api.post(`/external/auth/token/create`, {
+        application: 'MOBILE',
+        userId: result.data.id,
+        lastOTPVerified: otp,
+      });
+      userStore.token.set(token?.data?.token);
+      api.setHeaders({
+        Authorization: `Bearer ${token?.data?.token}`,
+      });
       userStore.userData.set(result.data);
       setDataInLocalStorage('user', JSON.stringify(result.data));
+      setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
+      console.log('token', JSON.stringify(token?.data?.token));
       return result.data;
     } else {
       Toast.show({
@@ -110,13 +137,14 @@ export const CheckUserExists = async (email: string, phone: string) => {
         phone ? '%2B1' + phone : ''
       }`,
     );
-
     if (result.status == 200 && result.data) {
       return result.data;
     } else {
       return null;
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log('err CheckUserExists', err);
+  }
 };
 
 /**
@@ -153,12 +181,17 @@ export const UpdateUser = async (
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
 
-    if (result.data) {
+    if (result.data && result.status == 200) {
       userStore.userData.set(result.data);
       await setDataInLocalStorage('user', JSON.stringify(result.data));
       Toast.show({
         text2: 'User Updated Successfully',
         type: 'success',
+      });
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
       });
     }
     return result.data;
@@ -234,4 +267,69 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
       return false;
     }
   } catch (error) {}
+};
+
+/**
+ *
+ * @description Send OTP to User
+ * @returns returns boolean status whether success or error
+ */
+export const SendOTP = async (email?: string, phone?: string) => {
+  try {
+    const result: any = await api.post(`/external/auth/otp/send`, {
+      email: email ?? '',
+      phone: phone ?? '',
+    });
+    if (result.status === 200) {
+      Toast.show({
+        text2: 'OTP sent successfully',
+        type: 'success',
+      });
+      return true;
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+      });
+      return false;
+    }
+  } catch (error) {
+    console.log('error SendOTP', error);
+  }
+};
+
+/**
+ *
+ * @description Validate OTP
+ * @returns returns boolean status whether success or error
+ */
+export const ValidateOTP = async (
+  otp: string,
+  email?: string,
+  phone?: string,
+) => {
+  try {
+    const result: any = await api.post(`/external/auth/otp/validate`, {
+      email: email ?? '',
+      phone: phone ?? '',
+      otp: otp ?? '',
+    });
+    if (result.status === 200 && result.data) {
+      Toast.show({
+        text2: 'OTP verification successfully',
+        type: 'success',
+      });
+      return true;
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+      });
+      return false;
+    }
+  } catch (error) {
+    console.log('error ValidateOTP', error);
+  }
 };

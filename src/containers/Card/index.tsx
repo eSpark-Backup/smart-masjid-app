@@ -9,6 +9,7 @@ interface CardProps {
   height?: number | undefined;
   width?: number;
   radius?: number;
+  backgroundColor?: string;
 }
 export default function Card(props: CardProps) {
   const { children, height = undefined, width, radius = 12 } = props;
@@ -19,7 +20,7 @@ export default function Card(props: CardProps) {
       <ShadowFlex
         style={{
           ...styles.shadowContainer,
-          width: props?.width ?? WINDOW_WIDTH - 45,
+          width: props?.width ?? WINDOW_WIDTH - 28,
           maxHeight: height,
           borderRadius: radius,
         }}>
@@ -33,7 +34,7 @@ const makeStyles = (props: CardProps) => {
   return StyleSheet.create({
     mainContainer: {
       borderRadius: 12,
-      width: props.width ?? WINDOW_WIDTH - 45,
+      width: props.width ?? WINDOW_WIDTH - 28,
       alignItems: 'center',
       alignSelf: 'center',
       shadowOpacity: 0.09,
@@ -45,7 +46,7 @@ const makeStyles = (props: CardProps) => {
       shadowColor: 'grey',
       shadowRadius: 6,
       borderRadius: 12,
-      backgroundColor: '#fff',
+      backgroundColor: props?.backgroundColor ?? '#F7F9FA',
       justifyContent: 'center',
       overflow: 'hidden',
     },

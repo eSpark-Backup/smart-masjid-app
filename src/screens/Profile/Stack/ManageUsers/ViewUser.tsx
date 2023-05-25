@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Email, Phone, ProfileUser } from '../../../../assets';
-import { MyText, ProfileSectionlist } from '../../../../components';
+import { GapView, MyText, ProfileSectionlist, TextLabel } from '../../../../components';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
 
 export default function ViewUsers({
@@ -12,7 +12,10 @@ export default function ViewUsers({
   user?: UserResponse | null | undefined;
 }) {
   return (
-    <View style={{ flex: 1, marginTop: 90 }}>
+    <View style={{ flex: 1, marginTop: 0 }}>
+      <GapView length={20} />
+      <TextLabel label="User Information" textStyle={{ alignSelf: 'center' }} />
+      <GapView length={50} />
       <ProfileSectionlist
         scroll={false}
         data={[

@@ -9,8 +9,14 @@ import {
   ViewStyle,
 } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
-import { WINDOW_WIDTH } from '../../constants';
+import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
+import { SearchWhite } from '../../assets';
+import GapView from '../GapView';
+import { CountryPickerModal } from '..';
+import { externalStore } from '../../store/ExternalStore';
+import { useHookstate } from '@hookstate/core';
+import { CountryCodes } from '../../types';
 
 interface MyInputProps {
   isDivider?: boolean;
@@ -20,7 +26,7 @@ interface MyInputProps {
   phoneCodeValue: string;
   isDropDown?: boolean;
   onDropPress?: () => void;
-  onPhoneCodePress?: () => void;
+  onPhoneCodeChange?: (country: CountryCodes) => void;
   onChangeText?: (value: string) => void;
   containerStyle?: ViewStyle;
   inputStyle?: ViewStyle;
@@ -51,7 +57,7 @@ export default function MyInput(props: MyInputProps) {
     title,
     searchBar,
     placeholderColor,
-    onPhoneCodePress,
+    onPhoneCodeChange,
     onSearch,
     onFocus,
     onBlur,
@@ -65,6 +71,19 @@ export default function MyInput(props: MyInputProps) {
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), []);
   const [text, setText] = useState(value);
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
+  const [currentCountry, setCurrentCountry] = useState<any>(null);
+  const countries = useHookstate(externalStore.countryCodes).get();
+
+  useEffect(() => {
+    if (isPhoneCode) {
+      const data = countries.find(
+        country => country.iso_code == phoneCodeValue,
+      );
+      setCurrentCountry(data ?? countries[0]);
+      onPhoneCodeChange?.(data ?? countries[0]);
+    }
+  }, [phoneCodeValue]);
 
   useEffect(() => {
     setText(value);
@@ -78,8 +97,34 @@ export default function MyInput(props: MyInputProps) {
     }
   };
 
+  const UnknownFlag = () => {
+    return (
+      <View
+        style={{
+          height: 15,
+          width: 24,
+          backgroundColor: theme.colors.primary,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <MyText text="?" textStyle={{ color: '#fff' }} size={12} />
+      </View>
+    );
+  };
+
+  // @ts-ignore
+  const Flag = CountryFlags[currentCountry?.iso_code] ?? UnknownFlag;
+
   return (
     <View style={{ justifyContent: 'center' }}>
+      <CountryPickerModal
+        onSetValue={e => {
+          setCurrentCountry(e);
+          onPhoneCodeChange?.(e);
+        }}
+        visibleState={showCountryPicker}
+        onCross={() => setShowCountryPicker(false)}
+      />
       {title != '' && (
         <MyText
           text={title ?? ''}
@@ -90,11 +135,13 @@ export default function MyInput(props: MyInputProps) {
       <View style={[styles.container, containerStyle]}>
         {isPhoneCode && (
           <TouchableOpacity
-            onPress={onPhoneCodePress}
+            onPress={() => setShowCountryPicker(true)}
             activeOpacity={0.9}
             style={[styles.phoneCodeContainer, phoneCodeContainerStyle ?? {}]}>
-            <II name="caret-down-sharp" size={10} color="#fff" />
-            <MyText textStyle={styles.phoneCodeText} text={phoneCodeValue} />
+            <Flag height={24} width={24} />
+            <GapView mode="horizontal" length={5} />
+            <II name="caret-down-sharp" size={10} color="#3E3E3E" />
+            {/* <MyText textStyle={styles.phoneCodeText} text={phoneCodeValue} /> */}
           </TouchableOpacity>
         )}
         <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
@@ -136,7 +183,7 @@ export default function MyInput(props: MyInputProps) {
             onPress={() => onSearch?.(text ?? '')}
             activeOpacity={0.9}
             style={[styles.searchBarContainer]}>
-            <II name="search-outline" size={24} color="#fff" />
+            <SearchWhite />
           </TouchableOpacity>
         )}
       </View>
@@ -164,14 +211,13 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       top: Platform.OS == 'ios' ? 17 : 0,
     },
     phoneCodeContainer: {
-      backgroundColor: colors.primary,
-      borderTopLeftRadius: 12,
-      borderBottomLeftRadius: 12,
       width: 80,
       // height: 56,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
+      borderRightWidth: 0.2,
+      borderRightColor: '#9E9F9F',
     },
     searchBarContainer: {
       backgroundColor: colors.primary,
@@ -192,8 +238,8 @@ MyInput.defaultProps = {
   dividerColor: '#9E9F9F',
   dividerWidth: 0.4,
   isPhoneCode: false,
-  phoneCodeValue: '+1',
-  onPhoneCodePress: () => {},
+  phoneCodeValue: '',
+  onPhoneCodeChange: (code: CountryCodes) => {},
   onChangeText: (value: string) => {},
   containerStyle: {},
   inputStyle: {},

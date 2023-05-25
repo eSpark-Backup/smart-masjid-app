@@ -22,6 +22,12 @@ export const UserSetupSchema = {
       )
       .required('Phone No is Required'),
   }),
+  optionalPhoneForm: object({
+    phone: string().matches(
+      /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/,
+      'Phone number is not valid',
+    ),
+  }),
 };
 
 export const DeviceSetupSchema = {

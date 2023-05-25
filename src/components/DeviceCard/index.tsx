@@ -7,6 +7,7 @@ import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import { Device } from '../../types/deviceControllerTypes';
+import DeviceStatus from '../DeviceStatus';
 
 export default function DeviceCard({
   deviceData,
@@ -17,14 +18,18 @@ export default function DeviceCard({
   activeTab: string;
   onPress?: () => void;
 }) {
+  console.log(
+    '🚀 ~ file: index.tsx:63 ~ deviceData?.deviceType:',
+    deviceData?.deviceType,
+  );
   return (
-    <View style={{ marginHorizontal: 10 }}>
-      <Card height={161} width={165}>
+    <View>
+      <Card height={161} width={172}>
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.9}
           style={styles.container}>
-          <View style={{ alignItems: 'center', width: '100%' }}>
+          <View style={{ width: '100%', paddingHorizontal: 10 }}>
             <GapView mode="horizontal" length={15} />
             <View>
               <TextLabel
@@ -36,7 +41,7 @@ export default function DeviceCard({
                 }}
               />
               <GapView length={25} />
-              {deviceData?.deviceType?.name == 'SMART_BUTTON' ? (
+              {deviceData?.deviceType?.modelNumber.includes('SBB') ? (
                 <ButtonIcon
                   height={50}
                   width={50}
@@ -50,10 +55,12 @@ export default function DeviceCard({
                 />
               )}
               <GapView length={25} />
-              <View style={styles.row}>
-                <View style={styles.activeStatus} />
-                <GapView mode="horizontal" length={5} />
-                <MyText text="Online" />
+              <View
+                style={{
+                  alignItems: 'flex-start',
+                  bottom: 5,
+                }}>
+                <DeviceStatus online />
               </View>
             </View>
           </View>
