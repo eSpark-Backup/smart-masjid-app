@@ -30,6 +30,8 @@ import {
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import Toast from 'react-native-toast-message';
+import phone from 'phone';
+import { CountryCodes } from '../../../../types';
 
 export default function ManageAccount({
   setFlag,
@@ -37,6 +39,7 @@ export default function ManageAccount({
   setFlag: (value: string) => void;
 }) {
   const [isVisible, setIsVisible] = useState(false);
+  const [country, setCountry] = useState<CountryCodes>();
   const userObj = useHookstate(userStore.userData);
   const userData = userObj?.get();
   const [data, setData] = useState<any>({
@@ -100,9 +103,10 @@ export default function ManageAccount({
 
   const onSave = async () => {
     setLoading(true);
-    if (data.phone) {
-      const isValid = isValidPhoneNumber(data.phone?.replace('+1',''));
-      if (!isValid) {
+    if (data.phone != '') {
+      const isPhoneValid = phone(data.phone, { country: country?.iso_code });
+      console.log('phone valid test??', isPhoneValid);
+      if (!isPhoneValid.isValid) {
         Toast.show({
           text2: 'Phone number is not valid',
           type: 'error',
@@ -111,10 +115,12 @@ export default function ManageAccount({
         return;
       }
     }
-    await UpdateUser(userData?.id?.toString() || '', {
-      ...data,
-      phone: `${data.phone}`,
+    console.log('kia bhej raha hu me??', data);
+    await UpdateUser({
+      id: userData?.id?.toString()!,
+      data: { ...data, phone: `${data.phone}` },
     });
+
     onEditPress('');
     setLoading(false);
   };
@@ -161,7 +167,7 @@ export default function ManageAccount({
                 width: WINDOW_WIDTH - 60,
                 alignSelf: 'center',
               }}>
-              <Card backgroundColor='#ffffff' >
+              <Card backgroundColor="#ffffff">
                 {val.key != 'phone' ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <GapView mode="horizontal" />
@@ -179,9 +185,20 @@ export default function ManageAccount({
                   <MyInput
                     isPhoneCode
                     placeholderColor="#CFCFCF"
-                    onChangeText={(value: string) =>
-                      setData({ ...data, [val.key]: value })
-                    }
+                    phoneCodeValue={userData?.phone}
+                    onPhoneCodeChange={country => {
+                      setCountry(country);
+                      console.log('what is selected code??', country.code);
+                      if (!userData?.phone.includes(country.code)) {
+                        setData({ ...data, [val.key]: '' });
+                      }
+                    }}
+                    onChangeText={(value: string) => {
+                      console.log('what is the value', {
+                        [val.key]: country?.code + value,
+                      });
+                      setData({ ...data, [val.key]: country?.code + value });
+                    }}
                     value={data[val.key]}
                   />
                 )}
@@ -216,7 +233,6 @@ export default function ManageAccount({
                 flexDirection: 'row',
               }}
               onPress={() => setIsVisible(true)}>
-              {/* <Power style={{ right: 15 }} /> */}
               <TextLabel label="Logout" textStyle={{ color: '#ffffff' }} />
             </TouchableOpacity>
           </>

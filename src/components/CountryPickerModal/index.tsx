@@ -52,6 +52,7 @@ export default function CountryModal({
 
   const onSearch = (text: string) => {
     if (!text) {
+      console.log('Countries', countries);
       setData(countries);
     } else {
       setData(
@@ -95,7 +96,7 @@ export default function CountryModal({
                 alignSelf: 'center',
               }}>
               <View style={styles.crossView}>
-                <Card backgroundColor='#fff' width={WINDOW_WIDTH - 80}>
+                <Card backgroundColor="#fff" width={WINDOW_WIDTH - 80}>
                   <MyInput
                     placeholder={searchPlaceholder}
                     onChangeText={onSearch}
