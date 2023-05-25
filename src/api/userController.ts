@@ -58,6 +58,9 @@ export const CreateUser = async (
       });
       userStore.token.set(token?.data?.token);
       userStore.currentRegisterUser.set(result.data);
+      api.setHeaders({
+        Authorization: `Bearer ${token?.data?.token}`,
+      });
       await setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
       return result.data;
     }
