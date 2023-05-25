@@ -12,9 +12,6 @@ import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
-import Geocoder from 'react-native-geocoding';
-
-Geocoder.init('AIzaSyBWMdT85xmnbY1hSvHgcrxToYnnRlzfpX0'); // use a valid API key
 
 const SearchListing = ({
   onPress,
@@ -25,23 +22,9 @@ const SearchListing = ({
   const [zipCode, setZipCode] = useState('');
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(info => {
-      // Search by geo-location (reverse geo-code)
-      Geocoder.from(info.coords.latitude, info.coords.longitude)
-        .then(json => {
-          var addressComponent = json?.results[0]?.address_components?.find(
-            values => {
-              if (values.types.includes('postal_code')) {
-                return true;
-              }
-            },
-          );
-          onSearch(
-            addressComponent?.long_name ?? addressComponent?.short_name ?? '',
-          );
-        })
-        .catch(error => console.warn(error));
-    });
+    // Geolocation.getCurrentPosition(info => {
+    //   // Search by geo-location (reverse geo-code)
+    // });
   }, []);
 
   const onSearch = async (zipCode: string) => {
@@ -50,7 +33,7 @@ const SearchListing = ({
     if (res?.length > 0) {
       setMasjidList(res);
     } else {
-    setMasjidList([]);
+      setMasjidList([]);
     }
   };
 
@@ -65,8 +48,8 @@ const SearchListing = ({
       <GapView length={20} />
       <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
       <GapView length={50} />
-      <View style={{}}>
-        <Card backgroundColor='#ffffff' width={WINDOW_WIDTH - 28}>
+      <View style={{ paddingTop: 15 }}>
+        <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
           <MyInput
             searchBar
             inputStyle={{ width: WINDOW_WIDTH - 80 }}

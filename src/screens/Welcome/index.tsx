@@ -23,7 +23,7 @@ export default function App() {
   };
 
   return (
-    <Wrapper onBackPress={goBack}>
+    <Wrapper showBack={false} onBackPress={goBack}>
       <ScrollView>
         <MyTitle
           style={{ alignSelf: 'center', textAlign: 'center' }}

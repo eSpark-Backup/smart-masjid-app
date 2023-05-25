@@ -19,11 +19,11 @@ export default function MasjidListing({
       <View style={{ alignSelf: 'center' }}>
         <GapView length={20} />
         <TextLabel label="Masjid Subscriptions" />
-        <GapView length={30} />
+        <GapView length={50} />
       </View>
       <FlatList
         data={data}
-        contentContainerStyle={{ paddingBottom: 210, paddingTop: 10 }}
+        contentContainerStyle={{ paddingBottom: 210, paddingTop: 15 }}
         renderItem={({ index }) => (
           <MasjidListCard
             key={index}
