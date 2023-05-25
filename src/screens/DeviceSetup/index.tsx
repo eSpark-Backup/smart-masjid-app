@@ -248,7 +248,7 @@ export default function DeviceSetupScreen() {
     const status = await _requestBlePermissions();
     const bleCheck = ble ?? bleStatus;
     const locationCheck = location ?? locationStatus;
-    console.log(status);
+    console.log('Permission of Ble Status', status);
     if (!status) {
       setStep(8);
       setToastContent({
@@ -257,7 +257,7 @@ export default function DeviceSetupScreen() {
         onPress: () => {
           setRetry(true);
         },
-        points: [],
+        points: ['Allow Permissions', 'Manually from "App Settings"'],
       });
       return;
     }
@@ -386,11 +386,13 @@ export default function DeviceSetupScreen() {
             onPress={toastContent.onPress}
             title={toastContent.title ?? 'Oops! Device not found.'}
             message={toastContent.message ?? 'Please check:'}
-            points={[
-              'Device is powered on',
-              'Bluetooth on your phone is turned on',
-              'Device LED is blinking yellow',
-            ]}
+            points={
+              toastContent.points ?? [
+                'Device is powered on',
+                'Bluetooth on your phone is turned on',
+                'Device LED is blinking yellow',
+              ]
+            }
           />
         )}
       </ScrollView>
