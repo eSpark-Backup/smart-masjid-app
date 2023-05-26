@@ -134,9 +134,11 @@ export const CheckUserExists = async (email: string, phone: string) => {
   try {
     const result = await api.get(
       `/external/users/exists?email=${email}&phone=${
-        phone ? '%2B1' + phone : ''
+        phone ? phone.replace('+', '%2B') : ''
       }`,
     );
+    console.log('what is ', result);
+
     if (result.status == 200 && result.data) {
       return result.data;
     } else {
@@ -317,6 +319,8 @@ export const ValidateOTP = async (
       phone: phone ?? '',
       otp: otp ?? '',
     });
+    console.log('🚀 ~ file: userController.ts:322 ~ phone:', phone);
+    console.log('🚀 ~ file: userController.ts:319 ~ result:', result);
     if (result.status === 200 && result.data) {
       Toast.show({
         text2: 'OTP verification successfully',
