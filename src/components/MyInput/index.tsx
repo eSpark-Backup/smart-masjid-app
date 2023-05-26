@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
+import MI from 'react-native-vector-icons/MaterialIcons';
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
 import { SearchWhite } from '../../assets';
@@ -17,6 +18,7 @@ import { CountryPickerModal } from '..';
 import { externalStore } from '../../store/ExternalStore';
 import { useHookstate } from '@hookstate/core';
 import { CountryCodes } from '../../types';
+import { PERMISSIONS, check } from 'react-native-permissions';
 
 interface MyInputProps {
   isDivider?: boolean;
@@ -38,6 +40,7 @@ interface MyInputProps {
   onSearch?: (text: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
+  onCurrentLocationPress?: () => void;
   value?: string;
   error?: string;
   isSecure?: boolean;
@@ -62,6 +65,7 @@ export default function MyInput(props: MyInputProps) {
     onFocus,
     onBlur,
     onDropPress,
+    onCurrentLocationPress,
     value,
     error,
     isSecure,
@@ -74,6 +78,7 @@ export default function MyInput(props: MyInputProps) {
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [currentCountry, setCurrentCountry] = useState<any>(null);
   const countries = useHookstate(externalStore.countryCodes).get();
+  const [locationPermission, setLocationPermission] = useState(false);
 
   useEffect(() => {
     if (isPhoneCode) {
@@ -88,6 +93,16 @@ export default function MyInput(props: MyInputProps) {
   useEffect(() => {
     setText(value);
   }, [value]);
+
+  useEffect(() => {
+    if (searchBar) {
+      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(res => {
+        if (res == 'granted') {
+          setLocationPermission(true);
+        }
+      });
+    }
+  }, [searchBar]);
 
   const handleTextChange = (newText: string) => {
     setText(newText);
@@ -179,12 +194,26 @@ export default function MyInput(props: MyInputProps) {
           )}
         </View>
         {searchBar && (
-          <TouchableOpacity
-            onPress={() => onSearch?.(text ?? '')}
-            activeOpacity={0.9}
-            style={[styles.searchBarContainer]}>
-            <SearchWhite />
-          </TouchableOpacity>
+          <>
+            <MI
+              disabled={!locationPermission}
+              name="my-location"
+              style={{
+                alignSelf: 'center',
+                right: 70,
+                position: 'absolute',
+                color: !locationPermission ? '#d0d0d0' : theme.colors.primary,
+              }}
+              onPress={onCurrentLocationPress}
+              size={20}
+            />
+            <TouchableOpacity
+              onPress={() => onSearch?.(text ?? '')}
+              activeOpacity={0.9}
+              style={[styles.searchBarContainer]}>
+              <SearchWhite />
+            </TouchableOpacity>
+          </>
         )}
       </View>
     </View>
