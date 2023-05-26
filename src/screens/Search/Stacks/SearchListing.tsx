@@ -16,8 +16,10 @@ import { ListEmptyComponent } from '../../Home';
 
 const SearchListing = ({
   onPress,
+  setUserLocation,
 }: {
   onPress?: (masjidDetail: Masjid) => void;
+  setUserLocation?: (e: any) => void;
 }) => {
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
   const [zipCode, setZipCode] = useState('');
@@ -41,6 +43,7 @@ const SearchListing = ({
 
   const onCurrentLocationPress = () => {
     Geolocation.getCurrentPosition(info => {
+      setUserLocation?.(info.coords);
       onSearch(
         '',
         info.coords.latitude.toString(),

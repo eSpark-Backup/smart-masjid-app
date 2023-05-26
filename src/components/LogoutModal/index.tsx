@@ -10,11 +10,15 @@ export default function LogoutModal({
   onClose,
   onAllowed,
   message = '',
+  title1,
+  title2,
 }: {
   visible: boolean;
   onClose?: () => void;
   onAllowed?: () => void;
   message: string;
+  title1?: string;
+  title2?: string;
 }): JSX.Element {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
@@ -31,7 +35,13 @@ export default function LogoutModal({
           <GapView length={50} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
           <GapView length={50} />
-          <Joined activeButton="two" onPress2={onAllowed} onPress1={onClose} />
+          <Joined
+            title1={title1}
+            title2={title2}
+            activeButton="two"
+            onPress2={onAllowed}
+            onPress1={onClose}
+          />
         </View>
       </View>
     </Modal>
