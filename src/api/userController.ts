@@ -333,3 +333,24 @@ export const ValidateOTP = async (
     console.log('error ValidateOTP', error);
   }
 };
+
+/**
+ *
+ * @description Refresh User Token
+ * @returns Set Updated Token to Store
+ */
+export const RefreshToken = async () => {
+  try {
+    const token: any = await api.put(`/external/auth/token/refresh`, {
+      token: userStore.token.get(),
+      application: 'MOBILE',
+    });
+    userStore.token.set(token?.data?.token);
+    api.setHeaders({
+      Authorization: `Bearer ${token?.data?.token}`,
+    });
+    setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
+  } catch (error) {
+    console.log('error RefreshToken', error);
+  }
+};
