@@ -1,8 +1,10 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { LogoutUser, UpdateUser } from '../../../../api/userController';
+import Toast from 'react-native-toast-message';
+import phone from 'phone';
 
+import { LogoutUser, UpdateUser } from '../../../../api/userController';
 import {
   EditVector,
   Email,
@@ -29,8 +31,6 @@ import {
 } from '../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
-import Toast from 'react-native-toast-message';
-import phone from 'phone';
 import { CountryCodes } from '../../../../types';
 
 export default function ManageAccount({
