@@ -23,6 +23,7 @@ import { UserResponse } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
 import { GetCountryCodes } from '../api/externalControllers';
 import { api } from '../api';
+import SplashScreen from 'react-native-splash-screen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -90,6 +91,10 @@ export default function App() {
         userStore.token.set(token);
       }
     });
+
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 5000);
   }, []);
 
   const handleDeviceIdCheck = useCallback(async () => {
