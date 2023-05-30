@@ -1,18 +1,34 @@
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+
 import { api } from '.';
 import { deviceStore } from '../store/DeviceStore';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { DeviceInfo } from '../types';
 import { userStore } from '../store/UserStore';
+
 /**
  *
  * @description Get User Devices
- * @returns get devices and save to deviceStore
+ * @returns get devices and save to deviceStore.devices
  */
 export const GetUserDevices = async (userId: string) => {
   try {
     const result: any = await api.get(`/devices/user/${userId}`);
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
+    }
+  } catch (error) {}
+};
+
+/**
+ *
+ * @description Get Masjid Devices
+ * @returns get devices and save to deviceStore.masjidDevices
+ */
+export const GetMasjidDevices = async (masjidId: string) => {
+  try {
+    const result: any = await api.get(`/devices/masjid/${masjidId}`);
+    if (result.status == 200) {
+      deviceStore.masjidDevices.set(result.data);
     }
   } catch (error) {}
 };
@@ -46,9 +62,9 @@ export async function _saveDevice(devInfo: DeviceInfo) {
   console.log('Device info in api???', devInfo);
   try {
     const res = await api.post('devices', {
-      macAddress: mac_address + '1e', //FIXME: delete this hardcoded string later
+      macAddress: mac_address + '2c', //FIXME: delete this hardcoded string later
       name: nickName,
-      modelNumber: device_model,
+      modelNumber: 'SBB23V1', //FIXME: delete this hardcoded string later
       firmwareVersion: firmware_rev,
       wifiSsid: ssid,
     });
@@ -79,10 +95,30 @@ export async function _saveDeviceToUser(devID: number) {
       console.log('Success device assigned to user');
       if (res.data) return res.data;
     } else {
-      res.data;
       console.log('Problem status', res.status, res.data);
     }
   } catch (e) {
     console.log('when saving device with user', e);
+  }
+}
+
+/**
+ *
+ * @description Assigns Device on the Server's DataBase to the Given Masjid
+ * @returns Promise<DeviceResponse>
+ * @todo //todo: Delete This later
+ */
+
+export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
+  try {
+    const res = await api.post('devices/' + devID + '/masjid/' + masjidID);
+    if (res?.ok) {
+      console.log('Success device assigned to masjid');
+      if (res.data) return res.data;
+    } else {
+      console.log('Problem status', res.status, res.data);
+    }
+  } catch (e) {
+    console.log('when saving device to masjid', e);
   }
 }

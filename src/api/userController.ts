@@ -58,6 +58,9 @@ export const CreateUser = async (
       });
       userStore.token.set(token?.data?.token);
       userStore.currentRegisterUser.set(result.data);
+      api.setHeaders({
+        Authorization: `Bearer ${token?.data?.token}`,
+      });
       await setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
       return result.data;
     }
@@ -109,6 +112,7 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
       userStore.userData.set(result.data);
       setDataInLocalStorage('user', JSON.stringify(result.data));
       setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
+      console.log('token', JSON.stringify(token?.data?.token));
       return result.data;
     } else {
       Toast.show({

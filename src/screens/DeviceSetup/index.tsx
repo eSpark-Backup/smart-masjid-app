@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DeviceEventEmitter, ScrollView } from 'react-native';
+import { DeviceEventEmitter, ScrollView, Text } from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -24,7 +24,7 @@ import {
   DeviceInfo,
   RootStackParamList,
 } from '../../types';
-import { DLoader, MyToast, SLoader } from '../../components';
+import { DLoader, MyText, MyToast, SLoader } from '../../components';
 import {
   _checkBleStatus,
   _checkLocationStatus,
@@ -38,8 +38,14 @@ import {
   _stopLocationCheck,
   _writeToDevice,
 } from './utils/functions';
-import { _saveDevice, _saveDeviceToUser } from '../../api/deviceController';
+import {
+  _saveDevice,
+  _saveDeviceBtnToMasjid,
+  _saveDeviceToUser,
+} from '../../api/deviceController';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
+import jwtDecode from 'jwt-decode';
+import { UserToken } from '../../types/userControllerApiResponse';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -48,6 +54,7 @@ type DSetupNavigationProps = NativeStackScreenProps<
 
 export default function DeviceSetupScreen() {
   console.log('User ka bta id mili ha?', userStore.get());
+
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
   const isFocused = useIsFocused();
@@ -66,6 +73,7 @@ export default function DeviceSetupScreen() {
     message?: string;
     btnText?: string;
     onPress?: () => void;
+    points?: string[];
   }>({
     title: undefined,
     message: undefined,
@@ -121,6 +129,7 @@ export default function DeviceSetupScreen() {
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
     }
     if (bleStatus === false) {
@@ -130,6 +139,7 @@ export default function DeviceSetupScreen() {
         onPress: () => {
           setRetry(true);
         },
+        points: [],
       });
     }
   }, [locationStatus, bleStatus]);
@@ -205,12 +215,32 @@ export default function DeviceSetupScreen() {
   };
 
   const registerDevice = async (deviceInfo: DeviceInfo) => {
+    const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
+    const isBtn = dev?.name?.includes('SMBTN');
     const devRes: any = await _saveDevice(deviceInfo);
-    const userDevRes = await _saveDeviceToUser(devRes?.id);
-    if (userDevRes) {
-      setStep(7);
+    if (isBtn) {
+      const USER_TOKEN: any = userStore.get().token;
+      const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+      console.log(
+        'kia ha decoded string========??????',
+        JSON.stringify(jwtDecodedObj),
+      );
+      const masjidDevRes = await _saveDeviceBtnToMasjid(
+        devRes?.id,
+        jwtDecodedObj.masjidId,
+      );
+      if (masjidDevRes) {
+        setStep(7);
+      } else {
+        setStep(8);
+      }
     } else {
-      setStep(8);
+      const userDevRes = await _saveDeviceToUser(devRes?.id);
+      if (userDevRes) {
+        setStep(7);
+      } else {
+        setStep(8);
+      }
     }
   };
 
@@ -218,7 +248,7 @@ export default function DeviceSetupScreen() {
     const status = await _requestBlePermissions();
     const bleCheck = ble ?? bleStatus;
     const locationCheck = location ?? locationStatus;
-    console.log(status);
+    console.log('Permission of Ble Status', status);
     if (!status) {
       setStep(8);
       setToastContent({
@@ -227,6 +257,7 @@ export default function DeviceSetupScreen() {
         onPress: () => {
           setRetry(true);
         },
+        points: ['Allow Permissions', 'Manually from "App Settings"'],
       });
       return;
     }
@@ -235,10 +266,7 @@ export default function DeviceSetupScreen() {
       const res = await _scanBleDevices();
       console.log('devices found', res.length);
       const newArr = res.filter(item => {
-        // if (item.name?.includes('MYESP32')) {
-        //   return item;
-        // }
-        if (item.name?.includes('SMBTN') || item.name?.includes('SMSPKR')) {
+        if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
           return item;
         }
       });
@@ -248,6 +276,12 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
+          message: 'Please check: ',
+          points: [
+            'Device is powered on',
+            'Bluetooth on your phone is turned on',
+            'Device LED is blinking yellow',
+          ],
           onPress: () => {
             setRetry(true);
           },
@@ -264,8 +298,9 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: 'Check the Location/Bluetooth adapter',
+          message: 'Please Check',
           onPress: () => setRetry(true),
+          points: ['Location Enabled on Phone', 'Bluetooth Enabled on Phone'],
         }));
       }
     }
@@ -274,12 +309,17 @@ export default function DeviceSetupScreen() {
   return (
     <Wrapper
       bgImageSpacer={false}
+      showBack={disable}
       onBackPress={() => disable && setStep(handleBack)}>
       <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
         {step == 1 && <DLoader />}
         {step == 2 && (
           <DeviceSelectForm
-            userInfo={userStore.get()?.currentRegisterUser?.userType?.name}
+            userInfo={
+              userStore.get().currentRegisterUser
+                ? userStore.get().currentRegisterUser?.userType.name
+                : userStore.get().userData?.userType.name
+            }
             data={scannedDevices}
             setStep={(value: number) => setStep(value)}
             setDevMacId={(value?: string) =>
@@ -321,6 +361,7 @@ export default function DeviceSetupScreen() {
         )}
         {step == 7 && (
           <MyToast
+            heading="Device Setup"
             isSuccess={true}
             btnText={route.params?.from ? 'Done' : 'Search Masjid'}
             onPress={() => {
@@ -338,16 +379,20 @@ export default function DeviceSetupScreen() {
         )}
         {step == 8 && (
           <MyToast
+            heading="Device Setup"
+            titleSize={16}
             isSuccess={false}
             btnText={toastContent.btnText ?? 'Try Again'}
             onPress={toastContent.onPress}
             title={toastContent.title ?? 'Oops! Device not found.'}
-            message={toastContent.message ?? `Please check:`}
-            points={[
-              'Device is powered on',
-              'Bluetooth on your phone is turned on',
-              'Device LED is blinking yellow',
-            ]}
+            message={toastContent.message ?? 'Please check:'}
+            points={
+              toastContent.points ?? [
+                'Device is powered on',
+                'Bluetooth on your phone is turned on',
+                'Device LED is blinking yellow',
+              ]
+            }
           />
         )}
       </ScrollView>

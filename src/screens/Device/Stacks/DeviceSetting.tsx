@@ -55,13 +55,20 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
         <View style={styles.deviceSettingContainer}>
           <GapView length={20} />
           <View style={styles.subHeader}>
-            <MyText text="Smart Speaker V1.0" textStyle={styles.deviceName} />
+            <MyText
+              text={`Smart Adhan ${
+                device?.deviceType?.modelNumber?.includes('SBB')
+                  ? 'Button'
+                  : 'Speaker'
+              }`}
+              textStyle={styles.deviceName}
+            />
             <DeviceStatus online />
           </View>
           <GapView length={20} />
           <DeviceErrorBox
             show={true}
-            onClose={() => console.log('on Close Box')}
+            onClose={() => console.log('on Close Box', device)}
             message="Looks like your device se.Cupidatat sint sint elit nostrud mollit ad sunt cupidatat ex duis est."
           />
           <DeviceSettingSectionList
@@ -87,7 +94,8 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    isEditable: true,
+                    rightArrow: true,
+                    onPress: () => console.log('Edit Subscription'),
                   },
                 ],
               },
@@ -113,7 +121,9 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
-                    onPress: () => {},
+                    onPress: () => {
+                      console.log('Reset Device?');
+                    },
                     icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
                   },
                 ],
@@ -141,9 +151,8 @@ const makeStyles = (theme: Theme) => {
       justifyContent: 'space-between',
     },
     deviceName: {
-      color: colors.primary,
       fontSize: 16,
-      fontWeight: '500',
+      fontWeight: '600',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     activeStatus: {

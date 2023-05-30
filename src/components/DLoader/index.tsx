@@ -10,7 +10,7 @@ export default function DLoader() {
     <View style={styles.container}>
       <GapView length={20} />
       <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
       <MyText
         text={`Searching for your device\nplease wait....`}
         pressable={false}

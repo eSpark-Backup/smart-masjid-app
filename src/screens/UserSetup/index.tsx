@@ -113,10 +113,14 @@ export default function UserSetupScreen() {
     setLoader(false);
   };
 
-  const CheckIsUserExist = async (email?: string, phone?: string) => {
+  const CheckIsUserExist = async (
+    email?: string,
+    phone?: string,
+    type?: string,
+  ) => {
     setLoader(true);
     const res: any = await CheckUserExists(email ?? '', phone ?? '');
-    if (activeFlow == 'signup') {
+    if (type == 'signup') {
       if (res?.id) {
         Toast.show({
           text2: 'User Already Exist',
@@ -159,7 +163,11 @@ export default function UserSetupScreen() {
               type={route.params?.type}
               onPhonePress={value => setStep(value)}
               setStep={values => {
-                CheckIsUserExist(values.email?.toLowerCase(), values.phone);
+                CheckIsUserExist(
+                  values.email?.toLowerCase(),
+                  values.phone,
+                  'login',
+                );
                 setActiveFlow('login');
               }}
             />
@@ -169,7 +177,11 @@ export default function UserSetupScreen() {
               onEmailPress={value => setStep(value)}
               type={route.params?.type}
               setStep={values => {
-                CheckIsUserExist(values.email?.toLowerCase());
+                CheckIsUserExist(
+                  values.email?.toLowerCase(),
+                  undefined,
+                  'signup',
+                );
                 setActiveFlow('signup');
               }}
             />
@@ -180,7 +192,11 @@ export default function UserSetupScreen() {
               type={route.params?.type}
               setStep={async (value: string) => {
                 setLoader(true);
-                const isVerified = await ValidateOTP(value, data.email ?? '', data.phone ?? '');
+                const isVerified = await ValidateOTP(
+                  value,
+                  data.email ?? '',
+                  data.phone ?? '',
+                );
                 if (isVerified) {
                   if (activeFlow == 'signup') {
                     setStep(4);
@@ -188,7 +204,11 @@ export default function UserSetupScreen() {
                     setLoader(false);
                   } else {
                     setOTP(value);
-                    onLogin(data?.email?.toLowerCase() ?? '', data.phone ?? '', value);
+                    onLogin(
+                      data?.email?.toLowerCase() ?? '',
+                      data.phone ?? '',
+                      value,
+                    );
                   }
                 }
               }}

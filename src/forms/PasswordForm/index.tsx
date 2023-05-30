@@ -61,7 +61,7 @@ export default function PasswordForm({
       <OverlayLoader isShow={loading} />
       <GapView length={20} />
       <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={80} />
+      <GapView length={40} />
       <MyText
         text="Enter Wi-Fi password"
         textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
@@ -119,5 +119,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-  text: { fontSize: 16, fontWeight: '400' },
+  text: { fontSize: 16, fontWeight: '400', textAlign: 'center' },
 });

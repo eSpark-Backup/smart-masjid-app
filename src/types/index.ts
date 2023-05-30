@@ -45,6 +45,7 @@ export type MasjidStoreProps = {
 
 export type DeviceStoreProps = {
   devices: Device[];
+  masjidDevices: Device[];
 };
 
 export type ExternalStoreProps = {

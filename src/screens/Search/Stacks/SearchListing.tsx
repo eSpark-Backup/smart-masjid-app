@@ -6,6 +6,7 @@ import {
   GapView,
   MasjidListCard,
   MyInput,
+  OverlayLoader,
   TextLabel,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
@@ -15,26 +16,42 @@ import { ListEmptyComponent } from '../../Home';
 
 const SearchListing = ({
   onPress,
+  setUserLocation,
 }: {
   onPress?: (masjidDetail: Masjid) => void;
+  setUserLocation?: (e: any) => void;
 }) => {
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
   const [zipCode, setZipCode] = useState('');
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    // Geolocation.getCurrentPosition(info => {
-    //   // Search by geo-location (reverse geo-code)
-    // });
+    onCurrentLocationPress();
   }, []);
 
-  const onSearch = async (zipCode: string) => {
-    setZipCode(zipCode);
-    const res: any = await SearchMasjidByLocation(zipCode);
+  const onSearch = async (zipCode: string, lat?: string, long?: string) => {
+    setLoader(true);
+    if (zipCode) setZipCode(zipCode);
+    const res: any = await SearchMasjidByLocation(zipCode, lat, long);
     if (res?.length > 0) {
       setMasjidList(res);
     } else {
       setMasjidList([]);
     }
+    setLoader(false);
+  };
+
+  const onCurrentLocationPress = () => {
+    Geolocation.getCurrentPosition(info => {
+      setUserLocation?.(info.coords);
+      onSearch(
+        '',
+        info.coords.latitude.toString(),
+        info.coords.longitude.toString(),
+      );
+      setZipCode('Your Location');
+      // Search by geo-location (reverse geo-code)
+    });
   };
 
   return (
@@ -45,6 +62,7 @@ const SearchListing = ({
         justifyContent: 'center',
         width: WINDOW_WIDTH,
       }}>
+      <OverlayLoader isShow={loader} />
       <GapView length={20} />
       <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
       <GapView length={50} />
@@ -52,6 +70,12 @@ const SearchListing = ({
         <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
           <MyInput
             searchBar
+            onFocus={() => {
+              if (zipCode == 'Your Location') {
+                setZipCode('');
+              }
+            }}
+            onCurrentLocationPress={onCurrentLocationPress}
             inputStyle={{ width: WINDOW_WIDTH - 80 }}
             placeholder="Enter Zip Code"
             onSearch={onSearch}

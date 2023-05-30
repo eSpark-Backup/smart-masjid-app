@@ -125,6 +125,7 @@ async function _requestBlePermissions(): Promise<Boolean> {
     PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
     PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
   ]);
+  console.log('hello', checkStatus);
   if (
     checkStatus[
       (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
@@ -148,7 +149,6 @@ async function _requestBlePermissions(): Promise<Boolean> {
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
       PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
     ]);
-    console.log('hello', requestStatus);
     return (
       requestStatus[
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,

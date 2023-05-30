@@ -20,6 +20,22 @@ export type CreateUserRequest = {
   masjidId?: string;
 };
 
+export type UserToken = {
+  sub: string;
+  userId: number;
+  masjidId: number;
+  userType: {
+    id: number;
+    name: 'Customer' | 'Masjid Admin';
+    permissions: {
+      id: number;
+      name: 'MANAGE_MASJID' | 'MANAGE_USERS';
+    }[];
+  };
+  iat: Date;
+  exp: Date;
+};
+
 type Permission = {
   id: number;
   name: string;
