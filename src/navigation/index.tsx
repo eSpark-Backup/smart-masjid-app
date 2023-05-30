@@ -84,6 +84,7 @@ export default function App() {
     getDataFromLocalStorage('token').then((res: any) => {
       if (res != null) {
         const token = JSON.parse(res);
+        console.log('token kia ha', token);
         api.setHeaders({
           Authorization: `Bearer ${token}`,
         });
