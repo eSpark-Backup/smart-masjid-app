@@ -27,7 +27,7 @@ type PhoneIdResponse = SuccessCheckPhoneId | FailCheckPhoneId | undefined;
 export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
   try {
     const res = await api.get<SuccessCheckPhoneId, FailCheckPhoneId>(
-      'users/phones/' + phoneId,
+      '/external/phone/exists?deviceId=' + phoneId,
     );
     if (res.data) return res.data;
   } catch (e) {
