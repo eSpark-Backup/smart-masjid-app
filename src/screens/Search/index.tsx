@@ -9,6 +9,7 @@ import { ConnectedDevice } from '../../assets';
 import {
   DeviceListItem,
   GapView,
+  LogoutModal,
   MapBox,
   MasjidListCard,
   MyDivider,
@@ -25,6 +26,8 @@ import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { DeviceListing, MasjidDetails, SearchListing } from './Stacks';
 import Toast from 'react-native-toast-message';
+import { getPreciseDistance, getDistance } from 'geolib';
+
 type SearchNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
   'HomeBottomTab'
@@ -36,6 +39,8 @@ export default function Search() {
   const [selectedMasjid, setSelectedMasjid] = useState<Masjid>();
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     setStep(0);
@@ -65,7 +70,17 @@ export default function Search() {
   return (
     <>
       <OverlayLoader isShow={loading} />
-
+      <LogoutModal
+        visible={showError}
+        message="Please note that the selected mosque is located far from your current location. As a result, the prayer timings may differ significantly"
+        onAllowed={() => {
+          setStep(2);
+          setShowError(false);
+        }}
+        onClose={() => setShowError(false)}
+        title2="Ok"
+        title1="Cancel"
+      />
       <Wrapper
         onBackPress={onBackPress}
         showFooter={false}
@@ -76,12 +91,24 @@ export default function Search() {
               setStep(1);
               setSelectedMasjid(masjidDetails);
             }}
+            setUserLocation={setUserLocation}
           />
         )}
         {step == 1 && (
           <MasjidDetails
             masjidDetails={selectedMasjid}
-            onSubscribe={() => setStep(2)}
+            onSubscribe={() => {
+              // @ts-ignore
+              const distance = getDistance(userLocation, {
+                latitude: selectedMasjid?.location.coordinates[0],
+                longitude: selectedMasjid?.location.coordinates[1],
+              });
+              if (distance / 1609 > 10) {
+                setShowError(true);
+              } else {
+                setStep(2);
+              }
+            }}
           />
         )}
         {step == 2 && (
