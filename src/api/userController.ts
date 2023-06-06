@@ -93,11 +93,12 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
   try {
     const result: any = await api.get(
       `/external/users/exists?email=${email}&phone=${
-        phone ? '%2B1' + phone : ''
+        phone ? phone.replace('+', '%2B') : ''
       }`,
     );
+    console.log('result LoginUser', result);
     if (result.data) {
-      await api.put(`/users/${result?.data?.id}/login`, {
+      const login = await api.put(`/users/${result?.data?.id}/login`, {
         phoneDeviceId: globalStore.phoneId?.get(),
       });
       const token: any = await api.post(`/external/auth/token/create`, {
@@ -105,6 +106,8 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         userId: result.data.id,
         lastOTPVerified: otp,
       });
+      console.log('login', login, '\n', 'token', token);
+
       userStore.token.set(token?.data?.token);
       api.setHeaders({
         Authorization: `Bearer ${token?.data?.token}`,
@@ -134,9 +137,11 @@ export const CheckUserExists = async (email: string, phone: string) => {
   try {
     const result = await api.get(
       `/external/users/exists?email=${email}&phone=${
-        phone ? '%2B1' + phone : ''
+        phone ? phone.replace('+', '%2B') : ''
       }`,
     );
+    console.log('what is ', result);
+
     if (result.status == 200 && result.data) {
       return result.data;
     } else {
@@ -169,18 +174,20 @@ export const LogoutUser = async (userId: string) => {
  * @description Update the user data from profile screen
  * @returns get data of user and save to userStore
  */
-export const UpdateUser = async (
-  id: string,
+export const UpdateUser = async ({
+  id,
+  data,
+}: {
+  id: string;
   data: {
     firstName?: string;
     lastName?: string;
     email?: string;
     phone?: string;
-  },
-) => {
+  };
+}) => {
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
-
     if (result.data && result.status == 200) {
       userStore.userData.set(result.data);
       await setDataInLocalStorage('user', JSON.stringify(result.data));
@@ -315,6 +322,8 @@ export const ValidateOTP = async (
       phone: phone ?? '',
       otp: otp ?? '',
     });
+    console.log('🚀 ~ file: userController.ts:322 ~ phone:', phone);
+    console.log('🚀 ~ file: userController.ts:319 ~ result:', result);
     if (result.status === 200 && result.data) {
       Toast.show({
         text2: 'OTP verification successfully',
