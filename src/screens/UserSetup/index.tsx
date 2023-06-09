@@ -197,6 +197,7 @@ export default function UserSetupScreen() {
                   data.email ?? '',
                   data.phone ?? '',
                 );
+                console.log('isVerified', isVerified);
                 if (isVerified) {
                   if (activeFlow == 'signup') {
                     setStep(4);
@@ -211,6 +212,10 @@ export default function UserSetupScreen() {
                     );
                   }
                 }
+                setLoader(false);
+              }}
+              onResend={async () => {
+                await SendOTP(data.email ?? '', data.phone ?? '');
               }}
             />
           )}
