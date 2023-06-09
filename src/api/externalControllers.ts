@@ -12,15 +12,6 @@ export const GetCountryCodes = async () => {
     if (result.status == 200) {
       externalStore.countryCodes.set([
         ...result.data,
-        ...[
-          {
-            id: 555,
-            country: 'Pakistan',
-            code: '+92',
-            enabled: true,
-            iso_code: 'PK',
-          },
-        ],
       ]);
     }
   } catch (error) {}
