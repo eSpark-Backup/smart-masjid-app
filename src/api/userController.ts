@@ -27,7 +27,7 @@ type PhoneIdResponse = SuccessCheckPhoneId | FailCheckPhoneId | undefined;
 export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
   try {
     const res = await api.get<SuccessCheckPhoneId, FailCheckPhoneId>(
-      'users/phones/' + phoneId,
+      '/external/phone/exists?deviceId=' + phoneId,
     );
     if (res.data) return res.data;
   } catch (e) {
@@ -331,5 +331,26 @@ export const ValidateOTP = async (
     }
   } catch (error) {
     console.log('error ValidateOTP', error);
+  }
+};
+
+/**
+ *
+ * @description Refresh User Token
+ * @returns Set Updated Token to Store
+ */
+export const RefreshToken = async () => {
+  try {
+    const token: any = await api.put(`/external/auth/token/refresh`, {
+      token: userStore.token.get(),
+      application: 'MOBILE',
+    });
+    userStore.token.set(token?.data?.token);
+    api.setHeaders({
+      Authorization: `Bearer ${token?.data?.token}`,
+    });
+    setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
+  } catch (error) {
+    console.log('error RefreshToken', error);
   }
 };
