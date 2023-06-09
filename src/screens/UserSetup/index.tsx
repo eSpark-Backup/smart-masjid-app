@@ -99,7 +99,6 @@ export default function UserSetupScreen() {
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     setLoader(true);
     const res = await LoginUser(email, phone, OTPvalue);
-    console.log("res res onLogin index.ts", res);
     if (res?.id && phoneId && !isDeviceRegistered) {
       await RegisterUserPhone(
         { deviceId: phoneId, fcmToken: fcmToken as string },
@@ -201,12 +200,10 @@ export default function UserSetupScreen() {
                 console.log('isVerified', isVerified);
                 if (isVerified) {
                   if (activeFlow == 'signup') {
-                    console.log("IF SIGNUP");
                     setStep(4);
                     setOTP(value);
                     setLoader(false);
                   } else {
-                    console.log("ELSE LOGIN");
                     setOTP(value);
                     onLogin(
                       data?.email?.toLowerCase() ?? '',
@@ -216,6 +213,9 @@ export default function UserSetupScreen() {
                   }
                 }
                 setLoader(false);
+              }}
+              onResend={async () => {
+                await SendOTP(data.email ?? '', data.phone ?? '');
               }}
             />
           )}
