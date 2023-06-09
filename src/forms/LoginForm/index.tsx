@@ -2,6 +2,8 @@ import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { phone as isValidPhone } from 'phone';
+import Toast from 'react-native-toast-message';
 
 import {
   GapView,
@@ -15,6 +17,7 @@ import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
 import { useLayoutAnimation } from '../../utils';
+import { CountryCodes } from '../../types';
 
 export default function LoginForm({
   type,
@@ -27,6 +30,7 @@ export default function LoginForm({
 }) {
   const { colors }: Theme = useTheme();
   const [activeTab, setActiveTab] = React.useState('1');
+  const [currentCountry, setCurrentCountry] = React.useState<CountryCodes>();
 
   React.useEffect(() => {
     useLayoutAnimation(300);
@@ -52,7 +56,22 @@ export default function LoginForm({
             : UserSetupSchema.phoneForm
         }
         onSubmit={({ email, phone }: { email?: string; phone?: string }) => {
-          setStep({ email: email ?? '', phone: phone ?? '' });
+          console.log('what is the phone value', currentCountry?.code + phone!);
+          if (phone) {
+            const isValid = isValidPhone(phone, {
+              country: currentCountry?.iso_code,
+            }).isValid;
+            if (isValid) {
+              setStep({ phone: currentCountry?.code + phone, email: '' });
+            } else {
+              Toast.show({
+                text2: 'Phone number is not valid',
+                type: 'error',
+              });
+            }
+          } else {
+            setStep({ email: email, phone: '' });
+          }
         }}>
         {({
           handleChange,
@@ -92,8 +111,9 @@ export default function LoginForm({
                     value={values?.phone}
                     isPhoneCode
                     phoneCodeValue="US"
-                    onPhoneCodeChange={e => {
-                      console.log('e', e);
+                    onPhoneCodeChange={country => {
+                      console.log('e', country);
+                      setCurrentCountry(country);
                     }}
                   />
                 </Card>
