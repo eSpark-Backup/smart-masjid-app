@@ -13,9 +13,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { globalStore } from '../../store/GlobalStates';
-import { IPrayerTimeForPeriod } from '../../types';
+import { CountryCodes, IPrayerTimeForPeriod } from '../../types';
 import moment from 'moment';
 import { IqamahTime, JummahTime } from '../../types/masjidControllerTypes';
+import Toast from 'react-native-toast-message';
+import phone from 'phone';
 
 /**
  *
@@ -358,8 +360,22 @@ function convertResponseToData(
   return data;
 }
 
-function isValidPhoneNumber(number: string) {
-  return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
+async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
+  // return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
+  if (Boolean(phoneNum) != false) {
+    const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
+    if (!isPhoneValid.isValid) {
+      Toast.show({
+        text2: 'Phone number is not valid',
+        type: 'error',
+      });
+      return false;
+    }else {
+      return true;
+    }
+  }else {
+    return true;
+  }
 }
 export {
   _getPhoneId,

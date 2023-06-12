@@ -186,6 +186,7 @@ export const UpdateUser = async ({
     phone?: string;
   };
 }) => {
+  
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
     if (result.data && result.status == 200) {

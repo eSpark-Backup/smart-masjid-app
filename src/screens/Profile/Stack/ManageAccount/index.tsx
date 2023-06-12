@@ -109,27 +109,21 @@ export default function ManageAccount({
 
   const onSave = async () => {
     setLoading(true);
-    if (data.phone != '') {
-      const isPhoneValid = phone(data.phone, { country: country?.iso_code });
-      console.log('phone valid test??', isPhoneValid);
-      if (!isPhoneValid.isValid) {
-        Toast.show({
-          text2: 'Phone number is not valid',
-          type: 'error',
-        });
-        setLoading(false);
-        return;
-      }
+
+    const isValidPhone = await isValidPhoneNumber(data.phone, country);
+    if (!isValidPhone) {
+      return;
     }
     console.log('kia bhej raha hu me??', data);
     await UpdateUser({
       id: userData?.id?.toString()!,
-      data: { ...data, phone: `${data.phone}` },
+      data: { ...data, phone: data.phone ? `${data.phone}` : '' },
     });
 
     onEditPress('');
     setLoading(false);
   };
+
   return (
     <View style={{ flex: 1 }}>
       <OverlayLoader isShow={loading} />
@@ -200,9 +194,9 @@ export default function ManageAccount({
                         phoneCodeValue={userData?.phone}
                         onPhoneCodeChange={country => {
                           setCountry(country);
-                          console.log('what is selected code??', country.code);
-                          if (!userData?.phone.includes(country.code)) {
-                            setData({ ...data, [val.key]: '' });
+                          console.log('what is selected code??', country?.code);
+                          if (!userData?.phone?.includes(country.code)) {
+                            setData({ ...data, [val?.key]: '' });
                           }
                         }}
                         onChangeText={(value: string) => {
@@ -245,6 +239,21 @@ export default function ManageAccount({
                     const activeKey = displayData.find(
                       val => val.editable,
                     )?.key;
+                    if (activeKey == 'phone') {
+                      const isValidPhone = await isValidPhoneNumber(phoneNo, country);
+                      if (!isValidPhone) {
+                        setLoading(false);
+                        return;
+                      }
+                      if(Boolean(phoneNo) == false) {
+                        Toast.show({
+                          text2: 'Phone number is not valid',
+                          type: 'error',
+                        });
+                        setLoading(false);
+                        return;
+                      }
+                    }
                     const result = await SendOTP(
                       activeKey == 'email' ? email : '',
                       activeKey == 'phone' ? phoneNo : '',
@@ -306,7 +315,7 @@ export default function ManageAccount({
               console.log('isVerified', isVerified);
               if (isVerified) {
                 onSave();
-                setShowVerification(false)
+                setShowVerification(false);
               }
               setLoading(false);
             }}

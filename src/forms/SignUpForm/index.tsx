@@ -80,7 +80,7 @@ export default function SignUpForm({
           text="Login"
           pressable
           textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-          onPress={() => onEmailPress(1)}
+          onPress={() => onEmailPress(2)}
         />
       </View>
     </View>

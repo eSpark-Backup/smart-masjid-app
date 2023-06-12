@@ -49,7 +49,7 @@ export default function LoginForm({
 
       <GapView length={40} />
       <Formik
-        initialValues={{ email: 'faraz@esparkconsultants.com' }}
+        initialValues={{ email: '' }}
         validationSchema={
           activeTab == '1'
             ? UserSetupSchema.emailForm
@@ -143,7 +143,7 @@ export default function LoginForm({
           text="Create account"
           pressable
           textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-          onPress={() => onPhonePress(2)}
+          onPress={() => onPhonePress(1)}
         />
       </View>
     </View>

@@ -103,8 +103,8 @@ export default function OtpForm({
           textStyle={{
             fontSize: 16,
             fontWeight: '400',
-            color: colors.primary,
-            opacity: !expTime ? 0.5 : 1,
+            color: expTime ? colors.primary : '#6e6e6e',
+            opacity: !expTime ? 0.6 : 1,
           }}
         />
       </TouchableOpacity>

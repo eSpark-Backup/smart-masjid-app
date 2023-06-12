@@ -58,9 +58,9 @@ export default function UserSetupScreen() {
 
   useEffect(() => {
     if (route.params?.type == 'setup') {
-      setStep(2);
-    } else {
       setStep(1);
+    } else {
+      setStep(2);
     }
   }, [route.params?.type]);
 
@@ -159,20 +159,6 @@ export default function UserSetupScreen() {
         onBackPress={() => !disable && setStep(handleBack)}>
         <ScrollView>
           {step == 1 && (
-            <LoginForm
-              type={route.params?.type}
-              onPhonePress={value => setStep(value)}
-              setStep={values => {
-                CheckIsUserExist(
-                  values.email?.toLowerCase(),
-                  values.phone,
-                  'login',
-                );
-                setActiveFlow('login');
-              }}
-            />
-          )}
-          {step == 2 && (
             <SignUpForm
               onEmailPress={value => setStep(value)}
               type={route.params?.type}
@@ -183,6 +169,20 @@ export default function UserSetupScreen() {
                   'signup',
                 );
                 setActiveFlow('signup');
+              }}
+            />
+          )}
+          {step == 2 && (
+            <LoginForm
+              type={route.params?.type}
+              onPhonePress={value => setStep(value)}
+              setStep={values => {
+                CheckIsUserExist(
+                  values.email?.toLowerCase(),
+                  values.phone,
+                  'login',
+                );
+                setActiveFlow('login');
               }}
             />
           )}
