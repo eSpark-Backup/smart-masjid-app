@@ -1,6 +1,7 @@
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
 import { IqamahTime, JummahTime } from '../types/masjidControllerTypes';
+import Toast from 'react-native-toast-message';
 
 /**
  *
@@ -59,6 +60,12 @@ export const UpdatedMasjidIqamahTiming = async (
     const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+    }else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+      });
     }
   } catch (error) {
     console.log('error', error);
@@ -123,6 +130,12 @@ export const UpdatedMasjidJummahTiming = async (
     const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+    }else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+      });
     }
   } catch (error) {
     console.log('error', error);
