@@ -140,29 +140,29 @@ export default function ManageAccount({
           {displayData.map((val, ind) => {
             if (!val.editable) {
               return (
-                <View
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => onEditPress(val.key)}
                   key={ind}
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     width: WINDOW_WIDTH - 60,
                     alignSelf: 'center',
-                    paddingVertical: 15,
+                    paddingVertical: 10,
                   }}>
                   <View style={{ flexDirection: 'row' }}>
                     {val.icon}
                     <GapView mode="horizontal" />
                     <MyText text={val.title} textStyle={{ fontSize: 16 }} />
                   </View>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => onEditPress(val.key)}>
+                  <View>
                     <MyText
-                      text={data[val?.key] ?? '-'}
+                      text={data[val?.key] ?? 'Tap to add'}
                       textStyle={{ fontSize: 14, color: '#6E6E6E' }}
                     />
-                  </TouchableOpacity>
-                </View>
+                  </View>
+                </TouchableOpacity>
               );
             } else {
               return (
@@ -240,15 +240,19 @@ export default function ManageAccount({
                       val => val.editable,
                     )?.key;
                     if (activeKey == 'phone') {
-                      const isValidPhone = await isValidPhoneNumber(phoneNo, country);
+                      const isValidPhone = await isValidPhoneNumber(
+                        phoneNo,
+                        country,
+                      );
                       if (!isValidPhone) {
                         setLoading(false);
                         return;
                       }
-                      if(Boolean(phoneNo) == false) {
+                      if (Boolean(phoneNo) == false) {
                         Toast.show({
                           text2: 'Phone number is not valid',
                           type: 'error',
+                          visibilityTime: 10000,
                         });
                         setLoading(false);
                         return;

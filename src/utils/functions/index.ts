@@ -368,6 +368,7 @@ async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
       Toast.show({
         text2: 'Phone number is not valid',
         type: 'error',
+        visibilityTime: 10000,
       });
       return false;
     }else {

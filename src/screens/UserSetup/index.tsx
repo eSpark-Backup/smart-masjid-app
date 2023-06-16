@@ -92,6 +92,7 @@ export default function UserSetupScreen() {
         text2: res?.message,
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
     }
   };
@@ -125,6 +126,7 @@ export default function UserSetupScreen() {
         Toast.show({
           text2: 'User Already Exist',
           type: 'error',
+          visibilityTime: 10000,
         });
       } else {
         const result = await SendOTP(email, phone);
@@ -144,6 +146,7 @@ export default function UserSetupScreen() {
         Toast.show({
           text2: 'User not found!',
           type: 'error',
+          visibilityTime: 10000,
         });
       }
     }

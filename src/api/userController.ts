@@ -121,6 +121,7 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
       Toast.show({
         text2: 'User not found',
         type: 'error',
+        visibilityTime: 10000,
       });
     }
   } catch (error) {
@@ -200,6 +201,7 @@ export const UpdateUser = async ({
       Toast.show({
         text2: result.data?.message,
         type: 'error',
+        visibilityTime: 10000,
       });
     }
     return result.data;
@@ -246,6 +248,7 @@ export const DeleteAdminFromMasjid = async (
         text2: result.data?.message,
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
     }
   } catch (error) {}
@@ -271,6 +274,7 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
         text2: result.data?.message,
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
       return false;
     }
@@ -299,6 +303,7 @@ export const SendOTP = async (email?: string, phone?: string) => {
         text2: result.data?.message ?? 'Something went wrong',
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
       return false;
     }
@@ -336,6 +341,7 @@ export const ValidateOTP = async (
         text2: result.data?.message ?? 'Something went wrong',
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
       return false;
     }

@@ -67,6 +67,7 @@ export default function IqamahTimings({
         Toast.show({
           text2: 'delay value should be greater than zero',
           type: 'error',
+          visibilityTime: 10000,
         });
         return;
       }

@@ -65,6 +65,7 @@ export const UpdatedMasjidIqamahTiming = async (
         text2: result.data?.message ?? 'Something went wrong',
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
     }
   } catch (error) {
@@ -135,6 +136,7 @@ export const UpdatedMasjidJummahTiming = async (
         text2: result.data?.message ?? 'Something went wrong',
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
     }
   } catch (error) {

@@ -67,6 +67,7 @@ export default function LoginForm({
               Toast.show({
                 text2: 'Phone number is not valid',
                 type: 'error',
+                visibilityTime: 10000,
               });
             }
           } else {
