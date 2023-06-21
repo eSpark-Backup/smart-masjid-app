@@ -13,6 +13,7 @@ import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
+import { _requestUserLocationPermission } from '../../../utils/functions';
 
 const SearchListing = ({
   onPress,
@@ -26,6 +27,7 @@ const SearchListing = ({
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
+    _requestUserLocationPermission();
     onCurrentLocationPress();
   }, []);
 

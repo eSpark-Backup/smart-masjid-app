@@ -5,7 +5,7 @@ export {
   _getPhoneId,
   _getFCMToken,
   _requestBlePermissions,
-  _requestUserPermission,
+  _requestUserNotificationPermission,
   getCurrentMonthAdhanData,
   getDataFromLocalStorage,
   removeDatafromLocalStorage,
