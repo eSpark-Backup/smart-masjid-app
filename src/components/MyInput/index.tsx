@@ -83,8 +83,8 @@ export default function MyInput(props: MyInputProps) {
 
   useEffect(() => {
     if (isPhoneCode) {
-      const data = countries.find(country =>
-        phoneCodeValue.includes(country.code),
+      const data = countries?.find(country =>
+        phoneCodeValue?.includes(country?.code),
       );
       console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', data);
       setCurrentCountry(data ?? countries[0]);

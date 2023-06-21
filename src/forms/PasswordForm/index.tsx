@@ -52,6 +52,7 @@ export default function PasswordForm({
       Toast.show({
         text2: 'Wifi not connected successfully',
         type: 'error',
+        visibilityTime: 10000,
       });
     }
   };

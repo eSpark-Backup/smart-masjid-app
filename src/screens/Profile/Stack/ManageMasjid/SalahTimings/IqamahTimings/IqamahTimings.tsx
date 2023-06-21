@@ -45,7 +45,7 @@ export default function IqamahTimings({
     if (dataObj.type == 'F') {
       setLoading(true);
       await UpdatedMasjidIqamahTiming('1', {
-        changeDate: dataObj.changeDate,
+        effectiveDate: dataObj.effectiveDate,
         type: dataObj.type,
         asr: dataObj.asr,
         fajr: dataObj.fajr,
@@ -67,12 +67,13 @@ export default function IqamahTimings({
         Toast.show({
           text2: 'delay value should be greater than zero',
           type: 'error',
+          visibilityTime: 10000,
         });
         return;
       }
       setLoading(true);
       await UpdatedMasjidIqamahTiming('1', {
-        changeDate: dataObj.changeDate,
+        effectiveDate: dataObj.effectiveDate,
         type: dataObj.type,
         fajrDelay: dataObj.fajrDelay,
         dhuhrDelay: dataObj.dhuhrDelay,
@@ -110,7 +111,7 @@ export default function IqamahTimings({
                     }}>
                     <View>
                       <MyText
-                        text={`Effective Date: ${iqamahTimings?.changeDate}`}
+                        text={`Effective Date: ${iqamahTimings?.effectiveDate}`}
                       />
                     </View>
                     <View
@@ -147,11 +148,11 @@ export default function IqamahTimings({
                     />
                     <GapView />
                     <MyDatePicker
-                      currentDate={new Date(data?.changeDate ?? new Date())}
+                      currentDate={new Date(data?.effectiveDate ?? new Date())}
                       onDateChange={date => {
                         setData({
                           ...data,
-                          changeDate: moment(date).format('YYYY-MM-DD'),
+                          effectiveDate: moment(date).format('YYYY-MM-DD'),
                         });
                       }}
                     />

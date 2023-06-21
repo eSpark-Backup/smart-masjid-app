@@ -13,6 +13,7 @@ import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
+import { _requestUserLocationPermission } from '../../../utils/functions';
 
 const SearchListing = ({
   onPress,
@@ -26,6 +27,7 @@ const SearchListing = ({
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
+    _requestUserLocationPermission();
     onCurrentLocationPress();
   }, []);
 
@@ -66,7 +68,7 @@ const SearchListing = ({
       <GapView length={20} />
       <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
       <GapView length={50} />
-      <View style={{ paddingTop: 15 }}>
+      <View style={{ paddingTop: 10 }}>
         <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
           <MyInput
             searchBar

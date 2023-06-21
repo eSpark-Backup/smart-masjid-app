@@ -49,7 +49,7 @@ const toastConfig = {
   */
   error: (props: BaseToastProps) => (
     <ErrorToast
-      {...props}sk
+      {...props}
       style={styles.errorStyle}
       text1Style={styles.text1Style}
       text2Style={styles.text2Style}
@@ -77,7 +77,7 @@ export default function App() {
 
   useEffect(() => {
     handleDeviceIdCheck();
-  }, [userData])
+  }, [userData]);
 
   useEffect(() => {
     GetCountryCodes();
@@ -93,11 +93,11 @@ export default function App() {
         const token = JSON.parse(res);
         const jwtDecodedObj: UserToken = jwtDecode(token);
         if (
-          // @ts-ignore
           // jwtDecodedObj.exp is unix date thats why we multiply to 1000 to convert to real date
-          moment(new Date(jwtDecodedObj.exp * 1000))
+          moment(moment(new Date()))
             .subtract(1, 'day')
-            .isSameOrAfter(moment(new Date()))
+            // @ts-ignore
+            .isSameOrAfter(new Date(jwtDecodedObj.exp * 1000))
         ) {
           console.log('IF Token Expiration is Today');
           await RefreshToken();
@@ -161,12 +161,12 @@ export default function App() {
         <Toast
           config={toastConfig}
           topOffset={StatusBar.currentHeight}
-          visibilityTime={2000}
+          visibilityTime={5000}
         />
       </NavigationContainer>
     );
   } else {
-    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={loader} />;
+    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;
   }
 }
 

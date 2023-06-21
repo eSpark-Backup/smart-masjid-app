@@ -97,18 +97,19 @@ export default function MasjidListCard(
                 <SujudSvg />
                 <GapView mode="horizontal" length={5} />
                 <MyText text={'Maghrib'} />
-                <GapView mode="horizontal" length={5} />
+                <GapView mode="horizontal" length={10} />
                 <View style={styles.row}>
                   <Speaker height={20} width={20} />
                   <GapView mode="horizontal" length={5} />
                   <MyText text={azanTime ?? '5:50 am'} />
                 </View>
-                <GapView mode="horizontal" />
+                <GapView mode="horizontal" length={10} />
                 <View style={styles.row}>
                   <TimeCircleSvg />
                   <GapView mode="horizontal" length={5} />
                   <MyText text={namazTime ?? '6:10 am'} />
                 </View>
+                <GapView mode="horizontal" length={5} />
               </View>
             </>
           )}
