@@ -7,6 +7,7 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Peripheral } from 'react-native-ble-manager';
+import jwtDecode from 'jwt-decode';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
@@ -42,9 +43,9 @@ import {
   _saveDevice,
   _saveDeviceBtnToMasjid,
   _saveDeviceToUser,
+  _checkDeviceExists,
 } from '../../api/deviceController';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
-import jwtDecode from 'jwt-decode';
 import { UserToken } from '../../types/userControllerApiResponse';
 
 type DSetupNavigationProps = NativeStackScreenProps<
@@ -84,33 +85,31 @@ export default function DeviceSetupScreen() {
     },
   });
 
-  function _handleGPSProviderEvent(e: any) {
-    if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
-      setlocationStatus(false);
-    } else {
-      setlocationStatus(true);
-    }
-  }
+  useEffect(() => {
+    return () => {
+      _disconnectBleDevice(devInfo);
+    };
+  }, []);
 
-  function _handleBleStateEvent(e: any) {
-    console.log('bta ble state', e);
-    if (e === 'PoweredOn') {
-      setBleStatus(true);
+  useEffect(() => {
+    if (retry) {
+      setStep(1);
+      setConnFlag(true);
+      handlePermissions();
+      setRetry(false);
     }
-    if (e === 'PoweredOff') {
-      setBleStatus(false);
-    }
-  }
+  }, [retry]);
 
-  const checkStatus = async () => {
-    const ble = await _checkBleStatus();
-    const loc = await _checkLocationStatus();
-    setBleStatus(ble);
-    setlocationStatus(loc);
-    setStep(1);
-    setConnFlag(true);
-    await handlePermissions(ble, loc);
-  };
+  // useEffect(() => {
+  //   console.log('milgaya parent ko', devInfo);
+  // }, [devInfo]);
+
+  useEffect(() => {
+    console.log('step current?', step);
+    if (step === 6) {
+      handleDeviceSetup();
+    }
+  }, [step]);
 
   useEffect(() => {
     checkStatus();
@@ -144,31 +143,33 @@ export default function DeviceSetupScreen() {
     }
   }, [locationStatus, bleStatus]);
 
-  useEffect(() => {
-    return () => {
-      _disconnectBleDevice(devInfo);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (retry) {
-      setStep(1);
-      setConnFlag(true);
-      handlePermissions();
-      setRetry(false);
+  function _handleGPSProviderEvent(e: any) {
+    if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
+      setlocationStatus(false);
+    } else {
+      setlocationStatus(true);
     }
-  }, [retry]);
+  }
 
-  // useEffect(() => {
-  //   console.log('milgaya parent ko', devInfo);
-  // }, [devInfo]);
-
-  useEffect(() => {
-    console.log('step current?', step);
-    if (step === 6) {
-      handleDeviceSetup();
+  function _handleBleStateEvent(e: any) {
+    console.log('bta ble state', e);
+    if (e === 'PoweredOn') {
+      setBleStatus(true);
     }
-  }, [step]);
+    if (e === 'PoweredOff') {
+      setBleStatus(false);
+    }
+  }
+
+  const checkStatus = async () => {
+    const ble = await _checkBleStatus();
+    const loc = await _checkLocationStatus();
+    setBleStatus(ble);
+    setlocationStatus(loc);
+    setStep(1);
+    setConnFlag(true);
+    await handlePermissions(ble, loc);
+  };
 
   const handleBack = () => {
     if (step !== 1) {
