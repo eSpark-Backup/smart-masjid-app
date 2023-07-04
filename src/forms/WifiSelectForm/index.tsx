@@ -59,53 +59,6 @@ export default function WifiSelectForm({
     setData(newArr);
   };
 
-  const fakeData = [
-    {
-      rightChild: (
-        <>
-          <LockSvg />
-          <GapView mode="horizontal" />
-          <WifiSvg width={24} height={34} />
-        </>
-      ),
-      title: 'Wifi Network 1',
-      onPress: () => setStep(5),
-    },
-    {
-      rightChild: (
-        <>
-          <LockSvg />
-          <GapView mode="horizontal" />
-          <WifiSvg width={24} height={34} />
-        </>
-      ),
-      title: 'Wifi Network Shop',
-      onPress: () => setStep(5),
-    },
-    {
-      rightChild: (
-        <>
-          <LockSvg />
-          <GapView mode="horizontal" />
-          <WifiSvg width={24} height={34} />
-        </>
-      ),
-      title: 'My Wifi',
-      onPress: () => setStep(5),
-    },
-    {
-      rightChild: (
-        <>
-          <LockSvg />
-          <GapView mode="horizontal" />
-          <WifiSvg width={24} height={34} />
-        </>
-      ),
-      title: 'Shop 5g wifi',
-      onPress: () => setStep(5),
-    },
-  ];
-
   if (data?.length > 0) {
     return (
       <>
@@ -147,10 +100,11 @@ export default function WifiSelectForm({
             }}>
             <MyText
               textStyle={{
-                fontSize: 18,
+                fontSize: 14,
                 fontWeight: '400',
+                top: 20,
               }}
-              text="No Wifi's Found"
+              text={loading ? 'Checking Wifi List' : "No Wifi's Found"}
             />
             <GapView length={WINDOW_HEIGHT / 3.5} />
           </View>

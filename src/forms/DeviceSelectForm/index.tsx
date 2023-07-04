@@ -1,9 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Peripheral } from 'react-native-ble-manager';
+import Toast from 'react-native-toast-message';
 
 import { AdhanButton, DeviceSvg } from '../../assets';
-import { ButtonListing, GapView, MyText, TextLabel } from '../../components';
+import {
+  ButtonListing,
+  GapView,
+  MyText,
+  OverlayLoader,
+  TextLabel,
+} from '../../components';
+import { _checkDeviceExists } from '../../api/deviceController';
 
 export default function DeviceSelectForm({
   data = [],
@@ -16,6 +24,31 @@ export default function DeviceSelectForm({
   setStep: (value: number) => void;
   setDevMacId?: (value?: string) => void;
 }) {
+  const [loading, setLoading] = useState(false);
+
+  async function handleDeviceCheck(macId: string) {
+    setLoading(true);
+    try {
+      const res = await _checkDeviceExists(macId);
+      console.log('res', Boolean(res));
+      if (!Boolean(res)) {
+        setStep(3);
+        setDevMacId?.(macId);
+      } else {
+        Toast.show({
+          text2: 'Device Already Exists',
+          type: 'error',
+          autoHide: true,
+          visibilityTime: 10000,
+        });
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log('error thrown', error);
+      setLoading(false);
+    }
+  }
+
   const newArr = data.map(item => {
     const isBtn = item?.name?.includes('SMBTN');
     console.log('===============>>>>>>>>', userInfo);
@@ -29,8 +62,7 @@ export default function DeviceSelectForm({
           title: 'Smart Adhan Speaker',
           onPress: () => {
             console.log('selected macId', item?.id);
-            setStep(3);
-            setDevMacId?.(item?.id);
+            handleDeviceCheck(item?.id!);
           },
         };
       } else {
@@ -45,8 +77,7 @@ export default function DeviceSelectForm({
         title: isBtn ? 'Smart Adhan Button' : 'Smart Adhan Speaker',
         onPress: () => {
           console.log('selected macId', item?.id);
-          setStep(3);
-          setDevMacId?.(item?.id);
+          handleDeviceCheck(item?.id!);
         },
       };
     }
@@ -56,18 +87,11 @@ export default function DeviceSelectForm({
   const finalArr = newArr.filter(item => item.title !== 'null');
   console.log('final Array', finalArr);
 
-  const fakeDeviceList = [
-    { title: 'Smart Adhan Button', leftIcon: <AdhanButton /> },
-    { title: 'Smart Adhan Speaker', leftIcon: <DeviceSvg /> },
-  ];
-
   useEffect(() => {
     if (finalArr.length <= 0) {
       setStep(8);
     }
   }, [finalArr]);
-
-  console.log(data, 'xxx');
 
   return (
     <View style={{ alignItems: 'center' }}>
@@ -79,7 +103,11 @@ export default function DeviceSelectForm({
         textStyle={{ fontSize: 16, fontWeight: '400', alignSelf: 'center' }}
       />
       <GapView length={80} />
-      <ButtonListing radius={12} data={finalArr} />
+      {loading ? (
+        <OverlayLoader isShow={loading} noBg={true} />
+      ) : (
+        <ButtonListing radius={12} data={finalArr} />
+      )}
     </View>
   );
 }

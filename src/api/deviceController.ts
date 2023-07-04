@@ -57,15 +57,18 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
  * @todo //todo: Delete This later
  */
 
-export async function _checkDeviceExists(devInfo: DeviceInfo) {
-  const { mac_address } = devInfo;
+export async function _checkDeviceExists(mac_address: string) {
   console.log('Device info in api???', mac_address);
-  const uriEncodedString = encodeURIComponent(mac_address!);
+  const uriEncodedString = encodeURIComponent('abc:123:efg:456');
+  console.log('kiaaaaa', uriEncodedString);
+
   try {
-    const res = await api.post('device/exists?macAddress=' + uriEncodedString);
+    const res = await api.get(
+      'external/device/exists?macAddress=' + uriEncodedString,
+    );
     if (res?.ok) {
-      console.log('Success', res.data);
-      if (res.data) return res.data;
+      console.log('Success', Boolean(res.data));
+      if (res.data) return Boolean(res.data);
     } else {
       console.log('Problem status', res.status, res.data);
     }
