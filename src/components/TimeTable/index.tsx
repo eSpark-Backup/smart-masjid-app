@@ -48,6 +48,8 @@ const RowItem = ({
       }>
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
+          console.log('item', item[key]);
+
           if (key == 'onChange') return;
           return (
             <React.Fragment key={index}>
