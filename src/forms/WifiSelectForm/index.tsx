@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
+import { useTheme } from '@react-navigation/native';
 
 import { LockSvg, WifiSvg } from '../../assets';
 import {
@@ -19,19 +20,20 @@ export default function WifiSelectForm({
   setStep: (value: number) => void;
   setSSID: (value: string) => void;
 }) {
-  useEffect(() => {
-    getWifiList();
-  }, []);
-
+  const { colors } = useTheme();
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(true);
   const rightChild = (
     <>
-      <LockSvg />
+      <LockSvg style={{ color: colors.primary }} />
       <GapView mode="horizontal" />
-      <WifiSvg width={24} height={34} />
+      <WifiSvg width={34} height={44} style={{ color: colors.primary }} />
     </>
   );
+
+  useEffect(() => {
+    getWifiList();
+  }, []);
 
   const getWifiList = async () => {
     const res = await WifiManager.loadWifiList();
@@ -67,7 +69,6 @@ export default function WifiSelectForm({
           <GapView length={20} />
           <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
           <GapView length={40} />
-          <GapView length={20} />
           <MyText
             textStyle={{
               alignItems: 'center',
@@ -76,7 +77,7 @@ export default function WifiSelectForm({
             }}
             text="Select Wi-Fi network"
           />
-          <GapView length={80} />
+          <GapView length={50} />
           <ButtonListing data={data} titleWidth={'60%'} lines={2} />
         </View>
       </>

@@ -7,7 +7,7 @@ export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
 export { default as GLoad } from './animations/7bdno2.gif';
 export { default as SLoaderGif } from './animations/sLoader.gif';
 
-//* svgs
+//* images/svg
 export { default as ProfileDummy } from './images/ProfileDummy.svg';
 export { default as SettingIcon } from './images/SettingIcon.svg';
 export { default as MasjidSvg } from './images/MasjidSvg.svg';
@@ -40,7 +40,7 @@ export { default as SujudSvg } from './images/Sujud.svg';
 export { default as SalahTimingsSVG } from './images/SalahTimings.svg';
 export { default as USFlag } from './images/USFlag.svg';
 
-//* vector icons
+//* vector/svg
 export { default as AccountGear } from './vectors/account-gear.svg';
 export { default as Privacy } from './vectors/Privacy.svg';
 export { default as Help } from './vectors/Help.svg';

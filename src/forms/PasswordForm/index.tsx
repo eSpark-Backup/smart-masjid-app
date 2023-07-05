@@ -54,6 +54,7 @@ export default function PasswordForm({
         type: 'error',
         visibilityTime: 10000,
       });
+      setStep(4);
     }
   };
 
