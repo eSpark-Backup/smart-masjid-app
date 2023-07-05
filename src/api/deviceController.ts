@@ -52,6 +52,33 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
 
 /**
  *
+ * @description Check's Device Based on Device MacAddress
+ * @returns Promise<boolean>
+ * @todo //todo: Delete This later
+ */
+
+export async function _checkDeviceExists(mac_address: string) {
+  console.log('Device info in api???', mac_address);
+  const uriEncodedString = encodeURIComponent(mac_address!);
+  console.log('kiaaaaa', uriEncodedString);
+
+  try {
+    const res = await api.get(
+      'external/device/exists?macAddress=' + uriEncodedString,
+    );
+    if (res?.ok) {
+      console.log('Success', Boolean(res.data));
+      if (res.data) return Boolean(res.data);
+    } else {
+      console.log('Problem status', res.status, res.data);
+    }
+  } catch (e) {
+    console.log('when device exists problems', e);
+  }
+}
+
+/**
+ *
  * @description Registers Device on the Server's DataBase
  * @returns Promise<DeviceResponse>
  * @todo //todo: Delete This later
@@ -62,9 +89,9 @@ export async function _saveDevice(devInfo: DeviceInfo) {
   console.log('Device info in api???', devInfo);
   try {
     const res = await api.post('devices', {
-      macAddress: mac_address + '2c', //FIXME: delete this hardcoded string later
+      macAddress: mac_address,
       name: nickName,
-      modelNumber: 'SBB23V1', //FIXME: delete this hardcoded string later
+      modelNumber: device_model,
       firmwareVersion: firmware_rev,
       wifiSsid: ssid,
     });
