@@ -144,7 +144,7 @@ export default function LoginForm({
           text="Create account"
           pressable
           textStyle={{ fontSize: 16, fontWeight: '400', color: colors.primary }}
-          onPress={() => onPhonePress(1)}
+          onPress={() => onPhonePress(2)}
         />
       </View>
     </View>

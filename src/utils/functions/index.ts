@@ -383,6 +383,24 @@ async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
     return true;
   }
 }
+
+/**
+ * Converts an 24H Format Time into 12H Format
+ * @param time Only 5 digits Time like 15:15
+ * @returns Time Only like 03:15 PM
+ */
+
+function convertTo12Hour(time: string) {
+  if (time.length == 5) {
+    var str = new Date().toString().split('');
+    str.splice(16, 5, time);
+    var modifiedStr = str.join('');
+    return moment(modifiedStr).format('LT');
+  } else {
+    return time;
+  }
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
@@ -395,4 +413,5 @@ export {
   getCurrentMonthAdhanData,
   convertResponseToData,
   isValidPhoneNumber,
+  convertTo12Hour,
 };

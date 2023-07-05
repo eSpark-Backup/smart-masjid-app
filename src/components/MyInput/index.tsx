@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
+  PermissionsAndroid,
 } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
 import { useHookstate } from '@hookstate/core';
 import MI from 'react-native-vector-icons/MaterialIcons';
-import { PERMISSIONS, check } from 'react-native-permissions';
+import { PERMISSIONS, check, request } from 'react-native-permissions';
 
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
@@ -96,15 +97,26 @@ export default function MyInput(props: MyInputProps) {
     setText(value);
   }, [value]);
 
+  const checkLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted) {
+        setLocationPermission(true);
+      } else {
+        setLocationPermission(false);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     if (searchBar) {
-      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(res => {
-        if (res == 'granted') {
-          setLocationPermission(true);
-        }
-      });
+      checkLocation();
     }
-  }, [searchBar]);
+  }, [checkLocation, searchBar]);
 
   const handleTextChange = (newText: string) => {
     setText(newText);
