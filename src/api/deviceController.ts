@@ -59,7 +59,7 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
 
 export async function _checkDeviceExists(mac_address: string) {
   console.log('Device info in api???', mac_address);
-  const uriEncodedString = encodeURIComponent('abc:123:efg:456');
+  const uriEncodedString = encodeURIComponent(mac_address!);
   console.log('kiaaaaa', uriEncodedString);
 
   try {
