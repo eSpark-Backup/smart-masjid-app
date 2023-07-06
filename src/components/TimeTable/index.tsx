@@ -18,6 +18,7 @@ import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
 import TextLabel from '../TextLabel';
 import { TextInput } from 'react-native';
+import moment from 'moment';
 
 interface DataProps {
   name?: string;
@@ -48,8 +49,6 @@ const RowItem = ({
       }>
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
-          console.log('item', item[key]);
-
           if (key == 'onChange') return;
           return (
             <React.Fragment key={index}>
@@ -85,7 +84,21 @@ const RowItem = ({
                 </>
               ) : (
                 <View key={key} style={styles.contentCol}>
-                  <MyText text={item[key]} size={16} />
+                  <MyText
+                    text={
+                      ['azanTiming', 'iqamahTiming'].includes(key)
+                        ? moment(item[key], 'HH:mm:ss').format('LT')
+                        : item[key]
+                    }
+                    size={16}
+                    textStyle={{
+                      textTransform: ['azanTiming', 'iqamahTiming'].includes(
+                        key,
+                      )
+                        ? 'uppercase'
+                        : 'capitalize',
+                    }}
+                  />
                 </View>
               )}
             </React.Fragment>

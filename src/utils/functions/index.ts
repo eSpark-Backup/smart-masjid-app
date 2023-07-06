@@ -15,7 +15,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { globalStore } from '../../store/GlobalStates';
 import { CountryCodes, IPrayerTimeForPeriod } from '../../types';
 import moment from 'moment';
-import { IqamahTime, JummahTime } from '../../types/masjidControllerTypes';
+import {
+  IqamahTime,
+  JummahTime,
+  SubscriptionList,
+} from '../../types/masjidControllerTypes';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
 
@@ -401,6 +405,22 @@ function convertTo12Hour(time: string) {
   }
 }
 
+interface NormalizedSubscriptions {
+  [category: string]: SubscriptionList[];
+}
+
+function _normalizedSubscriptions(subscriptions?: SubscriptionList[]) {
+  return subscriptions?.reduce((acc, subscription) => {
+    const category: string =
+      subscription.subscriptionType.subscriptionCategory.name;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(subscription);
+    return acc;
+  }, {} as NormalizedSubscriptions);
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
@@ -414,4 +434,5 @@ export {
   convertResponseToData,
   isValidPhoneNumber,
   convertTo12Hour,
+  _normalizedSubscriptions,
 };
