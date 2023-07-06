@@ -41,8 +41,10 @@ import { OtpForm } from '../../../../forms';
 
 export default function ManageAccount({
   setFlag,
+  showVerification = false,
 }: {
   setFlag: (value: string) => void;
+  showVerification?: boolean;
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [country, setCountry] = useState<CountryCodes>();
@@ -81,7 +83,7 @@ export default function ManageAccount({
       editable: false,
     },
   ]);
-  const [showVerification, setShowVerification] = useState(false);
+  // const [showVerification, setShowVerification] = useState(false);
   const onEditPress = (key: string) => {
     const newData = displayData.map(data => {
       if (data.key == key) {
@@ -262,7 +264,7 @@ export default function ManageAccount({
                       activeKey == 'email' ? email : '',
                       activeKey == 'phone' ? phoneNo : '',
                     );
-                    setShowVerification(true);
+                    setFlag('mAccOtp');
                     setLoading(false);
                   } else {
                     onSave();
@@ -319,7 +321,7 @@ export default function ManageAccount({
               console.log('isVerified', isVerified);
               if (isVerified) {
                 onSave();
-                setShowVerification(false);
+                setFlag('mAccOtp');
               }
               setLoading(false);
             }}

@@ -187,7 +187,6 @@ export const UpdateUser = async ({
     phone?: string;
   };
 }) => {
-  
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
     if (result.data && result.status == 200) {
@@ -338,7 +337,7 @@ export const ValidateOTP = async (
       return true;
     } else {
       Toast.show({
-        text2: result.data?.message ?? 'Something went wrong',
+        text2: result.data?.message ?? 'OTP verification failed',
         type: 'error',
         autoHide: true,
         visibilityTime: 10000,

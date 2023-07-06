@@ -35,6 +35,11 @@ export default function JummaTimings({
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(false);
 
+  // console.log(
+  //   'Jummah Timings',
+  //   moment(jummahTimings.jumuah1, 'HH:mm:ss').format('LT'),
+  // );
+
   useEffect(() => {
     GetMasjidJummahTiming('1');
   }, []);
@@ -71,7 +76,7 @@ export default function JummaTimings({
         // If the key is a valid jumuah timing, add it to the arr array as an object
         arr.push({
           name: key,
-          azanTiming: moment(jummahTimings[key], 'HH:mm:ss').format('hh:mm'),
+          azanTiming: moment(jummahTimings[key], 'HH:mm:ss').format('LT'),
           onChange: (value: any) => {
             setData({
               ...data,
@@ -94,11 +99,11 @@ export default function JummaTimings({
 
   return (
     <>
-      <View style={{ flex: 1, marginTop: 0 }}>
+      <View style={{ flex: 1 }}>
         <OverlayLoader isShow={loading} />
         <GapView length={20} />
         <TextLabel label="Jumuah Timings" textStyle={{ alignSelf: 'center' }} />
-        <GapView length={65} />
+        <GapView length={60} />
         <TimeTable
           header={
             <>
@@ -111,7 +116,9 @@ export default function JummaTimings({
                     paddingHorizontal: 5,
                   }}>
                   <View>
-                    <MyText text={`Effective Date: ${jummahTimings?.effectiveDate}`} />
+                    <MyText
+                      text={`Effective Date: ${jummahTimings?.effectiveDate}`}
+                    />
                   </View>
                   <View
                     style={{
@@ -132,6 +139,7 @@ export default function JummaTimings({
               ) : (
                 <View>
                   <MyDatePicker
+                    minimumDate={new Date()}
                     onDateChange={date => {
                       setData({
                         ...data,

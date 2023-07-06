@@ -65,8 +65,8 @@ export default function UserSetupScreen() {
   }, [route.params?.type]);
 
   const handleBack = () => {
-    if (step == 1.1) {
-      return 1;
+    if (step == 3) {
+      return activeFlow == 'signup' ? 2 : 1;
     }
     if (step !== 1) {
       return step - 1;
@@ -159,23 +159,10 @@ export default function UserSetupScreen() {
       <OverlayLoader isShow={loader} />
       <Wrapper
         bgImageSpacer={false}
+        showBack={step == 1 ? false : true}
         onBackPress={() => !disable && setStep(handleBack)}>
         <ScrollView>
           {step == 1 && (
-            <SignUpForm
-              onEmailPress={value => setStep(value)}
-              type={route.params?.type}
-              setStep={values => {
-                CheckIsUserExist(
-                  values.email?.toLowerCase(),
-                  undefined,
-                  'signup',
-                );
-                setActiveFlow('signup');
-              }}
-            />
-          )}
-          {step == 2 && (
             <LoginForm
               type={route.params?.type}
               onPhonePress={value => setStep(value)}
@@ -189,9 +176,23 @@ export default function UserSetupScreen() {
               }}
             />
           )}
+          {step == 2 && (
+            <SignUpForm
+              onEmailPress={value => setStep(value)}
+              type={route.params?.type}
+              setStep={values => {
+                CheckIsUserExist(
+                  values.email?.toLowerCase(),
+                  undefined,
+                  'signup',
+                );
+                setActiveFlow('signup');
+              }}
+            />
+          )}
           {step == 3 && (
             <OtpForm
-              title="Create Account"
+              title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
               type={route.params?.type}
               setStep={async (value: string) => {
                 setLoader(true);

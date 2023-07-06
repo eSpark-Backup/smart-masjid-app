@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import MyText from '../MyText';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import moment from 'moment';
+import { convertTo12Hour } from '../../utils/functions';
 
 export default function MyTimePicker({
   initialValue = '00:00',
@@ -55,7 +57,7 @@ export default function MyTimePicker({
             justifyContent: 'center',
           },
         ]}>
-        <MyText text={time} size={16} />
+        <MyText text={convertTo12Hour(time)} size={16} />
       </TouchableOpacity>
     </>
   );

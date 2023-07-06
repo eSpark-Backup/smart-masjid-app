@@ -17,12 +17,12 @@ export default function OtpForm({
   type,
   setStep,
   title = 'OTP Form',
-  onResend = async () => {},
+  onResend,
 }: {
   type?: 'login' | 'setup';
   setStep: (value: string) => void;
   title?: string;
-  onResend?: () => Promise<undefined>;
+  onResend?: () => Promise<void>;
 }) {
   const otpRef: any = useRef(null);
   const { colors }: Theme = useTheme();
@@ -36,7 +36,7 @@ export default function OtpForm({
 
   const onResendOtp = async () => {
     setLoader(true);
-    const res = await onResend();
+    const res = await onResend?.();
     setTime((prevVal: number) => 300);
     setCountdownId(new Date().getTime().toString());
     setExpTime(false);

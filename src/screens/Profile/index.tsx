@@ -51,7 +51,7 @@ export default function Profile() {
       setFlag('uInfo');
       return;
     }
-    if (currScreen == 'modAcc') {
+    if (currScreen == 'mAccOtp') {
       setFlag('mAcc');
       return;
     }
@@ -109,9 +109,15 @@ export default function Profile() {
       {flag == 'uInfo' && (
         <UserInformation setFlag={(value: string) => setFlag(value)} />
       )}
-      {flag == 'mAcc' && (
+      {flag == 'mAcc' ? (
         <ManageAccount setFlag={(value: string) => setFlag(value)} />
-      )}
+      ) : null}
+      {flag == 'mAccOtp' ? (
+        <ManageAccount
+          setFlag={(value: string) => setFlag(value)}
+          showVerification={true}
+        />
+      ) : null}
       {flag == 'modAcc' && (
         <ModifyAccount setFlag={(value: string) => setFlag(value)} />
       )}
