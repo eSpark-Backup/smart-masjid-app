@@ -19,14 +19,7 @@ import {
   OverlayLoader,
   SLoader,
 } from '../../components';
-import {
-  CheckUserExists,
-  CreateUser,
-  LoginUser,
-  RegisterUserPhone,
-  SendOTP,
-  ValidateOTP,
-} from '../../api/userController';
+import { RegisterUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
   UserResponse,
@@ -36,6 +29,13 @@ import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
 import Toast from 'react-native-toast-message';
 import { Check } from '../../assets';
+import {
+  CheckUserExists,
+  CreateUser,
+  LoginUser,
+  SendOTP,
+  ValidateOTP,
+} from '../../api/externalControllers';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -58,9 +58,9 @@ export default function UserSetupScreen() {
 
   useEffect(() => {
     if (route.params?.type == 'setup') {
-      setStep(1);
-    } else {
       setStep(2);
+    } else {
+      setStep(1);
     }
   }, [route.params?.type]);
 

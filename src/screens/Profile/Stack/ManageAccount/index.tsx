@@ -4,12 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
 
-import {
-  LogoutUser,
-  SendOTP,
-  UpdateUser,
-  ValidateOTP,
-} from '../../../../api/userController';
+import { LogoutUser, UpdateUser } from '../../../../api/userController';
 import {
   EditVector,
   Email,
@@ -38,6 +33,7 @@ import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { CountryCodes } from '../../../../types';
 import { OtpForm } from '../../../../forms';
+import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 
 export default function ManageAccount({
   setFlag,
@@ -191,6 +187,7 @@ export default function ManageAccount({
                       </View>
                     ) : (
                       <MyInput
+                        placeholder="+1 000-000-0000"
                         isPhoneCode
                         placeholderColor="#CFCFCF"
                         phoneCodeValue={userData?.phone}
