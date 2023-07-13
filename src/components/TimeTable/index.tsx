@@ -48,6 +48,8 @@ const RowItem = ({
       }>
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
+          console.log('item', item[key]);
+
           if (key == 'onChange') return;
           return (
             <React.Fragment key={index}>
@@ -67,6 +69,8 @@ const RowItem = ({
                       <TextInput
                         defaultValue={item[key]}
                         onChangeText={item?.onChange}
+                        maxLength={2}
+                        keyboardType={'decimal-pad'}
                         style={{
                           borderWidth: 0.5,
                           borderColor: '#3E3E3E',

@@ -19,14 +19,7 @@ import {
   OverlayLoader,
   SLoader,
 } from '../../components';
-import {
-  CheckUserExists,
-  CreateUser,
-  LoginUser,
-  RegisterUserPhone,
-  SendOTP,
-  ValidateOTP,
-} from '../../api/userController';
+import { RegisterUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
   UserResponse,
@@ -36,6 +29,13 @@ import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
 import Toast from 'react-native-toast-message';
 import { Check } from '../../assets';
+import {
+  CheckUserExists,
+  CreateUser,
+  LoginUser,
+  SendOTP,
+  ValidateOTP,
+} from '../../api/externalControllers';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -58,15 +58,15 @@ export default function UserSetupScreen() {
 
   useEffect(() => {
     if (route.params?.type == 'setup') {
-      setStep(1);
-    } else {
       setStep(2);
+    } else {
+      setStep(1);
     }
   }, [route.params?.type]);
 
   const handleBack = () => {
-    if (step == 1.1) {
-      return 1;
+    if (step == 3) {
+      return activeFlow == 'signup' ? 2 : 1;
     }
     if (step !== 1) {
       return step - 1;
@@ -159,23 +159,10 @@ export default function UserSetupScreen() {
       <OverlayLoader isShow={loader} />
       <Wrapper
         bgImageSpacer={false}
+        showBack={step == 1 ? false : true}
         onBackPress={() => !disable && setStep(handleBack)}>
         <ScrollView>
           {step == 1 && (
-            <SignUpForm
-              onEmailPress={value => setStep(value)}
-              type={route.params?.type}
-              setStep={values => {
-                CheckIsUserExist(
-                  values.email?.toLowerCase(),
-                  undefined,
-                  'signup',
-                );
-                setActiveFlow('signup');
-              }}
-            />
-          )}
-          {step == 2 && (
             <LoginForm
               type={route.params?.type}
               onPhonePress={value => setStep(value)}
@@ -189,9 +176,23 @@ export default function UserSetupScreen() {
               }}
             />
           )}
+          {step == 2 && (
+            <SignUpForm
+              onEmailPress={value => setStep(value)}
+              type={route.params?.type}
+              setStep={values => {
+                CheckIsUserExist(
+                  values.email?.toLowerCase(),
+                  undefined,
+                  'signup',
+                );
+                setActiveFlow('signup');
+              }}
+            />
+          )}
           {step == 3 && (
             <OtpForm
-              title="Create Account"
+              title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
               type={route.params?.type}
               setStep={async (value: string) => {
                 setLoader(true);

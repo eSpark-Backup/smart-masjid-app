@@ -32,9 +32,9 @@ export default function ErrorModal({
       <View style={styles.main}>
         <View style={styles.body}>
           <MyText text="Wi-Fi Error" textStyle={styles.label} size={16} />
-          <GapView length={50} />
+          <GapView length={20} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
-          <GapView length={50} />
+          <GapView length={20} />
           {options?.map(item => (
             <>
               <Rounded label={item?.label} onPress={item?.onPress} />
@@ -68,7 +68,7 @@ const makeStyles = (theme: Theme) => {
       paddingHorizontal: 27.5,
       paddingBottom: 20,
       color: '#000000',
-      fontWeight: '100',
+      fontWeight: 'bold',
     },
     bodyText: {
       paddingHorizontal: 27.5,

@@ -4,12 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
 
-import {
-  LogoutUser,
-  SendOTP,
-  UpdateUser,
-  ValidateOTP,
-} from '../../../../api/userController';
+import { LogoutUser, UpdateUser } from '../../../../api/userController';
 import {
   EditVector,
   Email,
@@ -38,11 +33,14 @@ import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { CountryCodes } from '../../../../types';
 import { OtpForm } from '../../../../forms';
+import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 
 export default function ManageAccount({
   setFlag,
+  showVerification = false,
 }: {
   setFlag: (value: string) => void;
+  showVerification?: boolean;
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [country, setCountry] = useState<CountryCodes>();
@@ -81,7 +79,7 @@ export default function ManageAccount({
       editable: false,
     },
   ]);
-  const [showVerification, setShowVerification] = useState(false);
+  // const [showVerification, setShowVerification] = useState(false);
   const onEditPress = (key: string) => {
     const newData = displayData.map(data => {
       if (data.key == key) {
@@ -189,6 +187,7 @@ export default function ManageAccount({
                       </View>
                     ) : (
                       <MyInput
+                        placeholder="+1 000-000-0000"
                         isPhoneCode
                         placeholderColor="#CFCFCF"
                         phoneCodeValue={userData?.phone}
@@ -262,7 +261,7 @@ export default function ManageAccount({
                       activeKey == 'email' ? email : '',
                       activeKey == 'phone' ? phoneNo : '',
                     );
-                    setShowVerification(true);
+                    setFlag('mAccOtp');
                     setLoading(false);
                   } else {
                     onSave();
@@ -319,7 +318,7 @@ export default function ManageAccount({
               console.log('isVerified', isVerified);
               if (isVerified) {
                 onSave();
-                setShowVerification(false);
+                setFlag('mAccOtp');
               }
               setLoading(false);
             }}

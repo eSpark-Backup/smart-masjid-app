@@ -89,6 +89,7 @@ export type Masjid = {
   email: string;
   phone: string;
   website: string;
+  logo: string;
   timezone: string;
   location: Location;
   elevation: number;

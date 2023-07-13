@@ -2,11 +2,8 @@ import { Formik } from 'formik';
 import React, { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { api } from '../../../../api';
-import {
-  AddAdminIntoMasjid,
-  CheckUserExists,
-  CreateUser,
-} from '../../../../api/userController';
+import { CheckUserExists } from '../../../../api/externalControllers';
+import { AddAdminIntoMasjid } from '../../../../api/userController';
 import {
   GapView,
   MyInput,
@@ -88,7 +85,7 @@ export default function AddUsers({
             </View> */}
             <View style={{ paddingHorizontal: 25 }}>
               <GapView />
-              <Card backgroundColor='#ffffff' width={345} radius={12}>
+              <Card backgroundColor="#ffffff" width={345} radius={12}>
                 <MyInput
                   placeholder="First Name"
                   placeholderColor="#CFCFCF"
