@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Toast from 'react-native-toast-message';
+import { useHookstate } from '@hookstate/core';
 
 import { Wrapper } from '../../containers';
 import {
@@ -31,11 +33,8 @@ import {
   CreateUserRequest,
   UserResponse,
 } from '../../types/userControllerApiResponse';
-import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
-import Toast from 'react-native-toast-message';
-import { Check } from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -58,9 +57,9 @@ export default function UserSetupScreen() {
 
   useEffect(() => {
     if (route.params?.type == 'setup') {
-      setStep(1);
-    } else {
       setStep(2);
+    } else {
+      setStep(1);
     }
   }, [route.params?.type]);
 

@@ -11,7 +11,7 @@ import {
   OverlayLoader,
   TextLabel,
 } from '../../components';
-import { _checkDeviceExists } from '../../api/deviceController';
+import { _checkDeviceExists } from '../../api/externalControllers';
 
 export default function DeviceSelectForm({
   data = [],

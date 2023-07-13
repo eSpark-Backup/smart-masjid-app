@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, PermissionsAndroid } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
 import { useTheme } from '@react-navigation/native';
 
@@ -12,6 +12,7 @@ import {
   TextLabel,
 } from '../../components';
 import { WINDOW_HEIGHT } from '../../constants';
+import { _requestUserLocationPermission } from '../../utils/functions';
 
 export default function WifiSelectForm({
   setStep,
@@ -32,33 +33,52 @@ export default function WifiSelectForm({
   );
 
   useEffect(() => {
-    getWifiList();
+    checkLocation();
   }, []);
 
-  const getWifiList = async () => {
-    const res = await WifiManager.loadWifiList();
-    console.log('All Wifis', res);
-    setLoading(false);
-    const removeHidden = res.filter(
-      item => !item.SSID.includes('(hidden SSID)'),
-    );
-    const uniqueSsid = Array.from(
-      new Set(removeHidden.map(item => item.SSID)),
-    ).map(item2 => {
-      return removeHidden.find(item3 => item3.SSID === item2);
-    });
+  const checkLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      console.log('granted', granted);
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        getWifiList();
+      } else {
+        _requestUserLocationPermission();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    const newArr = uniqueSsid.map(item => ({
-      ...item,
-      title: item?.SSID,
-      rightChild: rightChild,
-      onPress: () => {
-        console.log('ssid selected', item?.SSID);
-        setSSID(item?.SSID!!);
-        setStep(5);
-      },
-    }));
-    setData(newArr);
+  const getWifiList = async () => {
+    try {
+      const res = await WifiManager.loadWifiList();
+      console.log('All Wifis', res);
+      setLoading(false);
+      const removeHidden = res.filter(
+        item => !item.SSID.includes('(hidden SSID)'),
+      );
+      const uniqueSsid = Array.from(
+        new Set(removeHidden.map(item => item.SSID)),
+      ).map(item2 => {
+        return removeHidden.find(item3 => item3.SSID === item2);
+      });
+      const newArr = uniqueSsid.map(item => ({
+        ...item,
+        title: item?.SSID,
+        rightChild: rightChild,
+        onPress: () => {
+          console.log('ssid selected', item?.SSID);
+          setSSID(item?.SSID!!);
+          setStep(5);
+        },
+      }));
+      setData(newArr);
+    } catch (e) {
+      console.log('Cannot get wifiList', e);
+    }
   };
 
   if (data?.length > 0) {

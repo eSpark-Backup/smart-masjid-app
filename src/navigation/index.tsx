@@ -9,6 +9,9 @@ import Toast, {
 } from 'react-native-toast-message';
 import { State, useHookstate } from '@hookstate/core';
 import { getUniqueId } from 'react-native-device-info';
+import jwtDecode from 'jwt-decode';
+import moment from 'moment';
+import SplashScreen from 'react-native-splash-screen';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
@@ -23,9 +26,6 @@ import { UserResponse, UserToken } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
 import { GetCountryCodes } from '../api/externalControllers';
 import { api } from '../api';
-import jwtDecode from 'jwt-decode';
-import moment from 'moment';
-import SplashScreen from 'react-native-splash-screen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

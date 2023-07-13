@@ -40,11 +40,13 @@ import {
   _writeToDevice,
 } from './utils/functions';
 import {
+  _checkDeviceTelemetry,
+  _resetDevice,
   _saveDevice,
   _saveDeviceBtnToMasjid,
   _saveDeviceToUser,
-  _checkDeviceExists,
 } from '../../api/deviceController';
+import { _checkDeviceExists } from '../../api/externalControllers';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
 import { UserToken } from '../../types/userControllerApiResponse';
 
@@ -54,7 +56,7 @@ type DSetupNavigationProps = NativeStackScreenProps<
 >;
 
 export default function DeviceSetupScreen() {
-  console.log('User ka bta id mili ha?', userStore.get());
+  // console.log('User ka bta id mili ha?', userStore.get());
 
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
@@ -183,35 +185,53 @@ export default function DeviceSetupScreen() {
     : '';
 
   const handleDeviceSetup = async () => {
+    console.log('xxxxx======>>>>>', devInfo);
     if (!connFlag) {
       return;
     }
-    const res = await _connectBleDevice(devInfo);
-    console.log('kia ha peripherial info', res);
-    setConnFlag(false);
-    const stringData = await _readFromDevice(
-      devInfo,
-      '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-      '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
-    );
-    console.log('kia ha data', stringData);
-    const jsonData = JSON.parse(stringData);
-    setDevInfo(state => ({ ...state, ...jsonData }));
+    try {
+      const res = await _connectBleDevice(devInfo);
+      console.log('kia ha peripherial info', res);
+      setConnFlag(false);
+      const stringData = await _readFromDevice(
+        devInfo,
+        '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+        '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
+      );
+      console.log('kia ha data', stringData);
+      const jsonData = JSON.parse(stringData);
+      setDevInfo(state => ({ ...state, ...jsonData }));
 
-    await _writeToDevice(
-      devInfo,
-      '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-      '6e400011-b5a3-f393-e0a9-e50e24dcca9e',
-    );
-    const response = await _scanBleDevices(5);
-    if (
-      response.some(item => {
-        item?.id === devInfo?.macId;
-      })
-    ) {
+      await _writeToDevice(
+        devInfo,
+        '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+        '6e400011-b5a3-f393-e0a9-e50e24dcca9e',
+      );
+      const response = await _scanBleDevices(5);
+      if (
+        response.some(item => {
+          item?.id === devInfo?.macId;
+        })
+      ) {
+        console.log(
+          'xxxxxxxxxxxxx Device was Scanned Again! Not connected xxxxxxxxxxxxx',
+        );
+        setStep(8);
+      } else {
+        await registerDevice({ ...devInfo, ...jsonData });
+      }
+    } catch (e) {
       setStep(8);
-    } else {
-      await registerDevice({ ...devInfo, ...jsonData });
+      console.log('error while ble connect', e);
+      setToastContent({
+        title: 'Device not connected',
+        btnText: 'Try Again',
+        message: 'Ble device not connected Sucessfully',
+        onPress: () => {
+          setRetry(true);
+        },
+        points: ['Check your device'],
+      });
     }
   };
 
@@ -220,28 +240,61 @@ export default function DeviceSetupScreen() {
     const isBtn = dev?.name?.includes('SMBTN');
     const devRes: any = await _saveDevice(deviceInfo);
     if (isBtn) {
+      console.log('-> Detected Smart Button');
       const USER_TOKEN: any = userStore.get().token;
       const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
       console.log(
         'kia ha decoded string========??????',
         JSON.stringify(jwtDecodedObj),
       );
-      const masjidDevRes = await _saveDeviceBtnToMasjid(
+      const masjidDevRes: any = await _saveDeviceBtnToMasjid(
         devRes?.id,
         jwtDecodedObj.masjidId,
       );
+      console.log('kia res???', masjidDevRes);
       if (masjidDevRes) {
-        setStep(7);
+        checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
       } else {
-        setStep(8);
+        setStep(8); // failed saving device (show error screen)
       }
     } else {
-      const userDevRes = await _saveDeviceToUser(devRes?.id);
+      console.log('-> Detected Smart Speaker');
+      const userDevRes: any = await _saveDeviceToUser(devRes?.id);
+      console.log('kia res???', userDevRes);
       if (userDevRes) {
-        setStep(7);
+        checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
       } else {
-        setStep(8);
+        setStep(8); // failed saving device (show error screen)
       }
+    }
+  };
+
+  const checkTelemetry = async (deviceId: string) => {
+    try {
+      const res = await _checkDeviceTelemetry(deviceId);
+      if (Boolean(res)) {
+        setStep(7); // successfully device added and found it out as well
+      } else {
+        handleDeleteDevice(deviceId);
+      }
+    } catch (e) {
+      console.log('error on call check device telemetry', e);
+      setStep(8);
+    }
+  };
+
+  const handleDeleteDevice = async (deviceId: string) => {
+    try {
+      const res = await _resetDevice(deviceId);
+      console.log('kia mila delte pr', res);
+      if (Boolean(res)) {
+        setStep(8); // successfully device added and found it out as well
+      } else {
+        setStep(8); // telemetry is in the negative (device not added sucessfully)
+      }
+    } catch (e) {
+      console.log('error on delete device', e);
+      setStep(8);
     }
   };
 
