@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
-import { NavigationContainer, useIsFocused } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, {
   BaseToast,
@@ -16,12 +16,15 @@ import { GlobalProps, RootStackParamList } from '../types';
 import HomeBottomTab from './BottomNavigation';
 import { _getPhoneId } from '../utils';
 import { globalStore } from '../store/GlobalStates';
-import { RefreshToken, _checkPhoneId } from '../api/userController';
 import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
 import { userStore } from '../store/UserStore';
 import { UserResponse, UserToken } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
-import { GetCountryCodes } from '../api/externalControllers';
+import {
+  GetCountryCodes,
+  RefreshToken,
+  _checkPhoneId,
+} from '../api/externalControllers';
 import { api } from '../api';
 import jwtDecode from 'jwt-decode';
 import moment from 'moment';
