@@ -69,6 +69,8 @@ const RowItem = ({
                       <TextInput
                         defaultValue={item[key]}
                         onChangeText={item?.onChange}
+                        maxLength={2}
+                        keyboardType={'decimal-pad'}
                         style={{
                           borderWidth: 0.5,
                           borderColor: '#3E3E3E',
