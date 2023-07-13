@@ -114,6 +114,7 @@ const SearchListing = ({
             location={`${item.address1} ${item.address2 ?? ''}, ${item.city}, ${
               item.state
             } ${item.zip}`}
+            masjidLogo={{ uri: item.logo }}
           />
         )}
         ItemSeparatorComponent={GapView}

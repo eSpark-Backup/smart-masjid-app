@@ -21,20 +21,21 @@ import {
   OverlayLoader,
   SLoader,
 } from '../../components';
-import {
-  CheckUserExists,
-  CreateUser,
-  LoginUser,
-  RegisterUserPhone,
-  SendOTP,
-  ValidateOTP,
-} from '../../api/userController';
+import { RegisterUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
   UserResponse,
 } from '../../types/userControllerApiResponse';
 import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
+import { Check } from '../../assets';
+import {
+  CheckUserExists,
+  CreateUser,
+  LoginUser,
+  SendOTP,
+  ValidateOTP,
+} from '../../api/externalControllers';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
