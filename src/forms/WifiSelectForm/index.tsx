@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, PermissionsAndroid } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
+import { useTheme } from '@react-navigation/native';
 
 import { LockSvg, WifiSvg } from '../../assets';
 import {
@@ -11,6 +12,7 @@ import {
   TextLabel,
 } from '../../components';
 import { WINDOW_HEIGHT } from '../../constants';
+import { _requestUserLocationPermission } from '../../utils/functions';
 
 export default function WifiSelectForm({
   setStep,
@@ -19,44 +21,64 @@ export default function WifiSelectForm({
   setStep: (value: number) => void;
   setSSID: (value: string) => void;
 }) {
-  useEffect(() => {
-    getWifiList();
-  }, []);
-
+  const { colors } = useTheme();
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(true);
   const rightChild = (
     <>
-      <LockSvg />
+      <LockSvg style={{ color: colors.primary }} />
       <GapView mode="horizontal" />
-      <WifiSvg width={24} height={34} />
+      <WifiSvg width={34} height={44} style={{ color: colors.primary }} />
     </>
   );
 
-  const getWifiList = async () => {
-    const res = await WifiManager.loadWifiList();
-    console.log('All Wifis', res);
-    setLoading(false);
-    const removeHidden = res.filter(
-      item => !item.SSID.includes('(hidden SSID)'),
-    );
-    const uniqueSsid = Array.from(
-      new Set(removeHidden.map(item => item.SSID)),
-    ).map(item2 => {
-      return removeHidden.find(item3 => item3.SSID === item2);
-    });
+  useEffect(() => {
+    checkLocation();
+  }, []);
 
-    const newArr = uniqueSsid.map(item => ({
-      ...item,
-      title: item?.SSID,
-      rightChild: rightChild,
-      onPress: () => {
-        console.log('ssid selected', item?.SSID);
-        setSSID(item?.SSID!!);
-        setStep(5);
-      },
-    }));
-    setData(newArr);
+  const checkLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      console.log('granted', granted);
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        getWifiList();
+      } else {
+        _requestUserLocationPermission();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getWifiList = async () => {
+    try {
+      const res = await WifiManager.loadWifiList();
+      console.log('All Wifis', res);
+      setLoading(false);
+      const removeHidden = res.filter(
+        item => !item.SSID.includes('(hidden SSID)'),
+      );
+      const uniqueSsid = Array.from(
+        new Set(removeHidden.map(item => item.SSID)),
+      ).map(item2 => {
+        return removeHidden.find(item3 => item3.SSID === item2);
+      });
+      const newArr = uniqueSsid.map(item => ({
+        ...item,
+        title: item?.SSID,
+        rightChild: rightChild,
+        onPress: () => {
+          console.log('ssid selected', item?.SSID);
+          setSSID(item?.SSID!!);
+          setStep(5);
+        },
+      }));
+      setData(newArr);
+    } catch (e) {
+      console.log('Cannot get wifiList', e);
+    }
   };
 
   if (data?.length > 0) {
@@ -67,7 +89,6 @@ export default function WifiSelectForm({
           <GapView length={20} />
           <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
           <GapView length={40} />
-          <GapView length={20} />
           <MyText
             textStyle={{
               alignItems: 'center',
@@ -76,7 +97,7 @@ export default function WifiSelectForm({
             }}
             text="Select Wi-Fi network"
           />
-          <GapView length={80} />
+          <GapView length={50} />
           <ButtonListing data={data} titleWidth={'60%'} lines={2} />
         </View>
       </>

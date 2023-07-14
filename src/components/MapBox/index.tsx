@@ -25,7 +25,6 @@ export default function MapBox({
         scrollEnabled={false}
         zoomEnabled
         rotateEnabled
-        
       />
     </Card>
   );
@@ -34,6 +33,5 @@ export default function MapBox({
 const styles = StyleSheet.create({
   map: {
     height: 180,
-    // borderRadius: 100,
   },
 });

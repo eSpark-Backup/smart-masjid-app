@@ -31,10 +31,10 @@ export default function LogoutModal({
       statusBarTranslucent>
       <View style={styles.main}>
         <View style={styles.body}>
-          <MyText text="Attention" textStyle={styles.label} size={16} />
-          <GapView length={50} />
+          <MyText text="Confirm" textStyle={styles.label} size={16} />
+          <GapView length={25} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
-          <GapView length={50} />
+          <GapView length={25} />
           <Joined
             title1={title1}
             title2={title2}
@@ -66,13 +66,11 @@ const makeStyles = (theme: Theme) => {
     },
     label: {
       paddingHorizontal: 27.5,
-      paddingBottom: 20,
-      color: '#FF6464',
-      fontWeight: '500',
+      color: '#000000',
+      fontWeight: 'bold',
     },
     bodyText: {
       paddingHorizontal: 27.5,
-      paddingBottom: 20,
       color: '#3E3E3E',
       fontWeight: '400',
       textAlign: 'center',

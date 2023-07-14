@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, ImageRequireSource } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   LocationSvg,
@@ -17,6 +17,7 @@ import { GradientColors } from '../../theme';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
+import { ImageSourcePropType } from "react-native";
 
 interface MasjidHomeProps {
   masjidName: string;
@@ -25,6 +26,7 @@ interface MasjidHomeProps {
   namazTime?: string;
   isSearch?: boolean;
   onPress?: () => void;
+  masjidLogo?: ImageSourcePropType
 }
 
 interface MasjidSearchProps {
@@ -32,6 +34,7 @@ interface MasjidSearchProps {
   location?: string;
   subscribers?: string;
   onPress?: () => void;
+  masjidLogo?: ImageSourcePropType
 }
 
 export default function MasjidListCard(
@@ -46,6 +49,7 @@ export default function MasjidListCard(
     location,
     subscribers,
     onPress,
+    masjidLogo = MasjidSample
   } = props;
 
   const styles = useMemo(() => makeStyles(props), []);
@@ -116,7 +120,7 @@ export default function MasjidListCard(
         </View>
         <View>
           <Image
-            source={MasjidSample}
+            source={masjidLogo}
             resizeMode="contain"
             style={!isSearch ? styles.imageStyle : { height: 75, width: 75 }}
           />

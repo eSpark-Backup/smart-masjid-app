@@ -11,7 +11,7 @@ import {
   OverlayLoader,
   TextLabel,
 } from '../../components';
-import { _checkDeviceExists } from '../../api/deviceController';
+import { _checkDeviceExists } from '../../api/externalControllers';
 
 export default function DeviceSelectForm({
   data = [],
@@ -30,7 +30,7 @@ export default function DeviceSelectForm({
     setLoading(true);
     try {
       const res = await _checkDeviceExists(macId);
-      console.log('res', Boolean(res));
+      console.log('res', Boolean(res), macId);
       if (!Boolean(res)) {
         setStep(3);
         setDevMacId?.(macId);
@@ -102,7 +102,7 @@ export default function DeviceSelectForm({
         text="Select Your Device"
         textStyle={{ fontSize: 16, fontWeight: '400', alignSelf: 'center' }}
       />
-      <GapView length={80} />
+      <GapView length={50} />
       {loading ? (
         <OverlayLoader isShow={loading} noBg={true} />
       ) : (

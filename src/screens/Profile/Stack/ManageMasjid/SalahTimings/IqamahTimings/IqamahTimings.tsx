@@ -90,11 +90,11 @@ export default function IqamahTimings({
   const type = data?.type ?? iqamahTimings?.type;
   return (
     <>
-      <View style={{ flex: 1, marginTop: 20 }}>
+      <View style={{ flex: 1 }}>
+        <GapView length={20} />
         <TextLabel label="Iqama Timings" textStyle={{ alignSelf: 'center' }} />
-        <GapView length={55} />
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 30, paddingTop: 20 }}>
+        <GapView length={60} />
+        <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
           <OverlayLoader isShow={loading} />
 
           <TimeTable
@@ -136,19 +136,25 @@ export default function IqamahTimings({
                       title={''}
                       placeholder="Select Iqama Type"
                       items={[
-                        { id: 1, name: 'F' },
-                        { id: 2, name: 'D' },
+                        { id: 1, name: 'Fixed' },
+                        { id: 2, name: 'Delay' },
                       ]}
                       defaultValue={{
-                        id: data?.type == 'F' ? 1 : 2,
-                        name: data?.type ?? '',
+                        id: data?.type == 'Fixed' ? 1 : 2,
+                        name: data?.type == 'F' ? 'Fixed' : 'Delay',
                       }}
                       width={WINDOW_WIDTH - 50}
-                      onChangeValue={e => setData({ ...data, type: e.name })}
+                      onChangeValue={e =>
+                        setData({
+                          ...data,
+                          type: e.name == 'Fixed' ? 'F' : 'D',
+                        })
+                      }
                     />
                     <GapView />
                     <MyDatePicker
                       currentDate={new Date(data?.effectiveDate ?? new Date())}
+                      minimumDate={new Date()}
                       onDateChange={date => {
                         setData({
                           ...data,
@@ -166,7 +172,7 @@ export default function IqamahTimings({
                 name: 'Fajr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings?.fajr, 'HH:mm:ss').format('hh:mm')
+                    ? moment(iqamahTimings?.fajr, 'HH:mm:ss').format('LT')
                     : iqamahTimings?.fajrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
@@ -182,7 +188,7 @@ export default function IqamahTimings({
                 name: 'Dhuhr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings?.dhuhr, 'HH:mm:ss').format('hh:mm')
+                    ? moment(iqamahTimings?.dhuhr, 'HH:mm:ss').format('LT')
                     : iqamahTimings?.dhuhrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
@@ -198,7 +204,7 @@ export default function IqamahTimings({
                 name: 'Asr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings?.asr, 'HH:mm:ss').format('hh:mm')
+                    ? moment(iqamahTimings?.asr, 'HH:mm:ss').format('LT')
                     : iqamahTimings?.asrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
@@ -226,7 +232,7 @@ export default function IqamahTimings({
                 name: 'Isha',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings?.isha, 'HH:mm:ss').format('hh:mm')
+                    ? moment(iqamahTimings?.isha, 'HH:mm:ss').format('LT')
                     : iqamahTimings?.ishaDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
