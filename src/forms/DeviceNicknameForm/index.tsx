@@ -20,7 +20,7 @@ export default function DeviceNicknameForm({
       <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
       <GapView length={40} />
       <MyText
-        text="Let’s give your device a nick name"
+        text="Lets give your device a name"
         textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
       />
       <GapView length={80} />
@@ -42,7 +42,7 @@ export default function DeviceNicknameForm({
           <>
             <Card width={WINDOW_WIDTH - 28}>
               <MyInput
-                placeholder="Nick Name"
+                placeholder="Eg. My Home Speaker"
                 onChangeText={handleChange('nickName')}
                 value={values.nickName}
               />

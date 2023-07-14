@@ -36,18 +36,20 @@ export default function SLoader({
           textStyle={{ fontWeight: '400', fontSize: 16 }}
         />
         <GapView length={60} />
-        <Image source={GLoad} style={styles.loader} resizeMode="contain" />
+        <View>
+          <Image source={GLoad} style={styles.loader} resizeMode="contain" />
+          <View
+            style={{
+              width: 10,
+              height: 2,
+              backgroundColor: '#ffffff',
+              position: 'absolute',
+              bottom: 0,
+              left: 15,
+            }}
+          />
+        </View>
         <GapView length={40} />
-        <View
-          style={{
-            width: 10,
-            height: 2,
-            backgroundColor: '#ffffff',
-            position: 'absolute',
-            bottom: 0,
-            left: 10,
-          }}
-        />
       </View>
       <GapView length={20} />
       <MyText text={message} textStyle={{ fontWeight: '400', fontSize: 16 }} />
