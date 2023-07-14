@@ -83,7 +83,8 @@ const styles = StyleSheet.create({
   cartContainer: {
     flexDirection: 'row',
     paddingHorizontal: 30,
-    paddingVertical: 15,
+    // paddingVertical: 8,
+    height: 40,
     justifyContent: 'space-between',
   },
   sectionHeader: {

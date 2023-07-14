@@ -7,18 +7,21 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
+  PermissionsAndroid,
 } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
+import { useHookstate } from '@hookstate/core';
 import MI from 'react-native-vector-icons/MaterialIcons';
+import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
+
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
 import { SearchWhite } from '../../assets';
 import GapView from '../GapView';
 import { CountryPickerModal } from '..';
 import { externalStore } from '../../store/ExternalStore';
-import { useHookstate } from '@hookstate/core';
 import { CountryCodes } from '../../types';
-import { PERMISSIONS, check } from 'react-native-permissions';
+import { _requestUserLocationPermission } from '../../utils/functions';
 
 interface MyInputProps {
   isDivider?: boolean;
@@ -82,9 +85,10 @@ export default function MyInput(props: MyInputProps) {
 
   useEffect(() => {
     if (isPhoneCode) {
-      const data = countries.find(
-        country => country.iso_code == phoneCodeValue,
+      const data = countries?.find(country =>
+        phoneCodeValue?.includes(country?.code),
       );
+      console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', data);
       setCurrentCountry(data ?? countries[0]);
       onPhoneCodeChange?.(data ?? countries[0]);
     }
@@ -94,15 +98,43 @@ export default function MyInput(props: MyInputProps) {
     setText(value);
   }, [value]);
 
+  const checkLocation = async () => {
+    try {
+      if (Platform.OS == 'ios') {
+        checkMultiple([
+          PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        ]).then(statuses => {
+          console.log(statuses[PERMISSIONS.IOS.LOCATION_ALWAYS]);
+          if (
+            statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] == 'granted' ||
+            statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
+          ) {
+            setLocationPermission(true);
+          } else {
+            _requestUserLocationPermission();
+          }
+        });
+      } else {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        if (granted) {
+          setLocationPermission(true);
+        } else {
+          setLocationPermission(false);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     if (searchBar) {
-      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(res => {
-        if (res == 'granted') {
-          setLocationPermission(true);
-        }
-      });
+      checkLocation();
     }
-  }, [searchBar]);
+  }, [checkLocation, searchBar]);
 
   const handleTextChange = (newText: string) => {
     setText(newText);
@@ -156,7 +188,6 @@ export default function MyInput(props: MyInputProps) {
             <Flag height={24} width={24} />
             <GapView mode="horizontal" length={5} />
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
-            {/* <MyText textStyle={styles.phoneCodeText} text={phoneCodeValue} /> */}
           </TouchableOpacity>
         )}
         <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
@@ -165,10 +196,15 @@ export default function MyInput(props: MyInputProps) {
               editable={!disabled}
               autoComplete="off"
               autoCorrect={false}
+              keyboardType={isPhoneCode ? 'number-pad' : 'default'}
               placeholder={placeholder}
               style={[styles.inputStyle, inputStyle]}
               onChangeText={handleTextChange}
-              value={text}
+              value={
+                isPhoneCode
+                  ? text?.replace(currentCountry?.code ?? '+1', '')
+                  : text
+              }
               placeholderTextColor={placeholderColor ?? '#9E9F9F'}
               onPressIn={onFocus}
               onSubmitEditing={onBlur}
@@ -231,7 +267,6 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       borderBottomColor: isDivider ? dividerColor : 'transparent',
       borderBottomWidth: isDivider ? dividerWidth : 0,
       height: 50,
-      // width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
     },
     inputStyle: {
       paddingHorizontal: 20,
@@ -241,7 +276,6 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
     },
     phoneCodeContainer: {
       width: 80,
-      // height: 56,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',

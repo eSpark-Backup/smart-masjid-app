@@ -32,7 +32,7 @@ export type AdhanConfig = {
 export type IqamahTime = {
   id?: number;
   type: string;
-  changeDate: string;
+  effectiveDate: string;
   fajr?: string;
   dhuhr?: string;
   asr?: string;
@@ -48,7 +48,7 @@ export type IqamahTime = {
 
 export type JummahTime = {
   id: number;
-  changeDate: string;
+  effectiveDate: string;
   createdBy: string;
   createdDate: string;
 } & {
@@ -89,6 +89,7 @@ export type Masjid = {
   email: string;
   phone: string;
   website: string;
+  logo: string;
   timezone: string;
   location: Location;
   elevation: number;

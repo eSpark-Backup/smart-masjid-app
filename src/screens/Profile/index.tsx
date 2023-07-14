@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -12,7 +12,12 @@ import {
   MasjidGear,
   Privacy,
 } from '../../assets';
-import { GapView, ProfileSectionlist, TextLabel } from '../../components';
+import {
+  ErrorModal,
+  GapView,
+  ProfileSectionlist,
+  TextLabel,
+} from '../../components';
 import { Wrapper } from '../../containers';
 import {
   AdhanSettings,
@@ -51,7 +56,7 @@ export default function Profile() {
       setFlag('uInfo');
       return;
     }
-    if (currScreen == 'modAcc') {
+    if (currScreen == 'mAccOtp') {
       setFlag('mAcc');
       return;
     }
@@ -83,6 +88,20 @@ export default function Profile() {
     }
   };
 
+  const backAction = () => {
+    handleBack(flag);
+    console.log('current flag', flag);
+    return true;
+  };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, [flag]);
+
   const handleSpacing = (currScreen: string) => {
     if (
       currScreen == 'iEdit' ||
@@ -109,9 +128,15 @@ export default function Profile() {
       {flag == 'uInfo' && (
         <UserInformation setFlag={(value: string) => setFlag(value)} />
       )}
-      {flag == 'mAcc' && (
+      {flag == 'mAcc' ? (
         <ManageAccount setFlag={(value: string) => setFlag(value)} />
-      )}
+      ) : null}
+      {flag == 'mAccOtp' ? (
+        <ManageAccount
+          setFlag={(value: string) => setFlag(value)}
+          showVerification={true}
+        />
+      ) : null}
       {flag == 'modAcc' && (
         <ModifyAccount setFlag={(value: string) => setFlag(value)} />
       )}

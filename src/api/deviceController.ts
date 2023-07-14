@@ -52,6 +52,34 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
 
 /**
  *
+ * @description Check's Device Telemetry on Device Id
+ * @returns Promise<boolean>
+ * @todo //todo: Delete This later
+ */
+
+export async function _checkDeviceTelemetry(deviceId: string) {
+  console.log('now checking device Telemetry for Deivce id =>', deviceId);
+  try {
+    const res = await api.get<any>(`devices/${deviceId}/telemetry`);
+    if (res?.ok) {
+      console.log('Gotten Telemetry', res.data);
+      if (res.data?.status == 'Online') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (e) {
+    console.log('when device exists problems', e);
+    return false;
+  }
+}
+
+/**
+ *
  * @description Registers Device on the Server's DataBase
  * @returns Promise<DeviceResponse>
  * @todo //todo: Delete This later
@@ -61,10 +89,10 @@ export async function _saveDevice(devInfo: DeviceInfo) {
   const { device_model, firmware_rev, nickName, mac_address, ssid } = devInfo;
   console.log('Device info in api???', devInfo);
   try {
-    const res = await api.post('devices', {
-      macAddress: mac_address + '2c', //FIXME: delete this hardcoded string later
+    const res = await api.post<any>('devices', {
+      macAddress: mac_address,
       name: nickName,
-      modelNumber: 'SBB23V1', //FIXME: delete this hardcoded string later
+      modelNumber: device_model,
       firmwareVersion: firmware_rev,
       wifiSsid: ssid,
     });
@@ -72,9 +100,21 @@ export async function _saveDevice(devInfo: DeviceInfo) {
       console.log('Success', res.data);
       if (res.data) return res.data;
     } else {
-      console.log('Problem status', res.status, res.data);
+      Toast.show({
+        text2: res?.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+      console.log('Problem status when device save', res.status, res.data);
     }
   } catch (e) {
+    Toast.show({
+      text2: 'Something went wrong',
+      type: 'error',
+      autoHide: true,
+      visibilityTime: 10000,
+    });
     console.log('when registering device', e);
   }
 }
@@ -87,18 +127,31 @@ export async function _saveDevice(devInfo: DeviceInfo) {
  */
 
 export async function _saveDeviceToUser(devID: number) {
-  try {
-    const res = await api.post(
-      'devices/' + devID + '/user/' + userStore.get().userData?.id,
-    );
-    if (res?.ok) {
-      console.log('Success device assigned to user');
-      if (res.data) return res.data;
-    } else {
-      console.log('Problem status', res.status, res.data);
+  if (devID) {
+    try {
+      const res = await api.post(
+        'devices/' + devID + '/user/' + userStore.get().userData?.id,
+      );
+      if (res?.ok) {
+        console.log('Success device assigned to user');
+        if (res.data) return res.data;
+      } else {
+        console.log(
+          'Problem status when device save to user',
+          res.status,
+          res.data,
+        );
+      }
+    } catch (e) {
+      console.log('when saving device with user', e);
     }
-  } catch (e) {
-    console.log('when saving device with user', e);
+  } else {
+    Toast.show({
+      text2: 'Something went wrong',
+      type: 'error',
+      autoHide: true,
+      visibilityTime: 10000,
+    });
   }
 }
 
@@ -120,5 +173,29 @@ export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
     }
   } catch (e) {
     console.log('when saving device to masjid', e);
+  }
+}
+
+/**
+ *
+ * @description Check's Device Telemetry on Device Id
+ * @returns Promise<boolean>
+ * @todo //todo: Delete This later
+ */
+
+export async function _resetDevice(deviceId: string) {
+  console.log('Deleting Device now =>', deviceId);
+  try {
+    const res = await api.delete<any>(`devices/${deviceId}/reset`);
+    if (res?.ok) {
+      console.log('Deleted Success', Boolean(res.data));
+      return true;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (e) {
+    console.log('when device exists problems', e);
+    return false;
   }
 }

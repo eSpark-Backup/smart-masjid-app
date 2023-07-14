@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Toast from 'react-native-toast-message';
+import { useHookstate } from '@hookstate/core';
 
 import { Wrapper } from '../../containers';
 import {
@@ -19,23 +21,21 @@ import {
   OverlayLoader,
   SLoader,
 } from '../../components';
-import {
-  CheckUserExists,
-  CreateUser,
-  LoginUser,
-  RegisterUserPhone,
-  SendOTP,
-  ValidateOTP,
-} from '../../api/userController';
+import { RegisterUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
   UserResponse,
 } from '../../types/userControllerApiResponse';
-import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
-import Toast from 'react-native-toast-message';
 import { Check } from '../../assets';
+import {
+  CheckUserExists,
+  CreateUser,
+  LoginUser,
+  SendOTP,
+  ValidateOTP,
+} from '../../api/externalControllers';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -65,8 +65,8 @@ export default function UserSetupScreen() {
   }, [route.params?.type]);
 
   const handleBack = () => {
-    if (step == 1.1) {
-      return 1;
+    if (step == 3) {
+      return activeFlow == 'signup' ? 2 : 1;
     }
     if (step !== 1) {
       return step - 1;
@@ -92,6 +92,7 @@ export default function UserSetupScreen() {
         text2: res?.message,
         type: 'error',
         autoHide: true,
+        visibilityTime: 10000,
       });
     }
   };
@@ -125,6 +126,7 @@ export default function UserSetupScreen() {
         Toast.show({
           text2: 'User Already Exist',
           type: 'error',
+          visibilityTime: 10000,
         });
       } else {
         const result = await SendOTP(email, phone);
@@ -144,6 +146,7 @@ export default function UserSetupScreen() {
         Toast.show({
           text2: 'User not found!',
           type: 'error',
+          visibilityTime: 10000,
         });
       }
     }
@@ -156,6 +159,7 @@ export default function UserSetupScreen() {
       <OverlayLoader isShow={loader} />
       <Wrapper
         bgImageSpacer={false}
+        showBack={step == 1 ? false : true}
         onBackPress={() => !disable && setStep(handleBack)}>
         <ScrollView>
           {step == 1 && (
@@ -188,7 +192,7 @@ export default function UserSetupScreen() {
           )}
           {step == 3 && (
             <OtpForm
-              title="Create Account"
+              title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
               type={route.params?.type}
               setStep={async (value: string) => {
                 setLoader(true);
@@ -197,6 +201,7 @@ export default function UserSetupScreen() {
                   data.email ?? '',
                   data.phone ?? '',
                 );
+                console.log('isVerified', isVerified);
                 if (isVerified) {
                   if (activeFlow == 'signup') {
                     setStep(4);
@@ -211,6 +216,10 @@ export default function UserSetupScreen() {
                     );
                   }
                 }
+                setLoader(false);
+              }}
+              onResend={async () => {
+                await SendOTP(data.email ?? '', data.phone ?? '');
               }}
             />
           )}

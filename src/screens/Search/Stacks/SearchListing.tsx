@@ -1,6 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, PermissionsAndroid, Platform } from 'react-native';
 import { SearchMasjidByLocation } from '../../../api/masjidController';
 import {
   GapView,
@@ -13,6 +13,7 @@ import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
+import { _requestUserLocationPermission } from '../../../utils/functions';
 
 const SearchListing = ({
   onPress,
@@ -25,8 +26,28 @@ const SearchListing = ({
   const [zipCode, setZipCode] = useState('');
   const [loader, setLoader] = useState(false);
 
+  const checkLocation = async () => {
+    try {
+      if (Platform.OS == 'ios') {
+        await _requestUserLocationPermission();
+        onCurrentLocationPress();
+      } else {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          onCurrentLocationPress();
+        } else {
+          _requestUserLocationPermission();
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    onCurrentLocationPress();
+    checkLocation();
   }, []);
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
@@ -65,8 +86,8 @@ const SearchListing = ({
       <OverlayLoader isShow={loader} />
       <GapView length={20} />
       <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={50} />
-      <View style={{ paddingTop: 15 }}>
+      <GapView length={60} />
+      <View>
         <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
           <MyInput
             searchBar
@@ -98,6 +119,7 @@ const SearchListing = ({
             location={`${item.address1} ${item.address2 ?? ''}, ${item.city}, ${
               item.state
             } ${item.zip}`}
+            masjidLogo={{ uri: item.logo }}
           />
         )}
         ItemSeparatorComponent={GapView}

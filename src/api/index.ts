@@ -8,8 +8,16 @@ export const api = create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    Authorization: USER_TOKEN
-      ? `Bearer ${USER_TOKEN}`
-      : '',
+    Authorization: USER_TOKEN ? `Bearer ${USER_TOKEN}` : '',
+  },
+});
+
+export const xApi = create({
+  baseURL: 'http://smartmasjid-api-qa.futuriklabs.com/',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    'x-api-key':
+      'Wmv6F6nHVJkMl8NesNgkNBSj6nveWxytOnmV9aGPxuN5j2ZDhOmoYeI9TdxyhvwA',
   },
 });

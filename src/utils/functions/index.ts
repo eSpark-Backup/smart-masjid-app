@@ -13,9 +13,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { globalStore } from '../../store/GlobalStates';
-import { IPrayerTimeForPeriod } from '../../types';
+import { CountryCodes, IPrayerTimeForPeriod } from '../../types';
 import moment from 'moment';
 import { IqamahTime, JummahTime } from '../../types/masjidControllerTypes';
+import Toast from 'react-native-toast-message';
+import phone from 'phone';
 
 /**
  *
@@ -52,7 +54,7 @@ async function _getFCMToken(): Promise<string> {
  * @returns null
  * @todo //todo: Delete This later
  */
-async function _requestUserPermission() {
+async function _requestUserNotificationPermission() {
   const authStatus = await messaging().requestPermission();
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -62,37 +64,43 @@ async function _requestUserPermission() {
     console.log('Authorization status:', authStatus);
   }
 
-  checkMultiple([
-    PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
-    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-    PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-    PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-    PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
-  ]).then(statuses => {
+  checkMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]).then(statuses => {
     _openSettingIsBlocked(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.BLUETOOTH_SCAN);
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.BLUETOOTH_CONNECT);
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE);
+    if (statuses[PERMISSIONS.ANDROID.POST_NOTIFICATIONS] != 'granted') {
+      requestMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]);
+    }
+  });
+}
+
+/**
+ * @description Used to request Location Permission method which triggers a native permission dialog requesting the user's permission:
+ * @returns null
+ * @todo //todo: Delete This later
+ */
+async function _requestUserLocationPermission() {
+  checkMultiple([
+    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    PERMISSIONS.IOS.LOCATION_ALWAYS,
+    PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  ]).then(statuses => {
     _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_ALWAYS);
+    _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
     if (
       statuses[
-        (PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
+        (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
         PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-        PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
       ] != 'granted'
     ) {
       requestMultiple([
-        PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
-        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-        PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
         PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
       ]);
     }
   });
@@ -122,40 +130,31 @@ async function _requestBlePermissions(): Promise<Boolean> {
     PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
     PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
     PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    // PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
   ]);
   console.log('hello', checkStatus);
   if (
     checkStatus[
       (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
       PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
     ] !== 'granted' ||
     checkStatus[
       (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
       PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
     ] === 'denied'
   ) {
     const requestStatus = await requestMultiple([
       PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
       PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
       PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
     ]);
     return (
       requestStatus[
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
         PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION)
+        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
       ] === 'granted'
     );
   } else {
@@ -358,13 +357,47 @@ function convertResponseToData(
   return data;
 }
 
-function isValidPhoneNumber(number: string) {
-  return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
+async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
+  // return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
+  if (Boolean(phoneNum) != false) {
+    const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
+    if (!isPhoneValid.isValid) {
+      Toast.show({
+        text2: 'Phone number is not valid',
+        type: 'error',
+        visibilityTime: 10000,
+      });
+      return false;
+    } else {
+      return true;
+    }
+  } else {
+    return true;
+  }
 }
+
+/**
+ * Converts an 24H Format Time into 12H Format
+ * @param time Only 5 digits Time like 15:15
+ * @returns Time Only like 03:15 PM
+ */
+
+function convertTo12Hour(time: string) {
+  if (time.length == 5) {
+    var str = new Date().toString().split('');
+    str.splice(16, 5, time);
+    var modifiedStr = str.join('');
+    return moment(modifiedStr).format('LT');
+  } else {
+    return time;
+  }
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
-  _requestUserPermission,
+  _requestUserNotificationPermission,
+  _requestUserLocationPermission,
   _requestBlePermissions,
   setDataInLocalStorage,
   getDataFromLocalStorage,
@@ -372,4 +405,5 @@ export {
   getCurrentMonthAdhanData,
   convertResponseToData,
   isValidPhoneNumber,
+  convertTo12Hour,
 };

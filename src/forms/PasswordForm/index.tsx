@@ -1,7 +1,8 @@
 import { Formik } from 'formik';
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Alert, Button, Linking, StyleSheet, View } from 'react-native';
 import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
+import RnWifi from '@react-native-tethering/wifi';
 import Toast from 'react-native-toast-message';
 
 import {
@@ -36,23 +37,26 @@ export default function PasswordForm({
   }) => {
     setLoading(true);
     try {
-      const res: any = await WifiManager.connectToProtectedSSID(
+      const res = await WifiManager.connectToProtectedSSID(
         ssid,
         password,
-        true,
+        false,
       );
-      console.log('connection?', res);
-      if (res === 'connected') {
+      await WifiManager.disconnect();
+      RnWifi.connectToNetwork({ ssid, password }).then(() => {
+        console.log('Connected Successfully', res);
         setLoading(false);
         setStep(6);
-      }
+      });
     } catch (e) {
       console.log('error in connecting wifi', e);
       setLoading(false);
       Toast.show({
         text2: 'Wifi not connected successfully',
         type: 'error',
+        visibilityTime: 10000,
       });
+      setStep(4);
     }
   };
 

@@ -35,13 +35,18 @@ export default function JummaTimings({
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(false);
 
+  // console.log(
+  //   'Jummah Timings',
+  //   moment(jummahTimings.jumuah1, 'HH:mm:ss').format('LT'),
+  // );
+
   useEffect(() => {
     GetMasjidJummahTiming('1');
   }, []);
 
   const data1: any = {
     id: 0,
-    changeDate: '2023-12-13',
+    effectiveDate: '2023-12-13',
     jumuah1: '06:15:00',
     jumuah2: '06:15:00',
     jumuah3: '06:15:00',
@@ -63,7 +68,7 @@ export default function JummaTimings({
       // Check if the key is not one of the properties that we don't want to extract
       if (
         key !== 'id' &&
-        key !== 'changeDate' &&
+        key !== 'effectiveDate' &&
         key !== 'createdBy' &&
         key !== 'createdDate' &&
         jummahTimings[key] != null
@@ -71,7 +76,7 @@ export default function JummaTimings({
         // If the key is a valid jumuah timing, add it to the arr array as an object
         arr.push({
           name: key,
-          azanTiming: moment(jummahTimings[key], 'HH:mm:ss').format('hh:mm'),
+          azanTiming: moment(jummahTimings[key], 'HH:mm:ss').format('LT'),
           onChange: (value: any) => {
             setData({
               ...data,
@@ -91,13 +96,14 @@ export default function JummaTimings({
     setEdit(false);
     setData(null);
   };
+
   return (
     <>
-      <View style={{ flex: 1, marginTop: 0 }}>
+      <View style={{ flex: 1 }}>
         <OverlayLoader isShow={loading} />
         <GapView length={20} />
         <TextLabel label="Jumuah Timings" textStyle={{ alignSelf: 'center' }} />
-        <GapView length={65} />
+        <GapView length={60} />
         <TimeTable
           header={
             <>
@@ -110,7 +116,9 @@ export default function JummaTimings({
                     paddingHorizontal: 5,
                   }}>
                   <View>
-                    <MyText text={`Effective Date: ${jummahTimings?.changeDate}`} />
+                    <MyText
+                      text={`Effective Date: ${jummahTimings?.effectiveDate}`}
+                    />
                   </View>
                   <View
                     style={{
@@ -131,10 +139,11 @@ export default function JummaTimings({
               ) : (
                 <View>
                   <MyDatePicker
+                    minimumDate={new Date()}
                     onDateChange={date => {
                       setData({
                         ...data,
-                        changeDate: moment(date).format('YYYY-MM-DD'),
+                        effectiveDate: moment(date).format('YYYY-MM-DD'),
                       });
                     }}
                   />

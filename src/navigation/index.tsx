@@ -9,6 +9,9 @@ import Toast, {
 } from 'react-native-toast-message';
 import { State, useHookstate } from '@hookstate/core';
 import { getUniqueId } from 'react-native-device-info';
+import jwtDecode from 'jwt-decode';
+import moment from 'moment';
+import SplashScreen from 'react-native-splash-screen';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
@@ -16,12 +19,15 @@ import { GlobalProps, RootStackParamList } from '../types';
 import HomeBottomTab from './BottomNavigation';
 import { _getPhoneId } from '../utils';
 import { globalStore } from '../store/GlobalStates';
-import { _checkPhoneId } from '../api/userController';
 import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
 import { userStore } from '../store/UserStore';
-import { UserResponse } from '../types/userControllerApiResponse';
+import { UserResponse, UserToken } from '../types/userControllerApiResponse';
 import { OverlayLoader } from '../components';
-import { GetCountryCodes } from '../api/externalControllers';
+import {
+  GetCountryCodes,
+  RefreshToken,
+  _checkPhoneId,
+} from '../api/externalControllers';
 import { api } from '../api';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -71,9 +77,13 @@ export default function App() {
   const userData = useHookstate(userStore.userData);
   const userToken = useHookstate(userStore.token);
   const [loader, setLoader] = useState<boolean>(false);
+
+  useEffect(() => {
+    handleDeviceIdCheck();
+  }, [userData]);
+
   useEffect(() => {
     GetCountryCodes();
-    handleDeviceIdCheck();
     _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
@@ -81,16 +91,31 @@ export default function App() {
         userData.set(data);
       }
     });
-    getDataFromLocalStorage('token').then((res: any) => {
+    getDataFromLocalStorage('token').then(async (res: any) => {
       if (res != null) {
         const token = JSON.parse(res);
-        console.log('token kia ha', token);
+        const jwtDecodedObj: UserToken = jwtDecode(token);
+        if (
+          // jwtDecodedObj.exp is unix date thats why we multiply to 1000 to convert to real date
+          moment(moment(new Date()))
+            .subtract(1, 'day')
+            // @ts-ignore
+            .isSameOrAfter(new Date(jwtDecodedObj.exp * 1000))
+        ) {
+          console.log('IF Token Expiration is Today');
+          await RefreshToken();
+          return;
+        }
         api.setHeaders({
           Authorization: `Bearer ${token}`,
         });
         userStore.token.set(token);
       }
     });
+
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 5000);
   }, []);
 
   const handleDeviceIdCheck = useCallback(async () => {
@@ -114,6 +139,8 @@ export default function App() {
     setLoader(false);
   }, []);
 
+  console.log('checkid', checkedId);
+
   if (checkedId !== null) {
     return (
       <NavigationContainer theme={MyLightTheme}>
@@ -125,8 +152,17 @@ export default function App() {
           }}>
           {!userData.get()?.id ? (
             <Stack.Group>
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="USetup" component={UserSetupScreen} />
+              {!checkedId ? (
+                <>
+                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                  <Stack.Screen name="USetup" component={UserSetupScreen} />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen name="USetup" component={UserSetupScreen} />
+                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                </>
+              )}
               <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
           ) : (
@@ -139,12 +175,12 @@ export default function App() {
         <Toast
           config={toastConfig}
           topOffset={StatusBar.currentHeight}
-          visibilityTime={2000}
+          visibilityTime={5000}
         />
       </NavigationContainer>
     );
   } else {
-    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={loader} />;
+    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;
   }
 }
 
