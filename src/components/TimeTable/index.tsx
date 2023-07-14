@@ -1,23 +1,13 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import {
-  CheckMark,
-  EditTimeTable,
-  InfoCircle,
-  MuteSvg,
-  VolumUpGreen,
-} from '../../assets';
+import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+
+import { InfoCircle, MuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
-import { Card } from '../../containers';
-import { Rounded } from '../Buttons';
 import GapView from '../GapView';
-import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
-import MyInput from '../MyInput';
 import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
-import TextLabel from '../TextLabel';
-import { TextInput } from 'react-native';
 
 interface DataProps {
   name?: string;
@@ -36,6 +26,7 @@ const RowItem = ({
   edit = false,
   type,
 }: any) => {
+  const { colors } = useTheme();
   const [toggleMute, setToggleMute] = useState(true);
   return (
     <TouchableOpacity
@@ -71,6 +62,7 @@ const RowItem = ({
                         onChangeText={item?.onChange}
                         style={{
                           borderWidth: 0.5,
+                          color: colors.text,
                           borderColor: '#3E3E3E',
                           borderRadius: 3,
                           height: 40,

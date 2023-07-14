@@ -189,6 +189,7 @@ export async function _resetDevice(deviceId: string) {
     const res = await api.delete<any>(`devices/${deviceId}/reset`);
     if (res?.ok) {
       console.log('Deleted Success', Boolean(res.data));
+      return true;
     } else {
       console.log('Problem status', res.status, res.data);
       return false;

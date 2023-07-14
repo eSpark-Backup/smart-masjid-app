@@ -253,7 +253,9 @@ export default function DeviceSetupScreen() {
       );
       console.log('kia res???', masjidDevRes);
       if (masjidDevRes) {
-        checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
+        setTimeout(() => {
+          checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
+        }, 5000);
       } else {
         setStep(8); // failed saving device (show error screen)
       }
@@ -262,7 +264,9 @@ export default function DeviceSetupScreen() {
       const userDevRes: any = await _saveDeviceToUser(devRes?.id);
       console.log('kia res???', userDevRes);
       if (userDevRes) {
-        checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+        setTimeout(() => {
+          checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+        }, 5000);
       } else {
         setStep(8); // failed saving device (show error screen)
       }
@@ -275,7 +279,7 @@ export default function DeviceSetupScreen() {
       if (Boolean(res)) {
         setStep(7); // successfully device added and found it out as well
       } else {
-        handleDeleteDevice(deviceId);
+        handleDeleteDevice(deviceId); //FIXME: uncomment later
       }
     } catch (e) {
       console.log('error on call check device telemetry', e);
