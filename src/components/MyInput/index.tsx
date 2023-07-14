@@ -12,7 +12,7 @@ import {
 import II from 'react-native-vector-icons/Ionicons';
 import { useHookstate } from '@hookstate/core';
 import MI from 'react-native-vector-icons/MaterialIcons';
-import { PERMISSIONS, check, request } from 'react-native-permissions';
+import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
 
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
@@ -21,6 +21,7 @@ import GapView from '../GapView';
 import { CountryPickerModal } from '..';
 import { externalStore } from '../../store/ExternalStore';
 import { CountryCodes } from '../../types';
+import { _requestUserLocationPermission } from '../../utils/functions';
 
 interface MyInputProps {
   isDivider?: boolean;
@@ -99,13 +100,30 @@ export default function MyInput(props: MyInputProps) {
 
   const checkLocation = async () => {
     try {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (granted) {
-        setLocationPermission(true);
+      if (Platform.OS == 'ios') {
+        checkMultiple([
+          PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        ]).then(statuses => {
+          console.log(statuses[PERMISSIONS.IOS.LOCATION_ALWAYS]);
+          if (
+            statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] == 'granted' ||
+            statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
+          ) {
+            setLocationPermission(true);
+          } else {
+            _requestUserLocationPermission();
+          }
+        });
       } else {
-        setLocationPermission(false);
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        if (granted) {
+          setLocationPermission(true);
+        } else {
+          setLocationPermission(false);
+        }
       }
     } catch (err) {
       console.error(err);

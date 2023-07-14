@@ -1,6 +1,6 @@
 import React from 'react';
 import { Theme, useTheme } from '@react-navigation/native';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Home, Search, Device, Profile } from '../screens';
@@ -57,7 +57,11 @@ function HomeBottomTab() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused }) => {
-          return TabIcon(route.name, focused);
+          return (
+            <View style={{ top: Platform.OS == 'ios' ? 10 : 0 }}>
+              {TabIcon(route.name, focused)}
+            </View>
+          );
         },
         headerShown: false,
         tabBarActiveTintColor: colors?.primary,
@@ -79,7 +83,7 @@ const makeStyles = (theme: Theme) => {
     tabBar: {
       shadowOffset: {
         width: 0,
-        height: 12,
+        height: 23,
       },
       shadowOpacity: 0.58,
       shadowRadius: 16.0,

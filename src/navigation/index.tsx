@@ -139,6 +139,8 @@ export default function App() {
     setLoader(false);
   }, []);
 
+  console.log('checkid', checkedId);
+
   if (checkedId !== null) {
     return (
       <NavigationContainer theme={MyLightTheme}>
@@ -150,8 +152,17 @@ export default function App() {
           }}>
           {!userData.get()?.id ? (
             <Stack.Group>
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="USetup" component={UserSetupScreen} />
+              {!checkedId ? (
+                <>
+                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                  <Stack.Screen name="USetup" component={UserSetupScreen} />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen name="USetup" component={UserSetupScreen} />
+                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                </>
+              )}
               <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
           ) : (

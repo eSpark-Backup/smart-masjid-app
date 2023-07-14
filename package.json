@@ -62,7 +62,11 @@
     "yup": "^1.0.2"
   },
   "reactNativePermissionsIOS": [
-    "Notifications"
+    "Notifications",
+    "LocationAccuracy",
+    "LocationAlways",
+    "BluetoothPeripheral",
+    "LocationWhenInUse"
   ],
   "devDependencies": {
     "@babel/core": "^7.20.0",

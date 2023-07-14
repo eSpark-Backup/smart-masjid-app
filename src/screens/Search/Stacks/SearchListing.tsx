@@ -1,6 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, PermissionsAndroid } from 'react-native';
+import { FlatList, View, PermissionsAndroid, Platform } from 'react-native';
 import { SearchMasjidByLocation } from '../../../api/masjidController';
 import {
   GapView,
@@ -28,13 +28,18 @@ const SearchListing = ({
 
   const checkLocation = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      if (Platform.OS == 'ios') {
+        await _requestUserLocationPermission();
         onCurrentLocationPress();
       } else {
-        _requestUserLocationPermission();
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          onCurrentLocationPress();
+        } else {
+          _requestUserLocationPermission();
+        }
       }
     } catch (err) {
       console.error(err);
