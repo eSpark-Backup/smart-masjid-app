@@ -8,11 +8,12 @@ import { useHookstate } from '@hookstate/core';
 import { Wrapper } from '../../containers';
 import {
   LoginForm,
-  OtpForm,
   SignUpForm,
+  OtpForm,
   PersonalInfoForm,
   AddPhoneForm,
-} from '../../forms';
+} from './UserForms';
+
 import { RootStackParamList } from '../../types';
 import {
   GapView,

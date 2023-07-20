@@ -32,7 +32,7 @@ import {
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { CountryCodes } from '../../../../types';
-import { OtpForm } from '../../../../forms';
+import { OtpForm } from '../../ProfileForms';
 import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 
 export default function ManageAccount({
