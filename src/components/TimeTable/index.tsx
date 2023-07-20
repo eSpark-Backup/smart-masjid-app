@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     backgroundColor: '#F7F9FA',
-    elevation: 3,
+    elevation: 1,
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
@@ -206,7 +206,6 @@ const styles = StyleSheet.create({
   contentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // marginVertical: 10
     alignItems: 'center',
   },
   editContentRow: {
