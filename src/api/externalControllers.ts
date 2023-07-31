@@ -36,10 +36,10 @@ export const SendOTP = async (email?: string, phone?: string) => {
       phone: phone ?? '',
     });
     if (result.status === 200) {
-      Toast.show({
-        text2: 'OTP sent successfully',
-        type: 'success',
-      });
+      // Toast.show({
+      //   text2: 'OTP sent successfully',
+      //   type: 'success',
+      // });
       return true;
     } else {
       Toast.show({
@@ -74,10 +74,10 @@ export const ValidateOTP = async (
     console.log('🚀 ~ file: userController.ts:322 ~ phone:', phone);
     console.log('🚀 ~ file: userController.ts:319 ~ result:', result);
     if (result.status === 200 && result.data) {
-      Toast.show({
-        text2: 'OTP verification successfully',
-        type: 'success',
-      });
+      // Toast.show({
+      //   text2: 'OTP verification successfully',
+      //   type: 'success',
+      // });
       return true;
     } else {
       Toast.show({
