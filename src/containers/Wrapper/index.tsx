@@ -22,14 +22,13 @@ export default function Wrapper({
   showBack?: boolean;
 }) {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1}}>
       <StatusBar translucent={true} backgroundColor={'transparent'} />
       <View style={{ flex: 1 }}>
         <ImageBackground
           style={styles.imageBackgroundStyle}
           imageStyle={styles.imageStyle}
           source={HeaderBackgroundImage}>
-          <View style={{ height: WINDOW_WIDTH / 10 }} />
           <Header onBackPress={onBackPress} showBack={showBack} />
           {bgImageSpacer && (
             <View
