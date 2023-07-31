@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import {
   GapView,
@@ -8,8 +8,18 @@ import {
   TextLabel,
   TimeTable,
 } from '../../../components';
-import { Masjid } from '../../../types/masjidControllerTypes';
+import {
+  IqamahTime,
+  Masjid,
+  PrayerTimes,
+} from '../../../types/masjidControllerTypes';
 import { AdhanCalculation, AdhanJuristic } from '../../../assets';
+import {
+  GetMasidAdhanTimings,
+  GetMasidIqamaTimings,
+} from '../../../api/search.controller';
+import { _normalizedSubscriptions } from '../../../utils/functions';
+import moment from 'moment';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -19,7 +29,49 @@ const MasjidDetails = ({
   masjidDetails?: Masjid;
 }) => {
   const [subscribe, setSubscribe] = useState(false);
-  console.log('masjidDetails?.location', masjidDetails?.location);
+  const [adhanTimings, setAdhanTiming] = useState<PrayerTimes>();
+  const [iqamaTimings, setIqamaTiming] = useState<IqamahTime>();
+
+  useEffect(() => {
+    GetMasidAdhanTimings(masjidDetails?.id?.toString() ?? '').then(
+      (res: any) => {
+        setAdhanTiming(res[0]);
+      },
+    );
+
+    GetMasidIqamaTimings(masjidDetails?.id?.toString() ?? '').then(
+      (res: any) => {
+        setIqamaTiming(res);
+      },
+    );
+  }, []);
+
+  const subscriptions = _normalizedSubscriptions(
+    masjidDetails?.subscriptionList,
+  )?.ADHAN?.map(val => {
+    return {
+      name: val?.subscriptionType?.name?.toLowerCase(),
+      azanTiming: adhanTimings
+        ? // @ts-ignore
+          adhanTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
+        : '-',
+      iqamahTiming: iqamaTimings
+        ? val?.subscriptionType?.name?.toLowerCase() == 'maghrib'
+          ? // @ts-ignore
+            moment(adhanTimings['maghrib'], 'HH:mm:ss').add(
+              'minutes',
+              // @ts-ignore
+              iqamaTimings[
+                `${val?.subscriptionType?.name?.toLowerCase()}Delay`
+              ],
+            )
+          : // @ts-ignore
+            iqamaTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
+        : '-',
+    };
+  });
+
+  // console.log('subscriptions', iqamaTimings);
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
@@ -53,33 +105,8 @@ const MasjidDetails = ({
         <GapView length={20} />
         <View style={{ padding: 10 }}>
           <TimeTable
-            data={[
-              {
-                name: 'Fajar',
-                azanTiming: '5:50',
-                iqamahTiming: '6:00',
-              },
-              {
-                name: 'Dhuhr',
-                azanTiming: '1:00',
-                iqamahTiming: '1:30',
-              },
-              {
-                name: 'Asr',
-                azanTiming: '4:50',
-                iqamahTiming: '5:00',
-              },
-              {
-                name: 'Maghrib',
-                azanTiming: '5:50',
-                iqamahTiming: '6:00',
-              },
-              {
-                name: 'Isha',
-                azanTiming: '6:50',
-                iqamahTiming: '8:00',
-              },
-            ]}
+            // @ts-ignore
+            data={subscriptions}
           />
         </View>
         <GapView />
