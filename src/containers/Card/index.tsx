@@ -20,20 +20,11 @@ export default function Card(props: CardProps) {
       <View
         style={{
           width: props?.width ?? WINDOW_WIDTH - 28,
-          maxHeight: height,
+          height: height,
           borderRadius: radius,
         }}>
         {children}
       </View>
-      {/* <ShadowFlex
-        style={{
-          ...styles.shadowContainer,
-          width: props?.width ?? WINDOW_WIDTH - 28,
-          maxHeight: height,
-          borderRadius: radius,
-        }}>
-        {children}
-      </ShadowFlex> */}
     </View>
   );
 }
@@ -45,26 +36,8 @@ const makeStyles = (props: CardProps) => {
       width: props.width ?? WINDOW_WIDTH - 28,
       alignItems: 'center',
       alignSelf: 'center',
-      backgroundColor: props?.backgroundColor ?? '#F7F9FA',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 1.41,
-      elevation: 1,
-      maxHeight: props.height,
-    },
-    shadowContainer: {
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.2,
-      shadowColor: 'grey',
-      shadowRadius: 6,
-      borderRadius: 12,
-      backgroundColor: props?.backgroundColor ?? '#F7F9FA',
-      justifyContent: 'center',
-      overflow: 'hidden',
+      backgroundColor: props?.backgroundColor ?? '#F1F7F8',
+      height: props.height,
     },
   });
 };
