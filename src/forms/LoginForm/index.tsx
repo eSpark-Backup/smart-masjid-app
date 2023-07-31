@@ -19,7 +19,7 @@ import { Card } from '../../containers';
 import { useLayoutAnimation } from '../../utils';
 import { CountryCodes } from '../../types';
 
-export default function LoginForm({
+const LoginForm = ({
   type,
   setStep,
   onPhonePress = () => {},
@@ -27,7 +27,7 @@ export default function LoginForm({
   type?: 'login' | 'setup';
   setStep: (value: any) => void;
   onPhonePress?: (value: any) => void;
-}) {
+}) => {
   const { colors }: Theme = useTheme();
   const [activeTab, setActiveTab] = React.useState('1');
   const [currentCountry, setCurrentCountry] = React.useState<CountryCodes>();
@@ -149,7 +149,8 @@ export default function LoginForm({
       </View>
     </View>
   );
-}
+};
+export default LoginForm;
 
 const styles = StyleSheet.create({
   container: {

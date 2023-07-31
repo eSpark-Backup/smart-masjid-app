@@ -19,7 +19,7 @@ import {
   WifiSelectForm,
   PasswordForm,
   DeviceNicknameForm,
-} from '../../forms';
+} from './DeviceForms';
 import {
   BottomNavigationParamList,
   DeviceInfo,

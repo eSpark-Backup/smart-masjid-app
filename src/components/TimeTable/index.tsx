@@ -8,6 +8,8 @@ import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
+import TextLabel from '../TextLabel';
+import moment from 'moment';
 
 interface DataProps {
   name?: string;
@@ -39,8 +41,6 @@ const RowItem = ({
       }>
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
-          console.log('item', item[key]);
-
           if (key == 'onChange') return;
           return (
             <React.Fragment key={index}>
@@ -79,7 +79,21 @@ const RowItem = ({
                 </>
               ) : (
                 <View key={key} style={styles.contentCol}>
-                  <MyText text={item[key]} size={16} />
+                  <MyText
+                    text={
+                      ['azanTiming', 'iqamahTiming'].includes(key)
+                        ? moment(item[key], 'HH:mm:ss').format('LT')
+                        : item[key]
+                    }
+                    size={16}
+                    textStyle={{
+                      textTransform: ['azanTiming', 'iqamahTiming'].includes(
+                        key,
+                      )
+                        ? 'uppercase'
+                        : 'capitalize',
+                    }}
+                  />
                 </View>
               )}
             </React.Fragment>
@@ -192,7 +206,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     backgroundColor: '#F7F9FA',
-    elevation: 3,
+    elevation: 1,
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
@@ -206,7 +220,6 @@ const styles = StyleSheet.create({
   contentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // marginVertical: 10
     alignItems: 'center',
   },
   editContentRow: {
