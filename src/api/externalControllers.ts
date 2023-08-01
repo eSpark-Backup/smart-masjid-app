@@ -252,7 +252,7 @@ export async function _checkDeviceExists(mac_address: string) {
   console.log('kiaaaaa', uriEncodedString);
 
   try {
-    const res = await api.get(
+    const res = await xApi.get(
       'external/device/exists?macAddress=' + uriEncodedString,
     );
     if (res?.ok) {

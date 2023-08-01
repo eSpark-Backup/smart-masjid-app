@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
@@ -10,10 +10,21 @@ import { Card } from '../../containers';
 export default function DeviceNicknameForm({
   setNickName,
   setStep,
+  currentDeviceName,
+  autoFillName,
 }: {
   setNickName: (value: string) => void;
   setStep: (value: number) => void;
+  currentDeviceName: string;
+  autoFillName?: boolean;
 }) {
+  useEffect(() => {
+    if (autoFillName && currentDeviceName) {
+      setStep(4);
+      setNickName(currentDeviceName);
+    }
+  }, [autoFillName]);
+
   return (
     <View style={styles.container}>
       <GapView length={20} />

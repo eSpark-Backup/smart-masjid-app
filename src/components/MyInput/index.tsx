@@ -22,6 +22,7 @@ import { CountryPickerModal } from '..';
 import { externalStore } from '../../store/ExternalStore';
 import { CountryCodes } from '../../types';
 import { _requestUserLocationPermission } from '../../utils/functions';
+import { useLayoutAnimation } from '../../utils';
 
 interface MyInputProps {
   isDivider?: boolean;
@@ -78,12 +79,13 @@ export default function MyInput(props: MyInputProps) {
     phoneCodeContainerStyle,
   } = props;
   const theme: Theme = useTheme();
-  const styles = useMemo(() => getStyles(theme, props), []);
+  const styles = useMemo(() => getStyles(theme, props), [props]);
   const [text, setText] = useState(value);
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [currentCountry, setCurrentCountry] = useState<any>(null);
   const countries = useHookstate(externalStore.countryCodes).get();
   const [locationPermission, setLocationPermission] = useState(false);
+  const [getFocused, setGetFocused] = useState(false);
 
   console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
 
@@ -101,6 +103,10 @@ export default function MyInput(props: MyInputProps) {
   useEffect(() => {
     setText(value);
   }, [value]);
+
+  useEffect(() => {
+    useLayoutAnimation(100);
+  }, [getFocused]);
 
   const checkLocation = async () => {
     try {
@@ -188,28 +194,52 @@ export default function MyInput(props: MyInputProps) {
           <TouchableOpacity
             onPress={() => setShowCountryPicker(true)}
             activeOpacity={0.9}
-            style={[styles.phoneCodeContainer, phoneCodeContainerStyle ?? {}]}>
+            style={[
+              styles.phoneCodeContainer,
+              { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
+              phoneCodeContainerStyle ?? {},
+            ]}>
             <Flag height={24} width={24} />
             <GapView mode="horizontal" length={5} />
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
           </TouchableOpacity>
         )}
-        <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
+        <View
+          style={{
+            position: 'absolute',
+            top: value || getFocused ? -10 : 15,
+            left: isPhoneCode ? 95 : 15,
+            backgroundColor: theme.colors.background,
+            zIndex: value || getFocused ? 1 : 0,
+            paddingHorizontal: 5,
+          }}>
+          <MyText
+            textStyle={{ color: getFocused ? theme.colors.primary : '#9E9F9F' }}
+            text={placeholder}
+          />
+        </View>
+        <View style={isDropDown ? { ...dropStyle } : {}}>
           <View>
             <TextInput
               editable={selectMode && !disabled}
               autoComplete="off"
               autoCorrect={false}
               keyboardType={isPhoneCode ? 'number-pad' : 'default'}
-              placeholder={placeholder}
-              style={[styles.inputStyle, inputStyle]}
+              // placeholder={getFocused ? '' : placeholder}
+              style={[
+                styles.inputStyle,
+                { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
+                inputStyle,
+              ]}
               onChangeText={handleTextChange}
+              onFocus={() => setGetFocused(true)}
+              onBlur={() => setGetFocused(false)}
               value={
                 isPhoneCode
                   ? text?.replace(currentCountry?.code ?? '+1', '')
                   : text
               }
-              placeholderTextColor={placeholderColor ?? '#9E9F9F'}
+              // placeholderTextColor={placeholderColor ?? '#9E9F9F'}
               onPressIn={onFocus}
               onSubmitEditing={onBlur}
               secureTextEntry={isSecure}
@@ -274,17 +304,26 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
     },
     inputStyle: {
       paddingHorizontal: 20,
-      width: WINDOW_WIDTH - 45 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
+      width: WINDOW_WIDTH - 75 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,
       top: Platform.OS == 'ios' ? 17 : 0,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderTopRightRadius: searchBar ? 0 : 10,
+      borderBottomRightRadius: searchBar ? 0 : 10,
+      borderTopLeftRadius: isPhoneCode ? 0 : 10,
+      borderBottomLeftRadius: isPhoneCode ? 0 : 10,
+      borderLeftWidth: isPhoneCode ? 0 : 1,
     },
     phoneCodeContainer: {
       width: 80,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
-      borderRightWidth: 0.2,
-      borderRightColor: '#9E9F9F',
+      borderWidth: 1,
+      borderColor: '#9E9F9F',
+      borderTopLeftRadius: 10,
+      borderBottomLeftRadius: 10,
     },
     searchBarContainer: {
       backgroundColor: colors.primary,

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Theme, useTheme } from '@react-navigation/native';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 
 import {
   Attention,
@@ -24,27 +24,102 @@ import {
   ErrorModal,
   DeviceStatus,
   DeviceErrorBox,
+  OverlayLoader,
+  LogoutModal,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
+import { _resetDevice, _updateDevice } from '../../../api/deviceController';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomNavigationParamList, RootStackParamList } from '../../../types';
 
-const DeviceSetting = ({ device }: { device?: Device }) => {
+type DeviceNavigationProps = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'HomeBottomTab'
+>;
+
+const DeviceSetting = ({
+  device,
+  goBack,
+}: {
+  device?: Device;
+  goBack?: () => void;
+}) => {
   const theme: Theme = useTheme();
+  const navigation = useNavigation<DeviceNavigationProps['navigation']>();
   const [errorShow, setErrorShow] = useState<boolean>(false);
+  const [loader, setLoader] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isEditable, setIsEditable] = useState<boolean>(false);
   console.log('deive selectedx ??', device);
 
   const styles = useMemo(() => makeStyles(theme), []);
+
+  const removeDevice = async () => {
+    setLoader(true);
+    try {
+      const res = await _resetDevice(device?.id.toString()!);
+      console.log('res', res);
+      if (res) {
+        setLoader(false);
+        goBack?.();
+      }
+    } catch (error) {
+      setLoader(false);
+      console.error(error);
+    }
+  };
+
+  const updateDeviceName = async (text?: string) => {
+    setLoader(true);
+    console.log('text res', text);
+    try {
+      const res = await _updateDevice({
+        ...device!,
+        name: text ?? device?.name!,
+      });
+      console.log('update res', res);
+      if (res) {
+        setLoader(false);
+        goBack?.();
+      }
+    } catch (error) {
+      setLoader(false);
+      console.error(error);
+    }
+  };
+
   return (
     <>
+      <OverlayLoader isShow={loader} />
       <ErrorModal
         visible={errorShow}
         message="Looks like your device is offline, what would you like to do ?"
-        onClose={() => console.log('pressed cancel')}
+        onClose={() => setErrorShow(false)}
         options={[
-          { label: 'Update Password', onPress: () => console.log('option 1') },
+          {
+            label: 'Update Password',
+            onPress: () => {
+              goBack?.();
+              navigation.navigate('DSetup', {
+                from: 'SelectedDevice',
+                deviceData: device,
+                onlyPassword: true,
+              });
+              setErrorShow(false);
+            },
+          },
           {
             label: 'Connect new Wi-Fi',
-            onPress: () => console.log('option 2'),
+            onPress: () => {
+              goBack?.();
+              navigation.navigate('DSetup', {
+                from: 'SelectedDevice',
+                deviceData: device,
+              });
+              setErrorShow(false);
+            },
+            // onPress: () => console.log('mac ID', device),
           },
         ]}
       />
@@ -63,13 +138,15 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
               }`}
               textStyle={styles.deviceName}
             />
-            <DeviceStatus online />
+            <DeviceStatus
+              online={device?.deviceTelemetry.status == 'Online' ? true : false}
+            />
           </View>
           <GapView length={20} />
           <DeviceErrorBox
-            show={true}
+            show={device?.deviceTelemetry.status == 'Online' ? false : true}
             onClose={() => console.log('on Close Box', device)}
-            message="Looks like your device se.Cupidatat sint sint elit nostrud mollit ad sunt cupidatat ex duis est."
+            message="Looks like your device is offline. If you believe your WiFi is working, please power off and power on the device."
           />
           <DeviceSettingSectionList
             data={[
@@ -81,14 +158,22 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                     subtitle: device?.name,
                     icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
+                    isEdit: isEditable,
+                    onPress: () => setIsEditable(true),
+                    onDoneEdit: text => {
+                      updateDeviceName(text);
+                      setIsEditable(false);
+                    },
                   },
                   {
                     title: 'Battery',
                     subtitle:
-                      device?.deviceTelemetry?.batteryLife.toString() ??
-                      '??' + ' %',
+                      device?.deviceTelemetry?.batteryLife.toString() + '%',
                     icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
-                    danger: true,
+                    danger:
+                      device?.deviceTelemetry?.batteryLife! <= 15
+                        ? true
+                        : false,
                   },
                   {
                     title: 'Subscription',
@@ -106,7 +191,14 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                     title: 'Wifi',
                     subtitle: device?.wifiSsid,
                     icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
-                    isEditable: true,
+                    // isEditable: true,
+                    danger:
+                      device?.deviceTelemetry.status == 'Online' ? false : true,
+                    // onPress:
+                    //   device?.deviceTelemetry.status == 'Online'
+                    //     ? undefined
+                    //     : () => setErrorShow(true),
+                    onPress: () => setErrorShow(true),
                   },
                   {
                     title: 'Firmware Version',
@@ -121,9 +213,7 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
                   {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
-                    onPress: () => {
-                      console.log('Reset Device?');
-                    },
+                    onPress: () => setIsVisible(true),
                     icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
                   },
                 ],
@@ -131,6 +221,19 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
             ]}
           />
         </View>
+        <LogoutModal
+          message="The device will remove permanently. Do you still want to reset?"
+          visible={isVisible}
+          onAllowed={async () => {
+            await removeDevice();
+            setIsVisible(!isVisible);
+            console.log('Logged Out');
+          }}
+          onClose={() => {
+            setIsVisible(!isVisible);
+            console.log('Cancelled');
+          }}
+        />
       </ScrollView>
     </>
   );

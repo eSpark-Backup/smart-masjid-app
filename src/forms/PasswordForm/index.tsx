@@ -43,11 +43,13 @@ export default function PasswordForm({
         false,
       );
       await WifiManager.disconnect();
-      RnWifi.connectToNetwork({ ssid, password }).then(() => {
-        console.log('Connected Successfully', res);
-        setLoading(false);
-        setStep(6);
-      });
+      RnWifi.connectToNetwork({ ssid, password })
+        .then(() => {
+          console.log('Connected Successfully', res);
+          setLoading(false);
+          setStep(6);
+        })
+        .catch(e => console.error(e));
     } catch (e) {
       console.log('error in connecting wifi', e);
       setLoading(false);

@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Caution, Chevron_Right, DeviceEdit, EditHeavy } from '../../assets';
+import {
+  Caution,
+  CheckSvg,
+  Chevron_Right,
+  DeviceEdit,
+  EditHeavy,
+} from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
+import { Card } from '../../containers';
+import { Rounded } from '../Buttons';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
+import MyInput from '../MyInput';
 import MyText from '../MyText';
 interface DataItem {
   title?: string;
@@ -16,9 +25,12 @@ interface DataProp {
   subtitle?: string;
   icon: JSX.Element;
   onPress?: () => void;
+  onEditPress?: () => void;
   isEditable?: boolean;
+  isEdit?: boolean;
   rightArrow?: boolean;
   danger?: boolean;
+  onDoneEdit?: (text: string | undefined) => void;
 }
 
 export default function DeviceSettingSectionList({
@@ -53,38 +65,81 @@ export default function DeviceSettingSectionList({
 }
 
 const SectionCard = ({ item }: { item: DataProp }) => {
+  const [dName, setDName] = useState('');
   return (
     <>
-      <GapView />
-      <TouchableOpacity
-        disabled={Boolean(!item?.onPress)}
-        onPress={item?.onPress}
-        style={{ ...styles.cardContainer }}>
-        <View style={styles.row}>
-          <View style={styles.leftIcon}>{item?.icon}</View>
-          <GapView mode="horizontal" />
-          <View>
-            <View>
-              <MyText text={item?.title} />
-              <GapView mode="horizontal" length={5} />
-              <MyText
-                text={
-                  item?.danger
-                    ? item?.subtitle!! + ' Battery Low'
-                    : item?.subtitle!!
-                }
-                textStyle={{ color: item?.danger ? '#ff6464' : '#9E9F9F' }}
-              />
+      {!item.isEdit ? (
+        <>
+          <GapView />
+          <TouchableOpacity
+            disabled={Boolean(!item?.onPress)}
+            onPress={item?.onPress}
+            style={{ ...styles.cardContainer }}>
+            <View style={styles.row}>
+              <View style={styles.leftIcon}>{item?.icon}</View>
+              <GapView mode="horizontal" />
+              <View>
+                <View>
+                  <MyText text={item?.title} />
+                  <GapView mode="horizontal" length={5} />
+                  <MyText
+                    text={
+                      item?.danger && item.title == 'Battery'
+                        ? item?.subtitle!! + ' Battery Low'
+                        : item?.subtitle!!
+                    }
+                    textStyle={{
+                      color:
+                        item?.danger && item.title == 'Battery'
+                          ? '#ff6464'
+                          : '#9E9F9F',
+                    }}
+                  />
+                </View>
+              </View>
             </View>
+            <View
+            // activeOpacity={item.title == 'Battery' ? 1 : 0.5}
+            // onPress={item.onEditPress}
+            >
+              {item?.rightArrow && <Chevron_Right />}
+              {item?.isEditable && <EditHeavy />}
+              {item?.danger && <Caution />}
+            </View>
+          </TouchableOpacity>
+          <GapView />
+        </>
+      ) : (
+        <>
+          <GapView />
+          <View
+            // key={ind}
+            style={{
+              width: WINDOW_WIDTH - 30,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              alignSelf: 'center',
+            }}>
+            <Card width={WINDOW_WIDTH - 90} backgroundColor="#ffffff">
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <GapView mode="horizontal" />
+                {item.icon}
+                <GapView mode="horizontal" />
+                <MyInput
+                  placeholderColor="#CFCFCF"
+                  placeholder={item.title}
+                  onChangeText={(value: string) => setDName(value)}
+                  value={item.subtitle}
+                />
+              </View>
+            </Card>
+            <TouchableOpacity onPress={() => item.onDoneEdit?.(dName)}>
+              <CheckSvg width={50} height={50} />
+            </TouchableOpacity>
           </View>
-        </View>
-        <View>
-          {item?.rightArrow && <Chevron_Right />}
-          {item?.isEditable && <EditHeavy />}
-          {item?.danger && <Caution />}
-        </View>
-      </TouchableOpacity>
-      <GapView />
+        </>
+      )}
     </>
   );
 };

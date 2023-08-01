@@ -60,7 +60,13 @@ export default function DeviceCard({
                   alignItems: 'flex-start',
                   bottom: 5,
                 }}>
-                <DeviceStatus online />
+                <DeviceStatus
+                  online={
+                    deviceData?.deviceTelemetry?.status == 'Online'
+                      ? true
+                      : false
+                  }
+                />
               </View>
             </View>
           </View>

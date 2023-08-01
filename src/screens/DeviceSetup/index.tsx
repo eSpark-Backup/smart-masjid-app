@@ -45,6 +45,7 @@ import {
   _saveDevice,
   _saveDeviceBtnToMasjid,
   _saveDeviceToUser,
+  _updateDevice,
 } from '../../api/deviceController';
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
@@ -198,7 +199,7 @@ export default function DeviceSetupScreen() {
         '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
         '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
       );
-      console.log('kia ha data', stringData);
+      console.log('kia ha data >>>>>>>', stringData);
       const jsonData = JSON.parse(stringData);
       setDevInfo(state => ({ ...state, ...jsonData }));
 
@@ -238,37 +239,49 @@ export default function DeviceSetupScreen() {
   const registerDevice = async (deviceInfo: DeviceInfo) => {
     const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
     const isBtn = dev?.name?.includes('SMBTN');
-    const devRes: any = await _saveDevice(deviceInfo);
-    if (isBtn) {
-      console.log('-> Detected Smart Button');
-      const USER_TOKEN: any = userStore.get().token;
-      const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
-      console.log(
-        'kia ha decoded string========??????',
-        JSON.stringify(jwtDecodedObj),
-      );
-      const masjidDevRes: any = await _saveDeviceBtnToMasjid(
-        devRes?.id,
-        jwtDecodedObj.masjidId,
-      );
-      console.log('kia res???', masjidDevRes);
-      if (masjidDevRes) {
-        setTimeout(() => {
-          checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
-        }, 5000);
+    if (route?.params?.from != 'SelectedDevice') {
+      const devRes: any = await _saveDevice(deviceInfo);
+      if (isBtn) {
+        console.log('-> Detected Smart Button');
+        const USER_TOKEN: any = userStore.get().token;
+        const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+        console.log(
+          'kia ha decoded string========??????',
+          JSON.stringify(jwtDecodedObj),
+        );
+        const masjidDevRes: any = await _saveDeviceBtnToMasjid(
+          devRes?.id,
+          jwtDecodedObj.masjidId,
+        );
+        console.log('kia res???', masjidDevRes);
+        if (masjidDevRes) {
+          setTimeout(() => {
+            checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
+          }, 5000);
+        } else {
+          setStep(8); // failed saving device (show error screen)
+        }
       } else {
-        setStep(8); // failed saving device (show error screen)
+        console.log('-> Detected Smart Speaker');
+        const userDevRes: any = await _saveDeviceToUser(devRes?.id);
+        console.log('kia res???', userDevRes);
+        if (userDevRes) {
+          setTimeout(() => {
+            checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+          }, 5000);
+        } else {
+          setStep(8); // failed saving device (show error screen)
+        }
       }
     } else {
-      console.log('-> Detected Smart Speaker');
-      const userDevRes: any = await _saveDeviceToUser(devRes?.id);
-      console.log('kia res???', userDevRes);
-      if (userDevRes) {
+      const devRes: any = await _updateDevice({
+        ...route?.params?.deviceData,
+        wifiSsid: devInfo.ssid,
+      });
+      if (devRes) {
         setTimeout(() => {
-          checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+          checkTelemetry(route?.params?.deviceData?.id.toString()); // check Telemetery for userDevice
         }, 5000);
-      } else {
-        setStep(8); // failed saving device (show error screen)
       }
     }
   };
@@ -328,7 +341,7 @@ export default function DeviceSetupScreen() {
           return item;
         }
       });
-      console.log('ESP devices found', newArr);
+      console.log('ESP devices found', JSON.stringify(newArr));
       setScannedDevices(newArr);
       if (newArr.length === 0) {
         setStep(8);
@@ -364,6 +377,8 @@ export default function DeviceSetupScreen() {
     }
   };
 
+  console.log('Deviceinfo', devInfo);
+
   return (
     <Wrapper
       bgImageSpacer={false}
@@ -383,6 +398,8 @@ export default function DeviceSetupScreen() {
             setDevMacId={(value?: string) =>
               setDevInfo(state => ({ ...state, macId: value }))
             }
+            selectedDeviceData={route?.params?.deviceData}
+            autoSelect={route?.params?.from == 'SelectedDevice'}
           />
         )}
         {step == 3 && (
@@ -391,6 +408,8 @@ export default function DeviceSetupScreen() {
               setDevInfo(state => ({ ...state, nickName: value }))
             }
             setStep={(value: number) => setStep(value)}
+            currentDeviceName={route?.params?.deviceData?.name}
+            autoFillName={route?.params?.from == 'SelectedDevice'}
           />
         )}
         {step == 4 && (
@@ -399,6 +418,8 @@ export default function DeviceSetupScreen() {
               setDevInfo(state => ({ ...state, ssid: value }))
             }
             setStep={(value: number) => setStep(value)}
+            currentWifiSSID={route?.params?.deviceData?.wifiSsid}
+            autoSelect={route?.params?.onlyPassword}
           />
         )}
         {step == 5 && (
