@@ -48,6 +48,7 @@ interface MyInputProps {
   error?: string;
   isSecure?: boolean;
   disabled?: boolean;
+  selectMode?: boolean;
   phoneCodeContainerStyle?: ViewStyle;
 }
 
@@ -73,6 +74,7 @@ export default function MyInput(props: MyInputProps) {
     error,
     isSecure,
     disabled,
+    selectMode,
     phoneCodeContainerStyle,
   } = props;
   const theme: Theme = useTheme();
@@ -83,12 +85,14 @@ export default function MyInput(props: MyInputProps) {
   const countries = useHookstate(externalStore.countryCodes).get();
   const [locationPermission, setLocationPermission] = useState(false);
 
+  console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
+
   useEffect(() => {
     if (isPhoneCode) {
       const data = countries?.find(country =>
         phoneCodeValue?.includes(country?.code),
       );
-      console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', data);
+      console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
       setCurrentCountry(data ?? countries[0]);
       onPhoneCodeChange?.(data ?? countries[0]);
     }
@@ -193,7 +197,7 @@ export default function MyInput(props: MyInputProps) {
         <View style={isDropDown ? { flexDirection: 'row', ...dropStyle } : {}}>
           <View>
             <TextInput
-              editable={!disabled}
+              editable={selectMode && !disabled}
               autoComplete="off"
               autoCorrect={false}
               keyboardType={isPhoneCode ? 'number-pad' : 'default'}

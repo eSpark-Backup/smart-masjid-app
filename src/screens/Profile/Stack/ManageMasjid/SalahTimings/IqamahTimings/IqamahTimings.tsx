@@ -1,21 +1,19 @@
-import { useHookstate } from '@hookstate/core';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { useHookstate } from '@hookstate/core';
+import moment from 'moment';
+import Toast from 'react-native-toast-message';
+
 import {
   GetMasjidIqamahTiming,
   UpdatedMasjidIqamahTiming,
 } from '../../../../../../api/masjidController';
 import { EditTimeTable, History } from '../../../../../../assets';
-import Toast from 'react-native-toast-message';
-
 import {
   GapView,
-  MyDivider,
   MyDropDown,
   MyText,
   OverlayLoader,
-  ProfileAvatar,
   Rounded,
   TextLabel,
   TimeTable,
@@ -34,8 +32,10 @@ export default function IqamahTimings({
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     GetMasjidIqamahTiming('1');
+    console.log('kia ha',moment(iqamahTimings?.fajr, 'HH:mm:ss').format('LT'))
   }, []);
 
   const onUpdate = async () => {
@@ -134,6 +134,7 @@ export default function IqamahTimings({
                   <View>
                     <MyDropDown
                       title={''}
+                      searchDisabled={true}
                       placeholder="Select Iqama Type"
                       items={[
                         { id: 1, name: 'Fixed' },

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   FlatList,
   View,
@@ -66,6 +66,7 @@ export default function MyDropdown({
   onChangeValue = (value: Item) => {},
   width = WINDOW_WIDTH - 28,
   disabled = false,
+  searchDisabled = false,
   defaultValue = null,
 }: {
   items: Item[];
@@ -76,6 +77,7 @@ export default function MyDropdown({
   onChangeValue?: (value: Item) => void;
   width?: number | string | undefined;
   disabled?: boolean;
+  searchDisabled?: boolean;
   defaultValue?: Item | null;
 }) {
   const [show, setShow] = useState(false);
@@ -109,6 +111,7 @@ export default function MyDropdown({
         <MyInput
           disabled={disabled}
           title={title}
+          selectMode={!searchDisabled}
           onChangeText={onSearch}
           onFocus={() => {
             if (disabled) return;
@@ -195,7 +198,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   listItemContainer: {
-    // height: 100,
-    // alignSelf: 'center',
   },
 });
