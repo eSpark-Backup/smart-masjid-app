@@ -67,62 +67,85 @@ export default function Search() {
     }
     setLoading(false);
   };
+
+  const getTitle = () => {
+    switch (step) {
+      case 0:
+        return 'Search Masjid';
+      case 1:
+        return 'Masjid Search';
+      case 2:
+        return 'Masjid Search';
+
+      default:
+        break;
+    }
+  };
+
   return (
-    <>
-      <OverlayLoader isShow={loading} />
-      <LogoutModal
-        visible={showError}
-        message="Please note that the selected mosque is located far from your current location. As a result, the prayer timings may differ significantly"
-        onAllowed={() => {
-          setStep(2);
-          setShowError(false);
-        }}
-        onClose={() => setShowError(false)}
-        title2="Ok"
-        title1="Cancel"
-      />
-      <Wrapper
-        onBackPress={onBackPress}
-        showFooter={false}
-        bgImageSpacer={false}>
-        {step == 0 && (
-          <SearchListing
-            onPress={(masjidDetails: Masjid) => {
-              setStep(1);
-              setSelectedMasjid(masjidDetails);
-            }}
-            setUserLocation={setUserLocation}
-          />
-        )}
-        {step == 1 && (
-          <MasjidDetails
-            masjidDetails={selectedMasjid}
-            onSubscribe={() => {
-              // @ts-ignore
-              const distance = getDistance(userLocation, {
-                latitude: selectedMasjid?.location.coordinates[0],
-                longitude: selectedMasjid?.location.coordinates[1],
-              });
-              if (distance / 1609 > 10) {
-                setShowError(true);
-              } else {
+    <Wrapper
+      onBackPress={onBackPress}
+      showFooter={false}
+      title={getTitle()}
+      bgImageSpacer={false}>
+      {({ props }) => {
+        return (
+          <>
+            <OverlayLoader isShow={loading} />
+            <LogoutModal
+              visible={showError}
+              message="Please note that the selected mosque is located far from your current location. As a result, the prayer timings may differ significantly"
+              onAllowed={() => {
                 setStep(2);
-              }
-            }}
-          />
-        )}
-        {step == 2 && (
-          <DeviceListing
-            masjidDetails={selectedMasjid}
-            onPress={device =>
-              onSubscribe(
-                device.id.toString(),
-                selectedMasjid?.id.toString() ?? '',
-              )
-            }
-          />
-        )}
-      </Wrapper>
-    </>
+                setShowError(false);
+              }}
+              onClose={() => setShowError(false)}
+              title2="Ok"
+              title1="Cancel"
+            />
+            {step == 0 && (
+              <SearchListing
+                contentOpacity={props.contentOpacity}
+                onPress={(masjidDetails: Masjid) => {
+                  setStep(1);
+                  setSelectedMasjid(masjidDetails);
+                }}
+                setUserLocation={setUserLocation}
+              />
+            )}
+            {step == 1 && (
+              <MasjidDetails
+                contentOpacity={props.contentOpacity}
+                masjidDetails={selectedMasjid}
+                onSubscribe={() => {
+                  // @ts-ignore
+                  const distance = getDistance(userLocation, {
+                    latitude: selectedMasjid?.location.coordinates[0],
+                    longitude: selectedMasjid?.location.coordinates[1],
+                  });
+                  if (distance / 1609 > 10) {
+                    setShowError(true);
+                  } else {
+                    setStep(2);
+                  }
+                }}
+              />
+            )}
+            {step == 2 && (
+              <DeviceListing
+                contentOpacity={props.contentOpacity}
+                masjidDetails={selectedMasjid}
+                onPress={device =>
+                  onSubscribe(
+                    device.id.toString(),
+                    selectedMasjid?.id.toString() ?? '',
+                  )
+                }
+              />
+            )}
+          </>
+        );
+      }}
+    </Wrapper>
   );
 }

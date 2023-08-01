@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Animated } from 'react-native';
 
 import { SalahTimingsSVG, VolumeUp } from '../../../../assets';
 
@@ -13,33 +13,44 @@ import {
 
 export default function ManageMasjid({
   setFlag,
+  contentOpacity = 0,
 }: {
   setFlag: (value: string) => void;
+  contentOpacity?: any;
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <GapView length={20} />
-      <TextLabel label="Manage Masjid" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={55} />
-      <ProfileSectionlist
-        data={[
-          {
-            title: 'Manage Masjid',
-            data: [
-              {
-                title: 'Adhan settings',
-                icon: <VolumeUp />,
-                onPress: () => setFlag('aSet'),
-              },
-              {
-                title: 'Salah Timings',
-                icon: <SalahTimingsSVG />,
-                onPress: () => setFlag('sTime'),
-              },
-            ],
-          },
-        ]}
-      />
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label="Manage Masjid"
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <View style={{top: 100}}>
+        <ProfileSectionlist
+          data={[
+            {
+              title: 'Manage Masjid',
+              data: [
+                {
+                  title: 'Adhan settings',
+                  icon: <VolumeUp />,
+                  onPress: () => setFlag('aSet'),
+                },
+                {
+                  title: 'Salah Timings',
+                  icon: <SalahTimingsSVG />,
+                  onPress: () => setFlag('sTime'),
+                },
+              ],
+            },
+          ]}
+        />
+      </View>
     </View>
   );
 }

@@ -1,6 +1,6 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import React from 'react';
-import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import { SyncSvg } from '../../../assets';
 import {
   GapView,
@@ -13,32 +13,21 @@ import {
 import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 
-export default function MasjidDetails({ setStep }: any) {
+export default function MasjidDetails({ setStep, contentOpacity }: any) {
   const { colors }: Theme = useTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <GapView length={20} />
-      <TextLabel label="Masjid Ar - Rahman" />
-      <GapView length={5} />
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => setStep(2)}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <MyText text="MY HOME DEVICE " textStyle={{ color: colors.primary }} />
-        <SyncSvg />
-      </TouchableOpacity>
-      {/* <GapView length={15} />
-      <MyText text="Next Adhan in" textStyle={{ fontWeight: 'bold' }} />
-      <GapView length={5} />
-      <MyTitle text="06 : 09 : 00" style={{ fontSize: 32 }} /> */}
-      <GapView length={20} />
-
+      <View style={{ alignSelf: 'center', top: 100 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel label="Masjid Subscriptions" />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+      
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
+          top: 100,
           alignItems: 'center',
           paddingBottom: 20,
           padding: 5,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Animated } from 'react-native';
 import {
   GapView,
   MapBox,
@@ -10,23 +10,34 @@ import {
 } from '../../../components';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { AdhanCalculation, AdhanJuristic } from '../../../assets';
+import { WINDOW_HEIGHT } from '../../../constants';
 
 const MasjidDetails = ({
   onSubscribe,
   masjidDetails,
+  contentOpacity = 0,
 }: {
   onSubscribe: () => void;
   masjidDetails?: Masjid;
+  contentOpacity?: any;
 }) => {
   const [subscribe, setSubscribe] = useState(false);
-  console.log('masjidDetails?.location', masjidDetails?.location);
 
   return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
-      <GapView length={20} />
-      <TextLabel label={masjidDetails?.name ?? '-'} />
-      <GapView length={55} />
+    <View
+      style={{ flex: 1, alignItems: 'center'}}>
+      <View style={{ alignSelf: 'center', top: 100 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label="Masjid Search"
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
       <ScrollView
+        style={{ top: 100 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>
         <View style={{ flexDirection: 'row' }}>

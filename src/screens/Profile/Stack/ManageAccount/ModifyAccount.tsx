@@ -2,7 +2,7 @@ import { useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { UpdateUser } from '../../../../api/userController';
 
 import {
@@ -22,8 +22,10 @@ import { userStore } from '../../../../store/UserStore';
 
 export default function ModifyAccount({
   setFlag,
+  contentOpacity =0
 }: {
   setFlag: (value: string) => void;
+  contentOpacity?: any
 }) {
   const { colors }: Theme = useTheme();
   const [phoneUpdate, setPhoneUpdate] = useState(false);

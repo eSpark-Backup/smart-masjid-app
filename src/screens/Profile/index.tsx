@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, BackHandler } from 'react-native';
+import { View, BackHandler, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -11,10 +11,12 @@ import {
   ManageUser,
   MasjidGear,
   Privacy,
+  ProfileDummy,
 } from '../../assets';
 import {
   ErrorModal,
   GapView,
+  ProfileAvatar,
   ProfileSectionlist,
   TextLabel,
 } from '../../components';
@@ -27,9 +29,7 @@ import {
   ManageMasjid,
   ModifyAccount,
   SalahTimings,
-  EditIqamah,
   IqamahHistory,
-  EditJumma,
   JummaHistory,
   ManageUsers,
   ViewUser,
@@ -125,120 +125,174 @@ export default function Profile() {
       bgImageSpacer={false}
       showFooter={false}
       onBackPress={() => handleBack(flag)}>
-      {flag == 'uInfo' && (
-        <UserInformation setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'mAcc' ? (
-        <ManageAccount setFlag={(value: string) => setFlag(value)} />
-      ) : null}
-      {flag == 'mAccOtp' ? (
-        <ManageAccount
-          setFlag={(value: string) => setFlag(value)}
-          showVerification={true}
-        />
-      ) : null}
-      {flag == 'modAcc' && (
-        <ModifyAccount setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'mMas' && (
-        <ManageMasjid setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'sTime' && (
-        <SalahTimings setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'aSet' && (
-        <AdhanSettings setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'iTime' && (
-        <IqamahTimings setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'iHist' && (
-        <IqamahHistory setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'jTime' && (
-        <JummaTimings setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'jHist' && (
-        <JummaHistory setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'mUsers' && (
-        <ManageUsers
-          setFlag={(value: string, user?: UserResponse) => {
-            setFlag(value);
-            user && setUser(user);
-          }}
-        />
-      )}
-      {flag == 'vUser' && (
-        <ViewUser user={user} setFlag={(value: string) => setFlag(value)} />
-      )}
-      {flag == 'addUser' && (
-        <AddUser setFlag={(value: string) => setFlag(value)} />
-      )}
+      {({ props }) => {
+        return (
+          <>
+            {flag == 'uInfo' && (
+              <UserInformation
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'mAcc' ? (
+              <ManageAccount
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            ) : null}
+            {flag == 'mAccOtp' ? (
+              <ManageAccount
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+                showVerification={true}
+              />
+            ) : null}
+            {flag == 'modAcc' && (
+              <ModifyAccount
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'mMas' && (
+              <ManageMasjid
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'sTime' && (
+              <SalahTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'aSet' && (
+              <AdhanSettings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'iTime' && (
+              <IqamahTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'iHist' && (
+              <IqamahHistory
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'jTime' && (
+              <JummaTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'jHist' && (
+              <JummaHistory
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'mUsers' && (
+              <ManageUsers
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string, user?: UserResponse) => {
+                  setFlag(value);
+                  user && setUser(user);
+                }}
+              />
+            )}
+            {flag == 'vUser' && (
+              <ViewUser
+                contentOpacity={props.contentOpacity}
+                user={user}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'addUser' && (
+              <AddUser
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+          </>
+        );
+      }}
     </Wrapper>
   );
 }
 
-function UserInformation({ setFlag }: { setFlag: (value: string) => void }) {
+function UserInformation({
+  setFlag,
+  contentOpacity,
+}: {
+  setFlag: (value: string) => void;
+  contentOpacity: any;
+}) {
   const userData = useHookstate(userStore.userData).get();
 
   return (
     <View style={{ flex: 1 }}>
-      <GapView length={20} />
-      <TextLabel label="User Information" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={45} />
-      <ProfileSectionlist
-        data={[
-          {
-            data: [
-              {
-                title: 'Manage Account',
-                icon: <AccountGear />,
-                onPress: () => {
-                  setFlag('mAcc');
+      <View style={{ alignSelf: 'center', top: 70, alignItems: 'center' }}>
+        <ProfileDummy height={50} width={50} />
+        <GapView />
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label={
+              (userData?.firstName ?? '') + ' ' + (userData?.lastName ?? '')
+            }
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <View style={{ top: 45 }}>
+        <ProfileSectionlist
+          data={[
+            {
+              data: [
+                {
+                  title: 'Manage Account',
+                  icon: <AccountGear />,
+                  onPress: () => {
+                    setFlag('mAcc');
+                  },
                 },
-              },
-              {
-                title: 'Manage Masjid',
-                icon: <MasjidGear />,
-                onPress: () => setFlag('mMas'),
-                hidden:
-                  userData?.userType.id == 1 ||
-                  userData?.userType?.permissions?.filter(
-                    val => val?.name == 'MANAGE_MASJID',
-                  )?.length == 0,
-              },
-              {
-                title: 'Manage Users',
-                icon: <ManageUser />,
-                onPress: () => setFlag('mUsers'),
-                hidden:
-                  userData?.userType.id == 1 ||
-                  userData?.userType?.permissions?.filter(
-                    val => val?.name == 'MANAGE_USERS',
-                  )?.length == 0,
-              },
-            ],
-          },
-        ]}
-        footerData={[
-          {
-            title: 'Help',
-            icon: <Help />,
-            onPress: () => console.log('pressed'),
-          },
-          {
-            title: 'Privacy',
-            icon: <Privacy />,
-            onPress: () => {},
-          },
-          {
-            title: 'About us',
-            icon: <InfoCircle />,
-            onPress: () => console.log('pressed'),
-          },
-        ]}
-      />
+                {
+                  title: 'Manage Masjid',
+                  icon: <MasjidGear />,
+                  onPress: () => setFlag('mMas'),
+                  hidden:
+                    userData?.userType.id == 1 ||
+                    userData?.userType?.permissions?.filter(
+                      val => val?.name == 'MANAGE_MASJID',
+                    )?.length == 0,
+                },
+                {
+                  title: 'Manage Users',
+                  icon: <ManageUser />,
+                  onPress: () => setFlag('mUsers'),
+                  hidden:
+                    userData?.userType.id == 1 ||
+                    userData?.userType?.permissions?.filter(
+                      val => val?.name == 'MANAGE_USERS',
+                    )?.length == 0,
+                },
+              ],
+            },
+          ]}
+          footerData={[
+            {
+              title: 'Help',
+              icon: <Help />,
+              onPress: () => console.log('pressed'),
+            },
+          ]}
+        />
+      </View>
     </View>
   );
 }

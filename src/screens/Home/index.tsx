@@ -82,10 +82,30 @@ export default function Home() {
       showBack={step == 0 ? false : true}
       onBackPress={onBackPress}
       showFooter={false}
+      title={"Masjid Subscriptions"}
       bgImageSpacer={false}>
-      {step == 0 && <MasjidListing setStep={setStep} data={data} />}
-      {step == 1 && <MasjidDetails setStep={setStep} />}
-      {step == 2 && <ConnectedDevices />}
+      {({ props }) => {
+        return (
+          <>
+            {step == 0 && (
+              <MasjidListing
+                contentOpacity={props.contentOpacity}
+                setStep={setStep}
+                data={data}
+              />
+            )}
+            {step == 1 && (
+              <MasjidDetails
+                contentOpacity={props.contentOpacity}
+                setStep={setStep}
+              />
+            )}
+            {step == 2 && (
+              <ConnectedDevices contentOpacity={props.contentOpacity} />
+            )}
+          </>
+        );
+      }}
     </Wrapper>
   );
 }

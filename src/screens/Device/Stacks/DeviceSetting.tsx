@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Animated } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 
 import {
@@ -28,7 +28,13 @@ import {
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
 
-const DeviceSetting = ({ device }: { device?: Device }) => {
+const DeviceSetting = ({
+  device,
+  contentOpacity = 0,
+}: {
+  device?: Device;
+  contentOpacity: any;
+}) => {
   const theme: Theme = useTheme();
   const [errorShow, setErrorShow] = useState<boolean>(false);
   console.log('deive selectedx ??', device);
@@ -48,10 +54,14 @@ const DeviceSetting = ({ device }: { device?: Device }) => {
           },
         ]}
       />
-      <GapView length={20} />
-      <TextLabel label="Device Settings" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={45} />
-      <ScrollView>
+      <View style={{ alignSelf: 'center', top: 100 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <ScrollView style={{top: 100}}>
         <View style={styles.deviceSettingContainer}>
           <GapView length={20} />
           <View style={styles.subHeader}>

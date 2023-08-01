@@ -38,7 +38,7 @@ export default function ProfileSectionlist({
     <SectionList
       sections={data ?? []}
       scrollEnabled={scroll}
-      contentContainerStyle={{ height: '100%' }}
+      contentContainerStyle={{ height: '85%' }}
       keyExtractor={(item, index) => item.title + index}
       renderItem={({ item, index }) => {
         if (!item.hidden) {
