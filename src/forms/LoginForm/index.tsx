@@ -85,13 +85,11 @@ const LoginForm = ({
           <>
             {activeTab == '1' ? (
               <>
-                <Card backgroundColor="#fff" width={315}>
-                  <MyInput
-                    placeholder="Email"
-                    onChangeText={handleChange('email')}
-                    value={values.email}
-                  />
-                </Card>
+                <MyInput
+                  placeholder="Email"
+                  onChangeText={handleChange('email')}
+                  value={values.email}
+                />
                 {errors.email && touched.email && (
                   <MyText
                     text={errors.email}
@@ -105,19 +103,17 @@ const LoginForm = ({
               </>
             ) : (
               <>
-                <Card backgroundColor="#fff" width={315}>
-                  <MyInput
-                    placeholder="Phone"
-                    onChangeText={handleChange('phone')}
-                    value={values?.phone}
-                    isPhoneCode
-                    phoneCodeValue="US"
-                    onPhoneCodeChange={country => {
-                      console.log('e', country);
-                      setCurrentCountry(country);
-                    }}
-                  />
-                </Card>
+                <MyInput
+                  placeholder="Phone"
+                  onChangeText={handleChange('phone')}
+                  value={values?.phone}
+                  isPhoneCode
+                  phoneCodeValue="US"
+                  onPhoneCodeChange={country => {
+                    console.log('e', country);
+                    setCurrentCountry(country);
+                  }}
+                />
                 {errors.phone && touched.phone && (
                   <MyText
                     text={errors.phone}

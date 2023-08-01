@@ -12,17 +12,22 @@ import {
   TextLabel,
 } from '../../components';
 import { _checkDeviceExists } from '../../api/externalControllers';
+import { Device } from '../../types/deviceControllerTypes';
 
 export default function DeviceSelectForm({
   data = [],
   userInfo,
   setStep,
   setDevMacId,
+  autoSelect,
+  selectedDeviceData,
 }: {
   data?: Array<Peripheral | undefined>;
   userInfo?: string;
   setStep: (value: number) => void;
   setDevMacId?: (value?: string) => void;
+  autoSelect?: boolean;
+  selectedDeviceData: Device;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -92,6 +97,19 @@ export default function DeviceSelectForm({
       setStep(8);
     }
   }, [finalArr]);
+
+  useEffect(() => {
+    if (autoSelect) {
+      finalArr.filter(item => {
+        if (
+          item.id?.slice(0, 14) == selectedDeviceData?.macAddress.slice(0, 14)
+        ) {
+          setStep(3);
+          setDevMacId?.(item.id);
+        }
+      });
+    }
+  }, [autoSelect]);
 
   return (
     <View style={{ alignItems: 'center' }}>
