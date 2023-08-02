@@ -120,10 +120,44 @@ export default function Profile() {
     }
   };
 
+  const getTitle = () => {
+    if (flag == 'mAcc' || flag == 'modAcc') {
+      return 'Manage Account';
+    }
+    if (flag == 'mMas') {
+      return 'Manage Masjid';
+    }
+    if (flag == 'sTime') {
+      return 'Salah Timings';
+    }
+    if (flag == 'aSet') {
+      return 'Adhan Settings';
+    }
+    if (flag == 'iTime' || flag == 'iEdit' || flag == 'iHist') {
+      return 'Iqama Timings';
+    }
+    if (flag == 'jTime' || flag == 'jEdit' || flag == 'jHist') {
+      return 'Jumuah Timings';
+    }
+    if (flag == 'vUser' || flag == 'addUser') {
+      return 'User Information';
+    }
+    if (flag == 'addUser') {
+      return 'Add User';
+    }
+    if(flag == 'mUsers') {
+      return 'Manage Users';
+    }
+    if (flag == 'uInfo') {
+      return user?.firstName ?? '';
+    }
+  };
+
   return (
     <Wrapper
       bgImageSpacer={false}
       showFooter={false}
+      title={getTitle()}
       onBackPress={() => handleBack(flag)}>
       {({ props }) => {
         return (
