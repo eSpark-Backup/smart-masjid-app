@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Animated } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 
 import {
@@ -18,11 +18,13 @@ export default function OtpForm({
   setStep,
   title = 'OTP Form',
   onResend,
+  contentOpacity = 0,
 }: {
   type?: 'login' | 'setup';
   setStep: (value: string) => void;
   title?: string;
   onResend?: () => Promise<void>;
+  contentOpacity?: any;
 }) {
   const otpRef: any = useRef(null);
   const { colors }: Theme = useTheme();
@@ -45,69 +47,76 @@ export default function OtpForm({
 
   return (
     <View style={styles.container}>
-      <GapView length={20} />
-      <TextLabel label={title} textStyle={{ alignSelf: 'center' }} />
-      <GapView length={40} />
-      <OverlayLoader isShow={loader} />
-      <MyText
-        text="You'll recieve a verification code shortly"
-        textStyle={{ fontSize: 16, fontWeight: '400' }}
-      />
-      <GapView length={40} />
-      {/* <MyText text="0:45" textStyle={{ fontSize: 16, fontWeight: '400' }} /> */}
-      <CountDown
-        id={countdownId}
-        until={time}
-        onFinish={() => {
-          setExpTime(true);
-        }}
-        onChange={(until: number) => {
-          if (until == 180) {
-            setExpTime(true);
-          }
-        }}
-        size={12}
-        showSeparator
-        separatorStyle={{ color: colors.primary, fontSize: 15 }}
-        timeToShow={['M', 'S']}
-        timeLabels={{ m: '', s: '' }}
-        digitStyle={{ marginHorizontal: 5 }}
-        digitTxtStyle={{ fontSize: 16, fontWeight: '400', color: '#000' }}
-      />
-      <GapView length={40} />
-      <OTPInputView
-        ref={otpRef}
-        style={{
-          width: '80%',
-          height: 50,
-          paddingLeft: 15,
-        }}
-        pinCount={6}
-        editable
-        autoFocusOnLoad={false}
-        // secureTextEntry
-        // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-        onCodeChanged={code => setOtp(code)}
-        codeInputFieldStyle={styles.underlineStyleBase}
-        codeInputHighlightStyle={styles.underlineStyleHighLighted}
-        onCodeFilled={code => {
-          console.log(`Code is ${code}, you are good to go!`);
-        }}
-      />
-      <View style={{ marginTop: 40, marginBottom: 40 }}>
-        <Rounded label="Next" width={250} onPress={() => setStep(otp)} />
+
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel label={title} textStyle={{ alignSelf: 'center' }} />
+        </Animated.View>
+        <GapView length={50} />
       </View>
-      <TouchableOpacity disabled={!expTime} onPress={onResendOtp}>
+
+      <View style={{top: 115}}>
+        <OverlayLoader isShow={loader} />
         <MyText
-          text="Resend Code"
-          textStyle={{
-            fontSize: 16,
-            fontWeight: '400',
-            color: expTime ? colors.primary : '#6e6e6e',
-            opacity: !expTime ? 0.6 : 1,
+          text="You'll recieve a verification code shortly"
+          textStyle={{ fontSize: 16, fontWeight: '400' }}
+        />
+        <GapView length={40} />
+        {/* <MyText text="0:45" textStyle={{ fontSize: 16, fontWeight: '400' }} /> */}
+        <CountDown
+          id={countdownId}
+          until={time}
+          onFinish={() => {
+            setExpTime(true);
+          }}
+          onChange={(until: number) => {
+            if (until == 180) {
+              setExpTime(true);
+            }
+          }}
+          size={12}
+          showSeparator
+          separatorStyle={{ color: colors.primary, fontSize: 15 }}
+          timeToShow={['M', 'S']}
+          timeLabels={{ m: '', s: '' }}
+          digitStyle={{ marginHorizontal: 5 }}
+          digitTxtStyle={{ fontSize: 16, fontWeight: '400', color: '#000' }}
+        />
+        <GapView length={40} />
+        <OTPInputView
+          ref={otpRef}
+          style={{
+            width: '80%',
+            height: 50,
+            paddingLeft: 15,
+          }}
+          pinCount={6}
+          editable
+          autoFocusOnLoad={false}
+          // secureTextEntry
+          // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+          onCodeChanged={code => setOtp(code)}
+          codeInputFieldStyle={styles.underlineStyleBase}
+          codeInputHighlightStyle={styles.underlineStyleHighLighted}
+          onCodeFilled={code => {
+            console.log(`Code is ${code}, you are good to go!`);
           }}
         />
-      </TouchableOpacity>
+        <View style={{ marginTop: 40, marginBottom: 40 }}>
+          <Rounded label="Next" width={250} onPress={() => setStep(otp)} />
+        </View>
+        <TouchableOpacity disabled={!expTime} onPress={onResendOtp}>
+          <MyText
+            text="Resend Code"
+            textStyle={{
+              fontSize: 16,
+              fontWeight: '400',
+              color: expTime ? colors.primary : '#6e6e6e',
+              opacity: !expTime ? 0.6 : 1,
+            }}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

@@ -1,6 +1,12 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
 
@@ -38,9 +44,11 @@ import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 export default function ManageAccount({
   setFlag,
   showVerification = false,
+  contentOpacity = 0,
 }: {
   setFlag: (value: string) => void;
   showVerification?: boolean;
+  contentOpacity?: any;
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [country, setCountry] = useState<CountryCodes>();
@@ -127,94 +135,106 @@ export default function ManageAccount({
       <OverlayLoader isShow={loading} />
       {!showVerification ? (
         <>
-          <GapView length={20} />
-          <TextLabel
-            label="Manage Account"
-            textStyle={{ alignSelf: 'center' }}
-          />
-          <GapView length={55} />
-          <MyText text="Tap to edit" textStyle={{ alignSelf: 'center' }} />
-          <GapView />
-          {displayData.map((val, ind) => {
-            if (!val.editable) {
-              return (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => onEditPress(val.key)}
-                  key={ind}
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    width: WINDOW_WIDTH - 60,
-                    alignSelf: 'center',
-                    paddingVertical: 10,
-                  }}>
-                  <View style={{ flexDirection: 'row' }}>
-                    {val.icon}
-                    <GapView mode="horizontal" />
-                    <MyText text={val.title} textStyle={{ fontSize: 16 }} />
-                  </View>
-                  <View>
-                    <MyText
-                      text={data[val?.key] ?? 'Tap to add'}
-                      textStyle={{ fontSize: 14, color: '#6E6E6E' }}
-                    />
-                  </View>
-                </TouchableOpacity>
-              );
-            } else {
-              return (
-                <View
-                  key={ind}
-                  style={{
-                    width: WINDOW_WIDTH - 60,
-                    alignSelf: 'center',
-                  }}>
-                  <Card backgroundColor="#ffffff">
-                    {val.key != 'phone' ? (
-                      <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <GapView mode="horizontal" />
-                        {val.icon}
-                        <GapView mode="horizontal" />
+          <View style={{ alignSelf: 'center', top: 110 }}>
+            <Animated.View style={[{ opacity: contentOpacity }]}>
+              <TextLabel
+                label="Manage Account"
+                textStyle={{ alignSelf: 'center' }}
+              />
+            </Animated.View>
+            <GapView length={50} />
+          </View>
+
+          <View style={{ top: 100 }}>
+            <MyText text="Tap to edit" textStyle={{ alignSelf: 'center' }} />
+            <GapView />
+            {displayData.map((val, ind) => {
+              if (!val.editable) {
+                return (
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => onEditPress(val.key)}
+                    key={ind}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      width: WINDOW_WIDTH - 60,
+                      alignSelf: 'center',
+                      paddingVertical: 10,
+                    }}>
+                    <View style={{ flexDirection: 'row' }}>
+                      {val.icon}
+                      <GapView mode="horizontal" />
+                      <MyText text={val.title} textStyle={{ fontSize: 16 }} />
+                    </View>
+                    <View>
+                      <MyText
+                        text={data[val?.key] ?? 'Tap to add'}
+                        textStyle={{ fontSize: 14, color: '#6E6E6E' }}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                );
+              } else {
+                return (
+                  <View
+                    key={ind}
+                    style={{
+                      width: WINDOW_WIDTH - 60,
+                      alignSelf: 'center',
+                    }}>
+                    <Card backgroundColor="#ffffff">
+                      {val.key != 'phone' ? (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <GapView mode="horizontal" />
+                          {val.icon}
+                          <GapView mode="horizontal" />
+                          <MyInput
+                            placeholderColor="#CFCFCF"
+                            onChangeText={(value: string) =>
+                              setData({ ...data, [val.key]: value })
+                            }
+                            value={data[val.key]}
+                          />
+                        </View>
+                      ) : (
                         <MyInput
+                          placeholder="+1 000-000-0000"
+                          isPhoneCode
                           placeholderColor="#CFCFCF"
-                          onChangeText={(value: string) =>
-                            setData({ ...data, [val.key]: value })
-                          }
+                          phoneCodeValue={userData?.phone}
+                          onPhoneCodeChange={country => {
+                            setCountry(country);
+                            console.log(
+                              'what is selected code??',
+                              country?.code,
+                            );
+                            if (!userData?.phone?.includes(country.code)) {
+                              setData({ ...data, [val?.key]: '' });
+                            }
+                          }}
+                          onChangeText={(value: string) => {
+                            console.log('what is the value', {
+                              [val.key]: country?.code + value,
+                            });
+                            setData({
+                              ...data,
+                              [val.key]: country?.code + value,
+                            });
+                          }}
                           value={data[val.key]}
                         />
-                      </View>
-                    ) : (
-                      <MyInput
-                        placeholder="+1 000-000-0000"
-                        isPhoneCode
-                        placeholderColor="#CFCFCF"
-                        phoneCodeValue={userData?.phone}
-                        onPhoneCodeChange={country => {
-                          setCountry(country);
-                          console.log('what is selected code??', country?.code);
-                          if (!userData?.phone?.includes(country.code)) {
-                            setData({ ...data, [val?.key]: '' });
-                          }
-                        }}
-                        onChangeText={(value: string) => {
-                          console.log('what is the value', {
-                            [val.key]: country?.code + value,
-                          });
-                          setData({
-                            ...data,
-                            [val.key]: country?.code + value,
-                          });
-                        }}
-                        value={data[val.key]}
-                      />
-                    )}
-                  </Card>
-                </View>
-              );
-            }
-          })}
+                      )}
+                    </Card>
+                  </View>
+                );
+              }
+            })}
+          </View>
           <View
             style={{
               marginHorizontal: 15,

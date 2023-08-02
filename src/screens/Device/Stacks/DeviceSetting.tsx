@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Animated } from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 
 import {
@@ -40,9 +40,11 @@ type DeviceNavigationProps = NativeStackScreenProps<
 
 const DeviceSetting = ({
   device,
+  contentOpacity = 0,
   goBack,
 }: {
   device?: Device;
+  contentOpacity: any;
   goBack?: () => void;
 }) => {
   const theme: Theme = useTheme();
@@ -123,10 +125,14 @@ const DeviceSetting = ({
           },
         ]}
       />
-      <GapView length={20} />
-      <TextLabel label="Device Settings" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={45} />
-      <ScrollView>
+      <View style={{ alignSelf: 'center', top: 100 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <ScrollView style={{top: 100}}>
         <View style={styles.deviceSettingContainer}>
           <GapView length={20} />
           <View style={styles.subHeader}>

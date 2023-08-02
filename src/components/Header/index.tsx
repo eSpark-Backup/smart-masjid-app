@@ -12,11 +12,11 @@ export default function Header({
   onBackPress?: () => void;
   showBack?: boolean;
 }) {
-  const { colors } = useTheme();
+  if (!showBack) return <></>;
   return (
     <View
       style={{
-        height: WINDOW_HEIGHT / 10,
+        top: WINDOW_HEIGHT / 27,
         width: '100%',
         justifyContent: 'center',
         paddingHorizontal: 25,

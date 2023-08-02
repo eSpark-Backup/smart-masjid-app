@@ -4,7 +4,7 @@ import { Card } from '../../containers';
 
 export default function ProfileAvatar() {
   return (
-    <Card width={110} radius={100}>
+    <Card width={100} radius={100}>
       <ProfileDummy style={{ alignSelf: 'center' }} />
     </Card>
   );

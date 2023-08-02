@@ -90,68 +90,73 @@ export default function CountryModal({
             showFooter={false}
             bgImageSpacer={false}
             onBackPress={onCross}>
-            <View
-              style={{
-                width: WINDOW_WIDTH - 40,
-                alignSelf: 'center',
-              }}>
-              <View style={styles.crossView}>
-                <Card backgroundColor="#fff" width={WINDOW_WIDTH - 80}>
-                  <MyInput
-                    placeholder={searchPlaceholder}
-                    onChangeText={onSearch}
-                  />
-                </Card>
-              </View>
-              {/* <GapView /> */}
-              <View>
-                {data?.length !== 0 ? (
-                  <FlatList
-                    contentContainerStyle={[
-                      {
-                        flexGrow: 1,
-                        width: WINDOW_WIDTH - 80,
-                        alignSelf: 'center',
-                        paddingBottom: 400,
-                        marginTop: 10,
-                      },
-                    ]}
-                    data={data}
-                    ItemSeparatorComponent={GapView}
-                    renderItem={({ item, index }) => {
-                      // @ts-ignore
-                      const Flag = CountryFlags[item.iso_code] ?? UnknownFlag;
-                      return (
-                        <Card width={WINDOW_WIDTH - 85}>
-                          <TouchableOpacity
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              margin: 10,
-                            }}
-                            onPress={() => close(item)}>
-                            <Flag height={30} width={30} />
-                            <GapView mode="horizontal" length={10} />
-                            <View>
-                              <MyText
-                                text={item.country}
-                                textStyle={{ fontWeight: '700' }}
-                              />
-                              <MyText text={`(${item.code})`} size={10} />
-                            </View>
-                          </TouchableOpacity>
-                        </Card>
-                      );
-                    }}
-                    showsVerticalScrollIndicator={false}
-                  />
-                ) : (
-                  <Text style={[styles.defaultTextStyleEmpty]}>
-                    {EmptyMessage}
-                  </Text>
-                )}
-              </View>
-            </View>
+            {() => {
+              return (
+                <View
+                  style={{
+                    width: WINDOW_WIDTH - 40,
+                    alignSelf: 'center',
+                  }}>
+                  <View style={styles.crossView}>
+                    <Card backgroundColor="#fff" width={WINDOW_WIDTH - 80}>
+                      <MyInput
+                        placeholder={searchPlaceholder}
+                        onChangeText={onSearch}
+                      />
+                    </Card>
+                  </View>
+                  {/* <GapView /> */}
+                  <View>
+                    {data?.length !== 0 ? (
+                      <FlatList
+                        contentContainerStyle={[
+                          {
+                            flexGrow: 1,
+                            width: WINDOW_WIDTH - 80,
+                            alignSelf: 'center',
+                            paddingBottom: 400,
+                            marginTop: 10,
+                          },
+                        ]}
+                        data={data}
+                        ItemSeparatorComponent={GapView}
+                        renderItem={({ item, index }) => {
+                          // @ts-ignore
+                          const Flag =
+                            CountryFlags[item.iso_code] ?? UnknownFlag;
+                          return (
+                            <Card width={WINDOW_WIDTH - 85}>
+                              <TouchableOpacity
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  margin: 10,
+                                }}
+                                onPress={() => close(item)}>
+                                <Flag height={30} width={30} />
+                                <GapView mode="horizontal" length={10} />
+                                <View>
+                                  <MyText
+                                    text={item.country}
+                                    textStyle={{ fontWeight: '700' }}
+                                  />
+                                  <MyText text={`(${item.code})`} size={10} />
+                                </View>
+                              </TouchableOpacity>
+                            </Card>
+                          );
+                        }}
+                        showsVerticalScrollIndicator={false}
+                      />
+                    ) : (
+                      <Text style={[styles.defaultTextStyleEmpty]}>
+                        {EmptyMessage}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              );
+            }}
           </Wrapper>
         </View>
       </View>

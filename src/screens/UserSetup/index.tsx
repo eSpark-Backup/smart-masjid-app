@@ -162,120 +162,133 @@ export default function UserSetupScreen() {
         bgImageSpacer={false}
         showBack={step == 1 ? false : true}
         onBackPress={() => !disable && setStep(handleBack)}>
-        <ScrollView>
-          {step == 1 && (
-            <LoginForm
-              type={route.params?.type}
-              onPhonePress={value => setStep(value)}
-              setStep={values => {
-                CheckIsUserExist(
-                  values.email?.toLowerCase(),
-                  values.phone,
-                  'login',
-                );
-                setActiveFlow('login');
-              }}
-            />
-          )}
-          {step == 2 && (
-            <SignUpForm
-              onEmailPress={value => setStep(value)}
-              type={route.params?.type}
-              setStep={values => {
-                CheckIsUserExist(
-                  values.email?.toLowerCase(),
-                  undefined,
-                  'signup',
-                );
-                setActiveFlow('signup');
-              }}
-            />
-          )}
-          {step == 3 && (
-            <OtpForm
-              title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
-              type={route.params?.type}
-              setStep={async (value: string) => {
-                setLoader(true);
-                const isVerified = await ValidateOTP(
-                  value,
-                  data.email ?? '',
-                  data.phone ?? '',
-                );
-                console.log('isVerified', isVerified);
-                if (isVerified) {
-                  if (activeFlow == 'signup') {
-                    setStep(4);
-                    setOTP(value);
-                    setLoader(false);
-                  } else {
-                    setOTP(value);
-                    onLogin(
-                      data?.email?.toLowerCase() ?? '',
-                      data.phone ?? '',
-                      value,
+        {({ props }) => {
+          return (
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              {step == 1 && (
+                <LoginForm
+                  contentOpacity={props.contentOpacity}
+                  type={route.params?.type}
+                  onPhonePress={value => setStep(value)}
+                  setStep={values => {
+                    CheckIsUserExist(
+                      values.email?.toLowerCase(),
+                      values.phone,
+                      'login',
                     );
+                    setActiveFlow('login');
+                  }}
+                />
+              )}
+              {step == 2 && (
+                <SignUpForm
+                  contentOpacity={props.contentOpacity}
+                  onEmailPress={value => setStep(value)}
+                  type={route.params?.type}
+                  setStep={values => {
+                    CheckIsUserExist(
+                      values.email?.toLowerCase(),
+                      undefined,
+                      'signup',
+                    );
+                    setActiveFlow('signup');
+                  }}
+                />
+              )}
+              {step == 3 && (
+                <OtpForm
+                  contentOpacity={props.contentOpacity}
+                  title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
+                  type={route.params?.type}
+                  setStep={async (value: string) => {
+                    setLoader(true);
+                    const isVerified = await ValidateOTP(
+                      value,
+                      data.email ?? '',
+                      data.phone ?? '',
+                    );
+                    console.log('isVerified', isVerified);
+                    if (isVerified) {
+                      if (activeFlow == 'signup') {
+                        setStep(4);
+                        setOTP(value);
+                        setLoader(false);
+                      } else {
+                        setOTP(value);
+                        onLogin(
+                          data?.email?.toLowerCase() ?? '',
+                          data.phone ?? '',
+                          value,
+                        );
+                      }
+                    }
+                    setLoader(false);
+                  }}
+                  onResend={async () => {
+                    await SendOTP(data.email ?? '', data.phone ?? '');
+                  }}
+                />
+              )}
+              {step == 4 && (
+                <AddPhoneForm
+                  contentOpacity={props.contentOpacity}
+                  type={route.params?.type}
+                  setStep={(value: number, values: any) => {
+                    setStep(6);
+                    // setData({ ...data, phone: values?.phone ?? '' });
+                  }}
+                />
+              )}
+              {step == 5 && (
+                <OtpForm
+                  contentOpacity={props.contentOpacity}
+                  title="Create Account"
+                  type={route.params?.type}
+                  setStep={(value: string) => setStep(6)}
+                />
+              )}
+              {step == 6 && (
+                <PersonalInfoForm
+                  contentOpacity={props.contentOpacity}
+                  setStep={values => {
+                    setData({ ...data, ...values });
+                    onSubmit({ ...data, ...values }, otp);
+                  }}
+                />
+              )}
+              {step == 7 && (
+                <SLoader
+                  contentOpacity={props.contentOpacity}
+                  title={
+                    route.params?.type == 'login'
+                      ? 'Loggin In'
+                      : 'Creating Account'
                   }
-                }
-                setLoader(false);
-              }}
-              onResend={async () => {
-                await SendOTP(data.email ?? '', data.phone ?? '');
-              }}
-            />
-          )}
-          {step == 4 && (
-            <AddPhoneForm
-              type={route.params?.type}
-              setStep={(value: number, values: any) => {
-                setStep(6);
-                // setData({ ...data, phone: values?.phone ?? '' });
-              }}
-            />
-          )}
-          {step == 5 && (
-            <OtpForm
-              title="Create Account"
-              type={route.params?.type}
-              setStep={(value: string) => setStep(6)}
-            />
-          )}
-          {step == 6 && (
-            <PersonalInfoForm
-              setStep={values => {
-                setData({ ...data, ...values });
-                onSubmit({ ...data, ...values }, otp);
-              }}
-            />
-          )}
-          {step == 7 && (
-            <SLoader
-              title={
-                route.params?.type == 'login' ? 'Loggin In' : 'Creating Account'
-              }
-              subtitle="Creating Account"
-              message={
-                route.params?.type == 'login'
-                  ? 'Logging into the System.'
-                  : 'Your account will be ready soon.'
-              }
-            />
-          )}
-          {step == 8 && (
-            <MyToast
-              heading="Create Account"
-              isSuccess={true}
-              onPress={() => navigation.navigate('DSetup')}
-              btnText={'Connect Device'}
-              title="You’re account is all set!"
-              message={`Lets setup your device`}
-              points={[
-                'Power on your device',
-                'Turn on bluetooth on your phone',
-              ]}
-            />
-          )}
-        </ScrollView>
+                  subtitle="Creating Account"
+                  message={
+                    route.params?.type == 'login'
+                      ? 'Logging into the System.'
+                      : 'Your account will be ready soon.'
+                  }
+                />
+              )}
+              {step == 8 && (
+                <MyToast
+                  heading="Create Account"
+                  isSuccess={true}
+                  onPress={() => navigation.navigate('DSetup')}
+                  btnText={'Connect Device'}
+                  title="You’re account is all set!"
+                  message={`Lets setup your device`}
+                  points={[
+                    'Power on your device',
+                    'Turn on bluetooth on your phone',
+                  ]}
+                />
+              )}
+            </ScrollView>
+          );
+        }}
       </Wrapper>
     </>
   );

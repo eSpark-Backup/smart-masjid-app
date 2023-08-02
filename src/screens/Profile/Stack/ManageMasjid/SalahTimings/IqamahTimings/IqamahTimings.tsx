@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Animated } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
@@ -25,8 +25,10 @@ import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 
 export default function IqamahTimings({
   setFlag,
+  contentOpacity = 0,
 }: {
   setFlag: (value: string) => void;
+  contentOpacity?: any;
 }) {
   const [edit, setEdit] = useState(false);
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
@@ -91,10 +93,19 @@ export default function IqamahTimings({
   return (
     <>
       <View style={{ flex: 1 }}>
-        <GapView length={20} />
-        <TextLabel label="Iqama Timings" textStyle={{ alignSelf: 'center' }} />
-        <GapView length={60} />
-        <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
+        <View style={{ alignSelf: 'center', top: 110 }}>
+          <Animated.View style={[{ opacity: contentOpacity }]}>
+            <TextLabel
+              label="Iqama Timings"
+              textStyle={{ alignSelf: 'center' }}
+            />
+          </Animated.View>
+          <GapView length={50} />
+        </View>
+
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 30 }}
+          style={{ top: 110 }}>
           <OverlayLoader isShow={loading} />
 
           <TimeTable

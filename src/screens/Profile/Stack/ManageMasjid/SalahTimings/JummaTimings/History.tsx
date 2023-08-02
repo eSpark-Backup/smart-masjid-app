@@ -1,6 +1,6 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Animated } from 'react-native';
 import { GetJummahHistory } from '../../../../../../api/masjidController';
 
 import {
@@ -15,8 +15,10 @@ import { convertResponseToData } from '../../../../../../utils/functions';
 
 export default function History({
   setFlag,
+  contentOpacity = 0,
 }: {
   setFlag: (value: string) => void;
+  contentOpacity?: any;
 }) {
   const jummahHistory: any = useHookstate<JummahTime[]>(
     masjidStore.JummahHistory,
@@ -28,10 +30,19 @@ export default function History({
 
   return (
     <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
-      <GapView length={20} />
-      <TextLabel label="Jummah History" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={55} />
-      <TimeSheet data={convertResponseToData(jummahHistory) ?? []} />
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label="Jummah History"
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <View style={{top: 85}}>
+        <TimeSheet data={convertResponseToData(jummahHistory) ?? []} />
+      </View>
     </View>
   );
 }

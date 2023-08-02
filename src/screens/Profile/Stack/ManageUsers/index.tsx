@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Animated,
+} from 'react-native';
 import { useHookstate } from '@hookstate/core';
 
 import {
@@ -22,8 +28,10 @@ import { Theme, useTheme } from '@react-navigation/native';
 
 export default function ManageUsers({
   setFlag,
+  contentOpacity = 0,
 }: {
   setFlag: (value: string, user?: UserResponse) => void;
+  contentOpacity?: any;
 }) {
   const admins: any = useHookstate(userStore?.masjidAdmins).get();
   const [loading, setLoading] = useState(false);
@@ -58,32 +66,44 @@ export default function ManageUsers({
         }}
       />
       <OverlayLoader isShow={loading} />
-      <GapView length={20} />
-      <TextLabel label="Manage Users" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={50} />
-      <FlatList
-        contentContainerStyle={{ flexGrow: 1, width: WINDOW_WIDTH, paddingBottom: 20 }}
-        data={admins ?? []}
-        renderItem={({
-          item,
-          index,
-        }: {
-          item: UserResponse;
-          index: number;
-        }) => {
-          return (
-            <UserCard
-              item={item}
-              key={index}
-              onPress={() => {
-                setFlag('vUser', item);
-              }}
-              onDeletePress={setIsVisible}
-            />
-          );
-        }}
-        ListFooterComponent={<AddUserBtn onPress={() => setFlag('addUser')} />}
-      />
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel label="Manage Users" textStyle={{ alignSelf: 'center' }} />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <View style={{ top: 100 }}>
+        <FlatList
+          contentContainerStyle={{
+            flexGrow: 1,
+            width: WINDOW_WIDTH,
+            paddingBottom: 20,
+          }}
+          data={admins ?? []}
+          renderItem={({
+            item,
+            index,
+          }: {
+            item: UserResponse;
+            index: number;
+          }) => {
+            return (
+              <UserCard
+                item={item}
+                key={index}
+                onPress={() => {
+                  setFlag('vUser', item);
+                }}
+                onDeletePress={setIsVisible}
+              />
+            );
+          }}
+          ListFooterComponent={
+            <AddUserBtn onPress={() => setFlag('addUser')} />
+          }
+        />
+      </View>
     </View>
   );
 }
@@ -119,7 +139,7 @@ const UserCard = ({
 };
 
 const AddUserBtn = ({ onPress }: any) => {
-  const { colors }: Theme = useTheme()
+  const { colors }: Theme = useTheme();
   return (
     <View style={{ marginTop: 10 }}>
       <Card>
@@ -127,7 +147,10 @@ const AddUserBtn = ({ onPress }: any) => {
           activeOpacity={0.9}
           onPress={onPress}
           style={styles.cardContainer}>
-          <MyText text="Add New User" textStyle={{color: colors.primary, fontWeight: '700'}} />
+          <MyText
+            text="Add New User"
+            textStyle={{ color: colors.primary, fontWeight: '700' }}
+          />
           <PlusSvg height={16} width={16} />
         </TouchableOpacity>
       </Card>

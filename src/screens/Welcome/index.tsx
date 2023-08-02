@@ -24,36 +24,40 @@ export default function App() {
 
   return (
     <Wrapper showBack={false} onBackPress={goBack}>
-      <ScrollView>
-        <MyTitle
-          style={{ alignSelf: 'center', textAlign: 'center' }}
-          text={`Welcome to\nSmart Adhan`}
-        />
-        <GapView length={85} />
-        <MyText
-          size={16}
-          textStyle={{ textAlign: 'center' }}
-          text="Have you purchased the adhan device ?"
-        />
-        <GapView length={80} />
-        <Joined
-          containerStyle={{ alignSelf: 'center' }}
-          onPress1={() => {}}
-          onPress2={() => navigation.navigate('USetup', { type: 'setup' })}
-        />
-        <GapView length={80} />
-        <MyText
-          text="I already have an account."
-          onPress={() => navigation.navigate('USetup', { type: 'login' })}
-          pressable
-          textStyle={{
-            fontSize: 16,
-            fontWeight: '400',
-            textAlign: 'center',
-            color: colors.primary,
-          }}
-        />
-      </ScrollView>
+      {() => {
+        return (
+          <ScrollView>
+            <MyTitle
+              style={{ alignSelf: 'center', textAlign: 'center' }}
+              text={`Welcome to\nSmart Adhan`}
+            />
+            <GapView length={85} />
+            <MyText
+              size={16}
+              textStyle={{ textAlign: 'center' }}
+              text="Have you purchased the adhan device ?"
+            />
+            <GapView length={80} />
+            <Joined
+              containerStyle={{ alignSelf: 'center' }}
+              onPress1={() => {}}
+              onPress2={() => navigation.navigate('USetup', { type: 'setup' })}
+            />
+            <GapView length={80} />
+            <MyText
+              text="I already have an account."
+              onPress={() => navigation.navigate('USetup', { type: 'login' })}
+              pressable
+              textStyle={{
+                fontSize: 16,
+                fontWeight: '400',
+                textAlign: 'center',
+                color: colors.primary,
+              }}
+            />
+          </ScrollView>
+        );
+      }}
     </Wrapper>
   );
 }

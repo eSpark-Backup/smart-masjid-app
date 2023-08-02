@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Animated } from 'react-native';
 import { SalahTimingsSVG, VolumeUp } from '../../../../../assets';
 import {
   GapView,
@@ -9,33 +9,44 @@ import {
 
 export default function SalahSettings({
   setFlag,
+  contentOpacity = 0,
 }: {
   setFlag: (value: string) => void;
+  contentOpacity?: any;
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <GapView length={20} />
-      <TextLabel label="Salah Settings" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={55} />
-      <ProfileSectionlist
-        data={[
-          {
-            title: 'Salah Settings',
-            data: [
-              {
-                title: 'Iqama Timings',
-                icon: <SalahTimingsSVG />,
-                onPress: () => setFlag('iTime'),
-              },
-              {
-                title: 'Jumuah Timings',
-                icon: <SalahTimingsSVG />,
-                onPress: () => setFlag('jTime'),
-              },
-            ],
-          },
-        ]}
-      />
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label="Salah Settings"
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <View style={{ top: 100 }}>
+        <ProfileSectionlist
+          data={[
+            {
+              title: 'Salah Settings',
+              data: [
+                {
+                  title: 'Iqama Timings',
+                  icon: <SalahTimingsSVG />,
+                  onPress: () => setFlag('iTime'),
+                },
+                {
+                  title: 'Jumuah Timings',
+                  icon: <SalahTimingsSVG />,
+                  onPress: () => setFlag('jTime'),
+                },
+              ],
+            },
+          ]}
+        />
+      </View>
     </View>
   );
 }

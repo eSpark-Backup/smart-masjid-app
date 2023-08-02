@@ -1,6 +1,6 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Animated } from 'react-native';
 import {
   GetMasjidJummahTiming,
   UpdatedMasjidJummahTiming,
@@ -27,8 +27,10 @@ import moment from 'moment';
 
 export default function JummaTimings({
   setFlag,
+  contentOpacity,
 }: {
   setFlag: (value: string) => void;
+  contentOpacity?: any;
 }) {
   const [edit, setEdit] = useState(false);
   const jummahTimings: any = useHookstate(masjidStore.JummahTime).get();
@@ -101,76 +103,85 @@ export default function JummaTimings({
     <>
       <View style={{ flex: 1 }}>
         <OverlayLoader isShow={loading} />
-        <GapView length={20} />
-        <TextLabel label="Jumuah Timings" textStyle={{ alignSelf: 'center' }} />
-        <GapView length={60} />
-        <TimeTable
-          header={
-            <>
-              <GapView />
-              {!edit ? (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingHorizontal: 5,
-                  }}>
-                  <View>
-                    <MyText
-                      text={`Effective Date: ${jummahTimings?.effectiveDate}`}
-                    />
-                  </View>
+        <View style={{ alignSelf: 'center', top: 110 }}>
+          <Animated.View style={[{ opacity: contentOpacity }]}>
+            <TextLabel
+              label="Jumuah Timings"
+              textStyle={{ alignSelf: 'center' }}
+            />
+          </Animated.View>
+          <GapView length={50} />
+        </View>
+
+        <View style={{top: 110}}>
+          <TimeTable
+            header={
+              <>
+                <GapView />
+                {!edit ? (
                   <View
                     style={{
                       flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      paddingHorizontal: 5,
                     }}>
-                    <History onPress={() => setFlag('jHist')} />
-                    <GapView mode="horizontal" length={20} />
-                    <EditTimeTable
+                    <View>
+                      <MyText
+                        text={`Effective Date: ${jummahTimings?.effectiveDate}`}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <History onPress={() => setFlag('jHist')} />
+                      <GapView mode="horizontal" length={20} />
+                      <EditTimeTable
+                        onPress={() => {
+                          setEdit(true);
+                          setData(jummahTimings ?? {});
+                        }}
+                      />
+                    </View>
+                  </View>
+                ) : (
+                  <View>
+                    <MyDatePicker
+                      minimumDate={new Date()}
+                      onDateChange={date => {
+                        setData({
+                          ...data,
+                          effectiveDate: moment(date).format('YYYY-MM-DD'),
+                        });
+                      }}
+                    />
+                    <GapView length={20} />
+                  </View>
+                )}
+              </>
+            }
+            headings={['Salah', 'Khutbah']}
+            data={arr}
+            editView={edit}
+            footer={
+              <>
+                {edit && (
+                  <View style={{ alignSelf: 'center' }}>
+                    <GapView />
+                    <Rounded
+                      label="Save"
                       onPress={() => {
-                        setEdit(true);
-                        setData(jummahTimings ?? {});
+                        onUpdate();
                       }}
                     />
                   </View>
-                </View>
-              ) : (
-                <View>
-                  <MyDatePicker
-                    minimumDate={new Date()}
-                    onDateChange={date => {
-                      setData({
-                        ...data,
-                        effectiveDate: moment(date).format('YYYY-MM-DD'),
-                      });
-                    }}
-                  />
-                  <GapView length={20} />
-                </View>
-              )}
-            </>
-          }
-          headings={['Salah', 'Khutbah']}
-          data={arr}
-          editView={edit}
-          footer={
-            <>
-              {edit && (
-                <View style={{ alignSelf: 'center' }}>
-                  <GapView />
-                  <Rounded
-                    label="Save"
-                    onPress={() => {
-                      onUpdate();
-                    }}
-                  />
-                </View>
-              )}
-            </>
-          }
-        />
+                )}
+              </>
+            }
+          />
+        </View>
       </View>
     </>
   );

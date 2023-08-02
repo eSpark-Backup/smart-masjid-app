@@ -1,6 +1,6 @@
 import React from 'react';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Animated } from 'react-native';
 
 import { DeviceSvg, SyncSvg } from '../../../assets';
 import {
@@ -14,7 +14,11 @@ import {
 import { Card } from '../../../containers';
 import { WINDOW_WIDTH } from '../../../constants';
 
-export default function ConnectedDevicesComponent() {
+export default function ConnectedDevicesComponent({
+  contentOpacity = 0,
+}: {
+  contentOpacity?: Animated.AnimatedInterpolation<string | number> | number;
+}) {
   const { colors }: Theme = useTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
@@ -41,7 +45,6 @@ export default function ConnectedDevicesComponent() {
           <FlatList
             data={Array('Home', 'Office', 'Shop', "Gradma's House")}
             renderItem={({ item }) => <DeviceListItem title={item} />}
-          
           />
         </View>
       </Card>

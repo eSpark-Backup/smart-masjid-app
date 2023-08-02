@@ -1,6 +1,12 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, PermissionsAndroid, Platform } from 'react-native';
+import {
+  FlatList,
+  View,
+  PermissionsAndroid,
+  Platform,
+  Animated,
+} from 'react-native';
 import { SearchMasjidByLocation } from '../../../api/masjidController';
 import {
   GapView,
@@ -18,9 +24,11 @@ import { _requestUserLocationPermission } from '../../../utils/functions';
 const SearchListing = ({
   onPress,
   setUserLocation,
+  contentOpacity = 0,
 }: {
   onPress?: (masjidDetail: Masjid) => void;
   setUserLocation?: (e: any) => void;
+  contentOpacity: any;
 }) => {
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
   const [zipCode, setZipCode] = useState('');
@@ -84,53 +92,61 @@ const SearchListing = ({
         width: WINDOW_WIDTH,
       }}>
       <OverlayLoader isShow={loader} />
-      <GapView length={20} />
-      <TextLabel label="Search Masjid" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={60} />
-      <View>
-        <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
-          <MyInput
-            searchBar
-            onFocus={() => {
-              if (zipCode == 'Your Location') {
-                setZipCode('');
-              }
-            }}
-            onCurrentLocationPress={onCurrentLocationPress}
-            inputStyle={{ width: WINDOW_WIDTH - 80 }}
-            placeholder="Enter Zip Code"
-            onSearch={onSearch}
-            value={zipCode}
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label="Search Masjid"
+            textStyle={{ alignSelf: 'center' }}
           />
-        </Card>
+        </Animated.View>
+        <GapView length={50} />
       </View>
-      <GapView />
-      <FlatList
-        data={masjidList}
-        contentContainerStyle={{
-          paddingBottom: 240,
-          paddingTop: 10,
-        }}
-        renderItem={({ item, index }) => (
-          <MasjidListCard
-            onPress={() => onPress?.(item)}
-            isSearch
-            masjidName={item?.name}
-            location={`${item.address1} ${item.address2 ?? ''}, ${item.city}, ${
-              item.state
-            } ${item.zip}`}
-            masjidLogo={{ uri: item.logo }}
-          />
-        )}
-        ItemSeparatorComponent={GapView}
-        ListEmptyComponent={
-          <ListEmptyComponent
-            message1="There is no masjid near you"
-            isShowBtn={false}
-            message2="Search for different zip codes"
-          />
-        }
-      />
+      <View style={{ top: 110 }}>
+        <View>
+          <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
+            <MyInput
+              searchBar
+              onFocus={() => {
+                if (zipCode == 'Your Location') {
+                  setZipCode('');
+                }
+              }}
+              onCurrentLocationPress={onCurrentLocationPress}
+              inputStyle={{ width: WINDOW_WIDTH - 80 }}
+              placeholder="Enter Zip Code"
+              onSearch={onSearch}
+              value={zipCode}
+            />
+          </Card>
+        </View>
+        <GapView />
+        <FlatList
+          data={masjidList}
+          contentContainerStyle={{
+            paddingBottom: 240,
+            paddingTop: 10,
+          }}
+          renderItem={({ item, index }) => (
+            <MasjidListCard
+              onPress={() => onPress?.(item)}
+              isSearch
+              masjidName={item?.name}
+              location={`${item.address1} ${item.address2 ?? ''}, ${
+                item.city
+              }, ${item.state} ${item.zip}`}
+              masjidLogo={{ uri: item.logo }}
+            />
+          )}
+          ItemSeparatorComponent={GapView}
+          ListEmptyComponent={
+            <ListEmptyComponent
+              message1="There is no masjid near you"
+              isShowBtn={false}
+              message2="Search for different zip codes"
+            />
+          }
+        />
+      </View>
     </View>
   );
 };

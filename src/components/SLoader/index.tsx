@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Animated } from 'react-native';
 
 import { GLoad } from '../../assets';
 import GapView from '../GapView';
@@ -10,49 +10,60 @@ export default function SLoader({
   title,
   subtitle,
   message,
+  contentOpacity = 0,
 }: {
   title?: string;
   subtitle?: string;
   message: string;
+  contentOpacity?: any;
 }) {
   return (
     <View style={styles.container}>
-      <GapView length={20} />
-      {title && (
-        <TextLabel label={title!!} textStyle={{ alignSelf: 'center' }} />
-      )}
-      <GapView length={40} />
-      {subtitle && (
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          {title && (
+            <TextLabel label={title!!} textStyle={{ alignSelf: 'center' }} />
+          )}
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <View style={{ top: 120 }}>
+        {subtitle && (
+          <MyText
+            text={subtitle!!}
+            textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
+          />
+        )}
+        <View style={{ alignSelf: 'center' }}>
+          <GapView length={15} />
+          <MyText
+            text="Please wait"
+            pressable={false}
+            textStyle={{ fontWeight: '400', fontSize: 16 }}
+          />
+          <GapView length={60} />
+          <View>
+            <Image source={GLoad} style={styles.loader} resizeMode="contain" />
+            <View
+              style={{
+                width: 10,
+                height: 2,
+                backgroundColor: '#ffffff',
+                position: 'absolute',
+                bottom: 0,
+                left: 15,
+              }}
+            />
+          </View>
+          <GapView length={40} />
+        </View>
+        <GapView length={20} />
         <MyText
-          text={subtitle!!}
-          textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
-        />
-      )}
-      <View style={{ alignSelf: 'center' }}>
-        <GapView length={15} />
-        <MyText
-          text="Please wait"
-          pressable={false}
+          text={message}
           textStyle={{ fontWeight: '400', fontSize: 16 }}
         />
-        <GapView length={60} />
-        <View>
-          <Image source={GLoad} style={styles.loader} resizeMode="contain" />
-          <View
-            style={{
-              width: 10,
-              height: 2,
-              backgroundColor: '#ffffff',
-              position: 'absolute',
-              bottom: 0,
-              left: 15,
-            }}
-          />
-        </View>
-        <GapView length={40} />
       </View>
-      <GapView length={20} />
-      <MyText text={message} textStyle={{ fontWeight: '400', fontSize: 16 }} />
     </View>
   );
 }

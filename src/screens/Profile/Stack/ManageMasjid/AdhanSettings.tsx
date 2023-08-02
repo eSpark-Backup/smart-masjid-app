@@ -1,6 +1,6 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Animated } from 'react-native';
 import { GetMasjidAdhanSetting } from '../../../../api/masjidController';
 
 import {
@@ -15,30 +15,31 @@ import { masjidStore } from '../../../../store/MasjidStore';
 
 export default function AdhanSettings({
   setFlag,
+  contentOpacity = 0,
 }: {
   setFlag: (value: string) => void;
+  contentOpacity?: any;
 }) {
   const adhanConfig = useHookstate(masjidStore.adhanConfig).get();
   useEffect(() => {
-    if(!adhanConfig) {
-      GetMasjidAdhanSetting('1')
+    if (!adhanConfig) {
+      GetMasjidAdhanSetting('1');
     }
   }, []);
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ marginBottom: 10 }}>
-        <View
-          style={{
-            paddingTop: 30,
-            padding: 15,
-            paddingBottom: 40,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <TextLabel label={'Adhan Settings'} />
-        </View>
-        <GapView length={20} />
+      <View style={{ alignSelf: 'center', top: 110 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label="Adhan Settings"
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+
+      <View style={{top: 100}}>
         <MyDropDown
           disabled
           title="Calculation"
@@ -56,18 +57,18 @@ export default function AdhanSettings({
           items={[]}
           defaultValue={adhanConfig?.adhanJuristicConfig}
         />
+        <GapView length={40} />
+        <MyText
+          text="Contact support@smartmasjid.net to update the adhan settings"
+          textStyle={{
+            paddingHorizontal: 37.5,
+            textAlign: 'center',
+            fontSize: 16,
+            fontWeight: '400',
+            color: '#000000',
+          }}
+        />
       </View>
-      <GapView length={40} />
-      <MyText
-        text="Contact support@smartmasjid.net to update the adhan settings"
-        textStyle={{
-          paddingHorizontal: 37.5,
-          textAlign: 'center',
-          fontSize: 16,
-          fontWeight: '400',
-          color: '#000000',
-        }}
-      />
     </View>
   );
 }
