@@ -4,6 +4,7 @@ import { api } from '.';
 import { deviceStore } from '../store/DeviceStore';
 import { DeviceInfo } from '../types';
 import { userStore } from '../store/UserStore';
+import { Device } from '../types/deviceControllerTypes';
 
 /**
  *
@@ -173,6 +174,50 @@ export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
     }
   } catch (e) {
     console.log('when saving device to masjid', e);
+  }
+}
+
+/**
+ *
+ * @description Update Device on the Server's DataBase
+ * @returns Promise<DeviceResponse>
+ * @todo //todo: Delete This later
+ */
+
+export async function _updateDevice(devInfo: Device) {
+  const { id, firmwareVersion, name, wifiSsid, deviceTelemetry } = devInfo;
+  console.log('Device info in api???', devInfo);
+  try {
+    const res = await api.put<any>('devices/' + id, {
+      name: name,
+      firmwareVersion: firmwareVersion,
+      wifiSsid: wifiSsid,
+      status: deviceTelemetry.status,
+    });
+    if (res?.ok) {
+      console.log('Success', res.data);
+      Toast.show({
+        text2: 'Device details updated successfully',
+        type: 'success',
+      });
+      if (res.data) return res.data;
+    } else {
+      Toast.show({
+        text2: res?.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+      console.log('Problem status when device save', res.status, res.data);
+    }
+  } catch (e) {
+    Toast.show({
+      text2: 'Something went wrong',
+      type: 'error',
+      autoHide: true,
+      visibilityTime: 10000,
+    });
+    console.log('when registering device', e);
   }
 }
 

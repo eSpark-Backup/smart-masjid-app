@@ -19,7 +19,7 @@ import { Card } from '../../containers';
 import { useLayoutAnimation } from '../../utils';
 import { CountryCodes } from '../../types';
 
-export default function LoginForm({
+const LoginForm = ({
   type,
   setStep,
   onPhonePress = () => {},
@@ -27,7 +27,7 @@ export default function LoginForm({
   type?: 'login' | 'setup';
   setStep: (value: any) => void;
   onPhonePress?: (value: any) => void;
-}) {
+}) => {
   const { colors }: Theme = useTheme();
   const [activeTab, setActiveTab] = React.useState('1');
   const [currentCountry, setCurrentCountry] = React.useState<CountryCodes>();
@@ -85,13 +85,11 @@ export default function LoginForm({
           <>
             {activeTab == '1' ? (
               <>
-                <Card backgroundColor="#fff" width={315}>
-                  <MyInput
-                    placeholder="Email"
-                    onChangeText={handleChange('email')}
-                    value={values.email}
-                  />
-                </Card>
+                <MyInput
+                  placeholder="Email"
+                  onChangeText={handleChange('email')}
+                  value={values.email}
+                />
                 {errors.email && touched.email && (
                   <MyText
                     text={errors.email}
@@ -105,19 +103,17 @@ export default function LoginForm({
               </>
             ) : (
               <>
-                <Card backgroundColor="#fff" width={315}>
-                  <MyInput
-                    placeholder="Phone"
-                    onChangeText={handleChange('phone')}
-                    value={values?.phone}
-                    isPhoneCode
-                    phoneCodeValue="US"
-                    onPhoneCodeChange={country => {
-                      console.log('e', country);
-                      setCurrentCountry(country);
-                    }}
-                  />
-                </Card>
+                <MyInput
+                  placeholder="Phone"
+                  onChangeText={handleChange('phone')}
+                  value={values?.phone}
+                  isPhoneCode
+                  phoneCodeValue="US"
+                  onPhoneCodeChange={country => {
+                    console.log('e', country);
+                    setCurrentCountry(country);
+                  }}
+                />
                 {errors.phone && touched.phone && (
                   <MyText
                     text={errors.phone}
@@ -149,7 +145,8 @@ export default function LoginForm({
       </View>
     </View>
   );
-}
+};
+export default LoginForm;
 
 const styles = StyleSheet.create({
   container: {

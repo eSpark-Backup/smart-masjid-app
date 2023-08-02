@@ -46,6 +46,18 @@ export type IqamahTime = {
   asrDelay?: number | null;
 };
 
+export type PrayerTimes = {
+  asr: string;
+  date: string;
+  dhuhr: string;
+  fajr: string;
+  id: number;
+  isha: string;
+  maghrib: string;
+  sunrise: string;
+  updatedDate: null;
+};
+
 export type JummahTime = {
   id: number;
   effectiveDate: string;
@@ -72,14 +84,16 @@ type Location = {
   coordinates: number[];
 };
 
+export type SubscriptionList = {
+  id: number;
+  subscriptionType: SubscriptionType;
+};
+
 export type Masjid = {
   id: number;
   name: string;
   masjidAdhanConfig: AdhanConfig; // Type this once it is available
-  subscriptionList: {
-    id: number;
-    subscriptionType: SubscriptionType;
-  }[];
+  subscriptionList: SubscriptionList[];
   address1: string;
   address2: string | null;
   city: string;

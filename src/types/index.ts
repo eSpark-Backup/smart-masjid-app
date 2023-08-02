@@ -10,7 +10,7 @@ import { UserResponse } from './userControllerApiResponse';
 export type RootStackParamList = {
   Welcome: undefined;
   USetup?: { type?: 'login' | 'setup' };
-  DSetup?: { from?: string };
+  DSetup?: { from?: string; deviceData?: Device; onlyPassword?: boolean };
   HomeBottomTab: undefined;
 };
 

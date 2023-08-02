@@ -15,9 +15,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { globalStore } from '../../store/GlobalStates';
 import { CountryCodes, IPrayerTimeForPeriod } from '../../types';
 import moment from 'moment';
-import { IqamahTime, JummahTime } from '../../types/masjidControllerTypes';
+import {
+  IqamahTime,
+  JummahTime,
+  SubscriptionList,
+} from '../../types/masjidControllerTypes';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
+import { Platform } from 'react-native';
 
 /**
  *
@@ -126,39 +131,58 @@ async function _openSettingIsBlocked(permission: Permission) {
  * @todo //todo: Delete This later
  */
 async function _requestBlePermissions(): Promise<Boolean> {
-  const checkStatus = await checkMultiple([
-    PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-    PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-    PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-    // PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-  ]);
-  console.log('hello', checkStatus);
-  if (
-    checkStatus[
-      (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
-    ] !== 'granted' ||
-    checkStatus[
-      (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-      PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
-    ] === 'denied'
-  ) {
-    const requestStatus = await requestMultiple([
+  if (Platform.OS == 'ios') {
+    return true;
+    // const checkStatus = await checkMultiple([
+    //   PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
+    // ]);
+    // console.log('hello', checkStatus);
+    // if (
+    //   checkStatus[PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL] !== 'granted' ||
+    //   checkStatus[PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL] === 'denied'
+    // ) {
+    //   const requestStatus = await requestMultiple([
+    //     PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
+    //   ]);
+    //   return requestStatus[PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL] === 'granted';
+    // } else {
+    //   return true;
+    // }
+  } else {
+    const checkStatus = await checkMultiple([
       PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
       PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
       PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+      // PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
     ]);
-    return (
-      requestStatus[
+    console.log('hello', checkStatus);
+    if (
+      checkStatus[
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
         PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
         PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
-      ] === 'granted'
-    );
-  } else {
-    return true;
+      ] !== 'granted' ||
+      checkStatus[
+        (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
+      ] === 'denied'
+    ) {
+      const requestStatus = await requestMultiple([
+        PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+      ]);
+      return (
+        requestStatus[
+          (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+          PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+          PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
+        ] === 'granted'
+      );
+    } else {
+      return true;
+    }
   }
 }
 
@@ -393,6 +417,22 @@ function convertTo12Hour(time: string) {
   }
 }
 
+interface NormalizedSubscriptions {
+  [category: string]: SubscriptionList[];
+}
+
+function _normalizedSubscriptions(subscriptions?: SubscriptionList[]) {
+  return subscriptions?.reduce((acc, subscription) => {
+    const category: string =
+      subscription.subscriptionType.subscriptionCategory.name;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(subscription);
+    return acc;
+  }, {} as NormalizedSubscriptions);
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
@@ -406,4 +446,5 @@ export {
   convertResponseToData,
   isValidPhoneNumber,
   convertTo12Hour,
+  _normalizedSubscriptions,
 };

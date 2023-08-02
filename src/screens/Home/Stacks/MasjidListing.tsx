@@ -37,6 +37,7 @@ export default function MasjidListing({
           />
         )}
         ItemSeparatorComponent={GapView}
+        ListFooterComponent={() => <GapView />}
         ListEmptyComponent={<ListEmptyComponent navigation={navigation} />}
       />
     </View>

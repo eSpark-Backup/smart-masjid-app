@@ -17,9 +17,13 @@ import { _requestUserLocationPermission } from '../../utils/functions';
 export default function WifiSelectForm({
   setStep,
   setSSID,
+  currentWifiSSID,
+  autoSelect,
 }: {
   setStep: (value: number) => void;
   setSSID: (value: string) => void;
+  currentWifiSSID: string;
+  autoSelect: boolean;
 }) {
   const { colors } = useTheme();
   const [data, setData] = useState<any>();
@@ -75,7 +79,16 @@ export default function WifiSelectForm({
           setStep(5);
         },
       }));
-      setData(newArr);
+      if (autoSelect) {
+        newArr.filter(item => {
+          if (item.SSID == currentWifiSSID) {
+            setSSID(item?.SSID);
+            setStep(5);
+          }
+        });
+      } else {
+        setData(newArr);
+      }
     } catch (e) {
       console.log('Cannot get wifiList', e);
     }

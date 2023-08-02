@@ -32,7 +32,7 @@ export default function Rounded({
             borderRadius: 20,
             alignItems: 'center',
             justifyContent: 'center',
-            borderWidth: outlined ? 1 : 0,
+            borderWidth: outlined ? 1.5 : 0,
             borderColor: colors.primary,
           }}
           colors={

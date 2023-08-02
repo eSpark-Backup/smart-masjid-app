@@ -74,13 +74,14 @@ export default function Device({ contentOpacity = 0 }: any) {
   const { colors } = theme;
 
   useEffect(() => {
-    const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
-    setStep(0);
-    console.log('what is the user info', user?.userType?.name);
-    console.log('what is the user info++++', devices);
-    GetUserDevices(user?.id.toString() ?? '');
-    GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
-  }, [isFocused]);
+    if (step == 0) {
+      const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+      console.log('what is the user info', user?.userType?.name);
+      console.log('what is the user info++++', devices);
+      GetUserDevices(user?.id.toString() ?? '');
+      GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
+    }
+  }, [isFocused, step]);
 
   const onBackPress = () => {
     if (step != 0) {
