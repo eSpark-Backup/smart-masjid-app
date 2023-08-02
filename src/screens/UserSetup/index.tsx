@@ -164,7 +164,7 @@ export default function UserSetupScreen() {
         onBackPress={() => !disable && setStep(handleBack)}>
         {({ props }) => {
           return (
-            <ScrollView>
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
               {step == 1 && (
                 <LoginForm
                   contentOpacity={props.contentOpacity}
@@ -274,7 +274,6 @@ export default function UserSetupScreen() {
               )}
               {step == 8 && (
                 <MyToast
-                  contentOpacity={props.contentOpacity}
                   heading="Create Account"
                   isSuccess={true}
                   onPress={() => navigation.navigate('DSetup')}
