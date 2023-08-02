@@ -19,7 +19,7 @@ export default function MyTextSubHeader({
       size={16}
       textStyle={{
         ...styles.title,
-        color: "#0E0E0E",
+        color: '#0E0E0E',
         ...style,
       }}
     />
@@ -28,7 +28,6 @@ export default function MyTextSubHeader({
 
 const styles = StyleSheet.create({
   title: {
-    width: 310,
-    fontWeight: '500'
+    fontWeight: '500',
   },
 });

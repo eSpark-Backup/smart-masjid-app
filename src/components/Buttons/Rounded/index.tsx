@@ -47,7 +47,6 @@ export default function Rounded({
             textStyle={{
               color: outlined ? colors.primary : '#fff',
               fontSize: 18,
-              fontWeight: '700',
             }}
           />
         </LinearGradient>

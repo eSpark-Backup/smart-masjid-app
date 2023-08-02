@@ -94,6 +94,7 @@ export default function CountryModal({
               return (
                 <View
                   style={{
+                    top: 112,
                     width: WINDOW_WIDTH - 40,
                     alignSelf: 'center',
                   }}>

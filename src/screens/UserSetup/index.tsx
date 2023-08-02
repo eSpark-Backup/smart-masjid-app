@@ -130,6 +130,8 @@ export default function UserSetupScreen() {
           visibilityTime: 10000,
         });
       } else {
+        // setData({ ...data, email: email ?? '', phone: phone ?? '' });
+        // setStep(3);
         const result = await SendOTP(email, phone);
         if (result) {
           setData({ ...data, email: email ?? '', phone: phone ?? '' });
@@ -164,7 +166,7 @@ export default function UserSetupScreen() {
         onBackPress={() => !disable && setStep(handleBack)}>
         {({ props }) => {
           return (
-            <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               {step == 1 && (
                 <LoginForm
                   contentOpacity={props.contentOpacity}
@@ -200,6 +202,7 @@ export default function UserSetupScreen() {
                   contentOpacity={props.contentOpacity}
                   title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
                   type={route.params?.type}
+                  userEmail={data.email}
                   setStep={async (value: string) => {
                     setLoader(true);
                     const isVerified = await ValidateOTP(
@@ -224,6 +227,7 @@ export default function UserSetupScreen() {
                     }
                     setLoader(false);
                   }}
+                  goBack={() => setStep(2)}
                   onResend={async () => {
                     await SendOTP(data.email ?? '', data.phone ?? '');
                   }}
@@ -244,6 +248,8 @@ export default function UserSetupScreen() {
                   contentOpacity={props.contentOpacity}
                   title="Create Account"
                   type={route.params?.type}
+                  userPhone={data.phone}
+                  goBack={() => setStep(4)}
                   setStep={(value: string) => setStep(6)}
                 />
               )}
@@ -277,12 +283,14 @@ export default function UserSetupScreen() {
                   heading="Create Account"
                   isSuccess={true}
                   onPress={() => navigation.navigate('DSetup')}
+                  onSkip={() => navigation.navigate('HomeBottomTab')}
                   btnText={'Connect Device'}
-                  title="You’re account is all set!"
-                  message={`Lets setup your device`}
+                  title="Account setup complete"
+                  message={`Lets setup your device now.`}
                   points={[
                     'Power on your device',
-                    'Turn on bluetooth on your phone',
+                    'Turn on bluetooth',
+                    'Turn on location',
                   ]}
                 />
               )}

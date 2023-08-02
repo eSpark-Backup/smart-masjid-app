@@ -1,8 +1,22 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
-import { StyleSheet, Text, View, Animated } from 'react-native';
-import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  GapView,
+  MyInput,
+  MyText,
+  MyTextSubHeader,
+  MyTitle,
+  Rounded,
+  TextLabel,
+} from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
@@ -19,26 +33,16 @@ export default function AddPhoneForm({
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
-      <GapView length={20} />
-      <TextLabel label="" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={40} />
-
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View style={{ top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label={'Create Account'}
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text={'Create Account'} />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{ top: 120 }}>
-        <MyText
-          textStyle={{ textAlign: 'center', width: 315 }}
-          text={`Would you like to add a phone number?\n\nYou can skip now add it later as well.`}
-        />
-        <GapView length={40} />
+      <View style={{ alignItems: 'center', top: 120 }}>
+        <MyTextSubHeader text="Would you like to add a phone number?" />
+        <GapView length={30} />
         <Formik
           initialValues={{ phone: '' }}
           validationSchema={UserSetupSchema.optionalPhoneForm}
@@ -73,7 +77,7 @@ export default function AddPhoneForm({
                   }}
                 />
               )}
-              <GapView length={15} />
+              <GapView length={20} />
               <MyText
                 size={12}
                 textStyle={{
@@ -83,19 +87,18 @@ export default function AddPhoneForm({
                 }}
                 text="By signing up with Phone number you agree to receive OTP text messages every time you login with it. Message and data rates might apply."
               />
-              <GapView length={40} />
+              <GapView length={30} />
               <View style={{ alignItems: 'center' }}>
                 <Rounded label="Next" width={250} onPress={handleSubmit} />
               </View>
               <GapView />
-              <View style={{ alignItems: 'center' }}>
-                <Rounded
-                  outlined
-                  label="Skip"
-                  width={250}
-                  onPress={() => setStep(6)}
+              <TouchableOpacity onPress={() => setStep(6)}>
+                <MyText
+                  size={18}
+                  text={'Skip'}
+                  textStyle={{ color: colors.primary }}
                 />
-              </View>
+              </TouchableOpacity>
             </>
           )}
         </Formik>
@@ -106,7 +109,6 @@ export default function AddPhoneForm({
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: 'center',
-    // alignItems: 'center',
+    alignItems: 'center',
   },
 });
