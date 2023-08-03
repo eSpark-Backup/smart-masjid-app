@@ -29,6 +29,5 @@ export default function MyTextHeader({
 const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
-    width: 310,
   },
 });

@@ -1,11 +1,18 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
-import { StyleSheet, Text, View, Animated } from 'react-native';
-import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import { StyleSheet, View, Animated } from 'react-native';
+import {
+  GapView,
+  MyInput,
+  MyText,
+  MyTextHeader,
+  MyTextSubHeader,
+  MyTitle,
+  Rounded,
+} from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
-import { Card } from '../../containers';
 
 export default function SignUpForm({
   setStep,
@@ -21,29 +28,16 @@ export default function SignUpForm({
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
-      <View style={{ alignSelf: 'center', top: 112 }}>
+      <View style={{ top: 112 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="Create Account"
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text="Create Account" />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{top: 110}}>
-        <MyText
-          textStyle={{ textAlign: 'center', width: 315, fontWeight: '700' }}
-          size={20}
-          text={`Awesome!`}
-        />
-        <GapView length={15} />
-        <MyText
-          textStyle={{ textAlign: 'center', width: 315 }}
-          text={`Let’s get your account created.\n\nWhat’s a good email to get started?
-      `}
-        />
-        <GapView length={30} />
+      <View style={{ alignItems: 'center', top: 110 }}>
+        <MyTextSubHeader text="Great! Let’s get your account created" />
+        <GapView length={40} />
         <Formik
           initialValues={{ email: '' }}
           validationSchema={UserSetupSchema.emailForm}
@@ -59,13 +53,11 @@ export default function SignUpForm({
             touched,
           }) => (
             <>
-              <Card backgroundColor="#fff" width={315}>
-                <MyInput
-                  placeholder="Email"
-                  onChangeText={handleChange('email')}
-                  value={values.email}
-                />
-              </Card>
+              <MyInput
+                placeholder="Email"
+                onChangeText={handleChange('email')}
+                value={values.email}
+              />
               {errors.email && touched.email && (
                 <MyText
                   text={errors.email}
@@ -85,12 +77,12 @@ export default function SignUpForm({
         </Formik>
         <GapView length={40} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <MyText text="Already have account? " />
+          <MyText size={16} text="Already have account? " />
           <MyText
             text="Login"
             pressable
+            size={16}
             textStyle={{
-              fontSize: 16,
               fontWeight: '400',
               color: colors.primary,
             }}
@@ -104,7 +96,6 @@ export default function SignUpForm({
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: 'center',
-    // alignItems: 'center',
+    alignItems: 'center',
   },
 });

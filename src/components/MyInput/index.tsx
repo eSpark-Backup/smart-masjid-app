@@ -204,21 +204,25 @@ export default function MyInput(props: MyInputProps) {
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
           </TouchableOpacity>
         )}
-        <View
-          style={{
-            position: 'absolute',
-            top: value || getFocused ? -10 : 15,
-            left: isPhoneCode ? 95 : 15,
-            backgroundColor: theme.colors.background,
-            zIndex: value || getFocused ? 1 : 0,
-            paddingHorizontal: 5,
-          }}>
-          <MyText
-            textStyle={{ color: getFocused ? theme.colors.primary : '#9E9F9F' }}
-            text={placeholder}
-          />
-        </View>
-        <View style={isDropDown ? { ...dropStyle } : {}}>
+        {!isDropDown ? (
+          <View
+            style={{
+              position: 'absolute',
+              top: value || getFocused ? -10 : 15,
+              left: isPhoneCode ? 95 : 15,
+              backgroundColor: theme.colors.background,
+              zIndex: value || getFocused ? 1 : 0,
+              paddingHorizontal: 5,
+            }}>
+            <MyText
+              textStyle={{
+                color: getFocused ? theme.colors.primary : '#9E9F9F',
+              }}
+              text={placeholder}
+            />
+          </View>
+        ) : null}
+        <View>
           <View>
             <TextInput
               editable={selectMode && !disabled}
@@ -255,13 +259,6 @@ export default function MyInput(props: MyInputProps) {
               />
             )}
           </View>
-          {isDropDown && (
-            <II
-              name="caret-down-sharp"
-              style={{ alignSelf: 'center', right: 20 }}
-              onPress={onDropPress}
-            />
-          )}
         </View>
         {searchBar && (
           <>

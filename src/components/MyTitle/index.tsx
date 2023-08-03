@@ -19,7 +19,7 @@ export default function MyTitle({
       size={18}
       textStyle={{
         ...styles.title,
-        color: "#3E3E3E",
+        color: '#3E3E3E',
         ...style,
       }}
     />
@@ -29,7 +29,5 @@ export default function MyTitle({
 const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
-    width: 310,
-    paddingHorizontal: 33,
   },
 });
