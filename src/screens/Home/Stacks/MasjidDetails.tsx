@@ -48,14 +48,6 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
           text="Connected Devices"
           style={{ color: '#3E3E3E' }}
         />
-        <View style={{ width: WINDOW_WIDTH, alignItems: 'center', right: 5 }}>
-          <Tooltip
-            position="top"
-            content="Any Contentsdada"
-            iconColor={'#006870'}
-          />
-        </View>
-
         <GapView length={15} />
         <FlatList
           horizontal
