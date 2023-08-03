@@ -10,6 +10,7 @@ import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
 import TextLabel from '../TextLabel';
 import moment from 'moment';
+import Tooltip from '../Tooltip';
 
 interface DataProps {
   name?: string;
@@ -165,8 +166,8 @@ export default function TimeTable({
         {isMute && !isInfo && <View style={styles.headerIcon} />}
         {isEdit && !isInfo && <View style={styles.headerIcon} />}
         {isInfo && (
-          <View style={styles.headerIcon}>
-            <InfoCircle />
+          <View>
+            <Tooltip position='top' content="Any Content" iconColor={'#006870'} />
           </View>
         )}
       </View>

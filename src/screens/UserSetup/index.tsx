@@ -37,6 +37,7 @@ import {
   SendOTP,
   ValidateOTP,
 } from '../../api/externalControllers';
+import { userStore } from '../../store/UserStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -68,6 +69,12 @@ export default function UserSetupScreen() {
   const handleBack = () => {
     if (step == 3) {
       return activeFlow == 'signup' ? 2 : 1;
+    }
+    if (step == 4) {
+      return 2;
+    }
+    if (step == 6) {
+      return 4;
     }
     if (step !== 1) {
       return step - 1;
@@ -130,6 +137,8 @@ export default function UserSetupScreen() {
           visibilityTime: 10000,
         });
       } else {
+        // setData({ ...data, email: email ?? '', phone: phone ?? '' });
+        // setStep(3);
         const result = await SendOTP(email, phone);
         if (result) {
           setData({ ...data, email: email ?? '', phone: phone ?? '' });
@@ -200,6 +209,7 @@ export default function UserSetupScreen() {
                   contentOpacity={props.contentOpacity}
                   title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
                   type={route.params?.type}
+                  userEmail={data.email}
                   setStep={async (value: string) => {
                     setLoader(true);
                     const isVerified = await ValidateOTP(
@@ -224,6 +234,7 @@ export default function UserSetupScreen() {
                     }
                     setLoader(false);
                   }}
+                  goBack={() => setStep(2)}
                   onResend={async () => {
                     await SendOTP(data.email ?? '', data.phone ?? '');
                   }}
@@ -244,6 +255,8 @@ export default function UserSetupScreen() {
                   contentOpacity={props.contentOpacity}
                   title="Create Account"
                   type={route.params?.type}
+                  userPhone={data.phone}
+                  goBack={() => setStep(4)}
                   setStep={(value: string) => setStep(6)}
                 />
               )}
@@ -278,12 +291,21 @@ export default function UserSetupScreen() {
                   contentOpacity={props.contentOpacity}
                   isSuccess={true}
                   onPress={() => navigation.navigate('DSetup')}
+                  onSkip={async () => {
+                    await userStore.userData.set(
+                      JSON.parse(
+                        JSON.stringify(userStore.currentRegisterUser.get()),
+                      ),
+                    );
+                    navigation.navigate('HomeBottomTab');
+                  }}
                   btnText={'Connect Device'}
-                  title="You’re account is all set!"
-                  message={`Lets setup your device`}
+                  title="Account setup complete"
+                  message={`Lets setup your device now.`}
                   points={[
                     'Power on your device',
-                    'Turn on bluetooth on your phone',
+                    'Turn on bluetooth',
+                    'Turn on location',
                   ]}
                 />
               )}

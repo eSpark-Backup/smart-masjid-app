@@ -9,13 +9,12 @@ import {
   GapView,
   MyInput,
   MyText,
+  MyTitle,
   Rounded,
   TabView,
-  TextLabel,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
-import { Card } from '../../containers';
 import { useLayoutAnimation } from '../../utils';
 import { CountryCodes } from '../../types';
 
@@ -40,20 +39,19 @@ const LoginForm = ({
 
   return (
     <View style={styles.container}>
-      <View style={{ alignSelf: 'center', top: 134 }}>
+      <View style={{ top: 134 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Login" textStyle={{ alignSelf: 'center' }} />
+          <MyTitle text="Login" />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{top: 140}}>
+      <View style={{ alignItems: 'center', top: 140 }}>
         <TabView
           tab1Title="Email"
           tab2Title="Phone number"
           onChange={setActiveTab}
         />
-
         <GapView length={40} />
         <Formik
           initialValues={{ email: '' }}
@@ -145,12 +143,12 @@ const LoginForm = ({
         </Formik>
         <GapView length={40} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <MyText text="Don’t have account? " />
+          <MyText size={16} text="Don’t have account? " />
           <MyText
             text="Create account"
             pressable
+            size={16}
             textStyle={{
-              fontSize: 16,
               fontWeight: '400',
               color: colors.primary,
             }}
@@ -165,6 +163,6 @@ export default LoginForm;
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: 'center',
+    alignItems: 'center',
   },
 });

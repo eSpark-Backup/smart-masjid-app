@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Image, StyleSheet, Animated } from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 
 import { Check, CheckSvg, Exclimation } from '../../assets';
 import { Rounded } from '../Buttons';
@@ -7,6 +13,9 @@ import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import * as Animatable from 'react-native-animatable';
 import GapView from '../GapView';
+import MyTitle from '../MyTitle';
+import MyTextSubHeader from '../MyTextSubHeader';
+import { Theme, useTheme } from '@react-navigation/native';
 
 export default function MyToast({
   heading,
@@ -15,6 +24,7 @@ export default function MyToast({
   isSuccess = true,
   btnText,
   onPress,
+  onSkip,
   points,
   center,
   titleSize,
@@ -26,12 +36,14 @@ export default function MyToast({
   isSuccess: boolean;
   btnText: string;
   onPress?: () => void;
+  onSkip?: () => void;
   points?: string[];
   center?: boolean;
   titleSize?: number;
   contentOpacity: any;
 }) {
   const startValue = useRef(new Animated.Value(0)).current;
+  const { colors }: Theme = useTheme();
   const endValue = 1;
 
   useEffect(() => {
@@ -59,10 +71,7 @@ export default function MyToast({
             <>
               <View style={{ alignSelf: 'center', top: 128 }}>
                 <Animated.View style={[{ opacity: contentOpacity }]}>
-                  <TextLabel
-                    label={heading}
-                    textStyle={{ alignSelf: 'center' }}
-                  />
+                  <MyTitle text={heading} />
                 </Animated.View>
                 <GapView length={50} />
               </View>
@@ -70,11 +79,9 @@ export default function MyToast({
           )}
           <View style={{ top: 130 }}>
             {title && (
-              <MyText
+              <MyTextSubHeader
                 text={title!!}
-                textStyle={{
-                  fontSize: titleSize ?? 20,
-                  fontWeight: '700',
+                style={{
                   textAlign: 'center',
                 }}
               />
@@ -87,10 +94,7 @@ export default function MyToast({
               style={
                 center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
               }>
-              <MyText
-                textStyle={{ fontSize: 16, fontWeight: '400' }}
-                text={message}
-              />
+              <MyText size={16} text={message} />
             </View>
             {points?.length!! > 0 && (
               <>
@@ -102,6 +106,14 @@ export default function MyToast({
             <View style={{ alignSelf: 'center' }}>
               <Rounded onPress={onPress} label={btnText!!} />
             </View>
+            <GapView />
+            <TouchableOpacity onPress={onSkip}>
+              <MyText
+                size={18}
+                text={'I’ll do it later'}
+                textStyle={{ color: colors.primary, textAlign: 'center' }}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </Animated.View>
@@ -129,5 +141,6 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
     width: '85%',
+    top: 112,
   },
 });

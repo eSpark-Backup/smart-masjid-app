@@ -111,6 +111,7 @@ export default function MyDropdown({
         <MyInput
           disabled={disabled}
           title={title}
+          isDropDown
           selectMode={!searchDisabled}
           onChangeText={onSearch}
           onFocus={() => {
@@ -197,6 +198,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  listItemContainer: {
-  },
+  listItemContainer: {},
 });

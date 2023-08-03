@@ -16,10 +16,10 @@ export default function MyTitle({
   return (
     <MyText
       text={text}
-      size={24}
+      size={18}
       textStyle={{
         ...styles.title,
-        color: colors.primary,
+        color: '#3E3E3E',
         ...style,
       }}
     />
@@ -28,9 +28,6 @@ export default function MyTitle({
 
 const styles = StyleSheet.create({
   title: {
-    fontWeight: '700',
     textAlign: 'center',
-    width: 310,
-    paddingHorizontal: 33,
   },
 });

@@ -32,3 +32,7 @@ export { default as TabView } from './TabView';
 export { default as DeviceErrorBox } from './DeviceErrorBox';
 export { default as CountryPickerModal } from './CountryPickerModal';
 export { default as CachedImage } from './CachedImage';
+export { default as OutlineDeviceContainer } from './OutlineDeviceContainer';
+export { default as MyTextHeader } from './MyTextHeader';
+export { default as MyTextSubHeader } from './MyTextSubHeader';
+export { default as Tooltip } from './Tooltip';
