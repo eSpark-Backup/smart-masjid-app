@@ -25,6 +25,7 @@ import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import { ImageSourcePropType } from 'react-native';
 import { CachedImage } from '../index';
+import { FastImageProps } from 'react-native-fast-image';
 
 interface MasjidHomeProps {
   masjidName: string;
@@ -126,11 +127,12 @@ export default function MasjidListCard(
           )}
         </View>
         <View>
+          {masjidLogo ? 
           <CachedImage
             source={masjidLogo}
             resizeMode="contain"
-            style={!isSearch ? styles.imageStyle : { height: 75, width: 75 }}
-          />
+            style={!isSearch ? styles.imageStyle : { height: 61, width: 61, borderRadius: 6 }}
+          /> : <MasjidSample />}
         </View>
       </TouchableOpacity>
     </Card>
