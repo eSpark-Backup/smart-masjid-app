@@ -1,18 +1,14 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Animated,
-} from 'react-native';
+import { View, TouchableOpacity, Animated } from 'react-native';
 import MyText from '../MyText';
 import { ArrowDown } from '../../assets';
 import { useLayoutAnimation } from '../../utils';
 import { WINDOW_WIDTH } from '../../constants';
 
 export default function Accordian({
-  question = 'Please choose between the following?',
-  answer = 'No  answer for this question type of answer type ',
+  question = 'Faq question goes here ?',
+  answer = 'Description and answers goes here.\nDescription and answers goes here.\nDescription and answers goes here.',
 }: {
   question?: string;
   answer?: string;
@@ -23,13 +19,13 @@ export default function Accordian({
   const backgroundOpacity = useRef(new Animated.Value(isShow ? 1 : 0)).current;
 
   useEffect(() => {
-    useLayoutAnimation(500);
+    useLayoutAnimation(250);
   }, [isShow]);
 
   useEffect(() => {
     Animated.timing(backgroundOpacity, {
       toValue: isShow ? 1 : 0,
-      duration: 300,
+      duration: 250,
       useNativeDriver: false,
     }).start();
   }, [isShow]);
@@ -38,7 +34,7 @@ export default function Accordian({
     setIsShow(!isShow);
     Animated.timing(rotationValue, {
       toValue: isShow ? 0 : 180,
-      duration: 300,
+      duration: 250,
       useNativeDriver: true,
     }).start();
   };
@@ -73,15 +69,24 @@ export default function Accordian({
             justifyContent: 'space-between',
             paddingVertical: 10,
           }}>
-          <MyText text={question} textStyle={{ width: WINDOW_WIDTH - 80 }} />
+          <MyText
+            size={16}
+            text={question}
+            textStyle={{ width: WINDOW_WIDTH - 80 }}
+          />
           <Animated.View style={[rotateStyle]}>
-            <ArrowDown />
+            <ArrowDown height={16} width={16} />
           </Animated.View>
         </Animated.View>
 
         {isShow && (
-          <Animated.View style={{ backgroundColor: '#F1F7F8' }}>
-            <MyText text={answer} />
+          <Animated.View
+            style={{
+              backgroundColor: '#F1F7F8',
+              paddingHorizontal: 15,
+              paddingTop: 15,
+            }}>
+            <MyText size={16} text={answer} />
           </Animated.View>
         )}
       </TouchableOpacity>
