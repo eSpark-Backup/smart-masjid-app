@@ -169,7 +169,7 @@ export default function DeviceSetupScreen() {
     const loc = await _checkLocationStatus();
     setBleStatus(ble);
     setlocationStatus(loc);
-    setStep(6);
+    setStep(1);
     setConnFlag(true);
     await handlePermissions(ble, loc);
   };
@@ -443,8 +443,8 @@ export default function DeviceSetupScreen() {
               <SLoader
                 title="Device Setup"
                 contentOpacity={props.contentOpacity}
-                subtitle="Connecting..."
-                message="Connecting to wifi network..."
+                subtitle="Setting up your device"
+                message="Do not close the app till setup is complete."
               />
             )}
             {step == 7 && (
@@ -461,10 +461,8 @@ export default function DeviceSetupScreen() {
                     screen: route.params?.from ? 'Device' : 'Home',
                   });
                 }}
-                title="Device setup complete!"
-                message={
-                  'Your device is connected successfully.' + masjidSetupText
-                }
+                title="Device connected successfully"
+                message={'Let’s subscribe to a masjid now.' + masjidSetupText}
                 center
               />
             )}

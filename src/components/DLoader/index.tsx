@@ -4,24 +4,22 @@ import { DeviceLoaderGif } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
+import MyTitle from '../MyTitle';
+import MyTextSubHeader from '../MyTextSubHeader';
 
 export default function DLoader({ contentOpacity }: { contentOpacity: any }) {
   return (
     <View style={styles.container}>
       <View style={{ alignSelf: 'center', top: 128 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label={'Device Setup'}
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text={'Device Setup'} />
         </Animated.View>
         <GapView length={50} />
       </View>
       <View style={{ top: 130 }}>
-        <MyText
+        <MyTextSubHeader
           text={`Searching for your device..`}
-          pressable={false}
-          textStyle={styles.text}
+          style={{ textAlign: 'center' }}
         />
         <GapView length={30} />
         <View style={{ padding: 5 }}>
@@ -50,5 +48,5 @@ const styles = StyleSheet.create({
     width: 250,
     alignSelf: 'center',
   },
-  text: { fontWeight: '400', fontSize: 16, textAlign: 'center' },
+  text: { fontSize: 16, textAlign: 'center' },
 });

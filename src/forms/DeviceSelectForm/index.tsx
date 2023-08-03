@@ -8,6 +8,8 @@ import {
   ButtonListing,
   GapView,
   MyText,
+  MyTextSubHeader,
+  MyTitle,
   OverlayLoader,
   TextLabel,
 } from '../../components';
@@ -117,18 +119,12 @@ export default function DeviceSelectForm({
     <View style={{ alignItems: 'center' }}>
       <View style={{ alignSelf: 'center', top: 128 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label={'Device Setup'}
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text={'Device Setup'} />
         </Animated.View>
         <GapView length={50} />
       </View>
       <View style={{ top: 130 }}>
-        <MyText
-          text="Devices found"
-          textStyle={{ fontSize: 16, fontWeight: '500', alignSelf: 'center' }}
-        />
+        <MyTextSubHeader text="Devices found" style={{ alignSelf: 'center' }} />
         <GapView length={50} />
         {loading ? (
           <OverlayLoader isShow={loading} noBg={true} />

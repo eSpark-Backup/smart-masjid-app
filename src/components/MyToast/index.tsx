@@ -69,52 +69,48 @@ export default function MyToast({
         <View style={styles.container}>
           {heading && (
             <>
-              <View style={{ alignSelf: 'center', top: 128 }}>
-                <Animated.View style={[{ opacity: contentOpacity }]}>
-                  <MyTitle text={heading} />
-                </Animated.View>
-                <GapView length={50} />
-              </View>
+              <Animated.View style={[{ opacity: contentOpacity }]}>
+                <MyTitle text={heading} />
+              </Animated.View>
+              <GapView length={50} />
             </>
           )}
-          <View style={{ top: 130 }}>
-            {title && (
-              <MyTextSubHeader
-                text={title!!}
-                style={{
-                  textAlign: 'center',
-                }}
-              />
-            )}
-            <View
-              style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
-              {isSuccess ? <CheckSvg /> : <Exclimation />}
-            </View>
-            <View
-              style={
-                center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
-              }>
-              <MyText size={16} text={message} />
-            </View>
-            {points?.length!! > 0 && (
-              <>
-                <GapView length={25} />
-                <Points data={points} />
-              </>
-            )}
-            <GapView length={40} />
-            <View style={{ alignSelf: 'center' }}>
-              <Rounded onPress={onPress} label={btnText!!} />
-            </View>
-            <GapView />
-            <TouchableOpacity onPress={onSkip}>
-              <MyText
-                size={18}
-                text={'I’ll do it later'}
-                textStyle={{ color: colors.primary, textAlign: 'center' }}
-              />
-            </TouchableOpacity>
+          {title && (
+            <MyTextSubHeader
+              text={title!!}
+              style={{
+                textAlign: 'center',
+              }}
+            />
+          )}
+          <View
+            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
+            {isSuccess ? <CheckSvg /> : <Exclimation />}
           </View>
+          <View
+            style={
+              center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
+            }>
+            <MyText size={16} text={message} textStyle={{ color: '#3e3e3e' }} />
+          </View>
+          {points?.length!! > 0 && (
+            <>
+              <GapView length={25} />
+              <Points data={points} />
+            </>
+          )}
+          <GapView length={40} />
+          <View style={{ alignSelf: 'center' }}>
+            <Rounded onPress={onPress} label={btnText!!} />
+          </View>
+          <GapView />
+          <TouchableOpacity onPress={onSkip}>
+            <MyText
+              size={18}
+              text={'I’ll do it later'}
+              textStyle={{ color: colors.primary, textAlign: 'center' }}
+            />
+          </TouchableOpacity>
         </View>
       </Animated.View>
     </Animatable.View>
@@ -141,6 +137,6 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
     width: '85%',
-    top: 112,
+    top: 128,
   },
 });

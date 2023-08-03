@@ -2,7 +2,15 @@ import { Formik } from 'formik';
 import React, { useEffect } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 
-import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
+import {
+  GapView,
+  MyInput,
+  MyText,
+  MyTextSubHeader,
+  MyTitle,
+  Rounded,
+  TextLabel,
+} from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { DeviceSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
@@ -31,17 +39,14 @@ export default function DeviceNicknameForm({
     <View style={styles.container}>
       <View style={{ alignSelf: 'center', top: 128 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label={'Device Setup'}
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text={'Device Setup'} />
         </Animated.View>
         <GapView length={50} />
       </View>
       <View style={{ top: 130 }}>
-        <MyText
+        <MyTextSubHeader
           text="Let’s give your device a name"
-          textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '500' }}
+          style={{ alignSelf: 'center' }}
         />
         <GapView length={30} />
         <Formik

@@ -6,6 +6,7 @@ import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import MyTitle from '../MyTitle';
+import MyTextSubHeader from '../MyTextSubHeader';
 
 export default function SLoader({
   title,
@@ -22,32 +23,18 @@ export default function SLoader({
     <View style={styles.container}>
       <View style={{ alignSelf: 'center', top: 128 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          {title && (
-            <MyTitle
-              text={title!}
-              style={{
-                alignSelf: 'center',
-                fontWeight: '400',
-                color: '#3e3e3e',
-              }}
-            />
-          )}
+          {title && <MyTitle text={title!} />}
         </Animated.View>
         <GapView length={50} />
       </View>
-      <View style={{ top: 120 }}>
-        {subtitle && (
-          <MyText
-            text={subtitle!!}
-            textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
-          />
-        )}
+      <View style={{ alignItems: 'center', top: 120 }}>
+        {subtitle && <MyTextSubHeader text={subtitle!!} />}
         <View style={{ alignSelf: 'center' }}>
           <GapView length={15} />
           <MyText
             text="Please wait"
             pressable={false}
-            textStyle={{ fontWeight: '400', fontSize: 16 }}
+            textStyle={{ fontWeight: '400', fontSize: 16, color: '#3e3e3e' }}
           />
           <GapView length={60} />
           <View>
@@ -68,7 +55,7 @@ export default function SLoader({
         <GapView length={20} />
         <MyText
           text={message}
-          textStyle={{ fontWeight: '400', fontSize: 16 }}
+          textStyle={{ fontWeight: '400', fontSize: 16, color: '#3e3e3e' }}
         />
       </View>
     </View>

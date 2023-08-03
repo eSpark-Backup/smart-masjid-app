@@ -8,6 +8,8 @@ import {
   ButtonListing,
   GapView,
   MyText,
+  MyTextSubHeader,
+  MyTitle,
   OverlayLoader,
   TextLabel,
 } from '../../components';
@@ -103,20 +105,15 @@ export default function WifiSelectForm({
         <View style={{ alignItems: 'center' }}>
           <View style={{ alignSelf: 'center', top: 128 }}>
             <Animated.View style={[{ opacity: contentOpacity }]}>
-              <TextLabel
-                label={'Device Setup'}
-                textStyle={{ alignSelf: 'center' }}
-              />
+              <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
             </Animated.View>
             <GapView length={50} />
           </View>
           <View style={{ top: 130 }}>
-            <MyText
-              textStyle={{
+            <MyTextSubHeader
+              style={{
                 alignItems: 'center',
                 alignSelf: 'center',
-                fontSize: 16,
-                fontWeight: '400',
               }}
               text="Select Wi-Fi network"
             />
@@ -140,10 +137,7 @@ export default function WifiSelectForm({
           }}>
           <View style={{ alignSelf: 'center', top: 128 }}>
             <Animated.View style={[{ opacity: contentOpacity }]}>
-              <TextLabel
-                label={'Device Setup'}
-                textStyle={{ alignSelf: 'center' }}
-              />
+              <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
             </Animated.View>
             <GapView length={50} />
           </View>

@@ -16,6 +16,8 @@ import {
   GapView,
   MyInput,
   MyText,
+  MyTextSubHeader,
+  MyTitle,
   OverlayLoader,
   Rounded,
   TextLabel,
@@ -76,24 +78,21 @@ export default function PasswordForm({
       <OverlayLoader isShow={loading} />
       <View style={{ alignSelf: 'center', top: 128 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label={'Device Setup'}
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
         </Animated.View>
         <GapView length={50} />
       </View>
       <View style={{ top: 130 }}>
-        <MyText
+        <MyTextSubHeader
           text="Enter Wi-Fi password"
-          textStyle={{ ...styles.text, color: '#0e0e0e' }}
+          style={{ ...styles.text, color: '#0e0e0e' }}
         />
         <GapView length={20} />
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
           <MyText text={'Connecting to : '} textStyle={styles.text} />
-          <MyText
+          <MyTextSubHeader
             text={ssid!}
-            textStyle={{ ...styles.text, color: '#0e0e0e' }}
+            style={{ ...styles.text, color: '#0e0e0e' }}
           />
         </View>
         <GapView length={60} />
