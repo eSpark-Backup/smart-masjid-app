@@ -16,6 +16,7 @@ import {
 import {
   ErrorModal,
   GapView,
+  MyTitle,
   ProfileAvatar,
   ProfileSectionlist,
   TextLabel,
@@ -145,7 +146,7 @@ export default function Profile() {
     if (flag == 'addUser') {
       return 'Add User';
     }
-    if(flag == 'mUsers') {
+    if (flag == 'mUsers') {
       return 'Manage Users';
     }
     if (flag == 'uInfo') {
@@ -270,20 +271,32 @@ function UserInformation({
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 70, alignItems: 'center' }}>
-        <ProfileDummy height={50} width={50} />
+        <View
+          style={{
+            borderRadius: 50,
+            elevation: 3,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+          }}>
+          <ProfileDummy height={50} width={50} />
+        </View>
         <GapView />
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label={
+          <MyTitle
+            text={
               (userData?.firstName ?? '') + ' ' + (userData?.lastName ?? '')
             }
-            textStyle={{ alignSelf: 'center' }}
           />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{ top: 45 }}>
+      <View style={{ top: 50 }}>
         <ProfileSectionlist
           data={[
             {
