@@ -18,9 +18,11 @@ import {
   SwipeableTimeTable,
   TextLabel,
   TimeTable,
+  Tooltip,
 } from '../../../components';
 import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
+import { WINDOW_WIDTH } from '../../../constants';
 
 export default function MasjidDetails({ setStep, contentOpacity }: any) {
   const { colors }: Theme = useTheme();
@@ -46,6 +48,14 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
           text="Connected Devices"
           style={{ color: '#3E3E3E' }}
         />
+        <View style={{ width: WINDOW_WIDTH, alignItems: 'center', right: 5 }}>
+          <Tooltip
+            position="top"
+            content="Any Contentsdada"
+            iconColor={'#006870'}
+          />
+        </View>
+
         <GapView length={15} />
         <FlatList
           horizontal
@@ -72,13 +82,11 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         <GapView length={15} />
         <SwipeableTimeTable isMute isInfo data={getCurrentMonthAdhanData()} />
         <GapView length={15} />
-        <MyTextSubHeader
-          text="Jumuah Timings"
-          style={{ color: '#3E3E3E' }}
-        />
+        <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
         <TimeTable
           isMute
+          isInfo
           header={
             <View
               style={{

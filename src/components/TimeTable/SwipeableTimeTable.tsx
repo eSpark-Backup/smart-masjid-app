@@ -25,6 +25,7 @@ import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
 import TextLabel from '../TextLabel';
+import Tooltip from '../Tooltip';
 
 const RowItem = ({
   item,
@@ -207,14 +208,18 @@ export default function SwipeableTimeTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <MyText text={value} size={16} textStyle={{fontWeight: '700'}} />
+            <MyText text={value} size={16} textStyle={{ fontWeight: '700' }} />
           </View>
         ))}
         {isMute && !isInfo && <View style={styles.headerIcon} />}
         {isEdit && !isInfo && <View style={styles.headerIcon} />}
         {isInfo && (
-          <View style={styles.headerIcon}>
-            <InfoCircle />
+          <View style={{right: 10}}>
+            <Tooltip
+              position="top"
+              content="Lorem ips amet, consectetur adipiscing elit  Lorem ipsum dolor sit"
+              iconColor={'#006870'}
+            />
           </View>
         )}
       </View>
