@@ -3,14 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   TouchableOpacity,
-  Text,
   Animated,
-  StyleSheet,
 } from 'react-native';
 import MyText from '../MyText';
-import { ArrowDown, ArrowUp } from '../../assets';
+import { ArrowDown } from '../../assets';
 import { useLayoutAnimation } from '../../utils';
-import { Card } from '../../containers';
 import { WINDOW_WIDTH } from '../../constants';
 
 export default function Accordian({
@@ -21,11 +18,20 @@ export default function Accordian({
   answer?: string;
 }) {
   const { colors }: Theme = useTheme();
-  const [isShow, setIsShow] = useState(true);
+  const [isShow, setIsShow] = useState(false);
   const rotationValue = useRef(new Animated.Value(0)).current;
+  const backgroundOpacity = useRef(new Animated.Value(isShow ? 1 : 0)).current;
 
   useEffect(() => {
     useLayoutAnimation(500);
+  }, [isShow]);
+
+  useEffect(() => {
+    Animated.timing(backgroundOpacity, {
+      toValue: isShow ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
   }, [isShow]);
 
   const rotateView = () => {
@@ -58,25 +64,25 @@ export default function Accordian({
         }}
         onPress={rotateView}
         activeOpacity={0.8}>
-        <View
+        <Animated.View
           style={{
             flexDirection: 'row',
             borderBottomColor: colors.primary,
             borderBottomWidth: !isShow ? 1 : 0,
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingVertical: 10
+            paddingVertical: 10,
           }}>
           <MyText text={question} textStyle={{ width: WINDOW_WIDTH - 80 }} />
           <Animated.View style={[rotateStyle]}>
             <ArrowDown />
           </Animated.View>
-        </View>
+        </Animated.View>
 
         {isShow && (
-          <View>
+          <Animated.View style={{ backgroundColor: '#F1F7F8' }}>
             <MyText text={answer} />
-          </View>
+          </Animated.View>
         )}
       </TouchableOpacity>
     </View>

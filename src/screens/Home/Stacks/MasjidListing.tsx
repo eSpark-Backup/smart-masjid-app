@@ -34,7 +34,7 @@ export default function MasjidListing({
       <FlatList
         style={{ top: 130 }}
         data={data}
-        ListHeaderComponent={<Accordian />}
+        // ListHeaderComponent={<Accordian />}
         contentContainerStyle={{ paddingBottom: 210, paddingTop: 15 }}
         renderItem={({ index }) => (
           <MasjidListCard
