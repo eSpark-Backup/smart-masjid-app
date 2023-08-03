@@ -37,6 +37,7 @@ import {
   SendOTP,
   ValidateOTP,
 } from '../../api/externalControllers';
+import { userStore } from '../../store/UserStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
@@ -68,6 +69,12 @@ export default function UserSetupScreen() {
   const handleBack = () => {
     if (step == 3) {
       return activeFlow == 'signup' ? 2 : 1;
+    }
+    if (step == 4) {
+      return 2;
+    }
+    if (step == 6) {
+      return 4;
     }
     if (step !== 1) {
       return step - 1;
@@ -283,7 +290,14 @@ export default function UserSetupScreen() {
                   heading="Create Account"
                   isSuccess={true}
                   onPress={() => navigation.navigate('DSetup')}
-                  onSkip={() => navigation.navigate('HomeBottomTab')}
+                  onSkip={async () => {
+                    await userStore.userData.set(
+                      JSON.parse(
+                        JSON.stringify(userStore.currentRegisterUser.get()),
+                      ),
+                    );
+                    navigation.navigate('HomeBottomTab');
+                  }}
                   btnText={'Connect Device'}
                   title="Account setup complete"
                   message={`Lets setup your device now.`}
