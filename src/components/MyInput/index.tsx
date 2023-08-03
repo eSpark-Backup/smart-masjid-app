@@ -1,5 +1,5 @@
-import { Theme, useTheme } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
+import { Theme, useTheme } from '@react-navigation/native';
 import {
   Platform,
   StyleSheet,
@@ -229,7 +229,6 @@ export default function MyInput(props: MyInputProps) {
               autoComplete="off"
               autoCorrect={false}
               keyboardType={isPhoneCode ? 'number-pad' : 'default'}
-              // placeholder={getFocused ? '' : placeholder}
               style={[
                 styles.inputStyle,
                 { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
@@ -243,7 +242,6 @@ export default function MyInput(props: MyInputProps) {
                   ? text?.replace(currentCountry?.code ?? '+1', '')
                   : text
               }
-              // placeholderTextColor={placeholderColor ?? '#9E9F9F'}
               onPressIn={onFocus}
               onSubmitEditing={onBlur}
               secureTextEntry={isSecure}

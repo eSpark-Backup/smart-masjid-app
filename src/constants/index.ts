@@ -81,7 +81,7 @@ import {
 } from '../assets';
 const { width, height } = Dimensions.get('window');
 
-export const CountryFlags = {
+export const CountryFlags: { [key: string]: (props: any) => JSX.Element } = {
   AD: AD,
   AE: AE,
   AL: AL,

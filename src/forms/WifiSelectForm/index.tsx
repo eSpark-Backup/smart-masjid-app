@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, PermissionsAndroid } from 'react-native';
+import { View, PermissionsAndroid, Animated } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
 import { useTheme } from '@react-navigation/native';
 
@@ -8,6 +8,8 @@ import {
   ButtonListing,
   GapView,
   MyText,
+  MyTextSubHeader,
+  MyTitle,
   OverlayLoader,
   TextLabel,
 } from '../../components';
@@ -19,11 +21,13 @@ export default function WifiSelectForm({
   setSSID,
   currentWifiSSID,
   autoSelect,
+  contentOpacity,
 }: {
   setStep: (value: number) => void;
   setSSID: (value: string) => void;
   currentWifiSSID: string;
   autoSelect: boolean;
+  contentOpacity: any;
 }) {
   const { colors } = useTheme();
   const [data, setData] = useState<any>();
@@ -99,19 +103,25 @@ export default function WifiSelectForm({
       <>
         <OverlayLoader noBg={true} isShow={loading} />
         <View style={{ alignItems: 'center' }}>
-          <GapView length={20} />
-          <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
-          <GapView length={40} />
-          <MyText
-            textStyle={{
-              alignItems: 'center',
-              fontSize: 16,
-              fontWeight: '400',
-            }}
-            text="Select Wi-Fi network"
-          />
-          <GapView length={50} />
-          <ButtonListing data={data} titleWidth={'60%'} lines={2} />
+          <View style={{ alignSelf: 'center', top: 128 }}>
+            <Animated.View style={[{ opacity: contentOpacity }]}>
+              <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
+            </Animated.View>
+            <GapView length={50} />
+          </View>
+          <View style={{ top: 130 }}>
+            <MyTextSubHeader
+              style={{
+                alignItems: 'center',
+                alignSelf: 'center',
+              }}
+              text="Select Wi-Fi network"
+            />
+            <GapView length={50} />
+            <View style={{ height: '100%' }}>
+              <ButtonListing data={data} titleWidth={'60%'} lines={2} />
+            </View>
+          </View>
         </View>
       </>
     );
@@ -125,12 +135,17 @@ export default function WifiSelectForm({
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <GapView length={20} />
-          <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
+          <View style={{ alignSelf: 'center', top: 128 }}>
+            <Animated.View style={[{ opacity: contentOpacity }]}>
+              <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
+            </Animated.View>
+            <GapView length={50} />
+          </View>
           <View
             style={{
               flex: 1,
               justifyContent: 'center',
+              bottom: 10,
             }}>
             <MyText
               textStyle={{

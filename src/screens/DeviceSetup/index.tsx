@@ -384,97 +384,110 @@ export default function DeviceSetupScreen() {
       bgImageSpacer={false}
       showBack={disable}
       onBackPress={() => disable && setStep(handleBack)}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
-        {step == 1 && <DLoader />}
-        {step == 2 && (
-          <DeviceSelectForm
-            userInfo={
-              userStore.get().currentRegisterUser
-                ? userStore.get().currentRegisterUser?.userType.name
-                : userStore.get().userData?.userType.name
-            }
-            data={scannedDevices}
-            setStep={(value: number) => setStep(value)}
-            setDevMacId={(value?: string) =>
-              setDevInfo(state => ({ ...state, macId: value }))
-            }
-            selectedDeviceData={route?.params?.deviceData}
-            autoSelect={route?.params?.from == 'SelectedDevice'}
-          />
-        )}
-        {step == 3 && (
-          <DeviceNicknameForm
-            setNickName={(value: string) =>
-              setDevInfo(state => ({ ...state, nickName: value }))
-            }
-            setStep={(value: number) => setStep(value)}
-            currentDeviceName={route?.params?.deviceData?.name}
-            autoFillName={route?.params?.from == 'SelectedDevice'}
-          />
-        )}
-        {step == 4 && (
-          <WifiSelectForm
-            setSSID={(value: string) =>
-              setDevInfo(state => ({ ...state, ssid: value }))
-            }
-            setStep={(value: number) => setStep(value)}
-            currentWifiSSID={route?.params?.deviceData?.wifiSsid}
-            autoSelect={route?.params?.onlyPassword}
-          />
-        )}
-        {step == 5 && (
-          <PasswordForm
-            setPass={(value: string) =>
-              setDevInfo(state => ({ ...state, password: value }))
-            }
-            ssid={devInfo?.ssid}
-            setStep={(value: number) => setStep(value)}
-          />
-        )}
-        {step == 6 && (
-          <SLoader
-            title="Device Setup"
-            subtitle="Connecting..."
-            message="Connecting to wifi network..."
-          />
-        )}
-        {step == 7 && (
-          <MyToast
-            heading="Device Setup"
-            isSuccess={true}
-            btnText={route.params?.from ? 'Done' : 'Search Masjid'}
-            onPress={() => {
-              if (userStore.currentRegisterUser.get()) {
-                userStore.userData.set(userStore.currentRegisterUser.get());
-              }
-              navigation.navigate('HomeBottomTab', {
-                screen: route.params?.from ? 'Device' : 'Home',
-              });
-            }}
-            title="Device setup complete!"
-            message={'Your device is connected successfully.' + masjidSetupText}
-            center
-          />
-        )}
-        {step == 8 && (
-          <MyToast
-            heading="Device Setup"
-            titleSize={16}
-            isSuccess={false}
-            btnText={toastContent.btnText ?? 'Try Again'}
-            onPress={toastContent.onPress}
-            title={toastContent.title ?? 'Oops! Device not found.'}
-            message={toastContent.message ?? 'Please check:'}
-            points={
-              toastContent.points ?? [
-                'Device is powered on',
-                'Bluetooth on your phone is turned on',
-                'Device LED is blinking yellow',
-              ]
-            }
-          />
-        )}
-      </ScrollView>
+      {({ props }) => {
+        return (
+          <ScrollView
+            nestedScrollEnabled
+            contentContainerStyle={{ paddingBottom: 30, flexGrow: 1 }}>
+            {step == 1 && <DLoader contentOpacity={props.contentOpacity} />}
+            {step == 2 && (
+              <DeviceSelectForm
+                contentOpacity={props.contentOpacity}
+                userInfo={
+                  userStore.get().currentRegisterUser
+                    ? userStore.get().currentRegisterUser?.userType.name
+                    : userStore.get().userData?.userType.name
+                }
+                data={scannedDevices}
+                setStep={(value: number) => setStep(value)}
+                setDevMacId={(value?: string) =>
+                  setDevInfo(state => ({ ...state, macId: value }))
+                }
+                selectedDeviceData={route?.params?.deviceData}
+                autoSelect={route?.params?.from == 'SelectedDevice'}
+              />
+            )}
+            {step == 3 && (
+              <DeviceNicknameForm
+                contentOpacity={props.contentOpacity}
+                setNickName={(value: string) =>
+                  setDevInfo(state => ({ ...state, nickName: value }))
+                }
+                setStep={(value: number) => setStep(value)}
+                currentDeviceName={route?.params?.deviceData?.name}
+                autoFillName={route?.params?.from == 'SelectedDevice'}
+              />
+            )}
+            {step == 4 && (
+              <WifiSelectForm
+                contentOpacity={props.contentOpacity}
+                setSSID={(value: string) =>
+                  setDevInfo(state => ({ ...state, ssid: value }))
+                }
+                setStep={(value: number) => setStep(value)}
+                currentWifiSSID={route?.params?.deviceData?.wifiSsid}
+                autoSelect={route?.params?.onlyPassword}
+              />
+            )}
+            {step == 5 && (
+              <PasswordForm
+                contentOpacity={props.contentOpacity}
+                setPass={(value: string) =>
+                  setDevInfo(state => ({ ...state, password: value }))
+                }
+                ssid={devInfo?.ssid}
+                setStep={(value: number) => setStep(value)}
+              />
+            )}
+            {step == 6 && (
+              <SLoader
+                title="Device Setup"
+                contentOpacity={props.contentOpacity}
+                subtitle="Setting up your device"
+                message="Do not close the app till setup is complete."
+              />
+            )}
+            {step == 7 && (
+              <MyToast
+                contentOpacity={props.contentOpacity}
+                heading="Device Setup"
+                isSuccess={true}
+                btnText={route.params?.from ? 'Done' : 'Search Masjid'}
+                onPress={() => {
+                  if (userStore.currentRegisterUser.get()) {
+                    userStore.userData.set(userStore.currentRegisterUser.get());
+                  }
+                  navigation.navigate('HomeBottomTab', {
+                    screen: route.params?.from ? 'Device' : 'Home',
+                  });
+                }}
+                title="Device connected successfully"
+                message={'Let’s subscribe to a masjid now.' + masjidSetupText}
+                center
+              />
+            )}
+            {step == 8 && (
+              <MyToast
+                contentOpacity={props.contentOpacity}
+                heading="Device Setup"
+                titleSize={16}
+                isSuccess={false}
+                btnText={toastContent.btnText ?? 'Try Again'}
+                onPress={toastContent.onPress}
+                title={toastContent.title ?? 'Oops! Device not found.'}
+                message={toastContent.message ?? 'Please check:'}
+                points={
+                  toastContent.points ?? [
+                    'Device is powered on',
+                    'Bluetooth on your phone is turned on',
+                    'Device LED is blinking yellow',
+                  ]
+                }
+              />
+            )}
+          </ScrollView>
+        );
+      }}
     </Wrapper>
   );
 }
