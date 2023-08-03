@@ -169,7 +169,7 @@ export default function DeviceSetupScreen() {
     const loc = await _checkLocationStatus();
     setBleStatus(ble);
     setlocationStatus(loc);
-    setStep(1);
+    setStep(6);
     setConnFlag(true);
     await handlePermissions(ble, loc);
   };
@@ -442,6 +442,7 @@ export default function DeviceSetupScreen() {
             {step == 6 && (
               <SLoader
                 title="Device Setup"
+                contentOpacity={props.contentOpacity}
                 subtitle="Connecting..."
                 message="Connecting to wifi network..."
               />

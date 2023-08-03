@@ -5,6 +5,7 @@ import { GLoad } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
+import MyTitle from '../MyTitle';
 
 export default function SLoader({
   title,
@@ -19,15 +20,21 @@ export default function SLoader({
 }) {
   return (
     <View style={styles.container}>
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View style={{ alignSelf: 'center', top: 128 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           {title && (
-            <TextLabel label={title!!} textStyle={{ alignSelf: 'center' }} />
+            <MyTitle
+              text={title!}
+              style={{
+                alignSelf: 'center',
+                fontWeight: '400',
+                color: '#3e3e3e',
+              }}
+            />
           )}
         </Animated.View>
         <GapView length={50} />
       </View>
-
       <View style={{ top: 120 }}>
         {subtitle && (
           <MyText
