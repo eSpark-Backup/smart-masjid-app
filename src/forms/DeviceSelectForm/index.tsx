@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Animated, View } from 'react-native';
 import { Peripheral } from 'react-native-ble-manager';
 import Toast from 'react-native-toast-message';
 
@@ -21,6 +21,7 @@ export default function DeviceSelectForm({
   setDevMacId,
   autoSelect,
   selectedDeviceData,
+  contentOpacity,
 }: {
   data?: Array<Peripheral | undefined>;
   userInfo?: string;
@@ -28,6 +29,7 @@ export default function DeviceSelectForm({
   setDevMacId?: (value?: string) => void;
   autoSelect?: boolean;
   selectedDeviceData: Device;
+  contentOpacity: any;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -113,19 +115,27 @@ export default function DeviceSelectForm({
 
   return (
     <View style={{ alignItems: 'center' }}>
-      <GapView length={20} />
-      <TextLabel label="Device Setup" />
-      <GapView length={40} />
-      <MyText
-        text="Select Your Device"
-        textStyle={{ fontSize: 16, fontWeight: '400', alignSelf: 'center' }}
-      />
-      <GapView length={50} />
-      {loading ? (
-        <OverlayLoader isShow={loading} noBg={true} />
-      ) : (
-        <ButtonListing radius={12} data={finalArr} />
-      )}
+      <View style={{ alignSelf: 'center', top: 128 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label={'Device Setup'}
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+      <View style={{ top: 130 }}>
+        <MyText
+          text="Devices found"
+          textStyle={{ fontSize: 16, fontWeight: '500', alignSelf: 'center' }}
+        />
+        <GapView length={50} />
+        {loading ? (
+          <OverlayLoader isShow={loading} noBg={true} />
+        ) : (
+          <ButtonListing radius={12} data={finalArr} />
+        )}
+      </View>
     </View>
   );
 }

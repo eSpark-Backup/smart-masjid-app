@@ -18,6 +18,7 @@ export default function MyToast({
   points,
   center,
   titleSize,
+  contentOpacity,
 }: {
   heading?: string;
   title: string;
@@ -28,6 +29,7 @@ export default function MyToast({
   points?: string[];
   center?: boolean;
   titleSize?: number;
+  contentOpacity: any;
 }) {
   const startValue = useRef(new Animated.Value(0)).current;
   const endValue = 1;
@@ -53,48 +55,53 @@ export default function MyToast({
           },
         ]}>
         <View style={styles.container}>
-          <GapView length={20} />
           {heading && (
             <>
-              <TextLabel
-                label={heading!!}
-                textStyle={{ alignSelf: 'center' }}
+              <View style={{ alignSelf: 'center', top: 128 }}>
+                <Animated.View style={[{ opacity: contentOpacity }]}>
+                  <TextLabel
+                    label={heading}
+                    textStyle={{ alignSelf: 'center' }}
+                  />
+                </Animated.View>
+                <GapView length={50} />
+              </View>
+            </>
+          )}
+          <View style={{ top: 130 }}>
+            {title && (
+              <MyText
+                text={title!!}
+                textStyle={{
+                  fontSize: titleSize ?? 20,
+                  fontWeight: '700',
+                  textAlign: 'center',
+                }}
               />
-              <GapView length={40} />
-            </>
-          )}
-          {title && (
-            <MyText
-              text={title!!}
-              textStyle={{
-                fontSize: titleSize ?? 20,
-                fontWeight: '700',
-                textAlign: 'center',
-              }}
-            />
-          )}
-          <View
-            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
-            {isSuccess ? <CheckSvg /> : <Exclimation />}
-          </View>
-          <View
-            style={
-              center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
-            }>
-            <MyText
-              textStyle={{ fontSize: 16, fontWeight: '400' }}
-              text={message}
-            />
-          </View>
-          {points?.length!! > 0 && (
-            <>
-              <GapView length={25} />
-              <Points data={points} />
-            </>
-          )}
-          <GapView length={40} />
-          <View style={{ alignSelf: 'center' }}>
-            <Rounded onPress={onPress} label={btnText!!} />
+            )}
+            <View
+              style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
+              {isSuccess ? <CheckSvg /> : <Exclimation />}
+            </View>
+            <View
+              style={
+                center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
+              }>
+              <MyText
+                textStyle={{ fontSize: 16, fontWeight: '400' }}
+                text={message}
+              />
+            </View>
+            {points?.length!! > 0 && (
+              <>
+                <GapView length={25} />
+                <Points data={points} />
+              </>
+            )}
+            <GapView length={40} />
+            <View style={{ alignSelf: 'center' }}>
+              <Rounded onPress={onPress} label={btnText!!} />
+            </View>
           </View>
         </View>
       </Animated.View>

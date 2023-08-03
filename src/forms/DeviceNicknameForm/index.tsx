@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 
 import { GapView, MyInput, MyText, Rounded, TextLabel } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
@@ -12,11 +12,13 @@ export default function DeviceNicknameForm({
   setStep,
   currentDeviceName,
   autoFillName,
+  contentOpacity,
 }: {
   setNickName: (value: string) => void;
   setStep: (value: number) => void;
   currentDeviceName: string;
   autoFillName?: boolean;
+  contentOpacity: any;
 }) {
   useEffect(() => {
     if (autoFillName && currentDeviceName) {
@@ -27,53 +29,59 @@ export default function DeviceNicknameForm({
 
   return (
     <View style={styles.container}>
-      <GapView length={20} />
-      <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={40} />
-      <MyText
-        text="Lets give your device a name"
-        textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
-      />
-      <GapView length={80} />
-      <Formik
-        initialValues={{ nickName: '' }}
-        validationSchema={DeviceSetupSchema.deviceNickName}
-        onSubmit={({ nickName }) => {
-          setStep(4);
-          setNickName(nickName);
-        }}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
-          <>
-            <Card width={WINDOW_WIDTH - 28}>
+      <View style={{ alignSelf: 'center', top: 128 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <TextLabel
+            label={'Device Setup'}
+            textStyle={{ alignSelf: 'center' }}
+          />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+      <View style={{ top: 130 }}>
+        <MyText
+          text="Let’s give your device a name"
+          textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '500' }}
+        />
+        <GapView length={30} />
+        <Formik
+          initialValues={{ nickName: '' }}
+          validationSchema={DeviceSetupSchema.deviceNickName}
+          onSubmit={({ nickName }) => {
+            setStep(4);
+            setNickName(nickName);
+          }}>
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
+            <View style={{ alignItems: 'center' }}>
               <MyInput
-                placeholder="Eg. My Home Speaker"
+                placeholder="Device Name"
                 onChangeText={handleChange('nickName')}
                 value={values.nickName}
               />
-            </Card>
-            {errors.nickName && touched.nickName && (
-              <MyText
-                text={errors.nickName}
-                textStyle={{
-                  color: 'red',
-                  width: WINDOW_WIDTH - 110,
-                  marginTop: 4,
-                }}
-              />
-            )}
-            <View style={{ marginTop: 80, marginBottom: 40 }}>
-              <Rounded label="Next" width={250} onPress={handleSubmit} />
+              {errors.nickName && touched.nickName && (
+                <MyText
+                  text={errors.nickName}
+                  textStyle={{
+                    color: 'red',
+                    width: WINDOW_WIDTH - 110,
+                    marginTop: 4,
+                  }}
+                />
+              )}
+              <View style={{ marginTop: 30, marginBottom: 40 }}>
+                <Rounded label="Next" width={250} onPress={handleSubmit} />
+              </View>
             </View>
-          </>
-        )}
-      </Formik>
+          )}
+        </Formik>
+      </View>
     </View>
   );
 }

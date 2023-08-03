@@ -28,9 +28,10 @@ export default function ButtonListing({
   lines?: number;
 }) {
   return (
-    <Card radius={radius} width={WINDOW_WIDTH - 28} height={216}>
+    <Card radius={radius} width={WINDOW_WIDTH - 28}>
       <FlatList
         style={{ maxHeight: 216 }}
+        nestedScrollEnabled
         data={data}
         renderItem={({ item, index }) => {
           return (
