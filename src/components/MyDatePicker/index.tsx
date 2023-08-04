@@ -123,7 +123,7 @@ export default function MyDatePicker({
           <MyText
             text={moment(date)?.format('MMM-DD, YYYY')}
             size={16}
-            textStyle={{ fontWeight: '700', color: colors.primary }}
+            textStyle={{ fontWeight: '700' }}
           />
           <GapView length={10} mode="horizontal" />
           {moment(date).isBefore(maximumDate) && (
