@@ -112,6 +112,7 @@ export default function DeviceSetupScreen() {
     if (step === 6) {
       handleDeviceSetup();
     }
+    handleShowBack(step);
   }, [step]);
 
   useEffect(() => {
@@ -174,11 +175,39 @@ export default function DeviceSetupScreen() {
     await handlePermissions(ble, loc);
   };
 
-  const handleBack = () => {
-    if (step !== 1) {
-      return step - 1;
+  const handleShowBack = (currStep: number) => {
+    console.log('parent?', route?.params?.from);
+    switch (currStep) {
+      case 2:
+        if (route?.params?.from === 'Device') setDisable(true);
+        break;
+      case 3:
+        setDisable(true);
+        break;
+      case 4:
+        setDisable(true);
+        break;
+      case 5:
+        setDisable(true);
+        break;
+      default:
+        setDisable(false);
     }
-    return 1;
+  };
+
+  const handleBack = () => {
+    switch (step) {
+      case 2:
+        return navigation.goBack();
+      case 3:
+        return step - 1;
+      case 4:
+        return step - 1;
+      case 5:
+        return step - 1;
+      default:
+        return 1;
+    }
   };
 
   const masjidSetupText = !route?.params?.from
