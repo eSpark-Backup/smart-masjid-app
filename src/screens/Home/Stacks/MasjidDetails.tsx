@@ -23,9 +23,11 @@ import {
 import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
+import { userStore } from '../../../store/UserStore';
 
 export default function MasjidDetails({ setStep, contentOpacity }: any) {
   const { colors }: Theme = useTheme();
+  console.log(userStore.token.get());
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
