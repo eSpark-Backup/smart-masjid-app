@@ -65,39 +65,35 @@ export default function MasjidListCard(
   const styles = useMemo(() => makeStyles(props), []);
   const [mute, setMute] = useState(false);
   return (
-    <Card width={WINDOW_WIDTH - 28}>
+    <Card width={WINDOW_WIDTH - 28} height={90}>
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={onPress}
         style={styles.container}>
-        <View>
+        <View
+          style={{
+            height: 60,
+            width: WINDOW_WIDTH - 120,
+            justifyContent: 'center',
+          }}>
           <MyText
             text={masjidName ?? 'Masjid Ar - Rahman'}
-            size={16}
-            textStyle={{ fontWeight: '700' }}
+            size={14}
+            textStyle={{ fontWeight: '500' }}
           />
-          <GapView />
           {isSearch ? (
             <>
               <View style={styles.row}>
-                <LocationSvg />
+                <LocationSvg height={16} width={16} />
                 <GapView length={5} mode="horizontal" />
                 <MyText
                   text={location ?? ''}
-                  size={12}
-                  textStyle={{ width: WINDOW_WIDTH - 150, color: '#3E3E3E' }}
+                  size={14}
+                  lines={2}
+                  textStyle={{ width: WINDOW_WIDTH - 135, color: '#3E3E3E' }}
                 />
               </View>
               <GapView />
-              <View style={styles.row}>
-                <PeoplesSvg />
-                <GapView length={5} mode="horizontal" />
-                <MyText
-                  text={subscribers ?? '2561'}
-                  size={12}
-                  textStyle={{ color: '#3E3E3E' }}
-                />
-              </View>
             </>
           ) : (
             <>
@@ -128,6 +124,7 @@ export default function MasjidListCard(
             </>
           )}
         </View>
+        <GapView length={10} mode="horizontal" />
         <View>
           {masjidLogo ? (
             <CachedImage
@@ -153,7 +150,7 @@ const makeStyles = (props: MasjidHomeProps & MasjidSearchProps) => {
     container: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: 10,
+      paddingHorizontal: 10,
       alignItems: 'center',
       paddingVertical: 15,
     },
