@@ -83,6 +83,8 @@ const SearchListing = ({
     });
   };
 
+  console.log("masjifList", masjidList);
+  
   return (
     <View
       style={{
@@ -134,7 +136,7 @@ const SearchListing = ({
               location={`${item.address1} ${item.address2 ?? ''}, ${
                 item.city
               }, ${item.state} ${item.zip}`}
-              masjidLogo={{ uri: item.logo }}
+              masjidLogo={item.logo ? { uri: item.logo } : undefined}
             />
           )}
           ItemSeparatorComponent={GapView}
