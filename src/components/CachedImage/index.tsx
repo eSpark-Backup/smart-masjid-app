@@ -1,12 +1,12 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { ActivityIndicator, ImageStyle } from 'react-native';
+import { ActivityIndicator, ImageStyle, ImageSourcePropType } from 'react-native';
 import { View } from 'react-native-animatable';
 import FastImage, { FastImageProps } from 'react-native-fast-image';
 
 interface CachedImageProps extends FastImageProps {
   style: FastImageProps['style'];
-  source: FastImageProps['source'] & string;
+  source: FastImageProps['source'] & string & ImageSourcePropType;
 }
 
 export default function CachedImage({

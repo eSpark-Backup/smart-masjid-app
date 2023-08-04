@@ -1,6 +1,5 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
-export { default as MasjidSample } from './images/masjidSample.png';
 
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
@@ -8,6 +7,7 @@ export { default as GLoad } from './animations/7bdno2.gif';
 export { default as SLoaderGif } from './animations/sLoader.gif';
 
 //* images/svg
+export { default as MasjidSample } from './images/masjidSample.svg';
 export { default as ProfileDummy } from './images/ProfileDummy.svg';
 export { default as SettingIcon } from './images/SettingIcon.svg';
 export { default as MasjidSvg } from './images/MasjidSvg.svg';
