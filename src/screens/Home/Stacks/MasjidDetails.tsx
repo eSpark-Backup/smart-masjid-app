@@ -46,10 +46,14 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         }}>
         <MyTextHeader text="East Plano Islamic Center" />
         <GapView length={15} />
-        <MyTextSubHeader
-          text="Connected Devices"
-          style={{ color: '#3E3E3E' }}
-        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MyTextSubHeader
+            text="Connected Devices"
+            style={{ color: '#3E3E3E' }}
+          />
+          <GapView length={5} mode='horizontal' />
+          <Tooltip content='Content will show here'/>
+        </View>
         <GapView length={15} />
         <FlatList
           horizontal
