@@ -7,14 +7,18 @@ export default function OutlineDeviceContainer({
   isActive = false,
   isOnline = false,
   name = '',
+  onPress = () => {},
 }: {
   isActive: boolean;
   isOnline: boolean;
   name: string;
+  onPress?: () => void;
 }) {
   const { colors }: Theme = useTheme();
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.9}
       style={{
         backgroundColor: isActive ? colors.primary : 'transparent',
         borderWidth: 0.8,
@@ -45,6 +49,6 @@ export default function OutlineDeviceContainer({
           borderRadius: 100,
         }}
       />
-    </View>
+    </TouchableOpacity>
   );
 }

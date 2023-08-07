@@ -1,5 +1,5 @@
 import { Theme, useTheme } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -27,7 +27,8 @@ import { userStore } from '../../../store/UserStore';
 
 export default function MasjidDetails({ setStep, contentOpacity }: any) {
   const { colors }: Theme = useTheme();
-  console.log(userStore.token.get());
+  const [currentDeviceId, setCurrentDeviceId] = useState(1);
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
@@ -46,30 +47,36 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         }}>
         <MyTextHeader text="East Plano Islamic Center" />
         <GapView length={15} />
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <MyTextSubHeader
             text="Connected Devices"
             style={{ color: '#3E3E3E' }}
           />
-          <GapView length={5} mode='horizontal' />
-          <Tooltip content='Content will show here'/>
+          <GapView length={5} mode="horizontal" />
+          <Tooltip content="Content will show here" />
         </View>
         <GapView length={15} />
         <FlatList
+          showsHorizontalScrollIndicator={false}
           horizontal
           data={[
             {
-              name: 'Device 1 Device 1 Device 1',
-              isActive: true,
+              id: 1,
+              name: 'Device 1, Device 1 Device 1',
               isOnline: true,
             },
-            { name: 'Device 2', isActive: false, isOnline: false },
-            { name: 'Device 3', isActive: false, isOnline: true },
+            { id: 2, name: 'Device 2', isOnline: false },
+            { id: 3, name: 'Device 3', isOnline: true },
+            { id: 4, name: 'Device 3', isOnline: true },
+            { id: 5, name: 'Device 3', isOnline: true },
           ]}
           renderItem={({ item, index }) => (
             <OutlineDeviceContainer
+              onPress={() => {
+                setCurrentDeviceId(item.id);
+              }}
               name={item.name}
-              isActive={item?.isActive}
+              isActive={item.id == currentDeviceId}
               isOnline={item?.isOnline}
             />
           )}
