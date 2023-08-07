@@ -5,26 +5,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  Text,
   ViewToken,
 } from 'react-native';
 import {
-  CheckMark,
-  EditTimeTable,
-  InfoCircle,
   MuteSvg,
   VolumUpGreen,
 } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
-import { Card } from '../../containers';
 import { IPrayerTimeForPeriod } from '../../types';
-import { Rounded } from '../Buttons';
 import GapView from '../GapView';
 import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
-import MyTimePicker from '../MyTimePicker';
-import TextLabel from '../TextLabel';
 import Tooltip from '../Tooltip';
 
 const RowItem = ({
@@ -37,15 +29,21 @@ const RowItem = ({
   const [toggleMute, setToggleMute] = useState(true);
   return (
     <TouchableOpacity activeOpacity={0.9}>
-      <View style={[styles.contentRow, { marginVertical: 10 }]}>
+      <View style={[styles.contentRow, { height: 40 }]}>
         <View style={styles.contentCol}>
           <MyText text={item.name} size={16} />
         </View>
         <View style={styles.contentCol}>
-          <MyText text={item.adhan} size={16} />
+          <MyText
+            text={moment(item.adhan, 'HH:mm:ss').format('h:mm A')}
+            size={16}
+          />
         </View>
         <View style={styles.contentCol}>
-          <MyText text={item.Iqama} size={16} />
+          <MyText
+            text={moment(item.Iqama, 'HH:mm:ss').format('h:mm A')}
+            size={16}
+          />
         </View>
         {isMute && (
           <View style={styles.contentIcon}>
@@ -121,52 +119,20 @@ export default function SwipeableTimeTable({
   const renderItem = useCallback(
     ({ item, index }: { item: IPrayerTimeForPeriod; index: number }) => {
       return (
-        <View key={index} style={{ width: WINDOW_WIDTH - 50 }}>
-          <RowItem
-            // key={`${index}-fajr`}
-            item={{
-              name: 'Fajr',
-              adhan: `${item.fajr.hour}:${item.fajr.minute}`,
-              Iqama: `${item.fajr.hour}:${item.fajr.minute}`,
-            }}
-            isMute={isMute}
-          />
-          <RowItem
-            // key={`${index}-dhuhr`}
-            item={{
-              name: 'Dhuhr',
-              adhan: `${item.dhuhr.hour}:${item.dhuhr.minute}`,
-              Iqama: `${item.dhuhr.hour}:${item.dhuhr.minute}`,
-            }}
-            isMute={isMute}
-          />
-          <RowItem
-            // key={`${index}-asr`}
-            item={{
-              name: 'Asr',
-              adhan: `${item.asr.hour}:${item.asr.minute}`,
-              Iqama: `${item.asr.hour}:${item.asr.minute}`,
-            }}
-            isMute={isMute}
-          />
-          <RowItem
-            // key={`${index}-maghrib`}
-            item={{
-              name: 'Maghrib',
-              adhan: `${item.maghrib.hour}:${item.maghrib.minute}`,
-              Iqama: `${item.maghrib.hour}:${item.maghrib.minute}`,
-            }}
-            isMute={isMute}
-          />
-          <RowItem
-            // key={`${index}-isha`}
-            item={{
-              name: 'Isha',
-              adhan: `${item.isha.hour}:${item.isha.minute}`,
-              Iqama: `${item.isha.hour}:${item.isha.minute}`,
-            }}
-            isMute={isMute}
-          />
+        <View>
+          <View key={index} style={{ width: WINDOW_WIDTH - 50 }}>
+            {item.salah.map((data, i) => (
+              <RowItem
+                // key={`${index}-fajr`}
+                item={{
+                  name: data?.name,
+                  adhan: data?.adhanTime?.toString(),
+                  Iqama: data?.iqamaTime?.toString(),
+                }}
+                isMute={isMute}
+              />
+            ))}
+          </View>
         </View>
       );
     },
@@ -203,18 +169,18 @@ export default function SwipeableTimeTable({
             onDateChange={onDateChange}
           />
         </View>
-        <GapView />
+        <GapView length={15} />
       </>
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <MyText text={value} size={16} textStyle={{ fontWeight: '700' }} />
+            <MyText text={value} size={16} textStyle={{ fontWeight: '500' }} />
           </View>
         ))}
         {isMute && !isInfo && <View style={styles.headerIcon} />}
         {isEdit && !isInfo && <View style={styles.headerIcon} />}
         {isInfo && (
-          <View style={{right: 10}}>
+          <View style={{ right: 10 }}>
             <Tooltip
               position="top"
               content="Lorem ips amet, consectetur adipiscing elit  Lorem ipsum dolor sit"
@@ -225,7 +191,6 @@ export default function SwipeableTimeTable({
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-      <GapView />
       <FlatList
         ref={slider}
         data={data}
@@ -256,15 +221,7 @@ export default function SwipeableTimeTable({
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    backgroundColor: '#F7F9FA',
-    elevation: 3,
+    backgroundColor: '#F1F7F8',
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
@@ -272,21 +229,28 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'center' },
-  headerIcon: { width: '10%', alignItems: 'center' },
+  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '10%',
+  },
   contentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // marginVertical: 10
     alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5 
   },
   editContentRow: {
     marginVertical: 5,
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30%', alignItems: 'center' },
+  contentCol: { width: '30%', alignItems: 'flex-start' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

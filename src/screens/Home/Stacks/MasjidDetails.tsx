@@ -10,6 +10,7 @@ import {
 import { SyncSvg } from '../../../assets';
 import {
   GapView,
+  JumuahTable,
   MyText,
   MyTextHeader,
   MyTextSubHeader,
@@ -41,7 +42,7 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           top: 110,
-          paddingBottom: 20,
+          paddingBottom: 70,
           padding: 5,
           paddingHorizontal: 15,
         }}>
@@ -85,36 +86,86 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         <GapView length={15} />
         <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
-        <SwipeableTimeTable isMute isInfo data={getCurrentMonthAdhanData()} />
+        <SwipeableTimeTable
+          isMute
+          isInfo
+          data={[
+            {
+              date: '2023-08-8',
+              salah: [
+                {
+                  name: 'Fajr',
+                  adhanTime: '04:15:00',
+                  iqamaTime: '06:00:00',
+                },
+                {
+                  name: 'Dhuhr',
+                  adhanTime: '12:35:00',
+                  iqamaTime: '14:00:00',
+                },
+                {
+                  name: 'Asr',
+                  adhanTime: '17:17:00',
+                  iqamaTime: '18:00:00',
+                },
+                {
+                  name: 'Maghrib',
+                  adhanTime: '19:25:00',
+                  iqamaTime: '19:40:00',
+                },
+                {
+                  name: 'Isha',
+                  adhanTime: '20:54:00',
+                  iqamaTime: '21:30:00',
+                },
+              ],
+            },
+            {
+              date: '2023-08-9',
+              salah: [
+                {
+                  name: 'Fajr',
+                  adhanTime: '04:15:00',
+                  iqamaTime: '06:00:00',
+                },
+                {
+                  name: 'Dhuhr',
+                  adhanTime: '12:35:00',
+                  iqamaTime: '14:00:00',
+                },
+                {
+                  name: 'Asr',
+                  adhanTime: '17:17:00',
+                  iqamaTime: '18:00:00',
+                },
+                {
+                  name: 'Maghrib',
+                  adhanTime: '19:25:00',
+                  iqamaTime: '19:40:00',
+                },
+                {
+                  name: 'Isha',
+                  adhanTime: '20:54:00',
+                  iqamaTime: '21:30:00',
+                },
+              ],
+            },
+          ]}
+        />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
-        <TimeTable
-          isMute
-          isInfo
-          header={
-            <View
-              style={{
-                alignItems: 'center',
-              }}>
-              <MyText
-                text="Jumuah"
-                size={16}
-                textStyle={{ fontWeight: '700' }}
-              />
-            </View>
-          }
+        <JumuahTable
           headings={['Salah', 'Khutba']}
-          data={[
-            {
-              name: 'Jumuah 1',
-              azanTiming: '12:10',
-            },
-            {
-              name: 'Jumuah 2',
-              azanTiming: '01:10',
-            },
-          ]}
+          data={{
+            "id": 7,
+            "effectiveDate": "2023-07-07",
+            "jumuah1": "13:45:00",
+            "jumuah2": "15:15:00",
+            "jumuah3": null,
+            "createdBy": "User",
+            "createdDate": "2023-07-05T14:26:15.946+00:00"
+          }}
         />
         <GapView length={15} />
         <TouchableOpacity
