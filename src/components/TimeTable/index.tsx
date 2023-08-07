@@ -167,13 +167,16 @@ export default function TimeTable({
         {isEdit && !isInfo && <View style={styles.headerIcon} />}
         {isInfo && (
           <View>
-            <Tooltip position='top' content="Any Content" iconColor={'#006870'} />
+            <Tooltip
+              position="top"
+              content="Any Content"
+              iconColor={'#006870'}
+            />
           </View>
         )}
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-      <GapView />
       {data?.map((item: any, index) => (
         <RowItem
           key={`${index}`}
@@ -199,15 +202,7 @@ export default function TimeTable({
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    backgroundColor: '#F7F9FA',
-    elevation: 1,
+    backgroundColor: '#F1F7F8',
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
@@ -215,20 +210,28 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'center' },
-  headerIcon: { width: '10%', alignItems: 'center' },
+  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '10%',
+  },
   contentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5 
   },
   editContentRow: {
     marginVertical: 5,
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30%', alignItems: 'center' },
+  contentCol: { width: '30%', alignItems: 'flex-start' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

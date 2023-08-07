@@ -1,5 +1,5 @@
 import { Theme, useTheme } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -10,6 +10,7 @@ import {
 import { SyncSvg } from '../../../assets';
 import {
   GapView,
+  JumuahTable,
   MyText,
   MyTextHeader,
   MyTextSubHeader,
@@ -23,9 +24,12 @@ import {
 import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
+import { userStore } from '../../../store/UserStore';
 
 export default function MasjidDetails({ setStep, contentOpacity }: any) {
   const { colors }: Theme = useTheme();
+  const [currentDeviceId, setCurrentDeviceId] = useState(1);
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
@@ -38,32 +42,42 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           top: 110,
-          paddingBottom: 20,
+          paddingBottom: 70,
           padding: 5,
           paddingHorizontal: 15,
         }}>
         <MyTextHeader text="East Plano Islamic Center" />
         <GapView length={15} />
-        <MyTextSubHeader
-          text="Connected Devices"
-          style={{ color: '#3E3E3E' }}
-        />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <MyTextSubHeader
+            text="Connected Devices"
+            style={{ color: '#3E3E3E' }}
+          />
+          <GapView length={5} mode="horizontal" />
+          <Tooltip content="Content will show here" />
+        </View>
         <GapView length={15} />
         <FlatList
+          showsHorizontalScrollIndicator={false}
           horizontal
           data={[
             {
-              name: 'Device 1 Device 1 Device 1',
-              isActive: true,
+              id: 1,
+              name: 'Device 1, Device 1 Device 1',
               isOnline: true,
             },
-            { name: 'Device 2', isActive: false, isOnline: false },
-            { name: 'Device 3', isActive: false, isOnline: true },
+            { id: 2, name: 'Device 2', isOnline: false },
+            { id: 3, name: 'Device 3', isOnline: true },
+            { id: 4, name: 'Device 3', isOnline: true },
+            { id: 5, name: 'Device 3', isOnline: true },
           ]}
           renderItem={({ item, index }) => (
             <OutlineDeviceContainer
+              onPress={() => {
+                setCurrentDeviceId(item.id);
+              }}
               name={item.name}
-              isActive={item?.isActive}
+              isActive={item.id == currentDeviceId}
               isOnline={item?.isOnline}
             />
           )}
@@ -72,36 +86,86 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         <GapView length={15} />
         <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
-        <SwipeableTimeTable isMute isInfo data={getCurrentMonthAdhanData()} />
+        <SwipeableTimeTable
+          isMute
+          isInfo
+          data={[
+            {
+              date: '2023-08-07',
+              salah: [
+                {
+                  name: 'Fajr',
+                  adhanTime: '04:15:00',
+                  iqamaTime: '06:00:00',
+                },
+                {
+                  name: 'Dhuhr',
+                  adhanTime: '12:35:00',
+                  iqamaTime: '14:00:00',
+                },
+                {
+                  name: 'Asr',
+                  adhanTime: '17:17:00',
+                  iqamaTime: '18:00:00',
+                },
+                {
+                  name: 'Maghrib',
+                  adhanTime: '19:25:00',
+                  iqamaTime: '19:40:00',
+                },
+                {
+                  name: 'Isha',
+                  adhanTime: '20:54:00',
+                  iqamaTime: '21:30:00',
+                },
+              ],
+            },
+            {
+              date: '2023-08-08',
+              salah: [
+                {
+                  name: 'Fajr',
+                  adhanTime: '04:15:00',
+                  iqamaTime: '06:00:00',
+                },
+                {
+                  name: 'Dhuhr',
+                  adhanTime: '12:35:00',
+                  iqamaTime: '14:00:00',
+                },
+                {
+                  name: 'Asr',
+                  adhanTime: '17:17:00',
+                  iqamaTime: '18:00:00',
+                },
+                {
+                  name: 'Maghrib',
+                  adhanTime: '19:25:00',
+                  iqamaTime: '19:40:00',
+                },
+                {
+                  name: 'Isha',
+                  adhanTime: '20:54:00',
+                  iqamaTime: '21:30:00',
+                },
+              ],
+            },
+          ]}
+        />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
-        <TimeTable
-          isMute
-          isInfo
-          header={
-            <View
-              style={{
-                alignItems: 'center',
-              }}>
-              <MyText
-                text="Jumuah"
-                size={16}
-                textStyle={{ fontWeight: '700' }}
-              />
-            </View>
-          }
+        <JumuahTable
           headings={['Salah', 'Khutba']}
-          data={[
-            {
-              name: 'Jumuah 1',
-              azanTiming: '12:10',
-            },
-            {
-              name: 'Jumuah 2',
-              azanTiming: '01:10',
-            },
-          ]}
+          data={{
+            "id": 7,
+            "effectiveDate": "2023-07-07",
+            "jumuah1": "13:45:00",
+            "jumuah2": "15:15:00",
+            "jumuah3": null,
+            "createdBy": "User",
+            "createdDate": "2023-07-05T14:26:15.946+00:00"
+          }}
         />
         <GapView length={15} />
         <TouchableOpacity
