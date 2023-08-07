@@ -123,7 +123,6 @@ export default function SwipeableTimeTable({
           <View key={index} style={{ width: WINDOW_WIDTH - 50 }}>
             {item.salah.map((data, i) => (
               <RowItem
-                // key={`${index}-fajr`}
                 item={{
                   name: data?.name,
                   adhan: data?.adhanTime?.toString(),

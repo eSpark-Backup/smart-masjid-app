@@ -91,7 +91,7 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
           isInfo
           data={[
             {
-              date: '2023-08-8',
+              date: '2023-08-07',
               salah: [
                 {
                   name: 'Fajr',
@@ -121,7 +121,7 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
               ],
             },
             {
-              date: '2023-08-9',
+              date: '2023-08-08',
               salah: [
                 {
                   name: 'Fajr',
