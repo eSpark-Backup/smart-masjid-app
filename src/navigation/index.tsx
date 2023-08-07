@@ -56,7 +56,7 @@ const toastConfig = {
       style={styles.errorStyle}
       text1Style={styles.text1Style}
       text2Style={styles.text2Style}
-      text1="Oops!"
+      text1="Error!"
     />
   ),
 
@@ -95,6 +95,7 @@ export default function App() {
       if (res != null) {
         const token = JSON.parse(res);
         const jwtDecodedObj: UserToken = jwtDecode(token);
+        console.log('token', token);
         if (
           // jwtDecodedObj.exp is unix date thats why we multiply to 1000 to convert to real date
           moment(moment(new Date()))

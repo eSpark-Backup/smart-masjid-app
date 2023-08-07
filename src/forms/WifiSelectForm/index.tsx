@@ -151,7 +151,7 @@ export default function WifiSelectForm({
               textStyle={{
                 fontSize: 14,
                 fontWeight: '400',
-                top: 20,
+                top: loading ? 60 : 0,
               }}
               text={loading ? 'Checking Wifi List' : "No Wifi's Found"}
             />

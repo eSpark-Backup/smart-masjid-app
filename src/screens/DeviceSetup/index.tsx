@@ -268,49 +268,54 @@ export default function DeviceSetupScreen() {
   const registerDevice = async (deviceInfo: DeviceInfo) => {
     const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
     const isBtn = dev?.name?.includes('SMBTN');
-    if (route?.params?.from != 'SelectedDevice') {
-      const devRes: any = await _saveDevice(deviceInfo);
-      if (isBtn) {
-        console.log('-> Detected Smart Button');
-        const USER_TOKEN: any = userStore.get().token;
-        const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
-        console.log(
-          'kia ha decoded string========??????',
-          JSON.stringify(jwtDecodedObj),
-        );
-        const masjidDevRes: any = await _saveDeviceBtnToMasjid(
-          devRes?.id,
-          jwtDecodedObj.masjidId,
-        );
-        console.log('kia res???', masjidDevRes);
-        if (masjidDevRes) {
-          setTimeout(() => {
-            checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
-          }, 5000);
+    const USER_TOKEN: any = userStore.get().token;
+    const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+    if (jwtDecodedObj?.masjidId === 0 && jwtDecodedObj?.userType?.id == 2) {
+      setStep(8); // gotten a falty masjid id
+      console.log('gotten a faulty masjid id (0)');
+    } else {
+      if (route?.params?.from != 'SelectedDevice') {
+        const devRes: any = await _saveDevice(deviceInfo);
+        if (isBtn) {
+          console.log('-> Detected Smart Button');
+          console.log(
+            'kia ha decoded string========??????',
+            JSON.stringify(jwtDecodedObj),
+          );
+          const masjidDevRes: any = await _saveDeviceBtnToMasjid(
+            devRes?.id,
+            jwtDecodedObj.masjidId,
+          );
+          console.log('kia res???', masjidDevRes);
+          if (masjidDevRes) {
+            setTimeout(() => {
+              checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
+            }, 5000);
+          } else {
+            setStep(8); // failed saving device (show error screen)
+          }
         } else {
-          setStep(8); // failed saving device (show error screen)
+          console.log('-> Detected Smart Speaker');
+          const userDevRes: any = await _saveDeviceToUser(devRes?.id);
+          console.log('kia res???', userDevRes);
+          if (userDevRes) {
+            setTimeout(() => {
+              checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+            }, 5000);
+          } else {
+            setStep(8); // failed saving device (show error screen)
+          }
         }
       } else {
-        console.log('-> Detected Smart Speaker');
-        const userDevRes: any = await _saveDeviceToUser(devRes?.id);
-        console.log('kia res???', userDevRes);
-        if (userDevRes) {
+        const devRes: any = await _updateDevice({
+          ...route?.params?.deviceData,
+          wifiSsid: devInfo.ssid,
+        });
+        if (devRes) {
           setTimeout(() => {
-            checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+            checkTelemetry(route?.params?.deviceData?.id.toString()); // check Telemetery for userDevice
           }, 5000);
-        } else {
-          setStep(8); // failed saving device (show error screen)
         }
-      }
-    } else {
-      const devRes: any = await _updateDevice({
-        ...route?.params?.deviceData,
-        wifiSsid: devInfo.ssid,
-      });
-      if (devRes) {
-        setTimeout(() => {
-          checkTelemetry(route?.params?.deviceData?.id.toString()); // check Telemetery for userDevice
-        }, 5000);
       }
     }
   };
@@ -376,7 +381,7 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: 'Please check: ',
+          message: 'Issues Found',
           points: [
             'Device is powered on',
             'Bluetooth on your phone is turned on',
@@ -398,7 +403,7 @@ export default function DeviceSetupScreen() {
         setStep(8);
         setToastContent(state => ({
           ...state,
-          message: 'Please Check',
+          message: 'Issues Found',
           onPress: () => setRetry(true),
           points: ['Location Enabled on Phone', 'Bluetooth Enabled on Phone'],
         }));
@@ -481,7 +486,9 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                btnText={route.params?.from ? 'Done' : 'Search Masjid'}
+                btnText={
+                  route.params?.from == 'Device' ? 'Done' : 'Search Masjid'
+                }
                 onPress={() => {
                   if (userStore.currentRegisterUser.get()) {
                     userStore.userData.set(userStore.currentRegisterUser.get());
@@ -503,8 +510,8 @@ export default function DeviceSetupScreen() {
                 isSuccess={false}
                 btnText={toastContent.btnText ?? 'Try Again'}
                 onPress={toastContent.onPress}
-                title={toastContent.title ?? 'Oops! Device not found.'}
-                message={toastContent.message ?? 'Please check:'}
+                title={toastContent.title ?? 'Device not found'}
+                message={toastContent.message ?? 'Issues Found'}
                 points={
                   toastContent.points ?? [
                     'Device is powered on',

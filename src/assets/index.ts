@@ -87,9 +87,10 @@ export { default as Caution } from './vectors/Caution.svg';
 export { default as Close } from './vectors/Close.svg';
 export { default as Exclimation } from './vectors/Exclimation.svg';
 export { default as Check } from './vectors/Check.svg';
+export { default as CrossC } from './vectors/close-circle.svg';
+export { default as CautionDevice } from './vectors/caution-device.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
-
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';
