@@ -84,8 +84,8 @@ const SearchListing = ({
     });
   };
 
-  console.log("masjifList", masjidList);
-  
+  console.log('masjifList', masjidList);
+
   return (
     <View
       style={{
@@ -97,9 +97,7 @@ const SearchListing = ({
       <OverlayLoader isShow={loader} />
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle
-            text="Search Masjid"
-          />
+          <MyTitle text="Search Masjid" />
         </Animated.View>
         <GapView length={50} />
       </View>
