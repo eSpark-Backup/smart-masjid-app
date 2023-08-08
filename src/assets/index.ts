@@ -1,6 +1,5 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
-export { default as MasjidSample } from './images/masjidSample.png';
 
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
@@ -8,6 +7,7 @@ export { default as GLoad } from './animations/7bdno2.gif';
 export { default as SLoaderGif } from './animations/sLoader.gif';
 
 //* images/svg
+export { default as MasjidSample } from './images/masjidSample.svg';
 export { default as ProfileDummy } from './images/ProfileDummy.svg';
 export { default as SettingIcon } from './images/SettingIcon.svg';
 export { default as MasjidSvg } from './images/MasjidSvg.svg';
@@ -88,6 +88,8 @@ export { default as Close } from './vectors/Close.svg';
 export { default as Exclimation } from './vectors/Exclimation.svg';
 export { default as Check } from './vectors/Check.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
+export { default as ArrowUp } from './vectors/ArrowUp.svg';
+
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';

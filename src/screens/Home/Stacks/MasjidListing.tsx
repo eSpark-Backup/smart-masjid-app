@@ -3,7 +3,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, View, Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListEmptyComponent } from '..';
-import { GapView, MasjidListCard, TextLabel } from '../../../components';
+import {
+  Accordian,
+  GapView,
+  MasjidListCard,
+  MyTitle,
+  TextLabel,
+} from '../../../components';
 import { Wrapper } from '../../../containers';
 
 export default function MasjidListing({
@@ -21,10 +27,11 @@ export default function MasjidListing({
     <View>
       <View style={{ alignSelf: 'center', top: 130 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Masjid Subscriptions" />
+          <MyTitle text="Masjid Subscriptions" />
         </Animated.View>
         <GapView length={50} />
       </View>
+
       <FlatList
         style={{ top: 130 }}
         data={data}

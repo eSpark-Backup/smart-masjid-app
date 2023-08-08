@@ -70,43 +70,12 @@ export type DeviceInfo = {
   firmware_rev?: string;
 };
 
+export interface SalahInfo {
+  name: string;
+  adhanTime: string;
+  iqamaTime: string;
+}
 export interface IPrayerTimeForPeriod {
-  id: number;
   date: string;
-  fajr: {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  };
-  dhuhr: {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  };
-  asr: {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  };
-  maghrib: {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  };
-  isha: {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  };
-  updatedDate: string;
-  fajrCalled: boolean;
-  dhuhrCalled: boolean;
-  asrCalled: boolean;
-  maghribCalled: boolean;
-  ishaCalled: boolean;
+  salah: SalahInfo[];
 }

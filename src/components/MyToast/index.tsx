@@ -28,6 +28,7 @@ export default function MyToast({
   points,
   center,
   titleSize,
+  contentOpacity,
 }: {
   heading?: string;
   title: string;
@@ -39,6 +40,7 @@ export default function MyToast({
   points?: string[];
   center?: boolean;
   titleSize?: number;
+  contentOpacity: any;
 }) {
   const startValue = useRef(new Animated.Value(0)).current;
   const { colors }: Theme = useTheme();
@@ -65,11 +67,12 @@ export default function MyToast({
           },
         ]}>
         <View style={styles.container}>
-          <GapView length={20} />
           {heading && (
             <>
-              <MyTitle text={heading!!} />
-              <GapView length={40} />
+              <Animated.View style={[{ opacity: contentOpacity }]}>
+                <MyTitle text={heading} />
+              </Animated.View>
+              <GapView length={50} />
             </>
           )}
           {title && (
@@ -88,7 +91,7 @@ export default function MyToast({
             style={
               center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
             }>
-            <MyText size={16} text={message} />
+            <MyText size={16} text={message} textStyle={{ color: '#3e3e3e' }} />
           </View>
           {points?.length!! > 0 && (
             <>
@@ -134,6 +137,6 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
     width: '85%',
-    top: 112,
+    top: 128,
   },
 });

@@ -288,6 +288,7 @@ export default function UserSetupScreen() {
               {step == 8 && (
                 <MyToast
                   heading="Create Account"
+                  contentOpacity={props.contentOpacity}
                   isSuccess={true}
                   onPress={() => navigation.navigate('DSetup')}
                   onSkip={async () => {

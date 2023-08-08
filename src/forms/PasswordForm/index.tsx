@@ -1,6 +1,13 @@
 import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
-import { Alert, Button, Linking, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  Button,
+  Linking,
+  StyleSheet,
+  View,
+  Animated,
+} from 'react-native';
 import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
 import RnWifi from '@react-native-tethering/wifi';
 import Toast from 'react-native-toast-message';
@@ -9,6 +16,8 @@ import {
   GapView,
   MyInput,
   MyText,
+  MyTextSubHeader,
+  MyTitle,
   OverlayLoader,
   Rounded,
   TextLabel,
@@ -21,10 +30,12 @@ export default function PasswordForm({
   ssid,
   setPass,
   setStep,
+  contentOpacity,
 }: {
   ssid?: string;
   setPass: (value: string) => void;
   setStep: (value: number) => void;
+  contentOpacity: any;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -65,57 +76,70 @@ export default function PasswordForm({
   return (
     <View style={styles.container}>
       <OverlayLoader isShow={loading} />
-      <GapView length={20} />
-      <TextLabel label="Device Setup" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={40} />
-      <MyText
-        text="Enter Wi-Fi password"
-        textStyle={{ alignSelf: 'center', fontSize: 16, fontWeight: '400' }}
-      />
-      <GapView length={20} />
-      <MyText text={'Connecting to : ' + ssid} textStyle={styles.text} />
-      <GapView length={60} />
-      <Formik
-        initialValues={{ password: '' }}
-        validationSchema={DeviceSetupSchema.wifiPassword}
-        onSubmit={({ password }) => {
-          // setStep(6);
-          setPass(password);
-          connectToWifi({ ssid: ssid ?? '', password });
-        }}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
-          <>
-            <Card width={WINDOW_WIDTH - 28} radius={12}>
+      <View style={{ alignSelf: 'center', top: 128 }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
+        </Animated.View>
+        <GapView length={50} />
+      </View>
+      <View style={{ top: 130 }}>
+        <MyTextSubHeader
+          text="Enter Wi-Fi password"
+          style={{ ...styles.text, color: '#0e0e0e' }}
+        />
+        <GapView length={20} />
+        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+          <MyText text={'Connecting to : '} textStyle={styles.text} />
+          <MyTextSubHeader
+            text={ssid!}
+            style={{ ...styles.text, color: '#0e0e0e' }}
+          />
+        </View>
+        <GapView length={60} />
+        <Formik
+          initialValues={{ password: '' }}
+          validationSchema={DeviceSetupSchema.wifiPassword}
+          onSubmit={({ password }) => {
+            // setStep(6);
+            setPass(password);
+            connectToWifi({ ssid: ssid ?? '', password });
+          }}>
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
+            <View style={{ alignItems: 'center' }}>
               <MyInput
                 placeholder="Password"
                 onChangeText={handleChange('password')}
                 value={values.password}
                 isSecure={true}
               />
-            </Card>
-            {errors.password && touched.password && (
-              <MyText
-                text={errors.password}
-                textStyle={{
-                  color: 'red',
-                  width: WINDOW_WIDTH - 110,
-                  marginTop: 4,
-                }}
-              />
-            )}
-            <View style={{ marginTop: 60, marginBottom: 40 }}>
-              <Rounded label="Connect" width={250} onPress={handleSubmit} />
+              {errors.password && touched.password && (
+                <MyText
+                  text={errors.password}
+                  textStyle={{
+                    color: 'red',
+                    width: WINDOW_WIDTH - 110,
+                    marginTop: 4,
+                  }}
+                />
+              )}
+              <View
+                style={{
+                  marginTop: 60,
+                  marginBottom: 40,
+                }}>
+                <Rounded label="Connect" width={250} onPress={handleSubmit} />
+              </View>
             </View>
-          </>
-        )}
-      </Formik>
+          )}
+        </Formik>
+      </View>
     </View>
   );
 }
@@ -125,5 +149,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-  text: { fontSize: 16, fontWeight: '400', textAlign: 'center' },
+  text: {
+    fontSize: 16,
+    fontWeight: '400',
+    textAlign: 'center',
+    color: '#3e3e3e',
+  },
 });

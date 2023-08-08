@@ -4,6 +4,8 @@ import {
   GapView,
   MapBox,
   MyText,
+  MyTextHeader,
+  MyTitle,
   Rounded,
   TextLabel,
   TimeTable,
@@ -74,25 +76,27 @@ const MasjidDetails = ({
     };
   });
 
-  // console.log('subscriptions', iqamaTimings);
+  console.log('subscriptions', masjidDetails);
 
   return (
-    <View
-      style={{ flex: 1, alignItems: 'center'}}>
+    <View style={{ flex: 1, alignItems: 'center' }}>
       <View style={{ alignSelf: 'center', top: 100 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="Masjid Search"
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text="Masjid Search" />
         </Animated.View>
         <GapView length={50} />
       </View>
 
       <ScrollView
-        style={{ top: 100 }}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>
+        contentContainerStyle={{
+          top: 110,
+          paddingBottom: 70,
+          padding: 5,
+          paddingHorizontal: 15,
+        }}>
+        <MyTextHeader text={masjidDetails?.name ?? ''} />
+        <GapView length={15} />
         <View style={{ flexDirection: 'row' }}>
           <AdhanCalculation />
           <GapView length={5} mode="horizontal" />

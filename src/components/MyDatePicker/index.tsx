@@ -109,31 +109,33 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          {moment(date).isAfter(minimumDate) && (
-            <II
-              onPress={prevDate}
-              color={colors.primary}
-              name="md-chevron-back"
-              size={24}
-            />
-          )}
+          <II
+            disabled={!moment(date).isAfter(minimumDate)}
+            onPress={prevDate}
+            color={
+              moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
+            }
+            name="md-chevron-back"
+            size={24}
+          />
           {/* <GapView length={10} mode="horizontal" />
           <Calendar /> */}
           <GapView length={10} mode="horizontal" />
           <MyText
             text={moment(date)?.format('MMM-DD, YYYY')}
             size={16}
-            textStyle={{ fontWeight: '700', color: colors.primary }}
+            textStyle={{ fontWeight: '500' }}
           />
           <GapView length={10} mode="horizontal" />
-          {moment(date).isBefore(maximumDate) && (
             <II
-              color={colors.primary}
+              disabled={!moment(date).isBefore(maximumDate)}
+              color={
+                moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
+              }
               onPress={nextDate}
               name="md-chevron-forward"
               size={24}
             />
-          )}
         </TouchableOpacity>
       </>
     );

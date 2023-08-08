@@ -12,6 +12,7 @@ import {
   GapView,
   MasjidListCard,
   MyInput,
+  MyTitle,
   OverlayLoader,
   TextLabel,
 } from '../../../components';
@@ -83,6 +84,8 @@ const SearchListing = ({
     });
   };
 
+  console.log("masjifList", masjidList);
+  
   return (
     <View
       style={{
@@ -94,9 +97,8 @@ const SearchListing = ({
       <OverlayLoader isShow={loader} />
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="Search Masjid"
-            textStyle={{ alignSelf: 'center' }}
+          <MyTitle
+            text="Search Masjid"
           />
         </Animated.View>
         <GapView length={50} />
@@ -134,7 +136,7 @@ const SearchListing = ({
               location={`${item.address1} ${item.address2 ?? ''}, ${
                 item.city
               }, ${item.state} ${item.zip}`}
-              masjidLogo={{ uri: item.logo }}
+              masjidLogo={item.logo ? { uri: item.logo } : undefined}
             />
           )}
           ItemSeparatorComponent={GapView}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import { WINDOW_WIDTH } from '../../constants';
 
@@ -9,13 +9,14 @@ interface CardProps {
   width?: number;
   radius?: number;
   backgroundColor?: string;
+  style?: ViewStyle;
 }
 export default function Card(props: CardProps) {
   const { children, height = undefined, width, radius = 12 } = props;
 
   const styles = makeStyles(props);
   return (
-    <View style={styles.mainContainer}>
+    <View style={[styles.mainContainer, props.style]}>
       <View
         style={{
           width: props?.width ?? WINDOW_WIDTH - 28,
