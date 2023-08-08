@@ -35,6 +35,7 @@ import {
   ManageUsers,
   ViewUser,
   AddUser,
+  HelpScreen,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { useHookstate } from '@hookstate/core';
@@ -152,6 +153,9 @@ export default function Profile() {
     if (flag == 'uInfo') {
       return user?.firstName ?? '';
     }
+    if (flag == 'help') {
+      return 'Help';
+    }
   };
 
   return (
@@ -252,6 +256,12 @@ export default function Profile() {
                 setFlag={(value: string) => setFlag(value)}
               />
             )}
+            {flag == 'help' && (
+              <HelpScreen
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
           </>
         );
       }}
@@ -335,7 +345,7 @@ function UserInformation({
             {
               title: 'Help',
               icon: <Help />,
-              onPress: () => console.log('pressed'),
+              onPress: () => setFlag('help'),
             },
           ]}
         />

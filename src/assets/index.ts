@@ -56,6 +56,7 @@ export { default as Power } from './vectors/power.svg';
 export { default as Heart } from './vectors/Heart.svg';
 export { default as Battery } from './vectors/Battery.svg';
 export { default as Clock } from './vectors/Clock.svg';
+export { default as ContactUs } from './vectors/contact-us.svg';
 export { default as Attention } from './vectors/Attention.svg';
 export { default as SettingGreen } from './vectors/SetingGreen.svg';
 export { default as IP } from './vectors/IP.svg';
@@ -89,7 +90,6 @@ export { default as Exclimation } from './vectors/Exclimation.svg';
 export { default as Check } from './vectors/Check.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
-
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';
