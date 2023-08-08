@@ -22,7 +22,7 @@ import {
 } from '../../types/masjidControllerTypes';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
-import { Platform } from 'react-native';
+import { Platform, Linking } from 'react-native';
 
 /**
  *
@@ -433,6 +433,19 @@ function _normalizedSubscriptions(subscriptions?: SubscriptionList[]) {
   }, {} as NormalizedSubscriptions);
 }
 
+async function openMap(address: string, city: string, zipCode: string) {
+  const destination = encodeURIComponent(`${address} ${zipCode}, ${city}`);
+  const provider = Platform.OS === 'ios' ? 'apple' : 'google';
+  const link = `http://maps.${provider}.com/?daddr=${destination}`;
+  try {
+    const supported = await Linking.canOpenURL(link);
+
+    if (supported) Linking.openURL(link);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export {
   _getPhoneId,
   _getFCMToken,
@@ -447,4 +460,5 @@ export {
   isValidPhoneNumber,
   convertTo12Hour,
   _normalizedSubscriptions,
+  openMap,
 };

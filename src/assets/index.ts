@@ -89,6 +89,7 @@ export { default as Exclimation } from './vectors/Exclimation.svg';
 export { default as Check } from './vectors/Check.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
+export { default as NavigationSvg } from './vectors/navigation.svg'
 
 
 // Vectors/flags

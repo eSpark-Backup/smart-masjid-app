@@ -9,20 +9,26 @@ import {
   Rounded,
   TextLabel,
   TimeTable,
+  Tooltip,
 } from '../../../components';
 import {
   IqamahTime,
   Masjid,
   PrayerTimes,
 } from '../../../types/masjidControllerTypes';
-import { AdhanCalculation, AdhanJuristic } from '../../../assets';
+import {
+  AdhanCalculation,
+  AdhanJuristic,
+  NavigationSvg,
+} from '../../../assets';
 import {
   GetMasidAdhanTimings,
   GetMasidIqamaTimings,
 } from '../../../api/search.controller';
-import { _normalizedSubscriptions } from '../../../utils/functions';
+import { _normalizedSubscriptions, openMap } from '../../../utils/functions';
 import moment from 'moment';
-import { WINDOW_HEIGHT } from '../../../constants';
+import { Card } from '../../../containers';
+import { StyleSheet } from 'react-native';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -51,30 +57,31 @@ const MasjidDetails = ({
     );
   }, []);
 
-  const subscriptions = _normalizedSubscriptions(
-    masjidDetails?.subscriptionList,
-  )?.ADHAN?.map(val => {
-    return {
-      name: val?.subscriptionType?.name?.toLowerCase(),
-      azanTiming: adhanTimings
-        ? // @ts-ignore
-          adhanTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
-        : '-',
-      iqamahTiming: iqamaTimings
-        ? val?.subscriptionType?.name?.toLowerCase() == 'maghrib'
-          ? // @ts-ignore
-            moment(adhanTimings['maghrib'], 'HH:mm:ss').add(
-              'minutes',
-              // @ts-ignore
-              iqamaTimings[
-                `${val?.subscriptionType?.name?.toLowerCase()}Delay`
-              ],
-            )
-          : // @ts-ignore
-            iqamaTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
-        : '-',
-    };
-  });
+  const subscriptions = [];
+  // _normalizedSubscriptions(
+  //   masjidDetails?.subscriptionList,
+  // )?.ADHAN?.map(val => {
+  //   return {
+  //     name: val?.subscriptionType?.name?.toLowerCase(),
+  //     azanTiming: adhanTimings
+  //       ? // @ts-ignore
+  //         adhanTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
+  //       : '-',
+  //     iqamahTiming: iqamaTimings
+  //       ? val?.subscriptionType?.name?.toLowerCase() == 'maghrib'
+  //         ? // @ts-ignore
+  //           moment(adhanTimings['maghrib'], 'HH:mm:ss').add(
+  //             'minutes',
+  //             // @ts-ignore
+  //             iqamaTimings[
+  //               `${val?.subscriptionType?.name?.toLowerCase()}Delay`
+  //             ],
+  //           )
+  //         : // @ts-ignore
+  //           iqamaTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
+  //       : '-',
+  //   };
+  // });
 
   console.log('subscriptions', masjidDetails);
 
@@ -97,27 +104,72 @@ const MasjidDetails = ({
         }}>
         <MyTextHeader text={masjidDetails?.name ?? ''} />
         <GapView length={15} />
-        <View style={{ flexDirection: 'row' }}>
-          <AdhanCalculation />
-          <GapView length={5} mode="horizontal" />
-          <MyText
-            text="Islamic Society of North America"
-            size={16}
-            textStyle={{ color: '#3E3E3E' }}
-          />
-        </View>
-        <GapView length={5} />
-        <View style={{ flexDirection: 'row' }}>
-          <AdhanJuristic />
-          <GapView length={5} mode="horizontal" />
-          <MyText
-            text={`Jurisdiction: ${
-              masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name ?? '-'
-            }`}
-            size={16}
-            textStyle={{ color: '#3E3E3E' }}
-          />
-        </View>
+        <Card>
+          <View style={{ padding: 10 }}>
+            <View style={styles.infoCardRowContainer}>
+              <AdhanCalculation />
+              <GapView length={5} mode="horizontal" />
+              <View style={{ maxWidth: '87%' }}>
+                <MyText
+                  text={masjidDetails?.address1 ?? ''}
+                  size={16}
+                  textStyle={{ color: '#3E3E3E' }}
+                  lines={2}
+                />
+              </View>
+              <GapView length={5} mode="horizontal" />
+              <NavigationSvg
+                onPress={() => {
+                  console.log(
+                    'address',
+                    masjidDetails?.address1 ?? '',
+                    masjidDetails?.city ?? '',
+                    masjidDetails?.zip ?? '',
+                  );
+
+                  openMap(
+                    masjidDetails?.address1 ?? '',
+                    masjidDetails?.city ?? '',
+                    masjidDetails?.zip ?? '',
+                  );
+                }}
+              />
+            </View>
+            <GapView length={5} />
+            <View style={styles.infoCardRowContainer}>
+              <AdhanCalculation />
+              <GapView length={5} mode="horizontal" />
+              <View style={{ maxWidth: '87%' }}>
+                <MyText
+                  text={'Islamic Society of North America' ?? ''}
+                  size={16}
+                  textStyle={{ color: '#3E3E3E' }}
+                  lines={2}
+                />
+              </View>
+              <GapView length={5} mode="horizontal" />
+              <Tooltip content="Check this out" />
+            </View>
+            <GapView length={5} />
+            <View style={styles.infoCardRowContainer}>
+              <AdhanJuristic />
+              <GapView length={5} mode="horizontal" />
+              <View style={{ maxWidth: '87%' }}>
+                <MyText
+                  text={
+                    masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig
+                      ?.name ?? 'undefined'
+                  }
+                  size={16}
+                  textStyle={{ color: '#3E3E3E' }}
+                  lines={2}
+                />
+              </View>
+              <GapView length={5} mode="horizontal" />
+              <Tooltip content="Check this out" />
+            </View>
+          </View>
+        </Card>
         <GapView length={20} />
         <View style={{ padding: 10 }}>
           <TimeTable
@@ -154,4 +206,11 @@ const MasjidDetails = ({
   );
 };
 
+const styles = StyleSheet.create({
+  infoCardRowContainer: {
+    flexDirection: 'row',
+    paddingVertical: 5,
+    alignItems: 'center',
+  },
+});
 export default MasjidDetails;
