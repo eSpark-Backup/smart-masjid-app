@@ -2,7 +2,7 @@ import { Theme, useTheme } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View, Animated, TouchableOpacity } from 'react-native';
 
-import { ContactUs, SalahTimingsSVG, VolumeUp } from '../../../../assets';
+import { ContactUs } from '../../../../assets';
 
 import {
   Accordian,
@@ -10,7 +10,6 @@ import {
   MyInput,
   MyText,
   MyTitle,
-  ProfileSectionlist,
 } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';

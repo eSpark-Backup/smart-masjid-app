@@ -50,6 +50,7 @@ export { default as ProfileUser } from './vectors/profile-user.svg';
 export { default as Email } from './vectors/email.svg';
 export { default as Phone } from './vectors/phone.svg';
 export { default as MasjidVector } from './vectors/masjid-vector.svg';
+export { default as AdhanSettingSvg } from './vectors/adhan-speak.svg';
 export { default as VolumeUp } from './vectors/volume-vector.svg';
 export { default as EditVector } from './vectors/edit-vector.svg';
 export { default as Power } from './vectors/power.svg';
@@ -90,7 +91,7 @@ export { default as Exclimation } from './vectors/Exclimation.svg';
 export { default as Check } from './vectors/Check.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
-export { default as NavigationSvg } from './vectors/navigation.svg'
+export { default as NavigationSvg } from './vectors/navigation.svg';
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';
