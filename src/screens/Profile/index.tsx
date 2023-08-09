@@ -312,6 +312,7 @@ function UserInformation({
 
       <View style={{ top: 50 }}>
         <ProfileSectionlist
+          containerStyle={{ height: '85%' }}
           data={[
             {
               data: [

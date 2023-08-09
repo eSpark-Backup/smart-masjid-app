@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, SectionList, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  SectionList,
+  TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 
 import GapView from '../GapView';
 import MyText from '../MyText';
@@ -14,7 +21,7 @@ interface DataItem {
     title: string;
     value?: string;
     icon: JSX.Element;
-    onPress: () => void;
+    onPress?: () => void;
     hidden?: boolean;
   }[];
 }
@@ -29,16 +36,18 @@ export default function ProfileSectionlist({
   data,
   footerData,
   scroll,
+  containerStyle,
 }: {
   data: DataItem[];
   footerData?: FooterItem[];
   scroll?: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
 }) {
   return (
     <SectionList
       sections={data ?? []}
       scrollEnabled={scroll}
-      contentContainerStyle={{ height: '85%' }}
+      contentContainerStyle={containerStyle}
       keyExtractor={(item, index) => item.title + index}
       renderItem={({ item, index }) => {
         if (!item.hidden) {
@@ -82,7 +91,7 @@ const SectionCard = ({ item, index }: { item: any; index: number }) => {
 const styles = StyleSheet.create({
   cartContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 30,
+    paddingHorizontal: 25,
     // paddingVertical: 8,
     height: 40,
     justifyContent: 'space-between',

@@ -1,22 +1,27 @@
+import React, { useEffect } from 'react';
 import { useHookstate } from '@hookstate/core';
-import React from 'react';
 import { StyleSheet, Text, View, Animated } from 'react-native';
+import { GetMasjid } from '../../../../api/masjidController';
 
 import {
   AdhanSettingSvg,
+  Earth,
+  Email,
+  LocationSvg,
   ManageUser,
+  Phone,
   SalahTimingsSVG,
-  VolumeUp,
+  Web,
 } from '../../../../assets';
 
 import {
   GapView,
-  MyDivider,
+  MyTextHeader,
+  MyTextSubHeader,
   MyTitle,
-  ProfileAvatar,
   ProfileSectionlist,
-  TextLabel,
 } from '../../../../components';
+import { masjidStore } from '../../../../store/MasjidStore';
 import { userStore } from '../../../../store/UserStore';
 
 export default function ManageMasjid({
@@ -27,6 +32,12 @@ export default function ManageMasjid({
   contentOpacity?: any;
 }) {
   const userData = useHookstate(userStore.userData).get();
+  const masjidInfo = useHookstate(masjidStore.masjid).get();
+  useEffect(() => {
+    if (!masjidInfo) {
+      GetMasjid('1');
+    }
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -37,11 +48,69 @@ export default function ManageMasjid({
         <GapView length={50} />
       </View>
 
-      <View style={{ top: 100 }}>
+      <View style={{ top: 112 }}>
+        <View style={{ width: '92%', alignSelf: 'center' }}>
+          <MyTextHeader
+            style={{ paddingLeft: 5 }}
+            text="East Plano Islamic Center"
+          />
+          <View
+            style={{
+              width: '100%',
+              borderTopWidth: 0.5,
+              marginVertical: 10,
+            }}></View>
+          <MyTextSubHeader text="General" />
+        </View>
+        <GapView />
+        <View style={{ flex: 1, height: '50%' }}>
+          <ProfileSectionlist
+            data={[
+              {
+                data: [
+                  {
+                    title: `${masjidInfo?.address1 ?? ''},${
+                      masjidInfo?.address2 ? masjidInfo.address2 : ' '
+                    } ${masjidInfo?.city ?? ''} ${masjidInfo?.state ?? ''} ${
+                      masjidInfo?.zip ?? ''
+                    }`,
+                    icon: <LocationSvg width={18} height={18} />,
+                  },
+                  {
+                    title: masjidInfo?.website ?? '',
+                    icon: <Web width={18} height={18} />,
+                  },
+                  {
+                    title: masjidInfo?.email ?? '',
+                    icon: <Email width={18} height={18} />,
+                  },
+                  {
+                    title: masjidInfo?.phone ?? '',
+                    icon: <Phone width={18} height={18} />,
+                  },
+                  {
+                    title: masjidInfo?.timezone ?? '',
+                    icon: <Earth width={18} height={18} />,
+                  },
+                ],
+              },
+            ]}
+          />
+        </View>
+        <GapView length={7} />
+        <View style={{ width: '92%', alignSelf: 'center' }}>
+          <View
+            style={{
+              width: '100%',
+              borderTopWidth: 0.5,
+              marginVertical: 10,
+            }}></View>
+          <MyTextSubHeader text="Advanced" />
+        </View>
+        <GapView />
         <ProfileSectionlist
           data={[
             {
-              title: 'Manage Masjid',
               data: [
                 {
                   title: 'Adhan settings',
