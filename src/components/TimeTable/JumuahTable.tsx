@@ -24,11 +24,15 @@ const RowItem = ({
         </View>
         <View style={styles.contentCol}>
           <MyText
-            text={item.khutba ? moment(item.khutba, 'HH:mm:ss').format('h:mm A') : 'unknown'}
+            text={
+              item.khutba
+                ? moment(item.khutba, 'HH:mm:ss').format('h:mm A')
+                : 'unknown'
+            }
             size={16}
           />
         </View>
-        {isMute && (
+        {isMute ? (
           <View style={styles.contentIcon}>
             {toggleMute ? (
               <MuteSvg
@@ -44,6 +48,8 @@ const RowItem = ({
               />
             )}
           </View>
+        ) : (
+          <View style={styles.contentIcon}/>
         )}
       </View>
     </TouchableOpacity>
@@ -54,6 +60,7 @@ export default function JumuahTable({
   data = undefined,
   headings = ['Salah', 'Adhan', 'Iqama'],
   header = <></>,
+  isMute = true,
 }: {
   data?: {
     id: number;
@@ -66,6 +73,7 @@ export default function JumuahTable({
   };
   headings?: string[];
   header?: React.ReactNode;
+  isMute?: boolean;
 }) {
   return (
     <View style={styles.container}>
@@ -84,15 +92,15 @@ export default function JumuahTable({
       <View style={{ width: WINDOW_WIDTH - 50 }}>
         <RowItem
           item={{ name: 'Jumuah 1', khutba: data?.jumuah1 ?? '' }}
-          isMute
+          isMute={isMute}
         />
         <RowItem
           item={{ name: 'Jumuah 2', khutba: data?.jumuah2 ?? '' }}
-          isMute
+          isMute={isMute}
         />
         <RowItem
           item={{ name: 'Jumuah 3', khutba: data?.jumuah3 ?? '' }}
-          isMute
+          isMute={isMute}
         />
       </View>
     </View>
