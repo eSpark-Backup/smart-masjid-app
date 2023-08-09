@@ -32,24 +32,27 @@ const DeviceListing = ({
       }}>
       <View style={{ alignSelf: 'center', top: 100 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="Masjid Search"
-            textStyle={{ alignSelf: 'center' }}
+          <MyTitle
+            text="Masjid Search"
           />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{top: 100}}>
+      <View style={{top: 110}}>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <MyText textStyle={{fontWeight: '400'}} text='You’re subscribing to:' />
+            <MyText textStyle={{fontWeight: '500'}}  text={masjidDetails?.name ?? ''} />
+        </View>
+        <GapView length={15} />
         <MyText
-          text="Which device would you like to subscribe?"
+          text="Available devices"
           textStyle={{
             color: '#3E3E3E',
             alignSelf: 'center',
-            paddingVertical: 10,
           }}
         />
-        <GapView length={30} />
+        <GapView length={15} />
         <Card width={WINDOW_WIDTH - 28}>
           <View>
             <FlatList
