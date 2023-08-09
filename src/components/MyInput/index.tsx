@@ -41,6 +41,7 @@ interface MyInputProps {
   placeholderColor?: string;
   title?: string;
   searchBar?: boolean;
+  helpSearch?: boolean;
   onSearch?: (text: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -64,6 +65,7 @@ export default function MyInput(props: MyInputProps) {
     inputStyle,
     title,
     searchBar,
+    helpSearch,
     placeholderColor,
     onPhoneCodeChange,
     onSearch,
@@ -204,7 +206,7 @@ export default function MyInput(props: MyInputProps) {
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
           </TouchableOpacity>
         )}
-        {!isDropDown ? (
+        {isDropDown || helpSearch ? null : (
           <View
             style={{
               position: 'absolute',
@@ -221,7 +223,7 @@ export default function MyInput(props: MyInputProps) {
               text={placeholder}
             />
           </View>
-        ) : null}
+        )}
         <View>
           <View>
             <TextInput
@@ -234,6 +236,8 @@ export default function MyInput(props: MyInputProps) {
                 { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
                 inputStyle,
               ]}
+              placeholder={isDropDown || helpSearch ? placeholder : ''}
+              placeholderTextColor={'#9E9F9F'}
               onChangeText={handleTextChange}
               onFocus={() => setGetFocused(true)}
               onBlur={() => setGetFocused(false)}
@@ -287,8 +291,14 @@ export default function MyInput(props: MyInputProps) {
 
 const getStyles = (theme: Theme, props: MyInputProps) => {
   const { colors } = theme;
-  const { isDivider, dividerColor, dividerWidth, searchBar, isPhoneCode } =
-    props;
+  const {
+    isDivider,
+    dividerColor,
+    dividerWidth,
+    searchBar,
+    isPhoneCode,
+    helpSearch,
+  } = props;
 
   return StyleSheet.create({
     container: {
@@ -302,13 +312,13 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       width: WINDOW_WIDTH - 75 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,
       top: Platform.OS == 'ios' ? 17 : 0,
-      borderWidth: 1,
+      borderWidth: helpSearch ? 0 : 1,
       borderRadius: 10,
       borderTopRightRadius: searchBar ? 0 : 10,
       borderBottomRightRadius: searchBar ? 0 : 10,
       borderTopLeftRadius: isPhoneCode ? 0 : 10,
       borderBottomLeftRadius: isPhoneCode ? 0 : 10,
-      borderLeftWidth: isPhoneCode ? 0 : 1,
+      borderLeftWidth: isPhoneCode || helpSearch ? 0 : 1,
     },
     phoneCodeContainer: {
       width: 80,
