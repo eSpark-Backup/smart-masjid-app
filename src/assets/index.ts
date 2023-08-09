@@ -48,8 +48,10 @@ export { default as About } from './vectors/about-us.svg';
 export { default as MasjidGear } from './vectors/masjid-gear.svg';
 export { default as ProfileUser } from './vectors/profile-user.svg';
 export { default as Email } from './vectors/email.svg';
+export { default as Earth } from './vectors/earth.svg';
 export { default as Phone } from './vectors/phone.svg';
 export { default as MasjidVector } from './vectors/masjid-vector.svg';
+export { default as AdhanSettingSvg } from './vectors/adhan-speak.svg';
 export { default as VolumeUp } from './vectors/volume-vector.svg';
 export { default as EditVector } from './vectors/edit-vector.svg';
 export { default as Power } from './vectors/power.svg';
@@ -60,6 +62,7 @@ export { default as ContactUs } from './vectors/contact-us.svg';
 export { default as Attention } from './vectors/Attention.svg';
 export { default as SettingGreen } from './vectors/SetingGreen.svg';
 export { default as IP } from './vectors/IP.svg';
+export { default as Web } from './vectors/web.svg';
 export { default as ButtonIcon } from './vectors/ButtonIcon.svg';
 export { default as ConnectedDevice } from './vectors/ConnectedDevice.svg';
 export { default as EditTimeTable } from './vectors/EditTimeTable.svg';
@@ -90,7 +93,7 @@ export { default as Exclimation } from './vectors/Exclimation.svg';
 export { default as Check } from './vectors/Check.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
-export { default as NavigationSvg } from './vectors/navigation.svg'
+export { default as NavigationSvg } from './vectors/navigation.svg';
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';

@@ -13,6 +13,7 @@ import {
   GapView,
   MyDropDown,
   MyText,
+  MyTitle,
   OverlayLoader,
   Rounded,
   TextLabel,
@@ -37,7 +38,7 @@ export default function IqamahTimings({
 
   useEffect(() => {
     GetMasjidIqamahTiming('1');
-    console.log('kia ha',moment(iqamahTimings?.fajr, 'HH:mm:ss').format('LT'))
+    console.log('kia ha', moment(iqamahTimings?.fajr, 'HH:mm:ss').format('LT'));
   }, []);
 
   const onUpdate = async () => {
@@ -95,10 +96,7 @@ export default function IqamahTimings({
       <View style={{ flex: 1 }}>
         <View style={{ alignSelf: 'center', top: 110 }}>
           <Animated.View style={[{ opacity: contentOpacity }]}>
-            <TextLabel
-              label="Iqama Timings"
-              textStyle={{ alignSelf: 'center' }}
-            />
+            <MyTitle text="Iqama Timings" />
           </Animated.View>
           <GapView length={50} />
         </View>

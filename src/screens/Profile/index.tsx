@@ -82,6 +82,10 @@ export default function Profile() {
       setFlag('mUsers');
       return;
     }
+    if (currScreen == 'mUsers') {
+      setFlag('mMas');
+      return;
+    }
     if (currScreen == 'uInfo') {
       navigation.navigate('Home');
     } else {
@@ -308,6 +312,7 @@ function UserInformation({
 
       <View style={{ top: 50 }}>
         <ProfileSectionlist
+          containerStyle={{ height: '85%' }}
           data={[
             {
               data: [
@@ -326,16 +331,6 @@ function UserInformation({
                     userData?.userType.id == 1 ||
                     userData?.userType?.permissions?.filter(
                       val => val?.name == 'MANAGE_MASJID',
-                    )?.length == 0,
-                },
-                {
-                  title: 'Manage Users',
-                  icon: <ManageUser />,
-                  onPress: () => setFlag('mUsers'),
-                  hidden:
-                    userData?.userType.id == 1 ||
-                    userData?.userType?.permissions?.filter(
-                      val => val?.name == 'MANAGE_USERS',
                     )?.length == 0,
                 },
               ],

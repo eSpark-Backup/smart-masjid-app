@@ -4,6 +4,7 @@ import { Email, Phone, ProfileUser } from '../../../../assets';
 import {
   GapView,
   MyText,
+  MyTitle,
   ProfileSectionlist,
   TextLabel,
 } from '../../../../components';
@@ -22,15 +23,12 @@ export default function ViewUsers({
     <View style={{ flex: 1, marginTop: 0 }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="User Information"
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text="User Information" />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{top: 100}}>
+      <View style={{ top: 100 }}>
         <ProfileSectionlist
           scroll={false}
           data={[

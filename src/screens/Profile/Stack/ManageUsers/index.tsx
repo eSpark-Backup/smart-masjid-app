@@ -17,6 +17,7 @@ import {
   GapView,
   LogoutModal,
   MyText,
+  MyTitle,
   OverlayLoader,
   TextLabel,
 } from '../../../../components';
@@ -68,7 +69,7 @@ export default function ManageUsers({
       <OverlayLoader isShow={loading} />
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Manage Users" textStyle={{ alignSelf: 'center' }} />
+          <MyTitle text="Manage Users" />
         </Animated.View>
         <GapView length={50} />
       </View>

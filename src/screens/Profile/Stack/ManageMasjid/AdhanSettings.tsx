@@ -8,6 +8,7 @@ import {
   MyDivider,
   MyDropDown,
   MyText,
+  MyTitle,
   ProfileAvatar,
   TextLabel,
 } from '../../../../components';
@@ -31,15 +32,12 @@ export default function AdhanSettings({
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="Adhan Settings"
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text="Adhan Settings" />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{top: 100}}>
+      <View style={{ top: 100 }}>
         <MyDropDown
           disabled
           title="Calculation"
