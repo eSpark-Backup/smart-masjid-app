@@ -1,4 +1,5 @@
 import { api } from '.';
+import { SalahTimings } from '../types/masjidControllerTypes';
 
 /**
  *
@@ -55,3 +56,13 @@ export const GetMasidIqamaTimings = async (masjidId: string) => {
     console.log('error GetMasidIqamaTimings', error);
   }
 };
+
+
+/**
+ * @description Get Salah Timings of specific masjid
+ * @param {masjidId} masjidId - Masjid Id to retrieve timings
+ * @returns {SalahTimings} SalahTimings - list of Salah timings from API response
+ */
+// export const getSalahTimings = (masjidId: string): SalahTimings => {
+
+// }

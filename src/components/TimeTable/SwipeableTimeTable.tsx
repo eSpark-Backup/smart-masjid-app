@@ -18,6 +18,7 @@ import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import Tooltip from '../Tooltip';
+import { SalahTimings } from '../../types/masjidControllerTypes';
 
 const RowItem = ({
   item,
@@ -89,7 +90,7 @@ export default function SwipeableTimeTable({
   editView = false,
   footer = <></>,
 }: {
-  data: IPrayerTimeForPeriod[];
+  data: SalahTimings[];
   isMute?: boolean;
   isEdit?: boolean;
   isInfo?: boolean;

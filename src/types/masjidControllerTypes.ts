@@ -114,3 +114,15 @@ export type Masjid = {
   updatedBy: string | null;
   updatedDate: string | null;
 };
+
+
+export interface Salah {
+  name: string;
+  adhanTime: string;
+  iqamaTime: string;
+}
+
+export interface SalahTimings {
+  date: string;
+  salah: Salah[];
+}
