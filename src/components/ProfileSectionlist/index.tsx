@@ -11,7 +11,7 @@ import {
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
-import { WINDOW_HEIGHT } from '../../constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 
 interface DataItem {
   title?: string;
@@ -78,10 +78,11 @@ const SectionCard = ({ item, index }: { item: any; index: number }) => {
         <GapView mode="horizontal" />
         <MyText text={item.title} textStyle={{ fontSize: 16 }} />
       </TouchableOpacity>
+      <GapView mode='horizontal' length={5} />
       {item.value && (
         <MyText
           text={item.value}
-          textStyle={{ fontSize: 14, color: '#6E6E6E' }}
+          textStyle={{ fontSize: 14, color: '#3E3E3E' }}
         />
       )}
     </View>
@@ -91,10 +92,12 @@ const SectionCard = ({ item, index }: { item: any; index: number }) => {
 const styles = StyleSheet.create({
   cartContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 25,
+    padding: 10,
     // paddingVertical: 8,
-    height: 40,
+    height: 44,
     justifyContent: 'space-between',
+    width: WINDOW_WIDTH - 28,
+    alignSelf: 'center'
   },
   sectionHeader: {
     flexDirection: 'row',
