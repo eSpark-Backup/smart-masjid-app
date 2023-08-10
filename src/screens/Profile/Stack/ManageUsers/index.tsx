@@ -128,12 +128,21 @@ const UserCard = ({
           onPress={onPress}
           style={styles.cardContainer}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <ProfileDummy height={30} width={30} />
+            <View style={styles.avatarShadow}>
+              <ProfileDummy height={30} width={30} />
+            </View>
             <GapView mode="horizontal" />
             <View>
-              <MyText text={item.firstName + ' ' + item.lastName} textStyle={{color: '#0E0E0E', fontWeight: '500'}} />
+              <MyText
+                text={item.firstName + ' ' + item.lastName}
+                textStyle={{ color: '#0E0E0E', fontWeight: '500' }}
+              />
               <GapView length={5} />
-              <MyText text={item.userType.name} size={12} textStyle={{color: '#3E3E3E', fontWeight: '400'}} />
+              <MyText
+                text={item.userType.name}
+                size={12}
+                textStyle={{ color: '#3E3E3E', fontWeight: '400' }}
+              />
             </View>
           </View>
           <View>
@@ -172,5 +181,18 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: 'center',
     paddingHorizontal: 20,
+  },
+  avatarShadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 3,
+    height: 30,
+    width: 30,
+    borderRadius: 100,
   },
 });
