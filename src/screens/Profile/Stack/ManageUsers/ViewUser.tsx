@@ -3,10 +3,8 @@ import { View, Animated } from 'react-native';
 import { Email, PeoplesSvg, Phone, ProfileUser } from '../../../../assets';
 import {
   GapView,
-  MyText,
   MyTitle,
   ProfileSectionlist,
-  TextLabel,
 } from '../../../../components';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
 
