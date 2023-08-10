@@ -13,6 +13,7 @@ import {
   TextLabel,
 } from '../../../../components';
 import { masjidStore } from '../../../../store/MasjidStore';
+import { WINDOW_WIDTH } from '../../../../constants';
 
 export default function AdhanSettings({
   setFlag,
@@ -38,24 +39,23 @@ export default function AdhanSettings({
       </View>
 
       <View style={{ top: 100 }}>
-        <MyDropDown
-          disabled
-          title="Calculation"
-          placeholder="Muslim World League"
-          placeholderColor="#CFCFCF"
-          items={[]}
-          defaultValue={adhanConfig?.adhanCalcConfig}
-        />
+        <GapView length={15} />
+        <View style={styles.settingContainer}>
+          <MyText
+            textStyle={styles.settingText}
+            size={12}
+            text={adhanConfig?.adhanCalcConfig?.name ?? ''}
+          />
+        </View>
         <GapView length={20} />
-        <MyDropDown
-          disabled
-          title="Juristic"
-          placeholder="Muslim World League"
-          placeholderColor="#CFCFCF"
-          items={[]}
-          defaultValue={adhanConfig?.adhanJuristicConfig}
-        />
-        <GapView length={40} />
+        <View style={styles.settingContainer}>
+          <MyText
+            textStyle={styles.settingText}
+            size={12}
+            text={adhanConfig?.adhanJuristicConfig?.name ?? ''}
+          />
+        </View>
+        <GapView length={30} />
         <MyText
           text="Contact support@smartmasjid.net to update the adhan settings"
           textStyle={{
@@ -71,4 +71,17 @@ export default function AdhanSettings({
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  settingContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#9E9F9F',
+    borderRadius: 12,
+    height: 44,
+    justifyContent: 'center',
+    width: WINDOW_WIDTH - 28,
+    alignSelf: 'center'
+  },
+  settingText: { color: '#9E9F9F', fontWeight: '400' },
+});
