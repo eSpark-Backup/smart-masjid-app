@@ -119,7 +119,7 @@ const UserCard = ({
   onPress: () => void;
   onDeletePress?: (userId: string) => void;
 }) => {
-  console.log(item.userType.name);
+
   return (
     <View style={{ marginTop: 10 }}>
       <Card width={WINDOW_WIDTH - 28}>

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { View, Animated } from 'react-native';
-import { Email, Phone, ProfileUser } from '../../../../assets';
+import { Email, PeoplesSvg, Phone, ProfileUser } from '../../../../assets';
 import {
   GapView,
-  MyText,
   MyTitle,
   ProfileSectionlist,
-  TextLabel,
 } from '../../../../components';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
 
@@ -29,6 +27,7 @@ export default function ViewUsers({
       </View>
 
       <View style={{ top: 100 }}>
+        <GapView />
         <ProfileSectionlist
           scroll={false}
           data={[
@@ -52,6 +51,12 @@ export default function ViewUsers({
                   title: 'Phone',
                   value: user?.phone ?? '-',
                   icon: <Phone />,
+                  onPress: () => console.log('no effect'),
+                },
+                {
+                  title: 'Role',
+                  value: user?.userType.name ?? '-',
+                  icon: <PeoplesSvg />,
                   onPress: () => console.log('no effect'),
                 },
               ],
