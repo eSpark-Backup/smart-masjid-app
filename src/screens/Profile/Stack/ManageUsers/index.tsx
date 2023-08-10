@@ -75,11 +75,12 @@ export default function ManageUsers({
       </View>
 
       <View style={{ top: 100 }}>
+        <GapView length={10} />
         <FlatList
           contentContainerStyle={{
             flexGrow: 1,
             width: WINDOW_WIDTH,
-            paddingBottom: 20,
+            paddingBottom: 120,
           }}
           data={admins ?? []}
           renderItem={({
@@ -118,6 +119,7 @@ const UserCard = ({
   onPress: () => void;
   onDeletePress?: (userId: string) => void;
 }) => {
+  console.log(item.userType.name);
   return (
     <View style={{ marginTop: 10 }}>
       <Card width={WINDOW_WIDTH - 28}>
@@ -128,7 +130,11 @@ const UserCard = ({
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <ProfileDummy height={30} width={30} />
             <GapView mode="horizontal" />
-            <MyText text={item.firstName + ' ' + item.lastName} />
+            <View>
+              <MyText text={item.firstName + ' ' + item.lastName} textStyle={{color: '#0E0E0E', fontWeight: '500'}} />
+              <GapView length={5} />
+              <MyText text={item.userType.name} size={12} textStyle={{color: '#3E3E3E', fontWeight: '400'}} />
+            </View>
           </View>
           <View>
             <Delete onPress={() => onDeletePress?.(item.id.toString())} />
