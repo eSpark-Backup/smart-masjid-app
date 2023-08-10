@@ -8,9 +8,15 @@ import {
   GetMasjidIqamahTiming,
   UpdatedMasjidIqamahTiming,
 } from '../../../../../../api/masjidController';
-import { EditTimeTable, History } from '../../../../../../assets';
+import {
+  Calendar,
+  EditPencil,
+  EditTimeTable,
+  History,
+} from '../../../../../../assets';
 import {
   GapView,
+  MyDivider,
   MyDropDown,
   MyText,
   MyTitle,
@@ -23,6 +29,7 @@ import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
+import { Card } from '../../../../../../containers';
 
 export default function IqamahTimings({
   setFlag,
@@ -90,6 +97,8 @@ export default function IqamahTimings({
     }
   };
 
+  console.log("iqamahTimings", iqamahTimings);
+  
   const type = data?.type ?? iqamahTimings?.type;
   return (
     <>
@@ -106,7 +115,8 @@ export default function IqamahTimings({
           style={{ top: 110 }}>
           <OverlayLoader isShow={loading} />
 
-          <TimeTable
+          <TimeTableCard />
+          {/* <TimeTable
             type={data?.type ?? iqamahTimings?.type}
             header={
               <>
@@ -267,11 +277,59 @@ export default function IqamahTimings({
                 )}
               </>
             }
-          />
+          /> */}
         </ScrollView>
       </View>
     </>
   );
 }
+
+interface TimeTableData {
+  name: string;
+  value: number;
+}
+
+const TimeTableCard = ({
+  data = [],
+  date = '',
+}: {
+  data: TimeTableData[];
+  date: string;
+}) => {
+  return (
+    <View>
+      <Card width={WINDOW_WIDTH - 28}>
+        <View style={{ padding: 10 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Calendar style={{ color: '#6E6E6E' }} />
+              <GapView length={5} />
+              <MyText text={date} size={12} />
+            </View>
+            <EditPencil />
+          </View>
+
+          <GapView />
+          <MyDivider width={WINDOW_WIDTH - 48} />
+          <GapView />
+
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            {data.map(v => {
+              return (
+                <View>
+                  <MyText text="Fajr" />
+                  <GapView length={5} />
+                  <MyText text="6:00am" />
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      </Card>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({});

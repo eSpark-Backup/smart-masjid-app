@@ -94,6 +94,7 @@ export { default as Check } from './vectors/Check.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
 export { default as NavigationSvg } from './vectors/navigation.svg';
+export { default as EditPencil } from './vectors/EditPencil.svg'
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';
