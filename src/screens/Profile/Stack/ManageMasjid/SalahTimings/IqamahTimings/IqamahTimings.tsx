@@ -30,6 +30,7 @@ import { WINDOW_WIDTH } from '../../../../../../constants';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import { Card } from '../../../../../../containers';
+import { FlatList } from 'react-native-gesture-handler';
 
 export default function IqamahTimings({
   setFlag,
@@ -40,13 +41,58 @@ export default function IqamahTimings({
 }) {
   const [edit, setEdit] = useState(false);
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
-  const [data, setData] = useState<any>({});
+  const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     GetMasjidIqamahTiming('1');
-    console.log('kia ha', moment(iqamahTimings?.fajr, 'HH:mm:ss').format('LT'));
   }, []);
+
+  // const namazData = [
+  //   {
+  //     date: '2023-07-14',
+  //     data: [
+  //       { name: 'fajr', value: '18:00:00' },
+  //       { name: 'duhr', value: '18:00' },
+  //       { name: 'asr', value: '18:00' },
+  //       { name: 'maghrib', value: '18:00' },
+  //       { name: 'isha', value: '18:00' },
+  //     ],
+  //     type: 'F',
+  //   },
+  //   {
+  //     date: '2023-07-16',
+  //     data: [
+  //       { name: 'fajr', value: '16:00' },
+  //       { name: 'duhr', value: '16:00' },
+  //       { name: 'asr', value: '16:00' },
+  //       { name: 'maghrib', value: '16:00' },
+  //       { name: 'isha', value: '16:00' },
+  //     ],
+  //   },
+  // ];
+
+  useEffect(() => {
+    setData([]);
+    let iqamahData = [...data];
+    iqamahTimings?.map(i => {
+      const namazData = {
+        id: i.id,
+        date: i.effectiveDate,
+        data: [
+          { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
+          { name: 'dhuhr', value: moment(i?.dhuhr, 'HH:mm:ss').format('LT') },
+          { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
+          { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
+          { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
+        ],
+        type: i.type,
+      };
+      iqamahData.push(namazData);
+    });
+    setData(iqamahData);
+  }, []);
+  console.log('IqamahData', data[0]);
 
   const onUpdate = async () => {
     var dataObj: IqamahTime = data;
@@ -97,9 +143,9 @@ export default function IqamahTimings({
     }
   };
 
-  console.log("iqamahTimings", iqamahTimings);
-  
-  const type = data?.type ?? iqamahTimings?.type;
+  console.log('iqamahTimings', iqamahTimings);
+
+  // const type = data?.type ?? iqamahTimings?.type;
   return (
     <>
       <View style={{ flex: 1 }}>
@@ -114,8 +160,13 @@ export default function IqamahTimings({
           contentContainerStyle={{ paddingBottom: 30 }}
           style={{ top: 110 }}>
           <OverlayLoader isShow={loading} />
+          <FlatList
+            data={data}
+            renderItem={({ item }) => (
+              <TimeTableCard date={item.date} data={item.data} />
+            )}
+          />
 
-          <TimeTableCard />
           {/* <TimeTable
             type={data?.type ?? iqamahTimings?.type}
             header={
@@ -286,7 +337,7 @@ export default function IqamahTimings({
 
 interface TimeTableData {
   name: string;
-  value: number;
+  value: string;
 }
 
 const TimeTableCard = ({
@@ -297,7 +348,7 @@ const TimeTableCard = ({
   date: string;
 }) => {
   return (
-    <View>
+    <View style={{ marginVertical: 5 }}>
       <Card width={WINDOW_WIDTH - 28}>
         <View style={{ padding: 10 }}>
           <View
@@ -309,19 +360,24 @@ const TimeTableCard = ({
             </View>
             <EditPencil />
           </View>
-
           <GapView />
           <MyDivider width={WINDOW_WIDTH - 48} />
           <GapView />
-
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             {data.map(v => {
               return (
                 <View>
-                  <MyText text="Fajr" />
+                  <MyText
+                    textStyle={{ textTransform: 'capitalize' }}
+                    text={v.name}
+                  />
                   <GapView length={5} />
-                  <MyText text="6:00am" />
+                  <MyText
+                    size={12}
+                    textStyle={{ color: '#6E6E6E' }}
+                    text={v.value}
+                  />
                 </View>
               );
             })}

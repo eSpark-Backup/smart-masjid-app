@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHookstate } from '@hookstate/core';
-import { StyleSheet, Text, View, Animated } from 'react-native';
+import { StyleSheet, Text, View, Animated, ScrollView } from 'react-native';
 import { GetMasjid } from '../../../../api/masjidController';
 
 import {
@@ -48,7 +48,7 @@ export default function ManageMasjid({
         <GapView length={50} />
       </View>
 
-      <View style={{ top: 112 }}>
+      <ScrollView style={{ top: 112, paddingBottom: 112 }}>
         <View style={{ width: '92%', alignSelf: 'center' }}>
           <MyTextHeader
             style={{ paddingLeft: 5 }}
@@ -136,7 +136,7 @@ export default function ManageMasjid({
             },
           ]}
         />
-      </View>
+      </ScrollView>
     </View>
   );
 }

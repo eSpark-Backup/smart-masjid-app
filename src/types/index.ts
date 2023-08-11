@@ -36,7 +36,7 @@ export type UserStoreProps = {
 
 export type MasjidStoreProps = {
   adhanConfig: AdhanConfig | null;
-  iqamahTime: IqamahTime | null;
+  iqamahTime: IqamahTime[] | null;
   masjid: Masjid | null;
   iqamahHistory: IqamahTime[];
   JummahTime: JummahTime | null;
