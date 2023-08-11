@@ -7,6 +7,7 @@ import {
   Accordian,
   GapView,
   MasjidListCard,
+  MyTitle,
   TextLabel,
 } from '../../../components';
 import { Wrapper } from '../../../containers';
@@ -26,7 +27,7 @@ export default function MasjidListing({
     <View>
       <View style={{ alignSelf: 'center', top: 130 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Masjid Subscriptions" />
+          <MyTitle text="Masjid Subscriptions" />
         </Animated.View>
         <GapView length={50} />
       </View>

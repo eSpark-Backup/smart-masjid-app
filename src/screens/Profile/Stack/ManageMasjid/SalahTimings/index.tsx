@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Animated } from 'react-native';
-import { SalahTimingsSVG, VolumeUp } from '../../../../../assets';
+import { SalahTimingsSVG } from '../../../../../assets';
 import {
   GapView,
+  MyTitle,
   ProfileSectionlist,
   TextLabel,
 } from '../../../../../components';
@@ -18,10 +19,7 @@ export default function SalahSettings({
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="Salah Settings"
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text="Salah Settings" />
         </Animated.View>
         <GapView length={50} />
       </View>

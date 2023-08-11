@@ -17,6 +17,7 @@ import {
   GapView,
   LogoutModal,
   MyText,
+  MyTitle,
   OverlayLoader,
   TextLabel,
 } from '../../../../components';
@@ -68,17 +69,18 @@ export default function ManageUsers({
       <OverlayLoader isShow={loading} />
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Manage Users" textStyle={{ alignSelf: 'center' }} />
+          <MyTitle text="Manage Users" />
         </Animated.View>
         <GapView length={50} />
       </View>
 
       <View style={{ top: 100 }}>
+        <GapView length={10} />
         <FlatList
           contentContainerStyle={{
             flexGrow: 1,
             width: WINDOW_WIDTH,
-            paddingBottom: 20,
+            paddingBottom: 120,
           }}
           data={admins ?? []}
           renderItem={({
@@ -117,6 +119,7 @@ const UserCard = ({
   onPress: () => void;
   onDeletePress?: (userId: string) => void;
 }) => {
+
   return (
     <View style={{ marginTop: 10 }}>
       <Card width={WINDOW_WIDTH - 28}>
@@ -125,9 +128,22 @@ const UserCard = ({
           onPress={onPress}
           style={styles.cardContainer}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <ProfileDummy height={30} width={30} />
+            <View style={styles.avatarShadow}>
+              <ProfileDummy height={30} width={30} />
+            </View>
             <GapView mode="horizontal" />
-            <MyText text={item.firstName + ' ' + item.lastName} />
+            <View>
+              <MyText
+                text={item.firstName + ' ' + item.lastName}
+                textStyle={{ color: '#0E0E0E', fontWeight: '500' }}
+              />
+              <GapView length={5} />
+              <MyText
+                text={item.userType.name}
+                size={12}
+                textStyle={{ color: '#3E3E3E', fontWeight: '400' }}
+              />
+            </View>
           </View>
           <View>
             <Delete onPress={() => onDeletePress?.(item.id.toString())} />
@@ -165,5 +181,18 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: 'center',
     paddingHorizontal: 20,
+  },
+  avatarShadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 3,
+    height: 30,
+    width: 30,
+    borderRadius: 100,
   },
 });

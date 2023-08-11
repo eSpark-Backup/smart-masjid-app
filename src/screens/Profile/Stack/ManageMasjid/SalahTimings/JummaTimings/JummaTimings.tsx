@@ -15,6 +15,7 @@ import {
   GapView,
   MyDivider,
   MyText,
+  MyTitle,
   OverlayLoader,
   ProfileAvatar,
   Rounded,
@@ -105,15 +106,12 @@ export default function JummaTimings({
         <OverlayLoader isShow={loading} />
         <View style={{ alignSelf: 'center', top: 110 }}>
           <Animated.View style={[{ opacity: contentOpacity }]}>
-            <TextLabel
-              label="Jumuah Timings"
-              textStyle={{ alignSelf: 'center' }}
-            />
+            <MyTitle text="Jumuah Timings" />
           </Animated.View>
           <GapView length={50} />
         </View>
 
-        <View style={{top: 110}}>
+        <View style={{ top: 110 }}>
           <TimeTable
             header={
               <>

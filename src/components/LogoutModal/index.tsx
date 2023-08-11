@@ -32,9 +32,9 @@ export default function LogoutModal({
       <View style={styles.main}>
         <View style={styles.body}>
           <MyText text="Confirm" textStyle={styles.label} size={16} />
-          <GapView length={25} />
+          <GapView length={40} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
-          <GapView length={25} />
+          <GapView length={40} />
           <Joined
             title1={title1}
             title2={title2}

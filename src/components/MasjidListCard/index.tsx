@@ -80,7 +80,9 @@ export default function MasjidListCard(
             text={masjidName ?? 'Masjid Ar - Rahman'}
             size={14}
             textStyle={{ fontWeight: '500' }}
+            lines={2}
           />
+          <GapView length={5} />
           {isSearch ? (
             <>
               <View style={styles.row}>

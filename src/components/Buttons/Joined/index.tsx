@@ -51,7 +51,7 @@ export default function Joined({
           </View>
         )}
       </TouchableWithoutFeedback>
-      <GapView mode='horizontal' />
+      <GapView mode="horizontal" />
       <TouchableWithoutFeedback onPress={onPress2}>
         {activeButton == 'two' ? (
           <LinearGradient

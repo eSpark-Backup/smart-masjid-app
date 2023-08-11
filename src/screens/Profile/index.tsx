@@ -16,6 +16,7 @@ import {
 import {
   ErrorModal,
   GapView,
+  MyTitle,
   ProfileAvatar,
   ProfileSectionlist,
   TextLabel,
@@ -34,6 +35,7 @@ import {
   ManageUsers,
   ViewUser,
   AddUser,
+  HelpScreen,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { useHookstate } from '@hookstate/core';
@@ -78,6 +80,10 @@ export default function Profile() {
     }
     if (currScreen == 'vUser' || currScreen == 'addUser') {
       setFlag('mUsers');
+      return;
+    }
+    if (currScreen == 'mUsers') {
+      setFlag('mMas');
       return;
     }
     if (currScreen == 'uInfo') {
@@ -145,11 +151,14 @@ export default function Profile() {
     if (flag == 'addUser') {
       return 'Add User';
     }
-    if(flag == 'mUsers') {
+    if (flag == 'mUsers') {
       return 'Manage Users';
     }
     if (flag == 'uInfo') {
       return user?.firstName ?? '';
+    }
+    if (flag == 'help') {
+      return 'Help';
     }
   };
 
@@ -251,6 +260,12 @@ export default function Profile() {
                 setFlag={(value: string) => setFlag(value)}
               />
             )}
+            {flag == 'help' && (
+              <HelpScreen
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
           </>
         );
       }}
@@ -270,21 +285,34 @@ function UserInformation({
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 70, alignItems: 'center' }}>
-        <ProfileDummy height={50} width={50} />
+        <View
+          style={{
+            borderRadius: 50,
+            elevation: 3,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+          }}>
+          <ProfileDummy height={50} width={50} />
+        </View>
         <GapView />
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label={
+          <MyTitle
+            text={
               (userData?.firstName ?? '') + ' ' + (userData?.lastName ?? '')
             }
-            textStyle={{ alignSelf: 'center' }}
           />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{ top: 45 }}>
+      <View style={{ top: 50 }}>
         <ProfileSectionlist
+          containerStyle={{ height: '85%' }}
           data={[
             {
               data: [
@@ -305,16 +333,6 @@ function UserInformation({
                       val => val?.name == 'MANAGE_MASJID',
                     )?.length == 0,
                 },
-                {
-                  title: 'Manage Users',
-                  icon: <ManageUser />,
-                  onPress: () => setFlag('mUsers'),
-                  hidden:
-                    userData?.userType.id == 1 ||
-                    userData?.userType?.permissions?.filter(
-                      val => val?.name == 'MANAGE_USERS',
-                    )?.length == 0,
-                },
               ],
             },
           ]}
@@ -322,7 +340,7 @@ function UserInformation({
             {
               title: 'Help',
               icon: <Help />,
-              onPress: () => console.log('pressed'),
+              onPress: () => setFlag('help'),
             },
           ]}
         />

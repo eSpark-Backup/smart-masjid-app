@@ -24,6 +24,7 @@ import {
   MyDivider,
   MyInput,
   MyText,
+  MyTitle,
   OverlayLoader,
   ProfileAvatar,
   ProfileSectionlist,
@@ -137,10 +138,7 @@ export default function ManageAccount({
         <>
           <View style={{ alignSelf: 'center', top: 110 }}>
             <Animated.View style={[{ opacity: contentOpacity }]}>
-              <TextLabel
-                label="Manage Account"
-                textStyle={{ alignSelf: 'center' }}
-              />
+              <MyTitle text="Manage Account" />
             </Animated.View>
             <GapView length={50} />
           </View>
@@ -195,6 +193,7 @@ export default function ManageAccount({
                           <GapView mode="horizontal" />
                           <MyInput
                             placeholderColor="#CFCFCF"
+                            placeholder={val.title}
                             onChangeText={(value: string) =>
                               setData({ ...data, [val.key]: value })
                             }
@@ -202,32 +201,41 @@ export default function ManageAccount({
                           />
                         </View>
                       ) : (
-                        <MyInput
-                          placeholder="+1 000-000-0000"
-                          isPhoneCode
-                          placeholderColor="#CFCFCF"
-                          phoneCodeValue={userData?.phone}
-                          onPhoneCodeChange={country => {
-                            setCountry(country);
-                            console.log(
-                              'what is selected code??',
-                              country?.code,
-                            );
-                            if (!userData?.phone?.includes(country.code)) {
-                              setData({ ...data, [val?.key]: '' });
-                            }
-                          }}
-                          onChangeText={(value: string) => {
-                            console.log('what is the value', {
-                              [val.key]: country?.code + value,
-                            });
-                            setData({
-                              ...data,
-                              [val.key]: country?.code + value,
-                            });
-                          }}
-                          value={data[val.key]}
-                        />
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <GapView mode="horizontal" />
+                          {val.icon}
+                          <GapView mode="horizontal" />
+                          <MyInput
+                            placeholder="Phone"
+                            isPhoneCode
+                            placeholderColor="#CFCFCF"
+                            phoneCodeValue={userData?.phone}
+                            onPhoneCodeChange={country => {
+                              setCountry(country);
+                              console.log(
+                                'what is selected code??',
+                                country?.code,
+                              );
+                              if (!userData?.phone?.includes(country.code)) {
+                                setData({ ...data, [val?.key]: '' });
+                              }
+                            }}
+                            onChangeText={(value: string) => {
+                              console.log('what is the value', {
+                                [val.key]: country?.code + value,
+                              });
+                              setData({
+                                ...data,
+                                [val.key]: country?.code + value,
+                              });
+                            }}
+                            value={data[val.key]}
+                          />
+                        </View>
                       )}
                     </Card>
                   </View>
