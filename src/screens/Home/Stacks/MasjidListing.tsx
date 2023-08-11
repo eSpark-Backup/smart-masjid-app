@@ -35,7 +35,7 @@ export default function MasjidListing({
       <FlatList
         style={{ top: 130 }}
         data={data}
-        contentContainerStyle={{ paddingBottom: 210, paddingTop: 15 }}
+        contentContainerStyle={{ paddingBottom: 140, paddingTop: 15 }}
         renderItem={({ index }) => (
           <MasjidListCard
             key={index}
@@ -44,7 +44,7 @@ export default function MasjidListing({
           />
         )}
         ItemSeparatorComponent={GapView}
-        ListFooterComponent={() => <GapView />}
+        // ListFooterComponent={() => <GapView />}
         ListEmptyComponent={<ListEmptyComponent navigation={navigation} />}
       />
     </View>

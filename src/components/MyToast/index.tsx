@@ -6,16 +6,15 @@ import {
   Animated,
   TouchableOpacity,
 } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
 
-import { Check, CheckSvg, Exclimation } from '../../assets';
+import { CautionDevice, Check, CheckSvg, CrossC } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
-import TextLabel from '../TextLabel';
 import * as Animatable from 'react-native-animatable';
 import GapView from '../GapView';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
-import { Theme, useTheme } from '@react-navigation/native';
 
 export default function MyToast({
   heading,
@@ -83,20 +82,27 @@ export default function MyToast({
               }}
             />
           )}
-          <View
-            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 40 }}>
-            {isSuccess ? <CheckSvg /> : <Exclimation />}
+          <View style={{ alignSelf: 'center', marginBottom: 40 }}>
+            {isSuccess ? <CheckSvg /> : <CautionDevice />}
           </View>
           <View
             style={
               center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
             }>
-            <MyText size={16} text={message} textStyle={{ color: '#3e3e3e' }} />
+            <MyText
+              size={16}
+              text={message}
+              textStyle={{
+                color: isSuccess ? '#3E3E3E' : '#000000',
+                fontWeight: isSuccess ? '400' : '500',
+                fontSize: 16,
+              }}
+            />
           </View>
           {points?.length!! > 0 && (
             <>
-              <GapView length={25} />
-              <Points data={points} />
+              <GapView length={20} />
+              <Points data={points} success={isSuccess} />
             </>
           )}
           <GapView length={40} />
@@ -117,15 +123,19 @@ export default function MyToast({
   );
 }
 
-const Points = ({ data }: { data?: string[] }) => {
+const Points = ({ data, success }: { data?: string[]; success: boolean }) => {
   return (
     <>
       {data?.map((item: string) => (
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Check height={15} width={15} />
-            <GapView length={5} mode="horizontal" />
-            <MyText text={item} size={16} textStyle={{ color: '#3e3e3e' }} />
+            {success ? <Check /> : <CrossC />}
+            <GapView length={10} mode="horizontal" />
+            <MyText
+              text={item}
+              size={16}
+              textStyle={{ color: '#3e3e3e', fontSize: 16 }}
+            />
           </View>
         </View>
       ))}
