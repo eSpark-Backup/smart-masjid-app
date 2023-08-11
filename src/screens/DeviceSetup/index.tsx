@@ -67,6 +67,7 @@ export default function DeviceSetupScreen() {
   const [retry, setRetry] = useState<boolean>();
   const [step, setStep] = useState(1);
   const [devInfo, setDevInfo] = useState<DeviceInfo>({});
+  const [issues, setIssues] = useState<string[]>([]);
   const [scannedDevices, setScannedDevices] = useState<
     Array<Peripheral | undefined>
   >([]);
@@ -125,27 +126,36 @@ export default function DeviceSetupScreen() {
   }, [isFocused]);
 
   useUpdateEffect(() => {
+    if (locationStatus && bleStatus) {
+      setIssues([]);
+    }
     if (locationStatus === false) {
-      setStep(8);
-      setToastContent({
-        message: 'Enable Location',
-        onPress: () => {
-          setRetry(true);
-        },
-        points: [],
+      setIssues(state => {
+        return [...state, 'Location is turned off'];
       });
     }
     if (bleStatus === false) {
-      setStep(8);
-      setToastContent({
-        message: 'Enable Ble Adapter',
-        onPress: () => {
-          setRetry(true);
-        },
-        points: [],
+      setIssues(state => {
+        return [...state, 'Bluetooth is turned off'];
       });
     }
   }, [locationStatus, bleStatus]);
+
+  useUpdateEffect(() => {
+    if (issues.length > 0) {
+      setStep(8);
+      setToastContent(state => ({
+        ...state,
+        title: 'Device setup error',
+        message: 'Issues Found',
+        onPress: () => {
+          setRetry(true);
+          setIssues([]);
+        },
+        points: [...new Set(issues)],
+      }));
+    }
+  }, [issues]);
 
   function _handleGPSProviderEvent(e: any) {
     if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
@@ -251,17 +261,22 @@ export default function DeviceSetupScreen() {
         await registerDevice({ ...devInfo, ...jsonData });
       }
     } catch (e) {
-      setStep(8);
       console.log('error while ble connect', e);
-      setToastContent({
-        title: 'Device not connected',
-        btnText: 'Try Again',
-        message: 'Ble device not connected Sucessfully',
+      setStep(8);
+      setToastContent(state => ({
+        ...state,
+        title: 'Device setup error',
+        message: 'Please Check',
+        points: [
+          'Device is powered on',
+          'Phone is within range of the device',
+          'Device LED is yellow',
+          'WiFi is working',
+        ],
         onPress: () => {
           setRetry(true);
         },
-        points: ['Check your device'],
-      });
+      }));
     }
   };
 
@@ -355,16 +370,18 @@ export default function DeviceSetupScreen() {
     const locationCheck = location ?? locationStatus;
     console.log('Permission of Ble Status', status);
     if (!status) {
-      setStep(8);
-      setToastContent({
-        title: 'Accept Permissions',
-        message: 'Accept All Permission to Continue to Scan for BLE devices',
-        onPress: () => {
-          setRetry(true);
-        },
-        points: ['Allow Permissions', 'Manually from "App Settings"'],
+      // setStep(8);
+      // setToastContent({
+      //   title: 'Accept Permissions',
+      //   message: 'Accept All Permission to Continue to Scan for BLE devices',
+      //   onPress: () => {
+      //     setRetry(true);
+      //   },
+      //   points: ['Allow Permissions', 'Manually from "App Settings"'],
+      // });
+      setIssues(state => {
+        return [...state, 'Bluetooth permission denied'];
       });
-      return;
     }
     if (bleCheck && locationCheck) {
       await _startBluetooth();
@@ -376,37 +393,57 @@ export default function DeviceSetupScreen() {
         }
       });
       console.log('ESP devices found', JSON.stringify(newArr));
+      console.log(
+        '====>>>>>',
+        bleStatus,
+        'loc xxx',
+        locationStatus,
+        new Set(issues),
+      );
       setScannedDevices(newArr);
-      if (newArr.length === 0) {
-        setStep(8);
-        setToastContent(state => ({
-          ...state,
-          message: 'Issues Found',
-          points: [
-            'Device is powered on',
-            'Bluetooth on your phone is turned on',
-            'Device LED is blinking yellow',
-          ],
-          onPress: () => {
-            setRetry(true);
-          },
-        }));
-      } else {
-        if (!bleCheck || !locationCheck) {
+      if (issues.length === 0) {
+        if (newArr.length === 0) {
           setStep(8);
+          setToastContent(state => ({
+            ...state,
+            title: 'Device not Found',
+            message: 'Please Check',
+            points: [
+              'Device is powered on',
+              'Phone is within range of the device',
+              'Device LED is yellow',
+              'WiFi is working',
+            ],
+            onPress: () => {
+              setRetry(true);
+            },
+          }));
         } else {
           setStep(2);
         }
       }
     } else {
-      if (locationStatus === false || bleStatus === false) {
-        setStep(8);
-        setToastContent(state => ({
-          ...state,
-          message: 'Issues Found',
-          onPress: () => setRetry(true),
-          points: ['Location Enabled on Phone', 'Bluetooth Enabled on Phone'],
-        }));
+      console.log('location off ha? ', locationStatus);
+      console.log('ble off ha? ', bleStatus);
+      if (locationStatus === false) {
+        if (bleStatus) {
+          setIssues(state => {
+            return [
+              ...state.filter(item => item !== 'Bluetooth is turned off'),
+            ];
+          });
+        }
+        console.log('chala location xxxx');
+        setIssues(state => [...state, 'Location is turned off']);
+      }
+      if (bleStatus === false) {
+        if (locationStatus) {
+          console.log('chala bluetooth yyyyyy');
+          setIssues(state => {
+            return [...state.filter(item => item !== 'Location is turned off')];
+          });
+        }
+        setIssues(state => [...state, 'Bluetooth is turned off']);
       }
     }
   };
@@ -457,6 +494,11 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 setSSID={(value: string) =>
                   setDevInfo(state => ({ ...state, ssid: value }))
+                }
+                setIssues={val =>
+                  setIssues(state => {
+                    return [...state, val];
+                  })
                 }
                 setStep={(value: number) => setStep(value)}
                 currentWifiSSID={route?.params?.deviceData?.wifiSsid}
@@ -515,8 +557,9 @@ export default function DeviceSetupScreen() {
                 points={
                   toastContent.points ?? [
                     'Device is powered on',
-                    'Bluetooth on your phone is turned on',
-                    'Device LED is blinking yellow',
+                    'Phone is within range of the device',
+                    'Device LED is yellow',
+                    'WiFi is working',
                   ]
                 }
               />

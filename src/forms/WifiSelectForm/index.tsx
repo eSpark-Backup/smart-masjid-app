@@ -22,12 +22,14 @@ export default function WifiSelectForm({
   currentWifiSSID,
   autoSelect,
   contentOpacity,
+  setIssues,
 }: {
   setStep: (value: number) => void;
   setSSID: (value: string) => void;
   currentWifiSSID: string;
   autoSelect: boolean;
   contentOpacity: any;
+  setIssues: (val: string) => void;
 }) {
   const { colors } = useTheme();
   const [data, setData] = useState<any>();
@@ -53,7 +55,8 @@ export default function WifiSelectForm({
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         getWifiList();
       } else {
-        _requestUserLocationPermission();
+        setIssues('Location permission denied');
+        // _requestUserLocationPermission();
       }
     } catch (err) {
       console.error(err);

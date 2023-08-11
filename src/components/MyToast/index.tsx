@@ -6,16 +6,15 @@ import {
   Animated,
   TouchableOpacity,
 } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
 
 import { CautionDevice, Check, CheckSvg, CrossC } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
-import TextLabel from '../TextLabel';
 import * as Animatable from 'react-native-animatable';
 import GapView from '../GapView';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
-import { Theme, useTheme } from '@react-navigation/native';
 
 export default function MyToast({
   heading,

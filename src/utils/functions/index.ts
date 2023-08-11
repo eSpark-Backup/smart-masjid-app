@@ -22,7 +22,7 @@ import {
 } from '../../types/masjidControllerTypes';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
-import { Platform } from 'react-native';
+import { PermissionsAndroid, Platform } from 'react-native';
 
 /**
  *
@@ -116,7 +116,7 @@ async function _requestUserLocationPermission() {
  */
 async function _openSettingIsBlocked(permission: Permission) {
   check(permission).then(statuses => {
-    if (statuses == 'blocked') {
+    if (statuses == PermissionsAndroid.RESULTS.DENIED) {
       openSettings();
       return;
     }
