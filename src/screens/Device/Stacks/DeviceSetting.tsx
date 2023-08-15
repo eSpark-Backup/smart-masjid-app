@@ -1,20 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View, Animated } from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
-  Attention,
-  Battery,
   BatteryBar,
-  Clock,
   DeviceObject,
   DeviceReset,
   DeviceSvg,
   Heart,
-  IP,
   Version,
   Wifi,
-  WifiSvg,
 } from '../../../assets';
 import {
   GapView,
@@ -30,7 +26,6 @@ import {
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
 import { _resetDevice, _updateDevice } from '../../../api/deviceController';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../../types';
 
 type DeviceNavigationProps = NativeStackScreenProps<
@@ -121,7 +116,6 @@ const DeviceSetting = ({
               });
               setErrorShow(false);
             },
-            // onPress: () => console.log('mac ID', device),
           },
         ]}
       />
@@ -132,7 +126,7 @@ const DeviceSetting = ({
         <GapView length={50} />
       </View>
 
-      <ScrollView style={{top: 100}}>
+      <ScrollView style={{ top: 100 }}>
         <View style={styles.deviceSettingContainer}>
           <GapView length={20} />
           <View style={styles.subHeader}>
@@ -145,12 +139,14 @@ const DeviceSetting = ({
               textStyle={styles.deviceName}
             />
             <DeviceStatus
-              online={device?.deviceTelemetry.status == 'Online' ? true : false}
+              online={
+                device?.deviceTelemetry?.status == 'Online' ? true : false
+              }
             />
           </View>
           <GapView length={20} />
           <DeviceErrorBox
-            show={device?.deviceTelemetry.status == 'Online' ? false : true}
+            show={device?.deviceTelemetry?.status == 'Online' ? false : true}
             onClose={() => console.log('on Close Box', device)}
             message="Looks like your device is offline. If you believe your WiFi is working, please power off and power on the device."
           />
@@ -173,8 +169,9 @@ const DeviceSetting = ({
                   },
                   {
                     title: 'Battery',
-                    subtitle:
-                      device?.deviceTelemetry?.batteryLife.toString() + '%',
+                    subtitle: device?.deviceTelemetry?.batteryLife.toString()
+                      ? device?.deviceTelemetry?.batteryLife.toString() + '%'
+                      : 'NaN',
                     icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
                     danger:
                       device?.deviceTelemetry?.batteryLife! <= 15
@@ -197,13 +194,10 @@ const DeviceSetting = ({
                     title: 'Wifi',
                     subtitle: device?.wifiSsid,
                     icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
-                    // isEditable: true,
                     danger:
-                      device?.deviceTelemetry.status == 'Online' ? false : true,
-                    // onPress:
-                    //   device?.deviceTelemetry.status == 'Online'
-                    //     ? undefined
-                    //     : () => setErrorShow(true),
+                      device?.deviceTelemetry?.status == 'Online'
+                        ? false
+                        : true,
                     onPress: () => setErrorShow(true),
                   },
                   {

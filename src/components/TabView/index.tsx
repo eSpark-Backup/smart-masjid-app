@@ -3,6 +3,7 @@ import { View, TouchableOpacity } from 'react-native';
 import { WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
 import { Theme, useTheme } from '@react-navigation/native';
+import MyTitle from '../MyTitle';
 
 const TabView = ({
   tab1Title = 'tab 1',
@@ -32,13 +33,12 @@ const TabView = ({
           setActiveTab('1');
           onChange('1');
         }}>
-        <MyText
+        <MyTitle
           text={tab1Title}
-          textStyle={{
+          style={{
             color: activeTab == '1' ? colors.primary : '#9E9F9F',
-            fontWeight: '700',
+            fontSize: 16,
           }}
-          size={16}
         />
         {activeTab == '1' && (
           <View
@@ -59,13 +59,12 @@ const TabView = ({
           setActiveTab('2');
           onChange('2');
         }}>
-        <MyText
+        <MyTitle
           text={tab2Title}
-          textStyle={{
+          style={{
             color: activeTab == '2' ? colors.primary : '#9E9F9F',
-            fontWeight: '700',
+            fontSize: 16,
           }}
-          size={16}
         />
         {activeTab == '2' && (
           <View

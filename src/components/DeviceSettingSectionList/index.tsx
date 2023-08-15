@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import {
-  Caution,
-  CheckSvg,
-  Chevron_Right,
-  DeviceEdit,
-  EditHeavy,
-} from '../../assets';
+import { Caution, CheckSvg, Chevron_Right, EditHeavy } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
-import { Rounded } from '../Buttons';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
@@ -45,6 +38,7 @@ export default function DeviceSettingSectionList({
         sections={data ?? []}
         keyExtractor={(item, index) => item.title + index}
         renderItem={({ item }) => <SectionCard item={item} />}
+        ListFooterComponent={() => <GapView length={100} />}
         renderSectionHeader={({ section: { title } }) => (
           <>
             <View style={{ alignItems: 'center' }}>
@@ -98,10 +92,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                 </View>
               </View>
             </View>
-            <View
-            // activeOpacity={item.title == 'Battery' ? 1 : 0.5}
-            // onPress={item.onEditPress}
-            >
+            <View>
               {item?.rightArrow && <Chevron_Right />}
               {item?.isEditable && <EditHeavy />}
               {item?.danger && <Caution />}
@@ -113,7 +104,6 @@ const SectionCard = ({ item }: { item: DataProp }) => {
         <>
           <GapView />
           <View
-            // key={ind}
             style={{
               width: WINDOW_WIDTH - 30,
               flexDirection: 'row',
