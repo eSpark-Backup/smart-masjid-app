@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Animated } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Animated,
+  LogBox,
+} from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
@@ -10,15 +17,19 @@ import {
 } from '../../../../../../api/masjidController';
 import {
   Calendar,
+  Delete,
   EditPencil,
   EditTimeTable,
   History,
+  HistoryBox,
+  PlusCircle,
 } from '../../../../../../assets';
 import {
   GapView,
   MyDivider,
   MyDropDown,
   MyText,
+  MyTextSubHeader,
   MyTitle,
   OverlayLoader,
   Rounded,
@@ -74,7 +85,7 @@ export default function IqamahTimings({
 
   useEffect(() => {
     setData([]);
-    let iqamahData = [...data];
+    let iqamahData = [];
     iqamahTimings?.map(i => {
       const namazData = {
         id: i.id,
@@ -157,13 +168,43 @@ export default function IqamahTimings({
         </View>
 
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 30 }}
+          contentContainerStyle={{ paddingBottom: 30, paddingHorizontal: 15 }}
           style={{ top: 110 }}>
           <OverlayLoader isShow={loading} />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 10,
+              paddingBottom: 5,
+            }}>
+            <MyTextSubHeader text="Current" />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <PlusCircle />
+              <GapView mode="horizontal" />
+              <HistoryBox />
+            </View>
+          </View>
+          {data.map(item =>
+            new Date(item.date).toString() ===
+            new Date('2023-08-16').toString() ? (
+              <TimeTableCard date={item.date} data={item.data} />
+            ) : null,
+          )}
+          <View
+            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
+            <MyTextSubHeader text="Upcoming" />
+          </View>
           <FlatList
             data={data}
             renderItem={({ item }) => (
-              <TimeTableCard date={item.date} data={item.data} />
+              <TimeTableCard
+                key={item.date}
+                date={item.date}
+                data={item.data}
+                deleteBtn
+              />
             )}
           />
 
@@ -343,9 +384,11 @@ interface TimeTableData {
 const TimeTableCard = ({
   data = [],
   date = '',
+  deleteBtn,
 }: {
   data: TimeTableData[];
   date: string;
+  deleteBtn?: boolean;
 }) => {
   return (
     <View style={{ marginVertical: 5 }}>
@@ -358,7 +401,11 @@ const TimeTableCard = ({
               <GapView length={5} />
               <MyText text={date} size={12} />
             </View>
-            <EditPencil />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {deleteBtn ? <Delete /> : null}
+              <GapView length={5} mode="horizontal" />
+              <EditPencil />
+            </View>
           </View>
           <GapView />
           <MyDivider width={WINDOW_WIDTH - 48} />

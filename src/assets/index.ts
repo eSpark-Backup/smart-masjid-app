@@ -67,6 +67,7 @@ export { default as ButtonIcon } from './vectors/ButtonIcon.svg';
 export { default as ConnectedDevice } from './vectors/ConnectedDevice.svg';
 export { default as EditTimeTable } from './vectors/EditTimeTable.svg';
 export { default as Calendar } from './vectors/Calendar.svg';
+export { default as PlusCircle } from './vectors/plus-circle.svg';
 export { default as InfoCircle } from './vectors/InfoCircle.svg';
 export { default as CheckMark } from './vectors/CheckMark.svg';
 export { default as AdhanButton } from './vectors/AdhanButton.svg';
@@ -74,6 +75,7 @@ export { default as SyncSvg } from './vectors/Sync.svg';
 export { default as VolumUpGreen } from './vectors/VolumUpGreen.svg';
 export { default as ArrowDown } from './vectors/ArrowDown.svg';
 export { default as History } from './vectors/History.svg';
+export { default as HistoryBox } from './vectors/history-box.svg';
 export { default as ManageUser } from './vectors/manage-user.svg';
 export { default as Delete } from './vectors/Delete.svg';
 export { default as ArrowLeft } from './vectors/ArrowLeft.svg';
@@ -94,7 +96,7 @@ export { default as Check } from './vectors/Check.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
 export { default as NavigationSvg } from './vectors/navigation.svg';
-export { default as EditPencil } from './vectors/EditPencil.svg'
+export { default as EditPencil } from './vectors/EditPencil.svg';
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';
