@@ -82,6 +82,7 @@ export { default as AdhanCalculation } from './vectors/AdhanCalculation.svg';
 export { default as AdhanJuristic } from './vectors/AdhanJuristic.svg';
 export { default as BatteryBar } from './vectors/battery-bar.svg';
 export { default as EditHeavy } from './vectors/edit-heavy.svg';
+export { default as EditLight } from './vectors/edit-light.svg';
 export { default as Chevron_Right } from './vectors/chevron_right.svg';
 export { default as Wifi } from './vectors/Wifi.svg';
 export { default as Version } from './vectors/Version.svg';

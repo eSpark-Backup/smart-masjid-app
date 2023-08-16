@@ -1,7 +1,7 @@
-import { Theme, useTheme } from '@react-navigation/native';
-import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
+import { Formik } from 'formik';
 import { phone as isValidPhone } from 'phone';
 import Toast from 'react-native-toast-message';
 

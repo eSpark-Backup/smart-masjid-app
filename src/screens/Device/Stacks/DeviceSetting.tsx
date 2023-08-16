@@ -22,6 +22,7 @@ import {
   DeviceErrorBox,
   OverlayLoader,
   LogoutModal,
+  MyTitle,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
@@ -121,17 +122,23 @@ const DeviceSetting = ({
       />
       <View style={{ alignSelf: 'center', top: 100 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
+          <MyTitle
+            text="Devices"
+            style={{ alignSelf: 'center', fontWeight: '400' }}
+          />
         </Animated.View>
-        <GapView length={50} />
+        <GapView length={40} />
       </View>
-
       <ScrollView style={{ top: 100 }}>
+        <DeviceErrorBox
+          show={device?.deviceTelemetry?.status == 'Online' ? false : true}
+          onClose={() => console.log('on Close Box', device)}
+          message="Looks like your device is offline. Please power off and power on the device."
+        />
         <View style={styles.deviceSettingContainer}>
-          <GapView length={20} />
           <View style={styles.subHeader}>
             <MyText
-              text={`Smart Adhan ${
+              text={`Masjid Adhan ${
                 device?.deviceType?.modelNumber?.includes('SBB')
                   ? 'Button'
                   : 'Speaker'
@@ -144,16 +151,11 @@ const DeviceSetting = ({
               }
             />
           </View>
-          <GapView length={20} />
-          <DeviceErrorBox
-            show={device?.deviceTelemetry?.status == 'Online' ? false : true}
-            onClose={() => console.log('on Close Box', device)}
-            message="Looks like your device is offline. If you believe your WiFi is working, please power off and power on the device."
-          />
+          <GapView length={10} />
           <DeviceSettingSectionList
             data={[
               {
-                title: 'General Settings',
+                title: 'General',
                 data: [
                   {
                     title: 'Nick Name',
@@ -188,7 +190,7 @@ const DeviceSetting = ({
                 ],
               },
               {
-                title: 'Advance Settings',
+                title: 'Advanced',
                 data: [
                   {
                     title: 'Wifi',
@@ -202,7 +204,7 @@ const DeviceSetting = ({
                   },
                   {
                     title: 'Firmware Version',
-                    subtitle: device?.firmwareVersion,
+                    subtitle: 'Version ' + device?.firmwareVersion,
                     icon: <Version style={{ padding: 10, bottom: 2 }} />,
                   },
                   {
@@ -250,12 +252,14 @@ const makeStyles = (theme: Theme) => {
     deviceSettingContainer: { flex: 1, alignItems: 'center' },
     subHeader: {
       flexDirection: 'row',
-      width: WINDOW_WIDTH / 1.2,
+      width: '100%',
+      paddingHorizontal: 14,
       justifyContent: 'space-between',
+      alignItems: 'center',
     },
     deviceName: {
-      fontSize: 16,
-      fontWeight: '600',
+      fontSize: 20,
+      fontWeight: '700',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     activeStatus: {

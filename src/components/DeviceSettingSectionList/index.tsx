@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Caution, CheckSvg, Chevron_Right, EditHeavy } from '../../assets';
+import {
+  Caution,
+  CheckSvg,
+  Chevron_Right,
+  EditHeavy,
+  EditLight,
+} from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
+
 interface DataItem {
   title?: string;
   data: DataProp[];
@@ -44,13 +51,13 @@ export default function DeviceSettingSectionList({
             <View style={{ alignItems: 'center' }}>
               <MyDivider />
             </View>
-            <GapView length={30} />
+            <GapView length={10} />
             <MyText
               text={title ?? ''}
               size={16}
-              textStyle={{ fontWeight: '700', color: '#3E3E3E' }}
+              textStyle={{ fontWeight: '500', color: '#3E3E3E' }}
             />
-            <GapView length={20} />
+            <GapView length={10} />
           </>
         )}
       />
@@ -71,7 +78,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
             style={{ ...styles.cardContainer }}>
             <View style={styles.row}>
               <View style={styles.leftIcon}>{item?.icon}</View>
-              <GapView mode="horizontal" />
+              <GapView mode="horizontal" length={15} />
               <View>
                 <View>
                   <MyText text={item?.title} />
@@ -85,16 +92,16 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                     textStyle={{
                       color:
                         item?.danger && item.title == 'Battery'
-                          ? '#ff6464'
-                          : '#9E9F9F',
+                          ? '#FF6464'
+                          : '#6E6E6E',
                     }}
                   />
                 </View>
               </View>
             </View>
             <View>
-              {item?.rightArrow && <Chevron_Right />}
-              {item?.isEditable && <EditHeavy />}
+              {/* {item?.rightArrow && <Chevron_Right />} */}
+              {item?.isEditable && <EditLight />}
               {item?.danger && <Caution />}
             </View>
           </TouchableOpacity>
@@ -141,6 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: WINDOW_WIDTH / 1.1,
     alignSelf: 'center',
+    paddingHorizontal: 5,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   leftIcon: { height: 20, width: 20, alignItems: 'center' },
