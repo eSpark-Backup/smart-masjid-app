@@ -75,8 +75,6 @@ export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
-  const userToken = useHookstate(userStore.token);
-  const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
     handleDeviceIdCheck();
@@ -120,7 +118,6 @@ export default function App() {
   }, []);
 
   const handleDeviceIdCheck = useCallback(async () => {
-    setLoader(true);
     const res = await getUniqueId();
     console.log('kia mila', res);
     state.phoneId.set(res.toString());
@@ -137,7 +134,6 @@ export default function App() {
     } catch (e) {
       console.log('error', e);
     }
-    setLoader(false);
   }, []);
 
   console.log('checkid', checkedId);

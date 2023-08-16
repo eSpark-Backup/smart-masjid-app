@@ -9,6 +9,7 @@ const DeviceStatus = ({ online = false }: { online?: boolean }) => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        top: 2,
       }}>
       <View
         style={{
@@ -22,7 +23,7 @@ const DeviceStatus = ({ online = false }: { online?: boolean }) => {
       <GapView length={5} mode="horizontal" />
       <MyText
         text={online ? 'Online' : 'Offline'}
-        textStyle={{ color: '#3E3E3E' }}
+        textStyle={{ color: '#6E6E6E', fontSize: 16 }}
       />
     </View>
   );
