@@ -9,7 +9,7 @@ const TabView = ({
   tab1Title = 'tab 1',
   tab2Title = 'tab 2',
   currTab = '1',
-  onChange = (activeTab: string) => {},
+  onChange = () => {},
 }: {
   tab1Title?: string;
   tab2Title?: string;
