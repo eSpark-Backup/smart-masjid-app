@@ -5,8 +5,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Home, Search, Device, Profile } from '../screens';
 import {
+  DeviceActiveNew,
   DeviceActiveSvg,
   DeviceTabSvg,
+  DeviceUnactiveNew,
   HomeActiveSvg,
   HomeSvg,
   ProfileActiveSvg,
@@ -34,9 +36,9 @@ const TabIcon = (screen: string, isFocused: boolean) => {
       }
     case 'Device':
       if (isFocused) {
-        return <DeviceActiveSvg height={26} width={26} />;
+        return <DeviceActiveNew height={26} width={26} />;
       } else {
-        return <DeviceTabSvg height={26} width={26} />;
+        return <DeviceUnactiveNew height={26} width={26} />;
       }
     case 'Profile':
       if (isFocused) {
