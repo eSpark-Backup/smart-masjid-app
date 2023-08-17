@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
-import { Formik } from 'formik';
+import { Formik, FormikFormProps, FormikProps } from 'formik';
 import { phone as isValidPhone } from 'phone';
 import Toast from 'react-native-toast-message';
 
@@ -37,6 +37,8 @@ const LoginForm = ({
     useLayoutAnimation(300);
   }, [activeTab]);
 
+  const formRef = useRef<any>();
+
   return (
     <View style={styles.container}>
       <View style={{ top: 134 }}>
@@ -50,11 +52,15 @@ const LoginForm = ({
         <TabView
           tab1Title="Email"
           tab2Title="Phone number"
-          onChange={setActiveTab}
+          onChange={tab => {
+            setActiveTab(tab);
+            formRef.current?.resetForm();
+          }}
         />
         <GapView length={40} />
         <Formik
-          initialValues={{ email: '' }}
+          initialValues={{ email: '', phone: '' }}
+          innerRef={formRef}
           validationSchema={
             activeTab == '1'
               ? UserSetupSchema.emailForm
@@ -69,6 +75,7 @@ const LoginForm = ({
               const isValid = isValidPhone(phone, {
                 country: currentCountry?.iso_code,
               }).isValid;
+              console.log('oh', isValid);
               if (isValid) {
                 setStep({ phone: currentCountry?.code + phone, email: '' });
               } else {
