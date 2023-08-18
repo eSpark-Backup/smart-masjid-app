@@ -7,6 +7,7 @@ import {
   Animated,
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
+import { Theme, useTheme } from '@react-navigation/native';
 
 import {
   DeleteAdminFromMasjid,
@@ -25,7 +26,6 @@ import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { userStore } from '../../../../store/UserStore';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
-import { Theme, useTheme } from '@react-navigation/native';
 
 export default function ManageUsers({
   setFlag,
