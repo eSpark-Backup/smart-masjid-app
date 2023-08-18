@@ -99,7 +99,7 @@ export { default as ArrowUp } from './vectors/ArrowUp.svg';
 export { default as NavigationSvg } from './vectors/navigation.svg';
 export { default as DeviceActiveNew } from './vectors/device-active.svg';
 export { default as DeviceUnactiveNew } from './vectors/device-unactive.svg';
-export * as AddIcon from './vectors/add-icon.svg';
+export { default as AddIcon } from './vectors/add-icon.svg';
 
 // Vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';

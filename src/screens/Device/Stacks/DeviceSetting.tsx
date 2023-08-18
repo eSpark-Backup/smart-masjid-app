@@ -185,7 +185,10 @@ const DeviceSetting = ({
                     subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
                     rightArrow: device?.deviceType.id == 1 ? true : false,
-                    onPress: () => console.log('Edit Subscription'),
+                    onPress:
+                      device?.deviceType.id == 1
+                        ? () => console.log('he')
+                        : undefined,
                   },
                 ],
               },
