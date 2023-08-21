@@ -29,6 +29,13 @@
             {
               "client_id": "891649283900-at3edbbp8hnh645t2ga42lmf3l2f7bq1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "891649283900-n10mhtaj9d9grolb9g1kaef4j7qnhen3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.futurik.smartmasjid"
+              }
             }
           ]
         }

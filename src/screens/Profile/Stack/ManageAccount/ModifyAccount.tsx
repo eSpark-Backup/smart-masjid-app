@@ -22,10 +22,10 @@ import { userStore } from '../../../../store/UserStore';
 
 export default function ModifyAccount({
   setFlag,
-  contentOpacity =0
+  contentOpacity = 0,
 }: {
   setFlag: (value: string) => void;
-  contentOpacity?: any
+  contentOpacity?: any;
 }) {
   const { colors }: Theme = useTheme();
   const [phoneUpdate, setPhoneUpdate] = useState(false);
@@ -49,7 +49,7 @@ export default function ModifyAccount({
       <View style={{ paddingHorizontal: 25 }}>
         <GapView />
         {!phoneUpdate ? (
-          <Card backgroundColor='#ffffff' width={345} radius={12}>
+          <Card backgroundColor="#ffffff" width={345} radius={12}>
             <MyInput
               placeholder="Mukthar"
               placeholderColor="#CFCFCF"
@@ -101,7 +101,7 @@ export default function ModifyAccount({
               touched,
             }) => (
               <>
-                <Card backgroundColor='#ffffff' width={315}>
+                <Card backgroundColor="#ffffff" width={315}>
                   <MyInput
                     placeholder="Phone Number"
                     isPhoneCode

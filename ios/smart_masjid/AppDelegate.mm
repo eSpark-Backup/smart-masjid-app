@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 #import <Firebase.h>
 #import "RNSplashScreen.h"  // here
+#import <Firebase.h> // add this here
 
 #import <React/RCTBundleURLProvider.h>
 #import <GoogleMaps/GoogleMaps.h>
@@ -19,6 +20,9 @@
   
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   [RNSplashScreen show];
+  // Add the following line
+  [FIRApp configure]; 
+  
   return YES;
 }
 
