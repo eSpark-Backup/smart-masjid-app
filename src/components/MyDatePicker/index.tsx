@@ -17,12 +17,14 @@ export default function MyDatePicker({
   currentDate = null,
   minimumDate = undefined,
   maximumDate = undefined,
+  showLabel,
 }: {
-  onDateChange: (e: any) => void;
+  onDateChange?: (e: any) => void;
   type?: 'box' | 'standard';
   currentDate?: Date | null;
   minimumDate?: Date | undefined;
   maximumDate?: Date | undefined;
+  showLabel?: boolean;
 }) {
   const [date, setDate] = useState<any>(new Date());
   const [mode, setMode] = useState('date');
@@ -65,9 +67,24 @@ export default function MyDatePicker({
             justifyContent: 'space-between',
             paddingHorizontal: 10,
             borderWidth: 0.5,
-            borderRadius: 3,
-            height: 38,
+            borderRadius: 10,
+            height: 42,
           }}>
+          <View
+            style={{
+              position: 'absolute',
+              top: -10,
+              left: 15,
+              backgroundColor: colors.background,
+              paddingHorizontal: 5,
+            }}>
+            <MyText
+              textStyle={{
+                color: colors.primary,
+              }}
+              text={'Effective Date'}
+            />
+          </View>
           {show && (
             <DateTimePickerModal
               minimumDate={minimumDate}
@@ -82,7 +99,7 @@ export default function MyDatePicker({
           )}
           <MyText text={moment(date)?.format('DD/MM/YYYY')} />
           <GapView length={10} mode="horizontal" />
-          <Calendar style={{color: '#006870'}} />
+          <Calendar style={{ color: '#006870' }} />
         </TouchableOpacity>
       </>
     );
@@ -127,15 +144,15 @@ export default function MyDatePicker({
             textStyle={{ fontWeight: '500' }}
           />
           <GapView length={10} mode="horizontal" />
-            <II
-              disabled={!moment(date).isBefore(maximumDate)}
-              color={
-                moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
-              }
-              onPress={nextDate}
-              name="md-chevron-forward"
-              size={24}
-            />
+          <II
+            disabled={!moment(date).isBefore(maximumDate)}
+            color={
+              moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
+            }
+            onPress={nextDate}
+            name="md-chevron-forward"
+            size={24}
+          />
         </TouchableOpacity>
       </>
     );

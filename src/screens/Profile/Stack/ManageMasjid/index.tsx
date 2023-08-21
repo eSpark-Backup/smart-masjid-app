@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHookstate } from '@hookstate/core';
 import { StyleSheet, Text, View, Animated, ScrollView } from 'react-native';
 import { GetMasjid } from '../../../../api/masjidController';
@@ -19,6 +19,7 @@ import {
   MyTextHeader,
   MyTextSubHeader,
   MyTitle,
+  OverlayLoader,
   ProfileSectionlist,
 } from '../../../../components';
 import { masjidStore } from '../../../../store/MasjidStore';
@@ -33,14 +34,22 @@ export default function ManageMasjid({
 }) {
   const userData = useHookstate(userStore.userData).get();
   const masjidInfo = useHookstate(masjidStore.masjid).get();
+
+  const [showLoader, setShowLoader] = useState(true);
+
+  console.log('masjidInfo', masjidInfo);
+
   useEffect(() => {
     if (!masjidInfo) {
-      GetMasjid('1');
+      GetMasjid('1').then(() => setShowLoader(false));
+    } else {
+      setShowLoader(false);
     }
   }, []);
 
   return (
     <View style={{ flex: 1 }}>
+      <OverlayLoader isShow={showLoader} />
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Manage Masjid" />
@@ -50,10 +59,7 @@ export default function ManageMasjid({
 
       <ScrollView style={{ top: 112, paddingBottom: 112 }}>
         <View style={{ width: '92%', alignSelf: 'center' }}>
-          <MyTextHeader
-            style={{ paddingLeft: 5 }}
-            text="East Plano Islamic Center"
-          />
+          <MyTextHeader style={{ paddingLeft: 5 }} text={masjidInfo?.name!} />
           <View
             style={{
               width: '100%',
@@ -69,11 +75,11 @@ export default function ManageMasjid({
               {
                 data: [
                   {
-                    title: `${masjidInfo?.address1 ?? ''},${
-                      masjidInfo?.address2 ? masjidInfo.address2 : ' '
-                    } ${masjidInfo?.city ?? ''} ${masjidInfo?.state ?? ''} ${
-                      masjidInfo?.zip ?? ''
-                    }`,
+                    title: `${
+                      masjidInfo?.address1 ? masjidInfo?.address1 + ',' : ''
+                    }${masjidInfo?.address2 ? masjidInfo.address2 : ' '} ${
+                      masjidInfo?.city ?? ''
+                    } ${masjidInfo?.state ?? ''} ${masjidInfo?.zip ?? ''}`,
                     icon: <LocationSvg width={18} height={18} />,
                   },
                   {

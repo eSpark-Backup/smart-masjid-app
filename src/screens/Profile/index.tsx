@@ -36,6 +36,7 @@ import {
   ViewUser,
   AddUser,
   HelpScreen,
+  EditIqamahTimings,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { useHookstate } from '@hookstate/core';
@@ -70,7 +71,11 @@ export default function Profile() {
       setFlag('sTime');
       return;
     }
-    if (currScreen == 'iEdit' || currScreen == 'iHist') {
+    if (
+      currScreen == 'iEdit' ||
+      currScreen == 'iHist' ||
+      currScreen == 'iAdd'
+    ) {
       setFlag('iTime');
       return;
     }
@@ -139,7 +144,12 @@ export default function Profile() {
     if (flag == 'aSet') {
       return 'Adhan Settings';
     }
-    if (flag == 'iTime' || flag == 'iEdit' || flag == 'iHist') {
+    if (
+      flag == 'iTime' ||
+      flag == 'iEdit' ||
+      flag == 'iHist' ||
+      flag == 'iAdd'
+    ) {
       return 'Iqama Timings';
     }
     if (flag == 'jTime' || flag == 'jEdit' || flag == 'jHist') {
@@ -224,6 +234,20 @@ export default function Profile() {
               <IqamahHistory
                 contentOpacity={props.contentOpacity}
                 setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'iEdit' && (
+              <EditIqamahTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+                iqamahType={'Edit'}
+              />
+            )}
+            {flag == 'iAdd' && (
+              <EditIqamahTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+                iqamahType={'Add'}
               />
             )}
             {flag == 'jTime' && (

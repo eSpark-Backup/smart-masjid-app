@@ -7,6 +7,7 @@ export { default as AdhanSettings } from './ManageMasjid/AdhanSettings';
 export {
   IqamahTimings,
   IqamahHistory,
+  EditIqamahTimings,
 } from './ManageMasjid/SalahTimings/IqamahTimings';
 export {
   JummaTimings,

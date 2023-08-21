@@ -1,16 +1,30 @@
 import { useHookstate } from '@hookstate/core';
+import moment from 'moment';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Animated } from 'react-native';
-import { GetIqamahHistory } from '../../../../../../api/masjidController';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  GetAdhanTimings,
+  GetIqamahHistory,
+} from '../../../../../../api/masjidController';
 
 import {
   GapView,
   MyText,
+  MyTextHeader,
+  MyTitle,
   TextLabel,
   TimeSheet,
 } from '../../../../../../components';
+import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import {
+  AdhanTime,
   IqamahTime,
   JummahTime,
 } from '../../../../../../types/masjidControllerTypes';
@@ -26,25 +40,70 @@ export default function History({
   const iqamahHistory: any = useHookstate<IqamahTime[]>(
     masjidStore.iqamahHistory,
   ).get();
+  const adhanTimings: any = useHookstate<AdhanTime[]>(
+    masjidStore.adhanTimings,
+  ).get();
 
   useEffect(() => {
-    GetIqamahHistory('1');
+    // GetIqamahHistory('1');
+    GetAdhanTimings('1');
   }, []);
 
+  const onDateChange = (e: Date) => {
+    console.log('e', e);
+
+    // const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
+    //   return value.date == moment(e).format('YYYY-MM-DD');
+    // });
+
+    // if (currentIndex != -1) {
+    //   slider.current?.scrollToIndex({
+    //     index: currentIndex,
+    //     animated: true,
+    //   });
+    // }
+  };
+
+  console.log('iqamahHistory', iqamahHistory);
+  console.log('adhanTimings', adhanTimings);
+  const timingsData = [
+    {
+      effectiveDate: '2023-08-16',
+      fajr: '06:00:00',
+      dhuhr: '14:00:00',
+      asr: '18:00:00',
+      maghrib: 15,
+      isha: '21:30:00',
+      asrDelay: null,
+      createdBy: 'User',
+      createdDate: '2023-06-16T10:37:56.355+00:00',
+      dhuhrDelay: null,
+      fajrDelay: null,
+      id: 9,
+      ishaDelay: null,
+      type: 'F',
+    },
+  ];
+
   return (
-    <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center' }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel
-            label="Iqama History"
-            textStyle={{ alignSelf: 'center' }}
-          />
+          <MyTitle text="Iqama History" />
         </Animated.View>
-        <GapView length={50} />
+        <GapView length={45} />
+        <MyDatePicker
+          minimumDate={moment().toDate()}
+          maximumDate={moment().add(1, 'month').toDate()}
+          type="standard"
+          currentDate={new Date()}
+          onDateChange={onDateChange}
+        />
+        <GapView length={13} />
       </View>
 
-      <View style={{ top: 0 }}>
-        <TimeSheet data={convertResponseToData(iqamahHistory) ?? []} />
+      <View style={{ top: 110 }}>
+        <TimeSheet data={convertResponseToData(timingsData) ?? []} />
       </View>
     </View>
   );

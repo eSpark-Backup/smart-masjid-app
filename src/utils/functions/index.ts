@@ -330,7 +330,7 @@ function convertResponseToData(
         const index = acc.findIndex(
           item =>
             item.heading ===
-            (key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate'
+            (key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'EffectiveDate'
               ? 'Effective Date'
               : key?.charAt(0)?.toUpperCase() + key?.slice(1)),
         );
@@ -366,8 +366,8 @@ function convertResponseToData(
         else {
           acc.push({
             heading:
-              key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'ChangeDate'
-                ? 'Effective Date'
+              key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'EffectiveDate'
+                ? 'Date'
                 : key?.charAt(0)?.toUpperCase() + key?.slice(1),
             values: [value ?? '-'],
           });

@@ -41,6 +41,7 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
     const result: any = await api.get(`/masjid/${masjidId}/iqama`);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+      return result.data;
     }
   } catch (error) {
     console.log('error', error);
@@ -60,7 +61,7 @@ export const UpdatedMasjidIqamahTiming = async (
     const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
-    }else {
+    } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
         type: 'error',
@@ -83,6 +84,27 @@ export const GetIqamahHistory = async (masjidId: string) => {
     const result: any = await api.get(`/masjid/${masjidId}/iqama/history`);
     if (result.status == 200) {
       masjidStore.iqamahHistory.set(result.data);
+    }
+  } catch (error) {}
+};
+
+/**
+ *
+ * @description Get Adhan Timings
+ * @returns get adhan timings of masjid by date and save to masjidStore
+ */
+export const GetAdhanTimings = async (
+  masjidId: string,
+  date?: string,
+  range?: string,
+) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/adhan`, {
+      date: '2023-08-18',
+      range: 'WEEK',
+    });
+    if (result.status == 200) {
+      masjidStore.adhanTimings.set(result.data);
     }
   } catch (error) {}
 };
@@ -131,7 +153,7 @@ export const UpdatedMasjidJummahTiming = async (
     const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
-    }else {
+    } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
         type: 'error',
@@ -159,12 +181,11 @@ export const SearchMasjidByLocation = async (
       `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&distance=100`,
     );
     console.log('result', result);
-    
-    if(result.status == 200 && result.data) {
-      return result.data
+
+    if (result.status == 200 && result.data) {
+      return result.data;
     }
   } catch (error) {
-    console.log("error SearchMasjidByLocation", error);
-    
+    console.log('error SearchMasjidByLocation', error);
   }
 };

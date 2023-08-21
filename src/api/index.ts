@@ -4,7 +4,7 @@ import { userStore } from '../store/UserStore';
 const USER_TOKEN: any = userStore?.token?.get();
 
 export const api = create({
-  baseURL: 'http://smartmasjid-api-qa.futuriklabs.com/',
+  baseURL: 'https://smartmasjid-api-qa.futuriklabs.com/',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -13,7 +13,7 @@ export const api = create({
 });
 
 export const xApi = create({
-  baseURL: 'http://smartmasjid-api-qa.futuriklabs.com/',
+  baseURL: 'https://smartmasjid-api-qa.futuriklabs.com/',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

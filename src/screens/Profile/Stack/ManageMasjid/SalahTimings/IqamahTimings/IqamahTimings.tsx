@@ -56,7 +56,27 @@ export default function IqamahTimings({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    GetMasjidIqamahTiming('1');
+    setLoading(true);
+    GetMasjidIqamahTiming('1').then(iqamahTime => {
+      let iqamahData = [];
+      iqamahTime?.map((i: IqamahTime) => {
+        const namazData = {
+          id: i.id,
+          date: i.effectiveDate,
+          data: [
+            { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
+            { name: 'dhuhr', value: moment(i?.dhuhr, 'HH:mm:ss').format('LT') },
+            { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
+            { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
+            { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
+          ],
+          type: i.type,
+        };
+        iqamahData.push(namazData);
+      });
+      setData(iqamahData);
+      setLoading(false);
+    });
   }, []);
 
   // const namazData = [
@@ -83,26 +103,7 @@ export default function IqamahTimings({
   //   },
   // ];
 
-  useEffect(() => {
-    setData([]);
-    let iqamahData = [];
-    iqamahTimings?.map(i => {
-      const namazData = {
-        id: i.id,
-        date: i.effectiveDate,
-        data: [
-          { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
-          { name: 'dhuhr', value: moment(i?.dhuhr, 'HH:mm:ss').format('LT') },
-          { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
-          { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
-          { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
-        ],
-        type: i.type,
-      };
-      iqamahData.push(namazData);
-    });
-    setData(iqamahData);
-  }, []);
+  useEffect(() => {}, []);
   console.log('IqamahData', data[0]);
 
   const onUpdate = async () => {
@@ -181,16 +182,32 @@ export default function IqamahTimings({
             }}>
             <MyTextSubHeader text="Current" />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <PlusCircle />
+              <PlusCircle onPress={() => setFlag('iAdd')} />
               <GapView mode="horizontal" />
-              <HistoryBox />
+              <HistoryBox onPress={() => setFlag('iHist')} />
             </View>
           </View>
-          {data.map(item =>
-            new Date(item.date).toString() ===
-            new Date('2023-08-16').toString() ? (
-              <TimeTableCard date={item.date} data={item.data} />
-            ) : null,
+          {data.length > 0 ? (
+            data.map(item =>
+              new Date(item.date).toString() ===
+              new Date('2023-08-16').toString() ? (
+                <TimeTableCard
+                  onEdit={() => setFlag('iEdit')}
+                  date={item.date}
+                  data={item.data}
+                />
+              ) : loading ? null : (
+                <MyText
+                  textStyle={{ textAlign: 'center', marginVertical: 10 }}
+                  text="Nothing to show yet!"
+                />
+              ),
+            )
+          ) : loading ? null : (
+            <MyText
+              textStyle={{ textAlign: 'center', marginVertical: 10 }}
+              text="Nothing to show yet!"
+            />
           )}
           <View
             style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
@@ -200,12 +217,21 @@ export default function IqamahTimings({
             data={data}
             renderItem={({ item }) => (
               <TimeTableCard
+                onEdit={() => setFlag('iEdit')}
                 key={item.date}
                 date={item.date}
                 data={item.data}
                 deleteBtn
               />
             )}
+            ListEmptyComponent={
+              loading ? null : (
+                <MyText
+                  textStyle={{ textAlign: 'center', marginVertical: 10 }}
+                  text="Nothing to show yet!"
+                />
+              )
+            }
           />
 
           {/* <TimeTable
@@ -385,10 +411,12 @@ const TimeTableCard = ({
   data = [],
   date = '',
   deleteBtn,
+  onEdit,
 }: {
   data: TimeTableData[];
   date: string;
   deleteBtn?: boolean;
+  onEdit?: () => void;
 }) => {
   return (
     <View style={{ marginVertical: 5 }}>
@@ -404,7 +432,7 @@ const TimeTableCard = ({
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               {deleteBtn ? <Delete /> : null}
               <GapView length={5} mode="horizontal" />
-              <EditPencil />
+              <EditPencil onPress={onEdit} />
             </View>
           </View>
           <GapView />

@@ -1,6 +1,7 @@
 import { Device } from './deviceControllerTypes';
 import {
   AdhanConfig,
+  AdhanTime,
   IqamahTime,
   JummahTime,
   Masjid,
@@ -36,6 +37,7 @@ export type UserStoreProps = {
 
 export type MasjidStoreProps = {
   adhanConfig: AdhanConfig | null;
+  adhanTimings: AdhanTime[];
   iqamahTime: IqamahTime[] | null;
   masjid: Masjid | null;
   iqamahHistory: IqamahTime[];
