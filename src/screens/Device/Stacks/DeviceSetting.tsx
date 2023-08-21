@@ -184,8 +184,11 @@ const DeviceSetting = ({
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    rightArrow: true,
-                    onPress: () => console.log('Edit Subscription'),
+                    rightArrow: device?.deviceType.id == 1 ? true : false,
+                    onPress:
+                      device?.deviceType.id == 1
+                        ? () => console.log('he')
+                        : undefined,
                   },
                 ],
               },
@@ -196,8 +199,12 @@ const DeviceSetting = ({
                     title: 'Wifi',
                     subtitle: device?.wifiSsid,
                     icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
+                    isEditable:
+                      device?.deviceTelemetry?.status === 'Online'
+                        ? true
+                        : false,
                     danger:
-                      device?.deviceTelemetry?.status == 'Online'
+                      device?.deviceTelemetry?.status === 'Online'
                         ? false
                         : true,
                     onPress: () => setErrorShow(true),

@@ -100,7 +100,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               </View>
             </View>
             <View>
-              {/* {item?.rightArrow && <Chevron_Right />} */}
+              {item?.rightArrow && <Chevron_Right />}
               {item?.isEditable && <EditLight />}
               {item?.danger && <Caution />}
             </View>
