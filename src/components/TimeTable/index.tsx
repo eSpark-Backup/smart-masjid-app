@@ -49,7 +49,8 @@ const RowItem = ({
             <React.Fragment key={index}>
               {index != 0 && edit ? (
                 <>
-                  {type == 'F' && item[key]?.search(':') != -1 ? (
+                  {(type == 'F' && item[key]?.search(':') != -1) ||
+                  type == 'J' ? (
                     <MyTimePicker
                       onTimeChanged={item?.onChange}
                       initialValue={item[key]}
@@ -170,7 +171,7 @@ export default function TimeTable({
   onSubmitEditing?: () => void;
   editView?: boolean;
   footer?: React.ReactNode;
-  type?: 'F' | 'D';
+  type?: 'F' | 'D' | 'J';
   containerStyle?: ViewStyle;
 }) {
   return (

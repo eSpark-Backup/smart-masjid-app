@@ -47,10 +47,12 @@ export default function EditIqamahTimings({
   setFlag,
   contentOpacity = 0,
   iqamahType,
+  selectedIqamah,
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
   iqamahType: 'Add' | 'Edit';
+  selectedIqamah?: object | null;
 }) {
   const [edit, setEdit] = useState(false);
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
@@ -59,28 +61,22 @@ export default function EditIqamahTimings({
 
   useEffect(() => {
     if (iqamahType == 'Edit') {
-      GetMasjidIqamahTiming('1').then(iqamahTime => {
-        let iqamahData = [];
-        iqamahTime?.map((i: IqamahTime) => {
-          const namazData = {
-            id: i.id,
-            date: i.effectiveDate,
-            data: [
-              { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
-              {
-                name: 'dhuhr',
-                value: moment(i?.dhuhr, 'HH:mm:ss').format('LT'),
-              },
-              { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
-              { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
-              { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
-            ],
-            type: i.type,
-          };
-          iqamahData.push(namazData);
-        });
-        setData(iqamahData[0]);
-      });
+      setData(selectedIqamah);
+    } else {
+      let defaultData = {
+        effectiveDate: moment(new Date()).format('YYYY-MM-DD'),
+        type: 'D',
+        asr: '18:00:00',
+        fajr: '06:00:00',
+        dhuhr: '14:00:00',
+        isha: '21:30:00',
+        maghribDelay: '15',
+        fajrDelay: null,
+        dhuhrDelay: null,
+        asrDelay: null,
+        ishaDelay: null,
+      };
+      setData(defaultData);
     }
   }, []);
 
@@ -108,56 +104,71 @@ export default function EditIqamahTimings({
   //   },
   // ];
 
-  useEffect(() => {}, []);
-  console.log('IqamahData', data[0]);
-
   const onUpdate = async () => {
     var dataObj: IqamahTime = data;
     console.log('dataObj dataObj', dataObj);
+    setLoading(true);
+    await UpdatedMasjidIqamahTiming('1', dataObj);
+    setLoading(false);
+    setData(null);
 
-    if (dataObj.type == 'F') {
-      setLoading(true);
-      await UpdatedMasjidIqamahTiming('1', {
-        effectiveDate: dataObj.effectiveDate,
-        type: dataObj.type,
-        asr: dataObj.asr,
-        fajr: dataObj.fajr,
-        dhuhr: dataObj.dhuhr,
-        isha: dataObj.isha,
-        maghribDelay: dataObj.maghribDelay,
-      });
-      setLoading(false);
-      setEdit(false);
-      setData(null);
-    } else {
-      if (
-        !Boolean(dataObj.fajrDelay) ||
-        !Boolean(dataObj.dhuhrDelay) ||
-        !Boolean(dataObj.asrDelay) ||
-        !Boolean(dataObj.maghribDelay) ||
-        !Boolean(dataObj.ishaDelay)
-      ) {
-        Toast.show({
-          text2: 'delay value should be greater than zero',
-          type: 'error',
-          visibilityTime: 10000,
-        });
-        return;
-      }
-      setLoading(true);
-      await UpdatedMasjidIqamahTiming('1', {
-        effectiveDate: dataObj.effectiveDate,
-        type: dataObj.type,
-        fajrDelay: dataObj.fajrDelay,
-        dhuhrDelay: dataObj.dhuhrDelay,
-        asrDelay: dataObj.asrDelay,
-        maghribDelay: dataObj.maghribDelay,
-        ishaDelay: dataObj.ishaDelay,
-      });
-      setLoading(false);
-      setEdit(false);
-      setData(null);
-    }
+    // if (
+    //   (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
+    //   !Boolean(dataObj.dhuhrDelay) ||
+    //   !Boolean(dataObj.asrDelay) ||
+    //   !Boolean(dataObj.maghribDelay) ||
+    //   !Boolean(dataObj.ishaDelay)
+    // ) {
+    //   if ((iqamahType = 'Add')) {
+    //     await UpdatedMasjidIqamahTiming('1', dataObj);
+    //   } else {
+    //     await UpdatedMasjidIqamahTiming('1', dataObj);
+    //   }
+    // }
+
+    // if (dataObj.type == 'F') {
+    //   setLoading(true);
+    //   await UpdatedMasjidIqamahTiming('1', {
+    //     effectiveDate: dataObj.effectiveDate,
+    //     type: dataObj.type,
+    //     asr: dataObj.asr,
+    //     fajr: dataObj.fajr,
+    //     dhuhr: dataObj.dhuhr,
+    //     isha: dataObj.isha,
+    //     maghribDelay: dataObj.maghribDelay,
+    //   });
+    //   setLoading(false);
+    //   setEdit(false);
+    //   setData(null);
+    // } else {
+    //   if (
+    //     !Boolean(dataObj.fajrDelay) ||
+    //     !Boolean(dataObj.dhuhrDelay) ||
+    //     !Boolean(dataObj.asrDelay) ||
+    //     !Boolean(dataObj.maghribDelay) ||
+    //     !Boolean(dataObj.ishaDelay)
+    //   ) {
+    //     Toast.show({
+    //       text2: 'delay value should be greater than zero',
+    //       type: 'error',
+    //       visibilityTime: 10000,
+    //     });
+    //     return;
+    //   }
+    //   setLoading(true);
+    //   await UpdatedMasjidIqamahTiming('1', {
+    //     effectiveDate: dataObj.effectiveDate,
+    //     type: dataObj.type,
+    //     fajrDelay: dataObj.fajrDelay,
+    //     dhuhrDelay: dataObj.dhuhrDelay,
+    //     asrDelay: dataObj.asrDelay,
+    //     maghribDelay: dataObj.maghribDelay,
+    //     ishaDelay: dataObj.ishaDelay,
+    //   });
+    //   setLoading(false);
+    //   setEdit(false);
+    //   setData(null);
+    // }
   };
 
   console.log('iqamahTimings', iqamahTimings);
@@ -176,6 +187,7 @@ export default function EditIqamahTimings({
         <ScrollView
           contentContainerStyle={{ paddingBottom: 110, paddingHorizontal: 15 }}
           style={{ top: 110 }}>
+          <OverlayLoader isShow={loading} />
           <TimeTable
             type={data?.type}
             containerStyle={{
@@ -226,8 +238,8 @@ export default function EditIqamahTimings({
                 name: 'Fajr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings[0].fajr, 'HH:mm:ss').format('LT')
-                    : iqamahTimings[0].fajrDelay?.toString() ?? '0',
+                    ? moment(data?.fajr, 'HH:mm:ss').format('LT')
+                    : data?.fajrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,
@@ -242,8 +254,8 @@ export default function EditIqamahTimings({
                 name: 'Dhuhr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings[0].dhuhr, 'HH:mm:ss').format('LT')
-                    : iqamahTimings[0].dhuhrDelay?.toString() ?? '0',
+                    ? moment(data?.dhuhr, 'HH:mm:ss').format('LT')
+                    : data?.dhuhrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,
@@ -258,8 +270,8 @@ export default function EditIqamahTimings({
                 name: 'Asr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings[0].asr, 'HH:mm:ss').format('LT')
-                    : iqamahTimings[0].asrDelay?.toString() ?? '0',
+                    ? moment(data?.asr, 'HH:mm:ss').format('LT')
+                    : data?.asrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,
@@ -273,8 +285,8 @@ export default function EditIqamahTimings({
               {
                 name: 'Maghrib',
                 iqamahTiming: edit
-                  ? iqamahTimings[0].maghribDelay?.toString()
-                  : iqamahTimings[0].maghribDelay?.toString(),
+                  ? data?.maghribDelay?.toString()
+                  : data?.maghribDelay?.toString(),
                 onChange: value => {
                   setData({
                     ...data,
@@ -286,8 +298,8 @@ export default function EditIqamahTimings({
                 name: 'Isha',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(iqamahTimings[0].isha, 'HH:mm:ss').format('LT')
-                    : iqamahTimings[0].ishaDelay?.toString() ?? '0',
+                    ? moment(data?.isha, 'HH:mm:ss').format('LT')
+                    : data?.ishaDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
                     ...data,

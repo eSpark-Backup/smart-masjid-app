@@ -1,6 +1,6 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Animated } from 'react-native';
+import { StyleSheet, Text, View, Animated, FlatList } from 'react-native';
 import {
   GetMasjidJummahTiming,
   UpdatedMasjidJummahTiming,
@@ -9,12 +9,14 @@ import {
   Clock,
   EditTimeTable,
   History,
+  PlusCircle,
   TimeCircleSvg,
 } from '../../../../../../assets';
 import {
   GapView,
   MyDivider,
   MyText,
+  MyTextSubHeader,
   MyTitle,
   OverlayLoader,
   ProfileAvatar,
@@ -25,13 +27,17 @@ import {
 import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import moment from 'moment';
+import TimeTableCard from '../../../../../../components/TimeTableCard';
+import { JummahTime } from '../../../../../../types/masjidControllerTypes';
 
 export default function JummaTimings({
   setFlag,
   contentOpacity,
+  selectedJumma,
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
+  selectedJumma?: (value: object) => void;
 }) {
   const [edit, setEdit] = useState(false);
   const jummahTimings: any = useHookstate(masjidStore.JummahTime).get();
@@ -43,8 +49,40 @@ export default function JummaTimings({
   //   moment(jummahTimings.jumuah1, 'HH:mm:ss').format('LT'),
   // );
 
+  interface jumuahsData {
+    name: string;
+    value: string;
+  }
+
   useEffect(() => {
-    GetMasjidJummahTiming('1');
+    setLoading(true);
+    GetMasjidJummahTiming('1').then((jumuahTime: JummahTime) => {
+      let jumuahData = [];
+      let jumuahs: jumuahsData[] = [];
+      let jumuah = Object.keys(jumuahTime).filter(val =>
+        val.includes('jumuah'),
+      );
+      console.log('JummahTime', jumuahTime);
+
+      jumuah.map((jumuah: 'jumuah1') => {
+        let data = {};
+        data = {
+          name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
+          value: moment(jumuahTime[`${jumuah}`], 'HH:mm:ss').format('LT'),
+        };
+        console.log('data', data);
+        jumuahTime[`${jumuah}`] != null ? jumuahs.push(data) : null;
+      });
+      console.log('jumuahs', jumuahs);
+      const namazData = {
+        id: jumuahTime.id,
+        date: jumuahTime.effectiveDate,
+        data: jumuahs,
+      };
+      jumuahData.push(namazData);
+      setData(jumuahData);
+      setLoading(false);
+    });
   }, []);
 
   const data1: any = {
@@ -111,8 +149,74 @@ export default function JummaTimings({
           <GapView length={50} />
         </View>
 
-        <View style={{ top: 110 }}>
-          <TimeTable
+        <View style={{ top: 110, paddingHorizontal: 15 }}>
+          <OverlayLoader isShow={loading} />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 10,
+              paddingBottom: 5,
+            }}>
+            <MyTextSubHeader text="Current" />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <PlusCircle onPress={() => setFlag('jAdd')} />
+            </View>
+          </View>
+          {data.length > 0 ? (
+            data.map(item =>
+              new Date(item.date).toString() ===
+              new Date('2023-07-07').toString() ? (
+                <TimeTableCard
+                  onEdit={() => {
+                    selectedJumma(item);
+                    setFlag('jEdit');
+                  }}
+                  date={item.date}
+                  data={item.data}
+                />
+              ) : loading ? null : (
+                <MyText
+                  textStyle={{ textAlign: 'center', marginVertical: 10 }}
+                  text="Nothing to show yet!"
+                />
+              ),
+            )
+          ) : loading ? null : (
+            <MyText
+              textStyle={{ textAlign: 'center', marginVertical: 10 }}
+              text="Nothing to show yet!"
+            />
+          )}
+          <View
+            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
+            <MyTextSubHeader text="Upcoming" />
+          </View>
+          <FlatList
+            data={data}
+            renderItem={({ item }) => (
+              <TimeTableCard
+                onEdit={() => {
+                  selectedJumma(item);
+                  setFlag('jEdit');
+                }}
+                key={item.date}
+                date={item.date}
+                data={item.data}
+                deleteBtn
+              />
+            )}
+            ListEmptyComponent={
+              loading ? null : (
+                <MyText
+                  textStyle={{ textAlign: 'center', marginVertical: 10 }}
+                  text="Nothing to show yet!"
+                />
+              )
+            }
+          />
+          {/* <TimeTable
             header={
               <>
                 <GapView />
@@ -178,7 +282,7 @@ export default function JummaTimings({
                 )}
               </>
             }
-          />
+          /> */}
         </View>
       </View>
     </>

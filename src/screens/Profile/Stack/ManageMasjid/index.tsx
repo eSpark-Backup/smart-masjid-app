@@ -63,7 +63,8 @@ export default function ManageMasjid({
           <View
             style={{
               width: '100%',
-              borderTopWidth: 0.5,
+              borderTopWidth: 0.25,
+              borderColor: '#9E9F9F',
               marginVertical: 10,
             }}></View>
           <MyTextSubHeader text="General" />
@@ -101,6 +102,10 @@ export default function ManageMasjid({
                 ],
               },
             ]}
+            itemStyle={{
+              paddingVertical: 5,
+              height: undefined,
+            }}
           />
         </View>
         <GapView length={7} />
@@ -108,7 +113,8 @@ export default function ManageMasjid({
           <View
             style={{
               width: '100%',
-              borderTopWidth: 0.5,
+              borderTopWidth: 0.25,
+              borderColor: '#9E9F9F',
               marginVertical: 10,
             }}></View>
           <MyTextSubHeader text="Advanced" />

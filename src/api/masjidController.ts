@@ -2,6 +2,7 @@ import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
 import { IqamahTime, JummahTime } from '../types/masjidControllerTypes';
 import Toast from 'react-native-toast-message';
+import moment from 'moment';
 
 /**
  *
@@ -114,12 +115,18 @@ export const GetAdhanTimings = async (
  * @description Get Jummah Configuration
  * @returns get data of masjid Jummah and save to masjidStore
  */
-export const GetMasjidJummahTiming = async (masjidId: string) => {
+export const GetMasjidJummahTiming = async (
+  masjidId: string,
+  date?: string,
+) => {
   try {
-    const result: any = await api.get(`/masjid/${masjidId}/jumuah`);
+    const result: any = await api.get(`/masjid/${masjidId}/jumuah`, {
+      date: date,
+    });
 
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+      return result.data;
     }
   } catch (error) {
     console.log('error', error);
@@ -151,6 +158,8 @@ export const UpdatedMasjidJummahTiming = async (
 ) => {
   try {
     const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
+    console.log('UpdatedMasjidJummahTiming result', result);
+
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
     } else {

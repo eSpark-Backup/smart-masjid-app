@@ -42,13 +42,16 @@ import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import { Card } from '../../../../../../containers';
 import { FlatList } from 'react-native-gesture-handler';
+import TimeTableCard from '../../../../../../components/TimeTableCard';
 
 export default function IqamahTimings({
   setFlag,
   contentOpacity = 0,
+  selectedIqamah,
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
+  selectedIqamah: (value: object) => void;
 }) {
   const [edit, setEdit] = useState(false);
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
@@ -155,7 +158,33 @@ export default function IqamahTimings({
     }
   };
 
-  console.log('iqamahTimings', iqamahTimings);
+  const foundIndex = iqamahTimings?.findIndex(
+    e => new Date(e.effectiveDate).toString() === new Date().toString(),
+  );
+
+  const contentToRender = () => {
+    return foundIndex! > -1 ? (
+      data
+        .filter(
+          item => new Date(item.date).toString() === new Date().toString(),
+        )
+        .map(item => (
+          <TimeTableCard
+            onEdit={() => {
+              console.log('item', iqamahTimings![foundIndex!]);
+              setFlag('iEdit');
+            }}
+            date={item.date}
+            data={item.data}
+          />
+        ))
+    ) : (
+      <MyText
+        textStyle={{ textAlign: 'center', marginVertical: 10 }}
+        text="Nothing to show yet!"
+      />
+    );
+  };
 
   // const type = data?.type ?? iqamahTimings?.type;
   return (
@@ -188,21 +217,7 @@ export default function IqamahTimings({
             </View>
           </View>
           {data.length > 0 ? (
-            data.map(item =>
-              new Date(item.date).toString() ===
-              new Date('2023-08-16').toString() ? (
-                <TimeTableCard
-                  onEdit={() => setFlag('iEdit')}
-                  date={item.date}
-                  data={item.data}
-                />
-              ) : loading ? null : (
-                <MyText
-                  textStyle={{ textAlign: 'center', marginVertical: 10 }}
-                  text="Nothing to show yet!"
-                />
-              ),
-            )
+            contentToRender()
           ) : loading ? null : (
             <MyText
               textStyle={{ textAlign: 'center', marginVertical: 10 }}
@@ -217,7 +232,11 @@ export default function IqamahTimings({
             data={data}
             renderItem={({ item }) => (
               <TimeTableCard
-                onEdit={() => setFlag('iEdit')}
+                onEdit={() => {
+                  const ind = iqamahTimings?.findIndex(e => e.id == item.id);
+                  selectedIqamah(iqamahTimings![ind!]);
+                  setFlag('iEdit');
+                }}
                 key={item.date}
                 date={item.date}
                 data={item.data}
@@ -233,169 +252,6 @@ export default function IqamahTimings({
               )
             }
           />
-
-          {/* <TimeTable
-            type={data?.type ?? iqamahTimings?.type}
-            header={
-              <>
-                <GapView />
-                {!edit ? (
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      paddingHorizontal: 5,
-                    }}>
-                    <View>
-                      <MyText
-                        text={`Effective Date: ${iqamahTimings?.effectiveDate}`}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <History onPress={() => setFlag('iHist')} />
-                      <GapView mode="horizontal" length={20} />
-                      <EditTimeTable
-                        onPress={() => {
-                          setEdit(true);
-                          setData(iqamahTimings ?? {});
-                        }}
-                      />
-                    </View>
-                  </View>
-                ) : (
-                  <View>
-                    <MyDropDown
-                      title={''}
-                      searchDisabled={true}
-                      placeholder="Select Iqama Type"
-                      items={[
-                        { id: 1, name: 'Fixed' },
-                        { id: 2, name: 'Delay' },
-                      ]}
-                      defaultValue={{
-                        id: data?.type == 'Fixed' ? 1 : 2,
-                        name: data?.type == 'F' ? 'Fixed' : 'Delay',
-                      }}
-                      width={WINDOW_WIDTH - 50}
-                      onChangeValue={e =>
-                        setData({
-                          ...data,
-                          type: e.name == 'Fixed' ? 'F' : 'D',
-                        })
-                      }
-                    />
-                    <GapView />
-                    <MyDatePicker
-                      currentDate={new Date(data?.effectiveDate ?? new Date())}
-                      minimumDate={new Date()}
-                      onDateChange={date => {
-                        setData({
-                          ...data,
-                          effectiveDate: moment(date).format('YYYY-MM-DD'),
-                        });
-                      }}
-                    />
-                    <GapView length={20} />
-                  </View>
-                )}
-              </>
-            }
-            data={[
-              {
-                name: 'Fajr',
-                iqamahTiming:
-                  type == 'F'
-                    ? moment(iqamahTimings?.fajr, 'HH:mm:ss').format('LT')
-                    : iqamahTimings?.fajrDelay?.toString() ?? '0',
-                onChange: value => {
-                  setData({
-                    ...data,
-                    [type == 'F' ? 'fajr' : 'fajrDelay']:
-                      data?.type == 'D'
-                        ? value
-                        : moment(value, 'hh:mm').format('HH:mm:ss'),
-                  });
-                },
-              },
-              {
-                name: 'Dhuhr',
-                iqamahTiming:
-                  type == 'F'
-                    ? moment(iqamahTimings?.dhuhr, 'HH:mm:ss').format('LT')
-                    : iqamahTimings?.dhuhrDelay?.toString() ?? '0',
-                onChange: value => {
-                  setData({
-                    ...data,
-                    [type == 'F' ? 'dhuhr' : 'dhuhrDelay']:
-                      data?.type == 'D'
-                        ? value
-                        : moment(value, 'hh:mm').format('HH:mm:ss'),
-                  });
-                },
-              },
-              {
-                name: 'Asr',
-                iqamahTiming:
-                  type == 'F'
-                    ? moment(iqamahTimings?.asr, 'HH:mm:ss').format('LT')
-                    : iqamahTimings?.asrDelay?.toString() ?? '0',
-                onChange: value => {
-                  setData({
-                    ...data,
-                    [type == 'F' ? 'asr' : 'asrDelay']:
-                      data?.type == 'D'
-                        ? value
-                        : moment(value, 'hh:mm').format('HH:mm:ss'),
-                  });
-                },
-              },
-              {
-                name: 'Maghrib',
-                iqamahTiming: edit
-                  ? iqamahTimings?.maghribDelay?.toString()
-                  : `+${iqamahTimings?.maghribDelay?.toString()} mins`,
-                onChange: value => {
-                  setData({
-                    ...data,
-                    maghribDelay: value,
-                  });
-                },
-              },
-              {
-                name: 'Isha',
-                iqamahTiming:
-                  type == 'F'
-                    ? moment(iqamahTimings?.isha, 'HH:mm:ss').format('LT')
-                    : iqamahTimings?.ishaDelay?.toString() ?? '0',
-                onChange: value => {
-                  setData({
-                    ...data,
-                    [type == 'F' ? 'isha' : 'ishaDelay']:
-                      data?.type == 'D'
-                        ? value
-                        : moment(value, 'hh:mm').format('HH:mm:ss'),
-                  });
-                },
-              },
-            ]}
-            headings={['Salah', 'Iqama']}
-            editView={edit}
-            footer={
-              <>
-                {edit && (
-                  <View style={{ alignSelf: 'center' }}>
-                    <GapView />
-                    <Rounded label="Save" onPress={onUpdate} />
-                  </View>
-                )}
-              </>
-            }
-          /> */}
         </ScrollView>
       </View>
     </>
@@ -407,60 +263,60 @@ interface TimeTableData {
   value: string;
 }
 
-const TimeTableCard = ({
-  data = [],
-  date = '',
-  deleteBtn,
-  onEdit,
-}: {
-  data: TimeTableData[];
-  date: string;
-  deleteBtn?: boolean;
-  onEdit?: () => void;
-}) => {
-  return (
-    <View style={{ marginVertical: 5 }}>
-      <Card width={WINDOW_WIDTH - 28}>
-        <View style={{ padding: 10 }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Calendar style={{ color: '#6E6E6E' }} />
-              <GapView length={5} />
-              <MyText text={date} size={12} />
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {deleteBtn ? <Delete /> : null}
-              <GapView length={5} mode="horizontal" />
-              <EditPencil onPress={onEdit} />
-            </View>
-          </View>
-          <GapView />
-          <MyDivider width={WINDOW_WIDTH - 48} />
-          <GapView />
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            {data.map(v => {
-              return (
-                <View>
-                  <MyText
-                    textStyle={{ textTransform: 'capitalize' }}
-                    text={v.name}
-                  />
-                  <GapView length={5} />
-                  <MyText
-                    size={12}
-                    textStyle={{ color: '#6E6E6E' }}
-                    text={v.value}
-                  />
-                </View>
-              );
-            })}
-          </View>
-        </View>
-      </Card>
-    </View>
-  );
-};
+// const TimeTableCard = ({
+//   data = [],
+//   date = '',
+//   deleteBtn,
+//   onEdit,
+// }: {
+//   data: TimeTableData[];
+//   date: string;
+//   deleteBtn?: boolean;
+//   onEdit?: () => void;
+// }) => {
+//   return (
+//     <View style={{ marginVertical: 5 }}>
+//       <Card width={WINDOW_WIDTH - 28}>
+//         <View style={{ padding: 10 }}>
+//           <View
+//             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+//             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+//               <Calendar style={{ color: '#6E6E6E' }} />
+//               <GapView length={5} />
+//               <MyText text={date} size={12} />
+//             </View>
+//             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+//               {deleteBtn ? <Delete /> : null}
+//               <GapView length={5} mode="horizontal" />
+//               <EditPencil onPress={onEdit} />
+//             </View>
+//           </View>
+//           <GapView />
+//           <MyDivider width={WINDOW_WIDTH - 48} />
+//           <GapView />
+//           <View
+//             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+//             {data.map(v => {
+//               return (
+//                 <View>
+//                   <MyText
+//                     textStyle={{ textTransform: 'capitalize' }}
+//                     text={v.name}
+//                   />
+//                   <GapView length={5} />
+//                   <MyText
+//                     size={12}
+//                     textStyle={{ color: '#6E6E6E' }}
+//                     text={v.value}
+//                   />
+//                 </View>
+//               );
+//             })}
+//           </View>
+//         </View>
+//       </Card>
+//     </View>
+//   );
+// };
 
 const styles = StyleSheet.create({});
