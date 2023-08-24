@@ -12,6 +12,7 @@ import moment from 'moment';
 import Toast from 'react-native-toast-message';
 
 import {
+  AddMasjidJummahTiming,
   GetMasjidIqamahTiming,
   GetMasjidJummahTiming,
   UpdatedMasjidIqamahTiming,
@@ -44,9 +45,16 @@ import { masjidStore } from '../../../../../../store/MasjidStore';
 import {
   IqamahTime,
   JummahTime,
+  jumuahsData,
 } from '../../../../../../types/masjidControllerTypes';
 import { Card } from '../../../../../../containers';
 import { FlatList } from 'react-native-gesture-handler';
+
+interface selectedJummmaData {
+  id: number;
+  data: jumuahsData[];
+  date: string;
+}
 
 export default function EditJummaTimings({
   setFlag,
@@ -57,7 +65,7 @@ export default function EditJummaTimings({
   setFlag: (value: string) => void;
   contentOpacity?: any;
   jummaType: 'Add' | 'Edit';
-  selectedJumma: object | null;
+  selectedJumma: selectedJummmaData | null;
 }) {
   const [edit, setEdit] = useState(false);
   const [data, setData] = useState<any>([]);
@@ -70,6 +78,7 @@ export default function EditJummaTimings({
 
   useEffect(() => {
     if (jummaType == 'Edit') {
+      setLoading(true);
       GetMasjidJummahTiming(
         '1',
         moment(selectedJumma?.date).format('YYYY-MM-DD'),
@@ -93,7 +102,7 @@ export default function EditJummaTimings({
   const onUpdate = async () => {
     console.log('data', data);
     setLoading(true);
-    await UpdatedMasjidJummahTiming('1', data);
+    await AddMasjidJummahTiming('1', data);
     setLoading(false);
     setEdit(false);
     setData(null);
@@ -114,6 +123,7 @@ export default function EditJummaTimings({
         <ScrollView
           contentContainerStyle={{ paddingBottom: 110, paddingHorizontal: 15 }}
           style={{ top: 110 }}>
+          <OverlayLoader isShow={loading} />
           <TimeTable
             type={'J'}
             containerStyle={{
@@ -124,7 +134,9 @@ export default function EditJummaTimings({
                 <GapView />
                 <View>
                   <MyDatePicker
-                    currentDate={new Date(data.effectiveDate)}
+                    currentDate={
+                      loading ? new Date() : new Date(data.effectiveDate)
+                    }
                     minimumDate={new Date()}
                     onDateChange={date => {
                       if (new Date(date).getDay() == 5) {
@@ -181,7 +193,7 @@ export default function EditJummaTimings({
                 },
               },
             ]}
-            headings={['Salah', 'Iqama']}
+            headings={['Salah', 'Khutbah']}
             editView={true}
             footer={
               <>

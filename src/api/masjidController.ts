@@ -54,12 +54,41 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
  * @description Get Adhan Configuration
  * @returns get data of masjid adhan config and save to masjidStore
  */
-export const UpdatedMasjidIqamahTiming = async (
+export const AddMasjidIqamahTiming = async (
   masjidId: string,
   data: IqamahTime,
 ) => {
   try {
     const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
+    if (result.status == 200) {
+      masjidStore.iqamahTime.set(result.data);
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+/**
+ *
+ * @description Get Adhan Configuration
+ * @returns get data of masjid adhan config and save to masjidStore
+ */
+export const UpdatedMasjidIqamahTiming = async (
+  masjidId: string,
+  data: IqamahTime,
+) => {
+  try {
+    const result: any = await api.put(
+      `/masjid/${masjidId}/iqama/${data.id}`,
+      data,
+    );
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
     } else {
@@ -147,6 +176,33 @@ export const GetJummahHistory = async (masjidId: string) => {
   } catch (error) {}
 };
 
+/**
+ *
+ * @description Get Adhan Configuration
+ * @returns get data of masjid adhan config and save to masjidStore
+ */
+export const AddMasjidJummahTiming = async (
+  masjidId: string,
+  data: JummahTime,
+) => {
+  try {
+    const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
+    console.log('AddMasjidJummahTiming result', result);
+
+    if (result.status == 200) {
+      masjidStore.JummahTime.set(result.data);
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
 /**
  *
  * @description Get Adhan Configuration

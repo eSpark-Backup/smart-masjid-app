@@ -82,103 +82,37 @@ export default function IqamahTimings({
     });
   }, []);
 
-  // const namazData = [
-  //   {
-  //     date: '2023-07-14',
-  //     data: [
-  //       { name: 'fajr', value: '18:00:00' },
-  //       { name: 'duhr', value: '18:00' },
-  //       { name: 'asr', value: '18:00' },
-  //       { name: 'maghrib', value: '18:00' },
-  //       { name: 'isha', value: '18:00' },
-  //     ],
-  //     type: 'F',
-  //   },
-  //   {
-  //     date: '2023-07-16',
-  //     data: [
-  //       { name: 'fajr', value: '16:00' },
-  //       { name: 'duhr', value: '16:00' },
-  //       { name: 'asr', value: '16:00' },
-  //       { name: 'maghrib', value: '16:00' },
-  //       { name: 'isha', value: '16:00' },
-  //     ],
-  //   },
-  // ];
-
-  useEffect(() => {}, []);
-  console.log('IqamahData', data[0]);
-
-  const onUpdate = async () => {
-    var dataObj: IqamahTime = data;
-    console.log('dataObj dataObj', dataObj);
-
-    if (dataObj.type == 'F') {
-      setLoading(true);
-      await UpdatedMasjidIqamahTiming('1', {
-        effectiveDate: dataObj.effectiveDate,
-        type: dataObj.type,
-        asr: dataObj.asr,
-        fajr: dataObj.fajr,
-        dhuhr: dataObj.dhuhr,
-        isha: dataObj.isha,
-        maghribDelay: dataObj.maghribDelay,
-      });
-      setLoading(false);
-      setEdit(false);
-      setData(null);
-    } else {
-      if (
-        !Boolean(dataObj.fajrDelay) ||
-        !Boolean(dataObj.dhuhrDelay) ||
-        !Boolean(dataObj.asrDelay) ||
-        !Boolean(dataObj.maghribDelay) ||
-        !Boolean(dataObj.ishaDelay)
-      ) {
-        Toast.show({
-          text2: 'delay value should be greater than zero',
-          type: 'error',
-          visibilityTime: 10000,
-        });
-        return;
-      }
-      setLoading(true);
-      await UpdatedMasjidIqamahTiming('1', {
-        effectiveDate: dataObj.effectiveDate,
-        type: dataObj.type,
-        fajrDelay: dataObj.fajrDelay,
-        dhuhrDelay: dataObj.dhuhrDelay,
-        asrDelay: dataObj.asrDelay,
-        maghribDelay: dataObj.maghribDelay,
-        ishaDelay: dataObj.ishaDelay,
-      });
-      setLoading(false);
-      setEdit(false);
-      setData(null);
-    }
-  };
-
-  const foundIndex = iqamahTimings?.findIndex(
-    e => new Date(e.effectiveDate).toString() === new Date().toString(),
+  console.log(
+    'IqamahData',
+    iqamahTimings?.findIndex(
+      e =>
+        moment(e?.effectiveDate).format('YYYY-MM-DD') ==
+        moment(new Date()).format('YYYY-MM-DD'),
+    ),
   );
+
+  const foundIndex =
+    data?.length > 0
+      ? iqamahTimings?.findIndex(
+          e =>
+            moment(e?.effectiveDate).format('YYYY-MM-DD') ==
+            moment(new Date('2023-08-17')).format('YYYY-MM-DD'),
+        )
+      : -1;
+
+  console.log('foundIndex', foundIndex);
 
   const contentToRender = () => {
     return foundIndex! > -1 ? (
-      data
-        .filter(
-          item => new Date(item.date).toString() === new Date().toString(),
-        )
-        .map(item => (
-          <TimeTableCard
-            onEdit={() => {
-              console.log('item', iqamahTimings![foundIndex!]);
-              setFlag('iEdit');
-            }}
-            date={item.date}
-            data={item.data}
-          />
-        ))
-    ) : (
+      <TimeTableCard
+        onEdit={() => {
+          console.log('item', iqamahTimings![foundIndex!]);
+          setFlag('iEdit');
+        }}
+        date={data[foundIndex!]?.date}
+        data={data[foundIndex!]?.data}
+      />
+    ) : loading ? null : (
       <MyText
         textStyle={{ textAlign: 'center', marginVertical: 10 }}
         text="Nothing to show yet!"
@@ -198,7 +132,7 @@ export default function IqamahTimings({
         </View>
 
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 30, paddingHorizontal: 15 }}
+          contentContainerStyle={{ paddingBottom: 110, paddingHorizontal: 15 }}
           style={{ top: 110 }}>
           <OverlayLoader isShow={loading} />
           <View
@@ -216,14 +150,7 @@ export default function IqamahTimings({
               <HistoryBox onPress={() => setFlag('iHist')} />
             </View>
           </View>
-          {data.length > 0 ? (
-            contentToRender()
-          ) : loading ? null : (
-            <MyText
-              textStyle={{ textAlign: 'center', marginVertical: 10 }}
-              text="Nothing to show yet!"
-            />
-          )}
+          {contentToRender()}
           <View
             style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
             <MyTextSubHeader text="Upcoming" />

@@ -111,6 +111,11 @@ export type JummahTime = {
   [key: `jumuah${number}`]: string;
 };
 
+export type jumuahsData = {
+  name: string;
+  value: string;
+};
+
 type SubscriptionCategory = {
   id: number;
   name: string;

@@ -10,6 +10,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { TouchableOpacity } from 'react-native';
 import MyText from '../MyText';
 import { Theme, useTheme } from '@react-navigation/native';
+import MyTextSubHeader from '../MyTextSubHeader';
 
 export default function MyDatePicker({
   onDateChange = (e: any) => {},
@@ -17,6 +18,7 @@ export default function MyDatePicker({
   currentDate = null,
   minimumDate = undefined,
   maximumDate = undefined,
+  dateFormat,
   showLabel,
 }: {
   onDateChange?: (e: any) => void;
@@ -25,6 +27,7 @@ export default function MyDatePicker({
   minimumDate?: Date | undefined;
   maximumDate?: Date | undefined;
   showLabel?: boolean;
+  dateFormat?: 'Monthly' | 'FullDate';
 }) {
   const [date, setDate] = useState<any>(new Date());
   const [mode, setMode] = useState('date');
@@ -42,15 +45,23 @@ export default function MyDatePicker({
   };
 
   const nextDate = () => {
-    // @ts-ignore
-    const newDate = new Date(moment(date).add(1, 'day'));
+    const newDate =
+      dateFormat == 'Monthly'
+        ? // @ts-ignore
+          new Date(moment(date).add(1, 'month'))
+        : // @ts-ignore
+          new Date(moment(date).add(1, 'day'));
     setDate(newDate);
     onDateChange(newDate);
   };
 
   const prevDate = () => {
-    // @ts-ignore
-    const newDate = new Date(moment(date).subtract(1, 'day'));
+    const newDate =
+      dateFormat == 'Monthly'
+        ? // @ts-ignore
+          new Date(moment(date).subtract(1, 'month'))
+        : // @ts-ignore
+          new Date(moment(date).subtract(1, 'day'));
     setDate(newDate);
     onDateChange(newDate);
   };
@@ -138,10 +149,12 @@ export default function MyDatePicker({
           {/* <GapView length={10} mode="horizontal" />
           <Calendar /> */}
           <GapView length={10} mode="horizontal" />
-          <MyText
-            text={moment(date)?.format('MMM-DD, YYYY')}
-            size={16}
-            textStyle={{ fontWeight: '500' }}
+          <MyTextSubHeader
+            text={
+              dateFormat == 'Monthly'
+                ? moment(date)?.format('MMM, YYYY')
+                : moment(date)?.format('MMM-DD, YYYY')
+            }
           />
           <GapView length={10} mode="horizontal" />
           <II

@@ -12,6 +12,7 @@ import moment from 'moment';
 import Toast from 'react-native-toast-message';
 
 import {
+  AddMasjidIqamahTiming,
   GetMasjidIqamahTiming,
   UpdatedMasjidIqamahTiming,
 } from '../../../../../../api/masjidController';
@@ -106,11 +107,24 @@ export default function EditIqamahTimings({
 
   const onUpdate = async () => {
     var dataObj: IqamahTime = data;
-    console.log('dataObj dataObj', dataObj);
+    // console.log('dataObj dataObj', dataObj);
     setLoading(true);
-    await UpdatedMasjidIqamahTiming('1', dataObj);
+    if (
+      (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
+      !Boolean(dataObj.dhuhrDelay) ||
+      !Boolean(dataObj.asrDelay) ||
+      !Boolean(dataObj.maghribDelay) ||
+      !Boolean(dataObj.ishaDelay)
+    ) {
+      if (iqamahType == 'Add') {
+        await AddMasjidIqamahTiming('1', dataObj);
+      } else {
+        await UpdatedMasjidIqamahTiming('1', dataObj);
+      }
+    }
     setLoading(false);
     setData(null);
+    setFlag('iTime');
 
     // if (
     //   (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
@@ -120,7 +134,7 @@ export default function EditIqamahTimings({
     //   !Boolean(dataObj.ishaDelay)
     // ) {
     //   if ((iqamahType = 'Add')) {
-    //     await UpdatedMasjidIqamahTiming('1', dataObj);
+    //     await AddMasjidIqamahTiming('1', dataObj);
     //   } else {
     //     await UpdatedMasjidIqamahTiming('1', dataObj);
     //   }
