@@ -37,6 +37,7 @@ export default function PasswordForm({
   contentOpacity: any;
 }) {
   const [loading, setLoading] = useState(false);
+
   const connectToWifi = async ({
     ssid,
     password,
@@ -58,7 +59,10 @@ export default function PasswordForm({
           setLoading(false);
           setStep(6);
         })
-        .catch(e => console.error(e));
+        .catch(e => {
+          console.error(e);
+          setLoading(false);
+        });
     } catch (e) {
       console.log('error in connecting wifi', e);
       setLoading(false);
