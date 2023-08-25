@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import MyText from '../MyText';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -14,6 +14,10 @@ export default function MyTimePicker({
 }) {
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(initialValue);
+
+  useEffect(() => {
+    setTime(initialValue);
+  }, [initialValue]);
 
   const onChange = (selectedDate: any) => {
     let time = selectedDate.toString().substring(16, 21);
@@ -49,8 +53,7 @@ export default function MyTimePicker({
           styles.contentCol,
           {
             borderWidth: 0.5,
-            width: 100,
-            left: 10,
+            width: 155,
             borderColor: '#3E3E3E',
             borderRadius: 3,
             height: 40,

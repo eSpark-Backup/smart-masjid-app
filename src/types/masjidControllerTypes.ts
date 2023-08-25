@@ -1,3 +1,5 @@
+import { number } from 'yup';
+
 type AdhanCalcConfig = {
   id: number;
   name: string;
@@ -46,6 +48,48 @@ export type IqamahTime = {
   asrDelay?: number | null;
 };
 
+export type AdhanTime = {
+  id: number;
+  date: string;
+  fajr: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  sunrise: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  dhuhr: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  asr: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  maghrib: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  isha: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  updatedDate: string;
+};
+
 export type PrayerTimes = {
   asr: string;
   date: string;
@@ -65,6 +109,11 @@ export type JummahTime = {
   createdDate: string;
 } & {
   [key: `jumuah${number}`]: string;
+};
+
+export type jumuahsData = {
+  name: string;
+  value: string;
 };
 
 type SubscriptionCategory = {
@@ -114,7 +163,6 @@ export type Masjid = {
   updatedBy: string | null;
   updatedDate: string | null;
 };
-
 
 export interface Salah {
   name: string;

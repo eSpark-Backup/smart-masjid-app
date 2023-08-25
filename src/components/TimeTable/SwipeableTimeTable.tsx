@@ -7,10 +7,7 @@ import {
   FlatList,
   ViewToken,
 } from 'react-native';
-import {
-  MuteSvg,
-  VolumUpGreen,
-} from '../../assets';
+import { MuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { IPrayerTimeForPeriod } from '../../types';
 import GapView from '../GapView';
@@ -243,7 +240,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingVertical: 5 
+    paddingVertical: 5,
   },
   editContentRow: {
     marginVertical: 5,

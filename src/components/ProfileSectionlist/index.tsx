@@ -37,11 +37,13 @@ export default function ProfileSectionlist({
   footerData,
   scroll,
   containerStyle,
+  itemStyle,
 }: {
   data: DataItem[];
   footerData?: FooterItem[];
   scroll?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
+  itemStyle?: StyleProp<ViewStyle>;
 }) {
   return (
     <SectionList
@@ -51,7 +53,9 @@ export default function ProfileSectionlist({
       keyExtractor={(item, index) => item.title + index}
       renderItem={({ item, index }) => {
         if (!item.hidden) {
-          return <SectionCard item={item} index={index} />;
+          return (
+            <SectionCard cardStyle={itemStyle} item={item} index={index} />
+          );
         } else return <View />;
       }}
       ListFooterComponentStyle={{ position: 'absolute', bottom: 0 }}
@@ -66,19 +70,30 @@ export default function ProfileSectionlist({
   );
 }
 
-const SectionCard = ({ item, index }: { item: any; index: number }) => {
+const SectionCard = ({
+  item,
+  index,
+  cardStyle,
+}: {
+  item: any;
+  index: number;
+  cardStyle?: StyleProp<ViewStyle>;
+}) => {
   return (
-    <View style={{ ...styles.cartContainer }}>
+    <View style={[{ ...styles.cartContainer }, cardStyle]}>
       <TouchableOpacity
         key={index + item.title}
         activeOpacity={0.8}
-        style={{ flexDirection: 'row', alignItems: 'center' }}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
         onPress={item.onPress}>
         {item.icon}
         <GapView mode="horizontal" />
         <MyText text={item.title} textStyle={{ fontSize: 16 }} />
       </TouchableOpacity>
-      <GapView mode='horizontal' length={5} />
+      <GapView mode="horizontal" length={5} />
       {item.value && (
         <MyText
           text={item.value}
@@ -97,7 +112,7 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'space-between',
     width: WINDOW_WIDTH - 28,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   sectionHeader: {
     flexDirection: 'row',

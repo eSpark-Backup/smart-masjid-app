@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  ViewStyle,
+} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 import { InfoCircle, MuteSvg, VolumUpGreen } from '../../assets';
@@ -35,11 +41,7 @@ const RowItem = ({
     <TouchableOpacity
       activeOpacity={0.9}
       key={`${item?.name}-${index}`}
-      style={
-        !edit
-          ? {}
-          : [styles.editContentRow, { paddingHorizontal: type == 'D' ? 0 : 10 }]
-      }>
+      style={!edit ? {} : [styles.editContentRow]}>
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
           if (key == 'onChange') return;
@@ -47,17 +49,38 @@ const RowItem = ({
             <React.Fragment key={index}>
               {index != 0 && edit ? (
                 <>
-                  {type == 'F' && item[key]?.search(':') != -1 ? (
+                  {(type == 'F' && item[key]?.search(':') != -1) ||
+                  type == 'J' ? (
                     <MyTimePicker
                       onTimeChanged={item?.onChange}
                       initialValue={item[key]}
                     />
                   ) : (
-                    <View
-                      style={[
-                        styles.contentCol,
-                        { flexDirection: 'row', width: 80 },
-                      ]}>
+                    <View>
+                      <TextInput
+                        defaultValue={item[key]}
+                        onChangeText={item?.onChange}
+                        maxLength={2}
+                        keyboardType={'decimal-pad'}
+                        style={{
+                          borderWidth: 0.5,
+                          color: colors.text,
+                          borderColor: '#3E3E3E',
+                          borderRadius: 3,
+                          height: 40,
+                          width: 155,
+                          textAlign: 'center',
+                        }}
+                      />
+                    </View>
+                  )}
+                  {/* {type == 'F' && item[key]?.search(':') != -1 ? (
+                    <MyTimePicker
+                      onTimeChanged={item?.onChange}
+                      initialValue={item[key]}
+                    />
+                  ) : (
+                    <View style={[styles.contentCol, { flexDirection: 'row' }]}>
                       <TextInput
                         defaultValue={item[key]}
                         onChangeText={item?.onChange}
@@ -76,7 +99,7 @@ const RowItem = ({
                       <GapView mode="horizontal" />
                       <MyText text="Mins" />
                     </View>
-                  )}
+                  )} */}
                 </>
               ) : (
                 <View key={key} style={styles.contentCol}>
@@ -135,6 +158,7 @@ export default function TimeTable({
   editView = false,
   footer = <></>,
   type = 'F',
+  containerStyle,
 }: {
   data: DataProps[];
   isMute?: boolean;
@@ -147,10 +171,11 @@ export default function TimeTable({
   onSubmitEditing?: () => void;
   editView?: boolean;
   footer?: React.ReactNode;
-  type?: 'F' | 'D';
+  type?: 'F' | 'D' | 'J';
+  containerStyle?: ViewStyle;
 }) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       {header && (
         <>
           {header}
@@ -191,7 +216,7 @@ export default function TimeTable({
       ))}
       {footer && (
         <>
-          <GapView />
+          <GapView length={15} />
           {footer}
         </>
       )}
@@ -211,7 +236,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
   headerCol: { width: '30%', alignItems: 'flex-start' },
   headerIcon: {
@@ -223,13 +248,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5 
+    // paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   editContentRow: {
     marginVertical: 5,
     borderRadius: 12,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
   contentCol: { width: '30%', alignItems: 'flex-start' },
   contentIcon: {

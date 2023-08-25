@@ -1,4 +1,5 @@
 import IqamahTimings from './IqamahTimings';
+import EditIqamahTimings from './EditIqamahTimings';
 import IqamahHistory from './History';
 
-export { IqamahHistory, IqamahTimings };
+export { IqamahHistory, EditIqamahTimings, IqamahTimings };
