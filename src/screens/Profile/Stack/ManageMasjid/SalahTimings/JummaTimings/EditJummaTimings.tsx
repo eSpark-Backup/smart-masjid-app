@@ -65,7 +65,7 @@ export default function EditJummaTimings({
   setFlag: (value: string) => void;
   contentOpacity?: any;
   jummaType: 'Add' | 'Edit';
-  selectedJumma: selectedJummmaData | null;
+  selectedJumma?: selectedJummmaData | null;
 }) {
   const [edit, setEdit] = useState(false);
   const [data, setData] = useState<any>([]);
