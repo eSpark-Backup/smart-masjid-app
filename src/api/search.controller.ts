@@ -1,3 +1,5 @@
+import crashlytics from '@react-native-firebase/crashlytics';
+
 import { api } from '.';
 import { SalahTimings } from '../types/masjidControllerTypes';
 
@@ -20,7 +22,8 @@ export const SearchMasjidByLocation = async (
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error SearchMasjidByLocation', error);
   }
 };
@@ -36,7 +39,8 @@ export const GetMasidAdhanTimings = async (masjidId: string) => {
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error GetMasidAdhanTimings', error);
   }
 };
@@ -52,11 +56,11 @@ export const GetMasidIqamaTimings = async (masjidId: string) => {
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error GetMasidIqamaTimings', error);
   }
 };
-
 
 /**
  * @description Get Salah Timings of specific masjid

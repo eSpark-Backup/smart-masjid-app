@@ -1,8 +1,10 @@
+import crashlytics from '@react-native-firebase/crashlytics';
+import Toast from 'react-native-toast-message';
+import moment from 'moment';
+
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
 import { IqamahTime, JummahTime } from '../types/masjidControllerTypes';
-import Toast from 'react-native-toast-message';
-import moment from 'moment';
 
 /**
  *
@@ -15,7 +17,9 @@ export const GetMasjid = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.masjid.set(result.data);
     }
-  } catch (error) {}
+  } catch (error: any) {
+    crashlytics().recordError(error);
+  }
 };
 
 /**
@@ -29,7 +33,9 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.adhanConfig.set(result.data);
     }
-  } catch (error) {}
+  } catch (error: any) {
+    crashlytics().recordError(error);
+  }
 };
 
 /**
@@ -44,7 +50,8 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
       masjidStore.iqamahTime.set(result.data);
       return result.data;
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error', error);
   }
 };
@@ -70,7 +77,8 @@ export const AddMasjidIqamahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error', error);
   }
 };
@@ -99,7 +107,8 @@ export const UpdatedMasjidIqamahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error', error);
   }
 };
@@ -115,7 +124,9 @@ export const GetIqamahHistory = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.iqamahHistory.set(result.data);
     }
-  } catch (error) {}
+  } catch (error: any) {
+    crashlytics().recordError(error);
+  }
 };
 
 /**
@@ -131,12 +142,14 @@ export const GetAdhanTimings = async (
   try {
     const result: any = await api.get(`/masjid/${masjidId}/adhan`, {
       date: '2023-08-18',
-      range: 'WEEK',
+      range: 'MONTH',
     });
     if (result.status == 200) {
       masjidStore.adhanTimings.set(result.data);
     }
-  } catch (error) {}
+  } catch (error: any) {
+    crashlytics().recordError(error);
+  }
 };
 
 /**
@@ -157,7 +170,8 @@ export const GetMasjidJummahTiming = async (
       masjidStore.JummahTime.set(result.data);
       return result.data;
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error', error);
   }
 };
@@ -173,7 +187,9 @@ export const GetJummahHistory = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.JummahHistory.set(result.data);
     }
-  } catch (error) {}
+  } catch (error: any) {
+    crashlytics().recordError(error);
+  }
 };
 
 /**
@@ -199,7 +215,8 @@ export const AddMasjidJummahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error', error);
   }
 };
@@ -226,7 +243,8 @@ export const UpdatedMasjidJummahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error', error);
   }
 };
@@ -250,7 +268,8 @@ export const SearchMasjidByLocation = async (
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error SearchMasjidByLocation', error);
   }
 };

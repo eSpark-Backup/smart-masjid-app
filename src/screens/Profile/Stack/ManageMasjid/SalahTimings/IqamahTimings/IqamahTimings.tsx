@@ -1,46 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  LogBox,
-} from 'react-native';
+import { StyleSheet, View, ScrollView, Animated } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
-import Toast from 'react-native-toast-message';
 
-import {
-  GetMasjidIqamahTiming,
-  UpdatedMasjidIqamahTiming,
-} from '../../../../../../api/masjidController';
-import {
-  Calendar,
-  Delete,
-  EditPencil,
-  EditTimeTable,
-  History,
-  HistoryBox,
-  PlusCircle,
-} from '../../../../../../assets';
+import { GetMasjidIqamahTiming } from '../../../../../../api/masjidController';
+import { HistoryBox, PlusCircle } from '../../../../../../assets';
 import {
   GapView,
-  MyDivider,
-  MyDropDown,
   MyText,
   MyTextSubHeader,
   MyTitle,
   OverlayLoader,
-  Rounded,
-  TextLabel,
-  TimeTable,
 } from '../../../../../../components';
-import MyDatePicker from '../../../../../../components/MyDatePicker';
-import { WINDOW_WIDTH } from '../../../../../../constants';
+
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
-import { Card } from '../../../../../../containers';
 import { FlatList } from 'react-native-gesture-handler';
 import TimeTableCard from '../../../../../../components/TimeTableCard';
 
@@ -53,7 +27,6 @@ export default function IqamahTimings({
   contentOpacity?: any;
   selectedIqamah: (value: object) => void;
 }) {
-  const [edit, setEdit] = useState(false);
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
@@ -82,31 +55,22 @@ export default function IqamahTimings({
     });
   }, []);
 
-  console.log(
-    'IqamahData',
-    iqamahTimings?.findIndex(
-      e =>
-        moment(e?.effectiveDate).format('YYYY-MM-DD') ==
-        moment(new Date()).format('YYYY-MM-DD'),
-    ),
-  );
-
   const foundIndex =
     data?.length > 0
       ? iqamahTimings?.findIndex(
           e =>
             moment(e?.effectiveDate).format('YYYY-MM-DD') ==
-            moment(new Date('2023-08-17')).format('YYYY-MM-DD'),
+            moment(new Date(new Date())).format('YYYY-MM-DD'),
         )
       : -1;
-
-  console.log('foundIndex', foundIndex);
 
   const contentToRender = () => {
     return foundIndex! > -1 ? (
       <TimeTableCard
         onEdit={() => {
           console.log('item', iqamahTimings![foundIndex!]);
+
+          selectedIqamah(iqamahTimings![foundIndex!]);
           setFlag('iEdit');
         }}
         date={data[foundIndex!]?.date}
@@ -120,7 +84,6 @@ export default function IqamahTimings({
     );
   };
 
-  // const type = data?.type ?? iqamahTimings?.type;
   return (
     <>
       <View style={{ flex: 1 }}>
@@ -184,66 +147,5 @@ export default function IqamahTimings({
     </>
   );
 }
-
-interface TimeTableData {
-  name: string;
-  value: string;
-}
-
-// const TimeTableCard = ({
-//   data = [],
-//   date = '',
-//   deleteBtn,
-//   onEdit,
-// }: {
-//   data: TimeTableData[];
-//   date: string;
-//   deleteBtn?: boolean;
-//   onEdit?: () => void;
-// }) => {
-//   return (
-//     <View style={{ marginVertical: 5 }}>
-//       <Card width={WINDOW_WIDTH - 28}>
-//         <View style={{ padding: 10 }}>
-//           <View
-//             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-//             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//               <Calendar style={{ color: '#6E6E6E' }} />
-//               <GapView length={5} />
-//               <MyText text={date} size={12} />
-//             </View>
-//             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//               {deleteBtn ? <Delete /> : null}
-//               <GapView length={5} mode="horizontal" />
-//               <EditPencil onPress={onEdit} />
-//             </View>
-//           </View>
-//           <GapView />
-//           <MyDivider width={WINDOW_WIDTH - 48} />
-//           <GapView />
-//           <View
-//             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-//             {data.map(v => {
-//               return (
-//                 <View>
-//                   <MyText
-//                     textStyle={{ textTransform: 'capitalize' }}
-//                     text={v.name}
-//                   />
-//                   <GapView length={5} />
-//                   <MyText
-//                     size={12}
-//                     textStyle={{ color: '#6E6E6E' }}
-//                     text={v.value}
-//                   />
-//                 </View>
-//               );
-//             })}
-//           </View>
-//         </View>
-//       </Card>
-//     </View>
-//   );
-// };
 
 const styles = StyleSheet.create({});

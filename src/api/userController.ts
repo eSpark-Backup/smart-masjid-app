@@ -1,4 +1,5 @@
 import Toast from 'react-native-toast-message';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { api } from '.';
 import {
@@ -22,7 +23,8 @@ export const RegisterUserPhone = async (
 ): Promise<void> => {
   try {
     await api.post(`/users/${userId}/phones`, data);
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error RegisterUserPhone', error, 'Request', data, userId);
   }
 };
@@ -39,7 +41,8 @@ export const LogoutUser = async (userId: string) => {
     });
     await removeDatafromLocalStorage('user');
     userStore.userData.set(null);
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error LogoutUser', error);
   }
 };
@@ -75,7 +78,8 @@ export const UpdateUser = async (
       });
     }
     return result.data;
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('error UpdateUser', error, 'Request', data);
   }
 };
@@ -91,7 +95,8 @@ export const GetMasjidAdmins = async (id: string) => {
     if (result.data && result.status === 200) {
       userStore.masjidAdmins.set(result.data);
     }
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(error);
     console.log('GetMasjidAdmins error', error);
   }
 };
@@ -121,7 +126,9 @@ export const DeleteAdminFromMasjid = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error) {}
+  } catch (error: any) {
+    crashlytics().recordError(error);
+  }
 };
 
 /**
@@ -148,5 +155,7 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
       });
       return false;
     }
-  } catch (error) {}
+  } catch (error: any) {
+    crashlytics().recordError(error);
+  }
 };
