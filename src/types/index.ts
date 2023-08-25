@@ -43,6 +43,7 @@ export type MasjidStoreProps = {
   iqamahHistory: IqamahTime[];
   JummahTime: JummahTime | null;
   JummahHistory: JummahTime[];
+  userMasjidList: Masjid[]
 };
 
 export type DeviceStoreProps = {

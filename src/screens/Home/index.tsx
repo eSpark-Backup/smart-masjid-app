@@ -3,14 +3,16 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, ScrollView } from 'react-native';
 import { SearchMasjidSvg } from '../../assets';
-import { GapView, MyText, Rounded } from '../../components';
+import { GapView, MyText, OverlayLoader, Rounded } from '../../components';
 import { Wrapper } from '../../containers';
 import { BottomNavigationParamList } from '../../types';
 import { MasjidDetails, MasjidListing } from './Stacks';
 import ConnectedDevices from './Stacks/ConnectedDevices';
 import { GetUserDevices } from '../../api/deviceController';
-import { useHookstate } from '@hookstate/core';
+import { Immutable, useHookstate } from '@hookstate/core';
 import { userStore } from '../../store/UserStore';
+import { useMasjid } from '../../utils/hooks';
+import { Masjid } from '../../types/masjidControllerTypes';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -59,15 +61,28 @@ export const ListEmptyComponent = ({
 export default function Home() {
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const isFocused = useIsFocused();
-  const data = Array(10).fill(1);
   const userData = useHookstate(userStore.userData).get();
   // const data: any = [];
   const [step, setStep] = useState(0);
+  const [selectedMasjid, setSelectedMasjid] = useState<Immutable<Masjid> | null>(null)
+  const {
+    getMasjidListSubscribedByUser,
+    store: { userMasjidList },
+    isLoading
+  } = useMasjid();
 
   useEffect(() => {
     setStep(0);
     GetUserDevices(userData?.id?.toString() ?? '');
+    getMasjidListSubscribedByUser(userData?.id?.toString() ?? '');
   }, [isFocused]);
+
+  useEffect(() => {
+    if(step == 0 &&  userMasjidList?.length == 1) {
+      setStep(1)
+      setSelectedMasjid(userMasjidList?.[0])
+    }
+  }, [userMasjidList])
 
   const onBackPress = () => {
     if (step != 0) {
@@ -82,22 +97,24 @@ export default function Home() {
       showBack={step == 0 ? false : true}
       onBackPress={onBackPress}
       showFooter={false}
-      title={"Masjid Subscriptions"}
+      title={'Masjid Subscriptions'}
       bgImageSpacer={false}>
       {({ props }) => {
         return (
           <>
+            <OverlayLoader isShow={isLoading} />
             {step == 0 && (
               <MasjidListing
                 contentOpacity={props.contentOpacity}
                 setStep={setStep}
-                data={data}
+                data={userMasjidList as Masjid[]}
               />
             )}
             {step == 1 && (
               <MasjidDetails
                 contentOpacity={props.contentOpacity}
                 setStep={setStep}
+                selectedMasjid={selectedMasjid as Masjid}
               />
             )}
             {step == 2 && (

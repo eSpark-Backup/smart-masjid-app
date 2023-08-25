@@ -25,8 +25,17 @@ import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
+import { Masjid } from '../../../types/masjidControllerTypes';
 
-export default function MasjidDetails({ setStep, contentOpacity }: any) {
+export default function MasjidDetails({
+  setStep,
+  contentOpacity,
+  selectedMasjid,
+}: {
+  selectedMasjid?: Masjid;
+  setStep: (value: any) => void;
+  contentOpacity: any;
+}) {
   const { colors }: Theme = useTheme();
   const [currentDeviceId, setCurrentDeviceId] = useState(1);
 
@@ -46,7 +55,7 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
           padding: 5,
           paddingHorizontal: 15,
         }}>
-        <MyTextHeader text="East Plano Islamic Center" />
+        <MyTextHeader text={selectedMasjid?.name ?? ''} />
         <GapView length={15} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <MyTextSubHeader
@@ -158,13 +167,13 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         <JumuahTable
           headings={['Salah', 'Khutba']}
           data={{
-            "id": 7,
-            "effectiveDate": "2023-07-07",
-            "jumuah1": "13:45:00",
-            "jumuah2": "15:15:00",
-            "jumuah3": null,
-            "createdBy": "User",
-            "createdDate": "2023-07-05T14:26:15.946+00:00"
+            id: 7,
+            effectiveDate: '2023-07-07',
+            jumuah1: '13:45:00',
+            jumuah2: '15:15:00',
+            jumuah3: null,
+            createdBy: 'User',
+            createdDate: '2023-07-05T14:26:15.946+00:00',
           }}
         />
         <GapView length={15} />
