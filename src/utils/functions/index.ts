@@ -12,17 +12,18 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import phone from 'phone';
+import moment from 'moment';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { globalStore } from '../../store/GlobalStates';
 import { CountryCodes, IPrayerTimeForPeriod } from '../../types';
-import moment from 'moment';
 import {
   IqamahTime,
   JummahTime,
   SubscriptionList,
 } from '../../types/masjidControllerTypes';
-import Toast from 'react-native-toast-message';
-import phone from 'phone';
 
 /**
  *
@@ -70,7 +71,13 @@ async function _requestUserNotificationPermission() {
   }
 
   checkMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]).then(statuses => {
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    console.log(
+      'kia ha notification status ' +
+        statuses['android.permission.POST_NOTIFICATIONS'],
+    );
+    if (statuses['android.permission.POST_NOTIFICATIONS'] == 'blocked') {
+      _openSettingIsBlocked(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    }
     if (statuses[PERMISSIONS.ANDROID.POST_NOTIFICATIONS] != 'granted') {
       requestMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]);
     }
