@@ -24,7 +24,7 @@ export default function SalahSettings({
         <GapView length={50} />
       </View>
 
-      <View style={{ top: 100 }}>
+      <View style={{ top: 110 }}>
         <ProfileSectionlist
           data={[
             {

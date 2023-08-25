@@ -206,11 +206,18 @@ export default function MyInput(props: MyInputProps) {
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
           </TouchableOpacity>
         )}
-        {isDropDown || helpSearch ? null : (
+        {helpSearch ? null : (
           <View
             style={{
               position: 'absolute',
-              top: value || getFocused ? -10 : 15,
+              top:
+                value || getFocused
+                  ? isDropDown
+                    ? -3
+                    : -10
+                  : isDropDown
+                  ? 18
+                  : 15,
               left: isPhoneCode ? 95 : 15,
               backgroundColor: theme.colors.background,
               zIndex: value || getFocused ? 1 : 0,
@@ -218,7 +225,10 @@ export default function MyInput(props: MyInputProps) {
             }}>
             <MyText
               textStyle={{
-                color: getFocused ? theme.colors.primary : '#9E9F9F',
+                color:
+                  (value && isDropDown) || getFocused
+                    ? theme.colors.primary
+                    : '#9E9F9F',
               }}
               text={placeholder}
             />
@@ -236,7 +246,7 @@ export default function MyInput(props: MyInputProps) {
                 { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
                 inputStyle,
               ]}
-              placeholder={isDropDown || helpSearch ? placeholder : ''}
+              placeholder={helpSearch ? placeholder : ''}
               placeholderTextColor={'#9E9F9F'}
               onChangeText={handleTextChange}
               onFocus={() => setGetFocused(true)}

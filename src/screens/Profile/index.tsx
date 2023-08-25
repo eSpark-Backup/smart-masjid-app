@@ -36,6 +36,8 @@ import {
   ViewUser,
   AddUser,
   HelpScreen,
+  EditIqamahTimings,
+  EditJummaTimings,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { useHookstate } from '@hookstate/core';
@@ -50,6 +52,8 @@ type ProfileNavigationProp = NativeStackScreenProps<
 export default function Profile() {
   const navigation = useNavigation<ProfileNavigationProp['navigation']>();
   const [flag, setFlag] = useState('uInfo');
+  const [jummaData, setJummaData] = useState<object | null>(null);
+  const [iqamaData, setIqamaData] = useState<object | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
 
   const handleBack = (currScreen: string) => {
@@ -70,11 +74,19 @@ export default function Profile() {
       setFlag('sTime');
       return;
     }
-    if (currScreen == 'iEdit' || currScreen == 'iHist') {
+    if (
+      currScreen == 'iEdit' ||
+      currScreen == 'iHist' ||
+      currScreen == 'iAdd'
+    ) {
       setFlag('iTime');
       return;
     }
-    if (currScreen == 'jEdit' || currScreen == 'jHist') {
+    if (
+      currScreen == 'jEdit' ||
+      currScreen == 'jAdd' ||
+      currScreen == 'jHist'
+    ) {
       setFlag('jTime');
       return;
     }
@@ -139,10 +151,20 @@ export default function Profile() {
     if (flag == 'aSet') {
       return 'Adhan Settings';
     }
-    if (flag == 'iTime' || flag == 'iEdit' || flag == 'iHist') {
+    if (
+      flag == 'iTime' ||
+      flag == 'iEdit' ||
+      flag == 'iHist' ||
+      flag == 'iAdd'
+    ) {
       return 'Iqama Timings';
     }
-    if (flag == 'jTime' || flag == 'jEdit' || flag == 'jHist') {
+    if (
+      flag == 'jTime' ||
+      flag == 'jEdit' ||
+      flag == 'jAdd' ||
+      flag == 'jHist'
+    ) {
       return 'Jumuah Timings';
     }
     if (flag == 'vUser' || flag == 'addUser') {
@@ -218,6 +240,7 @@ export default function Profile() {
               <IqamahTimings
                 contentOpacity={props.contentOpacity}
                 setFlag={(value: string) => setFlag(value)}
+                selectedIqamah={obj => setIqamaData(obj)}
               />
             )}
             {flag == 'iHist' && (
@@ -226,10 +249,41 @@ export default function Profile() {
                 setFlag={(value: string) => setFlag(value)}
               />
             )}
+            {flag == 'iEdit' && (
+              <EditIqamahTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+                iqamahType={'Edit'}
+                selectedIqamah={iqamaData}
+              />
+            )}
+            {flag == 'iAdd' && (
+              <EditIqamahTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+                iqamahType={'Add'}
+              />
+            )}
             {flag == 'jTime' && (
               <JummaTimings
                 contentOpacity={props.contentOpacity}
                 setFlag={(value: string) => setFlag(value)}
+                selectedJumma={obj => setJummaData(obj)}
+              />
+            )}
+            {flag == 'jEdit' && (
+              <EditJummaTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+                jummaType={'Edit'}
+                selectedJumma={jummaData}
+              />
+            )}
+            {flag == 'jAdd' && (
+              <EditJummaTimings
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+                jummaType={'Add'}
               />
             )}
             {flag == 'jHist' && (

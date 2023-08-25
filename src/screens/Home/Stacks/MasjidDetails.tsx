@@ -25,8 +25,17 @@ import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
+import { Masjid } from '../../../types/masjidControllerTypes';
 
-export default function MasjidDetails({ setStep, contentOpacity }: any) {
+export default function MasjidDetails({
+  setStep,
+  contentOpacity,
+  selectedMasjid,
+}: {
+  selectedMasjid?: Masjid;
+  setStep: (value: any) => void;
+  contentOpacity: any;
+}) {
   const { colors }: Theme = useTheme();
   const [currentDeviceId, setCurrentDeviceId] = useState(1);
 
@@ -46,7 +55,7 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
           padding: 5,
           paddingHorizontal: 15,
         }}>
-        <MyTextHeader text="East Plano Islamic Center" />
+        <MyTextHeader text={selectedMasjid?.name ?? ''} />
         <GapView length={15} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <MyTextSubHeader
