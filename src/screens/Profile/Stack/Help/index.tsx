@@ -1,6 +1,12 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, View, Animated, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Animated,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
 import { ContactUs } from '../../../../assets';
 
@@ -37,6 +43,7 @@ export default function HelpScreen({
           flex: 1,
           alignItems: 'center',
           justifyContent: 'space-between',
+          paddingBottom: 112,
         }}>
         <View>
           <Card
@@ -46,16 +53,10 @@ export default function HelpScreen({
             style={{ elevation: 3 }}>
             <MyInput
               helpSearch
-              // onFocus={() => {
-              //   if (zipCode == 'Your Location') {
-              //     setZipCode('');
-              //   }
-              // }}
-              // onCurrentLocationPress={onCurrentLocationPress}
               inputStyle={{ width: WINDOW_WIDTH - 30 }}
               placeholder="Search"
               // onSearch={onSearch}
-              // value={zipCode}
+              // value={value}
             />
           </Card>
           <GapView />
@@ -68,7 +69,7 @@ export default function HelpScreen({
         </View>
         <View
           style={{
-            bottom: 112,
+            marginTop: 45,
             alignItems: 'center',
           }}>
           <MyText size={16} text={`Can't find what your looking for?`} />
