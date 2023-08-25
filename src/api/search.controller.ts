@@ -40,7 +40,7 @@ export const GetMasidAdhanTimings = async (masjidId: string) => {
       return result.data;
     }
   } catch (error: any) {
-    // crashlytics().recordError(error);
+    crashlytics().recordError(error);
     console.log('error GetMasidAdhanTimings', error);
   }
 };
