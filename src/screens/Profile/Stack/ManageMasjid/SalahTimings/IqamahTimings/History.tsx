@@ -1,8 +1,8 @@
-import { useHookstate } from '@hookstate/core';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Animated } from 'react-native';
-import { GetIqamahHistory } from '../../../../../../api/masjidController';
+import { StyleSheet, View, Animated } from 'react-native';
+import { useHookstate } from '@hookstate/core';
 
+import { GetIqamahHistory } from '../../../../../../api/masjidController';
 import {
   GapView,
   MyText,
@@ -10,10 +10,7 @@ import {
   TimeSheet,
 } from '../../../../../../components';
 import { masjidStore } from '../../../../../../store/MasjidStore';
-import {
-  IqamahTime,
-  JummahTime,
-} from '../../../../../../types/masjidControllerTypes';
+import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 
 export default function History({

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { View, ScrollView } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View, ScrollView } from 'react-native';
+import { useHookstate } from '@hookstate/core';
+
 import { SearchMasjidSvg } from '../../assets';
 import { GapView, MyText, Rounded } from '../../components';
 import { Wrapper } from '../../containers';
@@ -9,7 +11,6 @@ import { BottomNavigationParamList } from '../../types';
 import { MasjidDetails, MasjidListing } from './Stacks';
 import ConnectedDevices from './Stacks/ConnectedDevices';
 import { GetUserDevices } from '../../api/deviceController';
-import { useHookstate } from '@hookstate/core';
 import { userStore } from '../../store/UserStore';
 
 type HomeNavigationProps = NativeStackScreenProps<
@@ -61,7 +62,6 @@ export default function Home() {
   const isFocused = useIsFocused();
   const data = Array(10).fill(1);
   const userData = useHookstate(userStore.userData).get();
-  // const data: any = [];
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function Home() {
       showBack={step == 0 ? false : true}
       onBackPress={onBackPress}
       showFooter={false}
-      title={"Masjid Subscriptions"}
+      title={'Masjid Subscriptions'}
       bgImageSpacer={false}>
       {({ props }) => {
         return (

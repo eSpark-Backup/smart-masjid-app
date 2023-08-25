@@ -28,7 +28,7 @@ import {
   JummaTimings,
   ManageAccount,
   ManageMasjid,
-  ModifyAccount,
+  // ModifyAccount,
   SalahTimings,
   IqamahHistory,
   JummaHistory,
@@ -190,12 +190,12 @@ export default function Profile() {
                 showVerification={true}
               />
             ) : null}
-            {flag == 'modAcc' && (
+            {/* {flag == 'modAcc' && (
               <ModifyAccount
                 contentOpacity={props.contentOpacity}
                 setFlag={(value: string) => setFlag(value)}
               />
-            )}
+            )} */}
             {flag == 'mMas' && (
               <ManageMasjid
                 contentOpacity={props.contentOpacity}

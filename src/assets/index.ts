@@ -1,10 +1,8 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
-
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
 export { default as GLoad } from './animations/7bdno2.gif';
-export { default as SLoaderGif } from './animations/sLoader.gif';
 
 //* images/svg
 export { default as MasjidSample } from './images/masjidSample.svg';

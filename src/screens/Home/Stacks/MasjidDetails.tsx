@@ -158,13 +158,13 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         <JumuahTable
           headings={['Salah', 'Khutba']}
           data={{
-            "id": 7,
-            "effectiveDate": "2023-07-07",
-            "jumuah1": "13:45:00",
-            "jumuah2": "15:15:00",
-            "jumuah3": null,
-            "createdBy": "User",
-            "createdDate": "2023-07-05T14:26:15.946+00:00"
+            id: 7,
+            effectiveDate: '2023-07-07',
+            jumuah1: '13:45:00',
+            jumuah2: '15:15:00',
+            jumuah3: null,
+            createdBy: 'User',
+            createdDate: '2023-07-05T14:26:15.946+00:00',
           }}
         />
         <GapView length={15} />

@@ -46,16 +46,8 @@ export default function HelpScreen({
             style={{ elevation: 3 }}>
             <MyInput
               helpSearch
-              // onFocus={() => {
-              //   if (zipCode == 'Your Location') {
-              //     setZipCode('');
-              //   }
-              // }}
-              // onCurrentLocationPress={onCurrentLocationPress}
               inputStyle={{ width: WINDOW_WIDTH - 30 }}
               placeholder="Search"
-              // onSearch={onSearch}
-              // value={zipCode}
             />
           </Card>
           <GapView />

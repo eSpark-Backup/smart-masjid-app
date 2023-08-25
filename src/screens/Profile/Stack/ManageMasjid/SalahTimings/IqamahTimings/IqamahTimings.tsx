@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Animated } from 'react-native';
+import { StyleSheet, View, ScrollView, Animated } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
@@ -273,5 +273,3 @@ export default function IqamahTimings({
     </>
   );
 }
-
-const styles = StyleSheet.create({});

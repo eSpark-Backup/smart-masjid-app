@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Animated } from 'react-native';
+
 import { Email, PeoplesSvg, Phone, ProfileUser } from '../../../../assets';
-import {
-  GapView,
-  MyTitle,
-  ProfileSectionlist,
-} from '../../../../components';
+import { GapView, MyTitle, ProfileSectionlist } from '../../../../components';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
 
 export default function ViewUsers({

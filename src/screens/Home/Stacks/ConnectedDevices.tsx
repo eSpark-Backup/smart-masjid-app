@@ -33,12 +33,6 @@ export default function ConnectedDevicesComponent({
         <MyText text="MY HOME DEVICE " textStyle={{ color: colors.primary }} />
         <SyncSvg />
       </View>
-      {/* <GapView length={50} />
-      <MyText
-        text="Select Device"
-        size={16}
-        textStyle={{ color: '#3E3E3E', alignSelf: 'center', fontWeight: '700' }}
-      /> */}
       <GapView length={30} />
       <Card width={WINDOW_WIDTH - 28}>
         <View>

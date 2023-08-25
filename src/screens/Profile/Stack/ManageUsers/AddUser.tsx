@@ -72,7 +72,7 @@ export default function AddUsers({
         <GapView length={50} />
       </View>
 
-      <View style={{top: 100}}>
+      <View style={{ top: 100 }}>
         <Formik
           initialValues={{ firstName: '', lastName: '', email: '', phone: '' }}
           validationSchema={AddAdminForSchema.AddAdminForSchema}
@@ -86,14 +86,6 @@ export default function AddUsers({
             touched,
           }) => (
             <>
-              {/* <View
-              style={{
-                padding: 20,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <TextLabel label={'Add New User'} />
-            </View> */}
               <View style={{ paddingHorizontal: 25 }}>
                 <GapView />
                 <Card backgroundColor="#ffffff" width={345} radius={12}>
@@ -136,7 +128,6 @@ export default function AddUsers({
                     value={values.phone}
                   />
                 </Card>
-                {/* {console.log("errors", errors)} */}
                 {Object.entries(errors).map(([key, value]) => {
                   // @ts-ignore
                   if (touched[key]) {

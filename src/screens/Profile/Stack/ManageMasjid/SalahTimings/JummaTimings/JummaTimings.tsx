@@ -1,10 +1,13 @@
-import { useHookstate } from '@hookstate/core';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Animated } from 'react-native';
+import { useHookstate } from '@hookstate/core';
+import moment from 'moment';
+
 import {
   GetMasjidJummahTiming,
   UpdatedMasjidJummahTiming,
 } from '../../../../../../api/masjidController';
+
 import {
   Clock,
   EditTimeTable,
@@ -24,7 +27,6 @@ import {
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { masjidStore } from '../../../../../../store/MasjidStore';
-import moment from 'moment';
 
 export default function JummaTimings({
   setFlag,
@@ -37,11 +39,6 @@ export default function JummaTimings({
   const jummahTimings: any = useHookstate(masjidStore.JummahTime).get();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(false);
-
-  // console.log(
-  //   'Jummah Timings',
-  //   moment(jummahTimings.jumuah1, 'HH:mm:ss').format('LT'),
-  // );
 
   useEffect(() => {
     GetMasjidJummahTiming('1');
