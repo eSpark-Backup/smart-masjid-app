@@ -2,9 +2,10 @@ import { create } from 'apisauce';
 import { userStore } from '../store/UserStore';
 
 const USER_TOKEN: any = userStore?.token?.get();
+const BASE_URL: string = 'https://smartmasjid-api-qa.futuriklabs.com/';
 
 export const api = create({
-  baseURL: 'https://smartmasjid-api-qa.futuriklabs.com/',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -13,7 +14,7 @@ export const api = create({
 });
 
 export const xApi = create({
-  baseURL: 'https://smartmasjid-api-qa.futuriklabs.com/',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

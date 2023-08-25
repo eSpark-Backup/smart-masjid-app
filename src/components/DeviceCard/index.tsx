@@ -1,10 +1,9 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { View, Text, StyleSheet } from 'react-native';
-import { ButtonIcon, DeviceSvg, PlusSvg, ThreeDotSvg } from '../../assets';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
+
+import { ButtonIcon, DeviceSvg } from '../../assets';
 import { Card } from '../../containers';
 import GapView from '../GapView';
-import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import { Device } from '../../types/deviceControllerTypes';
 import DeviceStatus from '../DeviceStatus';
@@ -38,6 +37,7 @@ export default function DeviceCard({
                   alignItems: 'center',
                   fontSize: 14,
                   textAlign: 'center',
+                  fontWeight: '500',
                 }}
               />
               <GapView length={25} />
@@ -57,8 +57,9 @@ export default function DeviceCard({
               <GapView length={25} />
               <View
                 style={{
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                   bottom: 5,
+                  right: 2,
                 }}>
                 <DeviceStatus
                   online={

@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, FlatList, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
 import {
   Theme,
   useIsFocused,
@@ -13,11 +19,10 @@ import jwtDecode from 'jwt-decode';
 import { PlusSvg } from '../../assets';
 import {
   GapView,
-  MyText,
   TextLabel,
   DeviceCard,
   TabView,
-  
+  MyTitle,
 } from '../../components';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
@@ -41,7 +46,7 @@ const AddDevice = () => {
 
   return (
     <View>
-      <Card height={161} width={172}>
+      <Card height={161} width={172} backgroundColor="#ffffff">
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => navigation.navigate('DSetup', { from: 'Device' })}
@@ -51,7 +56,11 @@ const AddDevice = () => {
             <GapView length={10} />
             <TextLabel
               label="Add Device"
-              textStyle={{ color: theme.colors.primary }}
+              textStyle={{
+                color: theme.colors.primary,
+                fontSize: 16,
+                fontWeight: '500',
+              }}
             />
           </View>
         </TouchableOpacity>
@@ -77,7 +86,7 @@ export default function Device({ contentOpacity = 0 }: any) {
     if (step == 0) {
       const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
       console.log('what is the user info', user?.userType?.name);
-      console.log('what is the user info++++', devices);
+      console.log('what is the user info++++', JSON.stringify(jwtDecodedObj));
       GetUserDevices(user?.id.toString() ?? '');
       GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
     }
@@ -91,14 +100,6 @@ export default function Device({ contentOpacity = 0 }: any) {
     }
   };
 
-  // const realData = devices.filter((item: DeviceType) => {
-  //   if (activeTab == '2') {
-  //     return item?.deviceType?.deviceCategory?.name === 'SMART_BUTTON';
-  //   } else {
-  //     return item?.deviceType?.deviceCategory?.name === 'SMART_SPEAKER';
-  //   }
-  // });
-
   const finalData = activeTab == '1' ? devices : masjidDevices;
 
   console.log('devices', activeTab == '1' ? devices : masjidDevices);
@@ -109,31 +110,26 @@ export default function Device({ contentOpacity = 0 }: any) {
       showFooter={false}
       bgImageSpacer={false}
       title="Devices">
-      {({props}) => {
+      {({ props }) => {
         return (
           <>
             {step == 0 && (
               <>
                 <View style={{ alignSelf: 'center', top: 100 }}>
                   <Animated.View style={[{ opacity: props?.contentOpacity }]}>
-                    <TextLabel
-                      label="Devices"
-                      textStyle={{ alignSelf: 'center' }}
-                    />
+                    <MyTitle text="Devices" />
                   </Animated.View>
                   <GapView length={50} />
                 </View>
 
-                <View style={{top: 100}}>
+                <View style={{ top: 100 }}>
                   {user?.userType?.name === 'Customer' ? (
-                    <MyText
+                    <MyTitle
                       text="My Devices"
-                      textStyle={{
+                      style={{
                         color: colors.primary,
-                        fontWeight: '700',
                         alignSelf: 'center',
                       }}
-                      size={16}
                     />
                   ) : (
                     <TabView
@@ -171,6 +167,7 @@ export default function Device({ contentOpacity = 0 }: any) {
                                 onPress={() => {
                                   setStep(1);
                                   setSelectedDevice(item);
+                                  console.log('what', item);
                                 }}
                                 activeTab={activeTab}
                               />
@@ -194,7 +191,12 @@ export default function Device({ contentOpacity = 0 }: any) {
                 </View>
               </>
             )}
-            {step == 1 && <DeviceSetting contentOpacity={props.contentOpacity} device={selectedDevice} />}
+            {step == 1 && (
+              <DeviceSetting
+                contentOpacity={props.contentOpacity}
+                device={selectedDevice}
+              />
+            )}
           </>
         );
       }}

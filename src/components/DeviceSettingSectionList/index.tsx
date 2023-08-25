@@ -5,16 +5,16 @@ import {
   Caution,
   CheckSvg,
   Chevron_Right,
-  DeviceEdit,
   EditHeavy,
+  EditLight,
 } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
-import { Rounded } from '../Buttons';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
+
 interface DataItem {
   title?: string;
   data: DataProp[];
@@ -45,18 +45,19 @@ export default function DeviceSettingSectionList({
         sections={data ?? []}
         keyExtractor={(item, index) => item.title + index}
         renderItem={({ item }) => <SectionCard item={item} />}
+        ListFooterComponent={() => <GapView length={100} />}
         renderSectionHeader={({ section: { title } }) => (
           <>
             <View style={{ alignItems: 'center' }}>
               <MyDivider />
             </View>
-            <GapView length={30} />
+            <GapView length={10} />
             <MyText
               text={title ?? ''}
               size={16}
-              textStyle={{ fontWeight: '700', color: '#3E3E3E' }}
+              textStyle={{ fontWeight: '500', color: '#3E3E3E' }}
             />
-            <GapView length={20} />
+            <GapView length={10} />
           </>
         )}
       />
@@ -77,7 +78,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
             style={{ ...styles.cardContainer }}>
             <View style={styles.row}>
               <View style={styles.leftIcon}>{item?.icon}</View>
-              <GapView mode="horizontal" />
+              <GapView mode="horizontal" length={15} />
               <View>
                 <View>
                   <MyText text={item?.title} />
@@ -91,19 +92,16 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                     textStyle={{
                       color:
                         item?.danger && item.title == 'Battery'
-                          ? '#ff6464'
-                          : '#9E9F9F',
+                          ? '#FF6464'
+                          : '#6E6E6E',
                     }}
                   />
                 </View>
               </View>
             </View>
-            <View
-            // activeOpacity={item.title == 'Battery' ? 1 : 0.5}
-            // onPress={item.onEditPress}
-            >
+            <View>
               {item?.rightArrow && <Chevron_Right />}
-              {item?.isEditable && <EditHeavy />}
+              {item?.isEditable && <EditLight />}
               {item?.danger && <Caution />}
             </View>
           </TouchableOpacity>
@@ -113,7 +111,6 @@ const SectionCard = ({ item }: { item: DataProp }) => {
         <>
           <GapView />
           <View
-            // key={ind}
             style={{
               width: WINDOW_WIDTH - 30,
               flexDirection: 'row',
@@ -151,6 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: WINDOW_WIDTH / 1.1,
     alignSelf: 'center',
+    paddingHorizontal: 5,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   leftIcon: { height: 20, width: 20, alignItems: 'center' },

@@ -49,18 +49,15 @@ export const LogoutUser = async (userId: string) => {
  * @description Update the user data from profile screen
  * @returns get data of user and save to userStore
  */
-export const UpdateUser = async ({
-  id,
-  data,
-}: {
-  id: string;
+export const UpdateUser = async (
+  id: string,
   data: {
     firstName?: string;
     lastName?: string;
     email?: string;
     phone?: string;
-  };
-}) => {
+  },
+) => {
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
     if (result.data && result.status == 200) {

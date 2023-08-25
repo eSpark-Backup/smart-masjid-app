@@ -1,16 +1,10 @@
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Animated } from 'react-native';
+import { View, Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+
 import { ListEmptyComponent } from '..';
-import {
-  Accordian,
-  GapView,
-  MasjidListCard,
-  MyTitle,
-  TextLabel,
-} from '../../../components';
-import { Wrapper } from '../../../containers';
+import { GapView, MasjidListCard, MyTitle } from '../../../components';
 
 export default function MasjidListing({
   data,
@@ -35,7 +29,7 @@ export default function MasjidListing({
       <FlatList
         style={{ top: 130 }}
         data={data}
-        contentContainerStyle={{ paddingBottom: 210, paddingTop: 15 }}
+        contentContainerStyle={{ paddingBottom: 140, paddingTop: 15 }}
         renderItem={({ index }) => (
           <MasjidListCard
             key={index}
@@ -44,7 +38,6 @@ export default function MasjidListing({
           />
         )}
         ItemSeparatorComponent={GapView}
-        ListFooterComponent={() => <GapView />}
         ListEmptyComponent={<ListEmptyComponent navigation={navigation} />}
       />
     </View>

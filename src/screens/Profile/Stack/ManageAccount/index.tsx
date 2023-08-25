@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { LogoutUser, UpdateUser } from '../../../../api/userController';
 import {
@@ -122,11 +123,10 @@ export default function ManageAccount({
       return;
     }
     console.log('kia bhej raha hu me??', data);
-    await UpdateUser({
-      id: userData?.id?.toString()!,
-      data: { ...data, phone: data.phone ? `${data.phone}` : '' },
+    await UpdateUser(userData?.id?.toString()!, {
+      ...data,
+      phone: data.phone ? `${data.phone}` : '',
     });
-
     onEditPress('');
     setLoading(false);
   };
@@ -311,7 +311,9 @@ export default function ManageAccount({
                     justifyContent: 'center',
                     flexDirection: 'row',
                   }}
-                  onPress={() => setIsVisible(true)}>
+                  onPress={() => setIsVisible(true)}
+                  // onPress={() => crashlytics().crash()}
+                >
                   <TextLabel label="Logout" textStyle={{ color: '#ffffff' }} />
                 </TouchableOpacity>
               </>

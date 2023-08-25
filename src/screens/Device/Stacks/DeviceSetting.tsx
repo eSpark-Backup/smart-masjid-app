@@ -1,20 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View, Animated } from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
-  Attention,
-  Battery,
   BatteryBar,
-  Clock,
   DeviceObject,
   DeviceReset,
   DeviceSvg,
   Heart,
-  IP,
   Version,
   Wifi,
-  WifiSvg,
 } from '../../../assets';
 import {
   GapView,
@@ -26,11 +22,11 @@ import {
   DeviceErrorBox,
   OverlayLoader,
   LogoutModal,
+  MyTitle,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
 import { _resetDevice, _updateDevice } from '../../../api/deviceController';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../../types';
 
 type DeviceNavigationProps = NativeStackScreenProps<
@@ -121,23 +117,28 @@ const DeviceSetting = ({
               });
               setErrorShow(false);
             },
-            // onPress: () => console.log('mac ID', device),
           },
         ]}
       />
       <View style={{ alignSelf: 'center', top: 100 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Devices" textStyle={{ alignSelf: 'center' }} />
+          <MyTitle
+            text="Devices"
+            style={{ alignSelf: 'center', fontWeight: '400' }}
+          />
         </Animated.View>
-        <GapView length={50} />
+        <GapView length={40} />
       </View>
-
-      <ScrollView style={{top: 100}}>
+      <ScrollView style={{ top: 100 }}>
+        <DeviceErrorBox
+          show={device?.deviceTelemetry?.status == 'Online' ? false : true}
+          onClose={() => console.log('on Close Box', device)}
+          message="Looks like your device is offline. Please power off and power on the device."
+        />
         <View style={styles.deviceSettingContainer}>
-          <GapView length={20} />
           <View style={styles.subHeader}>
             <MyText
-              text={`Smart Adhan ${
+              text={`Masjid Adhan ${
                 device?.deviceType?.modelNumber?.includes('SBB')
                   ? 'Button'
                   : 'Speaker'
@@ -145,19 +146,16 @@ const DeviceSetting = ({
               textStyle={styles.deviceName}
             />
             <DeviceStatus
-              online={device?.deviceTelemetry.status == 'Online' ? true : false}
+              online={
+                device?.deviceTelemetry?.status == 'Online' ? true : false
+              }
             />
           </View>
-          <GapView length={20} />
-          <DeviceErrorBox
-            show={device?.deviceTelemetry.status == 'Online' ? false : true}
-            onClose={() => console.log('on Close Box', device)}
-            message="Looks like your device is offline. If you believe your WiFi is working, please power off and power on the device."
-          />
+          <GapView length={10} />
           <DeviceSettingSectionList
             data={[
               {
-                title: 'General Settings',
+                title: 'General',
                 data: [
                   {
                     title: 'Nick Name',
@@ -173,8 +171,9 @@ const DeviceSetting = ({
                   },
                   {
                     title: 'Battery',
-                    subtitle:
-                      device?.deviceTelemetry?.batteryLife.toString() + '%',
+                    subtitle: device?.deviceTelemetry?.batteryLife.toString()
+                      ? device?.deviceTelemetry?.batteryLife.toString() + '%'
+                      : 'NaN',
                     icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
                     danger:
                       device?.deviceTelemetry?.batteryLife! <= 15
@@ -185,30 +184,34 @@ const DeviceSetting = ({
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    rightArrow: true,
-                    onPress: () => console.log('Edit Subscription'),
+                    rightArrow: device?.deviceType.id == 1 ? true : false,
+                    onPress:
+                      device?.deviceType.id == 1
+                        ? () => console.log('he')
+                        : undefined,
                   },
                 ],
               },
               {
-                title: 'Advance Settings',
+                title: 'Advanced',
                 data: [
                   {
                     title: 'Wifi',
                     subtitle: device?.wifiSsid,
                     icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
-                    // isEditable: true,
+                    isEditable:
+                      device?.deviceTelemetry?.status === 'Online'
+                        ? true
+                        : false,
                     danger:
-                      device?.deviceTelemetry.status == 'Online' ? false : true,
-                    // onPress:
-                    //   device?.deviceTelemetry.status == 'Online'
-                    //     ? undefined
-                    //     : () => setErrorShow(true),
+                      device?.deviceTelemetry?.status === 'Online'
+                        ? false
+                        : true,
                     onPress: () => setErrorShow(true),
                   },
                   {
                     title: 'Firmware Version',
-                    subtitle: device?.firmwareVersion,
+                    subtitle: 'Version ' + device?.firmwareVersion,
                     icon: <Version style={{ padding: 10, bottom: 2 }} />,
                   },
                   {
@@ -256,12 +259,14 @@ const makeStyles = (theme: Theme) => {
     deviceSettingContainer: { flex: 1, alignItems: 'center' },
     subHeader: {
       flexDirection: 'row',
-      width: WINDOW_WIDTH / 1.2,
+      width: '100%',
+      paddingHorizontal: 14,
       justifyContent: 'space-between',
+      alignItems: 'center',
     },
     deviceName: {
-      fontSize: 16,
-      fontWeight: '600',
+      fontSize: 20,
+      fontWeight: '700',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     activeStatus: {

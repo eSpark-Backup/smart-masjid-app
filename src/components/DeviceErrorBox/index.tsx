@@ -16,30 +16,32 @@ export default function DeviceErrorBox({
 }) {
   if (show) {
     return (
-      <View style={{ marginBottom: 15, paddingHorizontal: 10 }}>
-        <Card width={325}>
-          <View style={{ padding: 10 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '100%',
-              }}>
-              <MyText
-                text={message!!}
-                textStyle={{
-                  color: '#FF6464',
-                  fontSize: 14,
-                  lineHeight: 24,
-                  width: 273,
-                }}
-              />
-              <TouchableWithoutFeedback onPress={onClose}>
+      <View
+        style={{
+          paddingHorizontal: 10,
+          alignSelf: 'center',
+        }}>
+        <View style={{ padding: 10 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}>
+            <MyText
+              text={message!!}
+              textStyle={{
+                color: '#FF6464',
+                fontSize: 14,
+                lineHeight: 24,
+                width: 310,
+              }}
+            />
+            {/* <TouchableWithoutFeedback onPress={onClose}>
                 <Close />
-              </TouchableWithoutFeedback>
-            </View>
+              </TouchableWithoutFeedback> */}
           </View>
-        </Card>
+        </View>
       </View>
     );
   } else {

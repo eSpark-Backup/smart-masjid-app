@@ -36,10 +36,10 @@ export default function ErrorModal({
           <MyText text={message} textStyle={styles.bodyText} size={16} />
           <GapView length={20} />
           {options?.map(item => (
-            <>
+            <View key={item.label}>
               <Rounded label={item?.label} onPress={item?.onPress} />
               <GapView length={15} />
-            </>
+            </View>
           ))}
           <Rounded label={"No, I'm good"} onPress={onClose} outlined />
         </View>
