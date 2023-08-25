@@ -7,5 +7,6 @@ export const masjidStore = hookstate<MasjidStoreProps>({
   masjid: null,
   iqamahHistory: [],
   JummahTime: null,
-  JummahHistory: []
+  JummahHistory: [],
+  userMasjidList: []
 });

@@ -7,12 +7,13 @@ import {
   Animated,
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
+import { Theme, useTheme } from '@react-navigation/native';
 
 import {
   DeleteAdminFromMasjid,
   GetMasjidAdmins,
 } from '../../../../api/userController';
-import { Delete, PlusSvg, ProfileDummy } from '../../../../assets';
+import { AddIcon, Delete, PlusSvg, ProfileDummy } from '../../../../assets';
 import {
   GapView,
   LogoutModal,
@@ -25,7 +26,6 @@ import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { userStore } from '../../../../store/UserStore';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
-import { Theme, useTheme } from '@react-navigation/native';
 
 export default function ManageUsers({
   setFlag,
@@ -73,7 +73,6 @@ export default function ManageUsers({
         </Animated.View>
         <GapView length={50} />
       </View>
-
       <View style={{ top: 100 }}>
         <GapView length={10} />
         <FlatList
@@ -119,7 +118,6 @@ const UserCard = ({
   onPress: () => void;
   onDeletePress?: (userId: string) => void;
 }) => {
-
   return (
     <View style={{ marginTop: 10 }}>
       <Card width={WINDOW_WIDTH - 28}>
@@ -158,18 +156,17 @@ const AddUserBtn = ({ onPress }: any) => {
   const { colors }: Theme = useTheme();
   return (
     <View style={{ marginTop: 10 }}>
-      <Card>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={onPress}
-          style={styles.cardContainer}>
-          <MyText
-            text="Add New User"
-            textStyle={{ color: colors.primary, fontWeight: '700' }}
-          />
-          <PlusSvg height={16} width={16} />
-        </TouchableOpacity>
-      </Card>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={onPress}
+        style={{ ...styles.cardContainer, justifyContent: 'center' }}>
+        <MyText
+          text="Add User"
+          textStyle={{ color: colors.primary, fontWeight: '500', fontSize: 16 }}
+        />
+        <GapView mode="horizontal" />
+        <AddIcon />
+      </TouchableOpacity>
     </View>
   );
 };

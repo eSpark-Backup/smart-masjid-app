@@ -1,5 +1,4 @@
-import { Formik } from 'formik';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import {
   Alert,
   Button,
@@ -11,6 +10,7 @@ import {
 import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
 import RnWifi from '@react-native-tethering/wifi';
 import Toast from 'react-native-toast-message';
+import { Formik } from 'formik';
 
 import {
   GapView,
@@ -24,7 +24,6 @@ import {
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { DeviceSetupSchema } from '../../constants/validations/schema';
-import { Card } from '../../containers';
 
 export default function PasswordForm({
   ssid,
@@ -38,7 +37,6 @@ export default function PasswordForm({
   contentOpacity: any;
 }) {
   const [loading, setLoading] = useState(false);
-
   const connectToWifi = async ({
     ssid,
     password,
@@ -65,11 +63,11 @@ export default function PasswordForm({
       console.log('error in connecting wifi', e);
       setLoading(false);
       Toast.show({
-        text2: 'Wifi not connected successfully',
+        text2: 'WiFi Password incorrect. Please try again',
         type: 'error',
         visibilityTime: 10000,
       });
-      setStep(4);
+      // setStep(4);
     }
   };
 
@@ -97,21 +95,16 @@ export default function PasswordForm({
         </View>
         <GapView length={60} />
         <Formik
+          enableReinitialize={true}
           initialValues={{ password: '' }}
           validationSchema={DeviceSetupSchema.wifiPassword}
-          onSubmit={({ password }) => {
+          onSubmit={({ password }, { resetForm }) => {
             // setStep(6);
             setPass(password);
             connectToWifi({ ssid: ssid ?? '', password });
+            resetForm();
           }}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
+          {({ handleChange, handleSubmit, values, errors, touched }) => (
             <View style={{ alignItems: 'center' }}>
               <MyInput
                 placeholder="Password"

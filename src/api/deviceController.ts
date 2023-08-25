@@ -1,4 +1,4 @@
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import Toast from 'react-native-toast-message';
 
 import { api } from '.';
 import { deviceStore } from '../store/DeviceStore';

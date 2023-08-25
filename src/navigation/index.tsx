@@ -56,7 +56,7 @@ const toastConfig = {
       style={styles.errorStyle}
       text1Style={styles.text1Style}
       text2Style={styles.text2Style}
-      text1="Oops!"
+      text1="Error!"
     />
   ),
 
@@ -75,8 +75,6 @@ export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
-  const userToken = useHookstate(userStore.token);
-  const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
     handleDeviceIdCheck();
@@ -95,6 +93,7 @@ export default function App() {
       if (res != null) {
         const token = JSON.parse(res);
         const jwtDecodedObj: UserToken = jwtDecode(token);
+        console.log('token', token);
         if (
           // jwtDecodedObj.exp is unix date thats why we multiply to 1000 to convert to real date
           moment(moment(new Date()))
@@ -119,7 +118,6 @@ export default function App() {
   }, []);
 
   const handleDeviceIdCheck = useCallback(async () => {
-    setLoader(true);
     const res = await getUniqueId();
     console.log('kia mila', res);
     state.phoneId.set(res.toString());
@@ -136,7 +134,6 @@ export default function App() {
     } catch (e) {
       console.log('error', e);
     }
-    setLoader(false);
   }, []);
 
   console.log('checkid', checkedId);

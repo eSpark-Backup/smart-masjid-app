@@ -1,23 +1,18 @@
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Animated } from 'react-native';
+import { View, Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+
 import { ListEmptyComponent } from '..';
-import {
-  Accordian,
-  GapView,
-  MasjidListCard,
-  MyTitle,
-  TextLabel,
-} from '../../../components';
-import { Wrapper } from '../../../containers';
+import { GapView, MasjidListCard, MyTitle } from '../../../components';
+import { Masjid } from '../../../types/masjidControllerTypes';
 
 export default function MasjidListing({
   data,
   setStep = () => {},
   contentOpacity = 0,
 }: {
-  data: any;
+  data: Masjid[];
   setStep: any;
   contentOpacity?: Animated.AnimatedInterpolation<string | number> | number;
 }) {
@@ -35,16 +30,15 @@ export default function MasjidListing({
       <FlatList
         style={{ top: 130 }}
         data={data}
-        contentContainerStyle={{ paddingBottom: 210, paddingTop: 15 }}
-        renderItem={({ index }) => (
+        contentContainerStyle={{ paddingBottom: 140, paddingTop: 15 }}
+        renderItem={({ item, index }) => (
           <MasjidListCard
             key={index}
             onPress={() => setStep(1)}
-            masjidName="Masjid Ar - Rahman"
+            masjidName={item.name ?? ''}
           />
         )}
         ItemSeparatorComponent={GapView}
-        ListFooterComponent={() => <GapView />}
         ListEmptyComponent={<ListEmptyComponent navigation={navigation} />}
       />
     </View>
