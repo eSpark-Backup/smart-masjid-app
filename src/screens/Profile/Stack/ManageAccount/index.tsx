@@ -12,13 +12,7 @@ import phone from 'phone';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { LogoutUser, UpdateUser } from '../../../../api/userController';
-import {
-  EditVector,
-  Email,
-  Phone,
-  Power,
-  ProfileUser,
-} from '../../../../assets';
+import { Email, Phone, ProfileUser } from '../../../../assets';
 import {
   GapView,
   LogoutModal,
@@ -89,7 +83,6 @@ export default function ManageAccount({
       editable: false,
     },
   ]);
-  // const [showVerification, setShowVerification] = useState(false);
   const onEditPress = (key: string) => {
     const newData = displayData.map(data => {
       if (data.key == key) {

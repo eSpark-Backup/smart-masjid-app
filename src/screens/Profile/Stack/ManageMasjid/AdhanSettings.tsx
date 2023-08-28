@@ -1,17 +1,9 @@
-import { useHookstate } from '@hookstate/core';
 import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet, View, Animated } from 'react-native';
-import { GetMasjidAdhanSetting } from '../../../../api/masjidController';
+import { useHookstate } from '@hookstate/core';
 
-import {
-  GapView,
-  MyDivider,
-  MyDropDown,
-  MyText,
-  MyTitle,
-  ProfileAvatar,
-  TextLabel,
-} from '../../../../components';
+import { GetMasjidAdhanSetting } from '../../../../api/masjidController';
+import { GapView, MyText, MyTitle } from '../../../../components';
 import { masjidStore } from '../../../../store/MasjidStore';
 import { WINDOW_WIDTH } from '../../../../constants';
 
@@ -81,7 +73,7 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     width: WINDOW_WIDTH - 28,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   settingText: { color: '#9E9F9F', fontWeight: '400' },
 });

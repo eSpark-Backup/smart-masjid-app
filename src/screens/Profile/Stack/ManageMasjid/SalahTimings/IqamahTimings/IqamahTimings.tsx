@@ -61,7 +61,7 @@ export default function IqamahTimings({
   useEffect(() => {
     setLoading(true);
     GetMasjidIqamahTiming('1').then(iqamahTime => {
-      let iqamahData = [];
+      let iqamahData: any = [];
       iqamahTime?.map((i: IqamahTime) => {
         const namazData = {
           id: i.id,

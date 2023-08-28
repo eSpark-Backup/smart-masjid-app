@@ -105,10 +105,6 @@ export default function DeviceSetupScreen() {
     }
   }, [retry]);
 
-  // useEffect(() => {
-  //   console.log('milgaya parent ko', devInfo);
-  // }, [devInfo]);
-
   useEffect(() => {
     console.log('step current?', step);
     if (step === 6) {
