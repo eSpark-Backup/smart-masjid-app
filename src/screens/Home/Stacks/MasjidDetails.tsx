@@ -51,7 +51,7 @@ export default function MasjidDetails({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           top: 110,
-          paddingBottom: 70,
+          paddingBottom: 120,
           padding: 5,
           paddingHorizontal: 15,
         }}>
@@ -72,7 +72,7 @@ export default function MasjidDetails({
           data={[
             {
               id: 1,
-              name: 'Device 1, Device 1 Device 1',
+              name: 'Device 1',
               isOnline: true,
             },
             { id: 2, name: 'Device 2', isOnline: false },
@@ -177,20 +177,25 @@ export default function MasjidDetails({
           }}
         />
         <GapView length={15} />
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={{
-            height: 41,
-            width: '70%',
-            backgroundColor: '#FF6464',
-            borderRadius: 50,
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-          }}
-          onPress={() => {}}>
-          <TextLabel label="Unsubscribe" textStyle={{ color: '#ffffff' }} />
-        </TouchableOpacity>
+        <View style={{ width: '100%', alignItems: 'center' }}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={{
+              height: 41,
+              width: '85%',
+              backgroundColor: '#FF6464',
+              borderRadius: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+            }}
+            onPress={() => {}}>
+            <TextLabel
+              label="Unsubscribe"
+              textStyle={{ color: '#ffffff', fontWeight: '400' }}
+            />
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );
