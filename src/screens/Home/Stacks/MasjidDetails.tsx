@@ -90,6 +90,7 @@ export default function MasjidDetails({
               isOnline={item?.isOnline}
             />
           )}
+          keyExtractor={item => item.id + (Math.random() * 999).toString()}
           ItemSeparatorComponent={() => <GapView mode="horizontal" />}
         />
         <GapView length={15} />

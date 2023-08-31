@@ -117,10 +117,11 @@ export default function SwipeableTimeTable({
   const renderItem = useCallback(
     ({ item, index }: { item: IPrayerTimeForPeriod; index: number }) => {
       return (
-        <View>
-          <View key={index} style={{ width: WINDOW_WIDTH - 50 }}>
+        <View key={index}>
+          <View style={{ width: WINDOW_WIDTH - 50 }}>
             {item.salah.map((data, i) => (
               <RowItem
+                key={i}
                 item={{
                   name: data?.name,
                   adhan: data?.adhanTime?.toString(),
