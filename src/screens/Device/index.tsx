@@ -195,6 +195,7 @@ export default function Device({ contentOpacity = 0 }: any) {
               <DeviceSetting
                 contentOpacity={props.contentOpacity}
                 device={selectedDevice}
+                goBack={() => setStep(0)}
               />
             )}
           </>
