@@ -411,8 +411,16 @@ export default function DeviceSetupScreen() {
         new Set(issues),
       );
       setScannedDevices(newArr);
+      console.log(
+        'xxx xxxxxxx xxxxxx deviceData',
+        newArr.some(item => item.id === route?.params?.deviceData.macAddress),
+      );
+      // || newArr.some((item) => item.id === route?.params?.deviceData.macAddress)
       if (issues.length === 0) {
-        if (newArr.length === 0) {
+        if (
+          newArr.length === 0 ||
+          !newArr.some(item => item.id === route?.params?.deviceData.macAddress)
+        ) {
           setStep(8);
           setToastContent(state => ({
             ...state,
