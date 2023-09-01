@@ -12,6 +12,7 @@ import { getUniqueId } from 'react-native-device-info';
 import jwtDecode from 'jwt-decode';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
@@ -131,8 +132,9 @@ export default function App() {
         state.isDeviceRegistered.set(false);
         setCheckedId(false);
       }
-    } catch (e) {
-      console.log('error', e);
+    } catch (error) {
+      console.log('error', error);
+      crashlytics().recordError(error as Error);
     }
   }, []);
 

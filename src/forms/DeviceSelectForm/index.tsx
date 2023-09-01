@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Animated, View } from 'react-native';
 import { Peripheral } from 'react-native-ble-manager';
 import Toast from 'react-native-toast-message';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { AdhanButton, DeviceSvg } from '../../assets';
 import {
@@ -53,6 +54,7 @@ export default function DeviceSelectForm({
       }
       setLoading(false);
     } catch (error) {
+      crashlytics().recordError(error as Error);
       console.log('error thrown', error);
       setLoading(false);
     }

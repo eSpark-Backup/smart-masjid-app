@@ -24,8 +24,8 @@ export const GetCountryCodes = async () => {
     if (result.status == 200) {
       externalStore.countryCodes.set([...result.data]);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 /**
@@ -54,8 +54,8 @@ export const SendOTP = async (email?: string, phone?: string) => {
       });
       return false;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error SendOTP', error);
   }
 };
@@ -93,8 +93,8 @@ export const ValidateOTP = async (
       });
       return false;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error ValidateOTP', error);
   }
 };
@@ -115,8 +115,8 @@ export const RefreshToken = async () => {
       Authorization: `Bearer ${token?.data?.token}`,
     });
     setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error RefreshToken', error);
   }
 };
@@ -168,8 +168,8 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         visibilityTime: 10000,
       });
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error LoginUser', error, 'Request', email);
   }
 };
@@ -193,8 +193,8 @@ export const CheckUserExists = async (email: string, phone: string) => {
     } else {
       return null;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('err CheckUserExists', error);
   }
 };
@@ -214,8 +214,8 @@ export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
       '/external/phone/exists?deviceId=' + phoneId,
     );
     if (res.data) return res.data;
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log(error);
   }
 }
@@ -251,8 +251,8 @@ export const CreateUser = async (
       await setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
       return result.data;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error CreateUser', error, 'Request', data);
   }
 };
@@ -279,8 +279,8 @@ export async function _checkDeviceExists(mac_address: string) {
     } else {
       console.log('Problem status', res.status, res.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('when device exists problems', error);
   }
 }

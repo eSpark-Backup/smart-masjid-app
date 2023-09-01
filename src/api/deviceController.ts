@@ -18,8 +18,8 @@ export const GetUserDevices = async (userId: string) => {
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -34,8 +34,8 @@ export const GetMasjidDevices = async (masjidId: string) => {
     if (result.status == 200) {
       deviceStore.masjidDevices.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -53,8 +53,8 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
       });
       return false;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -80,8 +80,8 @@ export async function _checkDeviceTelemetry(deviceId: string) {
       console.log('Problem status', res.status, res.data);
       return false;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('when device exists problems', error);
     return false;
   }
@@ -117,8 +117,8 @@ export async function _saveDevice(devInfo: DeviceInfo) {
       });
       console.log('Problem status when device save', res.status, res.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     Toast.show({
       text2: 'Something went wrong',
       type: 'error',
@@ -152,8 +152,8 @@ export async function _saveDeviceToUser(devID: number) {
           res.data,
         );
       }
-    } catch (error: any) {
-      crashlytics().recordError(error);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
       console.log('when saving device with user', error);
     }
   } else {
@@ -182,8 +182,8 @@ export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
     } else {
       console.log('Problem status', res.status, res.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('when saving device to masjid', error);
   }
 }
@@ -221,8 +221,8 @@ export async function _updateDevice(devInfo: Device) {
       });
       console.log('Problem status when device save', res.status, res.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     Toast.show({
       text2: 'Something went wrong',
       type: 'error',
@@ -251,8 +251,8 @@ export async function _resetDevice(deviceId: string) {
       console.log('Problem status', res.status, res.data);
       return false;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('when device exists problems', error);
     return false;
   }

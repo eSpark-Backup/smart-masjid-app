@@ -12,6 +12,7 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { globalStore } from '../../store/GlobalStates';
 import { CountryCodes, IPrayerTimeForPeriod } from '../../types';
@@ -196,7 +197,8 @@ async function setDataInLocalStorage(key: string, value: any) {
   try {
     await AsyncStorage.setItem(key, value);
     return true;
-  } catch (e) {
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     return false;
   }
 }
@@ -211,7 +213,8 @@ async function getDataFromLocalStorage(key: string) {
   try {
     const result = await AsyncStorage.getItem(key);
     return result;
-  } catch (e) {
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     return false;
   }
 }
@@ -226,7 +229,8 @@ async function removeDatafromLocalStorage(key: string) {
   try {
     await AsyncStorage.removeItem(key);
     return true;
-  } catch (e) {
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     return false;
   }
 }
@@ -442,6 +446,7 @@ async function openMap(address: string, city: string, zipCode: string) {
 
     if (supported) Linking.openURL(link);
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log(error);
   }
 }

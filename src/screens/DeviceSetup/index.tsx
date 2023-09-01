@@ -8,6 +8,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Peripheral } from 'react-native-ble-manager';
 import jwtDecode from 'jwt-decode';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
@@ -260,8 +261,9 @@ export default function DeviceSetupScreen() {
       } else {
         await registerDevice({ ...devInfo, ...jsonData });
       }
-    } catch (e) {
-      console.log('error while ble connect', e);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('error while ble connect', error);
       setStep(8);
       setToastContent(state => ({
         ...state,
@@ -343,8 +345,9 @@ export default function DeviceSetupScreen() {
       } else {
         handleDeleteDevice(deviceId); //FIXME: uncomment later
       }
-    } catch (e) {
-      console.log('error on call check device telemetry', e);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('error on call check device telemetry', error);
       setStep(8);
     }
   };
@@ -358,8 +361,9 @@ export default function DeviceSetupScreen() {
       } else {
         setStep(8); // telemetry is in the negative (device not added sucessfully)
       }
-    } catch (e) {
-      console.log('error on delete device', e);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('error on delete device', error);
       setStep(8);
     }
   };

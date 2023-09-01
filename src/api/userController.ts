@@ -23,8 +23,8 @@ export const RegisterUserPhone = async (
 ): Promise<void> => {
   try {
     await api.post(`/users/${userId}/phones`, data);
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error RegisterUserPhone', error, 'Request', data, userId);
   }
 };
@@ -41,8 +41,8 @@ export const LogoutUser = async (userId: string) => {
     });
     await removeDatafromLocalStorage('user');
     userStore.userData.set(null);
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error LogoutUser', error);
   }
 };
@@ -78,8 +78,8 @@ export const UpdateUser = async (
       });
     }
     return result.data;
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error UpdateUser', error, 'Request', data);
   }
 };
@@ -95,8 +95,8 @@ export const GetMasjidAdmins = async (id: string) => {
     if (result.data && result.status === 200) {
       userStore.masjidAdmins.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('GetMasjidAdmins error', error);
   }
 };
@@ -126,8 +126,8 @@ export const DeleteAdminFromMasjid = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -155,7 +155,7 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
       });
       return false;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };

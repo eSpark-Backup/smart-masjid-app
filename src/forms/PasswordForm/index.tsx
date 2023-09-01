@@ -11,6 +11,7 @@ import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
 import RnWifi from '@react-native-tethering/wifi';
 import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   GapView,
@@ -59,8 +60,9 @@ export default function PasswordForm({
           setStep(6);
         })
         .catch(e => console.error(e));
-    } catch (e) {
-      console.log('error in connecting wifi', e);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('error in connecting wifi', error);
       setLoading(false);
       Toast.show({
         text2: 'WiFi Password incorrect. Please try again',

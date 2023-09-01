@@ -17,8 +17,8 @@ export const GetMasjid = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.masjid.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -33,8 +33,8 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.adhanConfig.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -50,8 +50,8 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
       masjidStore.iqamahTime.set(result.data);
       return result.data;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -77,8 +77,8 @@ export const AddMasjidIqamahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -107,8 +107,8 @@ export const UpdatedMasjidIqamahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -124,8 +124,8 @@ export const GetIqamahHistory = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.iqamahHistory.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -147,8 +147,8 @@ export const GetAdhanTimings = async (
     if (result.status == 200) {
       masjidStore.adhanTimings.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -170,8 +170,8 @@ export const GetMasjidJummahTiming = async (
       masjidStore.JummahTime.set(result.data);
       return result.data;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -187,8 +187,8 @@ export const GetJummahHistory = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.JummahHistory.set(result.data);
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
   }
 };
 
@@ -215,8 +215,8 @@ export const AddMasjidJummahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -243,8 +243,8 @@ export const UpdatedMasjidJummahTiming = async (
         visibilityTime: 10000,
       });
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -268,8 +268,8 @@ export const SearchMasjidByLocation = async (
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error SearchMasjidByLocation', error);
   }
 };

@@ -7,6 +7,8 @@ import {
   Platform,
   Animated,
 } from 'react-native';
+import crashlytics from '@react-native-firebase/crashlytics';
+
 import { SearchMasjidByLocation } from '../../../api/masjidController';
 import {
   GapView,
@@ -50,8 +52,9 @@ const SearchListing = ({
           _requestUserLocationPermission();
         }
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.error(error);
     }
   };
 

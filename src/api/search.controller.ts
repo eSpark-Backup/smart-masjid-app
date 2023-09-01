@@ -22,8 +22,8 @@ export const SearchMasjidByLocation = async (
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error SearchMasjidByLocation', error);
   }
 };
@@ -39,8 +39,8 @@ export const GetMasidAdhanTimings = async (masjidId: string) => {
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error GetMasidAdhanTimings', error);
   }
 };
@@ -56,8 +56,8 @@ export const GetMasidIqamaTimings = async (masjidId: string) => {
     if (result.status == 200 && result.data) {
       return result.data;
     }
-  } catch (error: any) {
-    crashlytics().recordError(error);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error GetMasidIqamaTimings', error);
   }
 };
