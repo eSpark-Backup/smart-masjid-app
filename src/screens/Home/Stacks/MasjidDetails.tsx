@@ -1,5 +1,4 @@
-import { Theme, useTheme } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,6 +6,9 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
+import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
+import { useHookstate } from '@hookstate/core';
+
 import { SyncSvg } from '../../../assets';
 import {
   GapView,
@@ -26,6 +28,9 @@ import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
 import { Masjid } from '../../../types/masjidControllerTypes';
+import { GetMasjidDevicesForUser } from '../../../api/deviceController';
+import { masjidStore } from '../../../store/MasjidStore';
+import { Device } from '../../../types/deviceControllerTypes';
 
 export default function MasjidDetails({
   setStep,
@@ -38,6 +43,21 @@ export default function MasjidDetails({
 }) {
   const { colors }: Theme = useTheme();
   const [currentDeviceId, setCurrentDeviceId] = useState(1);
+  const userData = useHookstate(userStore.userData).get();
+  const devices = useHookstate(masjidStore.connectedDevices).get();
+  const connectedDevices = useMemo(() => devices, [devices]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    GetMasjidDevicesForUser(
+      userData?.id?.toString() ?? '',
+      selectedMasjid?.id.toString(),
+    );
+  }, [isFocused]);
+
+  useEffect(() => {
+    setCurrentDeviceId(connectedDevices[0]?.id);
+  }, [connectedDevices]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -69,25 +89,17 @@ export default function MasjidDetails({
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
-          data={[
-            {
-              id: 1,
-              name: 'Device 1',
-              isOnline: true,
-            },
-            { id: 2, name: 'Device 2', isOnline: false },
-            { id: 3, name: 'Device 3', isOnline: true },
-            { id: 4, name: 'Device 3', isOnline: true },
-            { id: 5, name: 'Device 3', isOnline: true },
-          ]}
-          renderItem={({ item, index }) => (
+          data={connectedDevices! as Device[]}
+          renderItem={({ item, index }: { item: Device; index: number }) => (
             <OutlineDeviceContainer
               onPress={() => {
                 setCurrentDeviceId(item.id);
               }}
               name={item.name}
               isActive={item.id == currentDeviceId}
-              isOnline={item?.isOnline}
+              isOnline={
+                item?.deviceTelemetry?.status == 'Online' ? true : false
+              }
             />
           )}
           keyExtractor={item => item.id + (Math.random() * 999).toString()}
