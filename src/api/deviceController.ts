@@ -52,6 +52,23 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
   } catch (error) {}
 };
 
+export const unSubscribeMasjid = async (deviceId: string, masjidId: string) => {
+  try {
+    const result: any = await api.delete(
+      `/devices/${deviceId}/masjid/${masjidId}`,
+    );
+    console.log('result', result);
+    if (result.status == 200 && result.data) {
+      return true;
+    } else {
+      Toast.show({
+        text1: result?.data?.message ?? 'Something went wrong',
+      });
+      return false;
+    }
+  } catch (error) {}
+};
+
 export const GetMasjidDevicesForUser = async (
   userId: string,
   masjidId?: string,

@@ -79,9 +79,18 @@ export default function Home() {
   }, [isFocused]);
 
   useEffect(() => {
-    if (step == 0 && userMasjidList?.length == 1) {
+    const uniqueObjects: Masjid[] = [];
+    const uniqueIds = new Set();
+    userMasjidList.forEach(obj => {
+      if (!uniqueIds.has(obj.id)) {
+        uniqueIds.add(obj.id);
+        uniqueObjects.push(obj as any);
+      }
+    });
+
+    if (step == 0 && uniqueObjects?.length == 1) {
       setStep(1);
-      setSelectedMasjid(userMasjidList?.[0]);
+      setSelectedMasjid(uniqueObjects?.[0]);
     }
   }, [userMasjidList]);
 
