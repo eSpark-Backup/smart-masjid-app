@@ -1,10 +1,8 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
-
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
 export { default as GLoad } from './animations/7bdno2.gif';
-export { default as SLoaderGif } from './animations/sLoader.gif';
 
 //* images/svg
 export { default as MasjidSample } from './images/masjidSample.svg';
@@ -99,7 +97,7 @@ export { default as CautionDevice } from './vectors/caution-device.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
 export { default as NavigationSvg } from './vectors/navigation.svg';
-export { default as EditPencil } from './vectors/EditPencil.svg';
+export { default as EditPencil } from './vectors/EditPencil.svg'
 export { default as DeviceActiveNew } from './vectors/device-active.svg';
 export { default as DeviceUnactiveNew } from './vectors/device-unactive.svg';
 export { default as AddIcon } from './vectors/add-icon.svg';

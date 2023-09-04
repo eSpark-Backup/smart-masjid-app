@@ -6,6 +6,7 @@ import { deviceStore } from '../store/DeviceStore';
 import { DeviceInfo } from '../types';
 import { userStore } from '../store/UserStore';
 import { Device } from '../types/deviceControllerTypes';
+import { masjidStore } from '../store/MasjidStore';
 
 /**
  *
@@ -56,6 +57,26 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
   } catch (error) {
     crashlytics().recordError(error as Error);
   }
+};
+
+export const GetMasjidDevicesForUser = async (
+  userId: string,
+  masjidId?: string,
+) => {
+  try {
+    const result: any = await api.get(
+      `/devices/user/${userId}/masjid/${masjidId}`,
+    );
+    // console.log('resultxxx', result);
+    if (result.status == 200 && result.data) {
+      masjidStore.connectedDevices.set(result.data);
+    } else {
+      Toast.show({
+        text1: result?.data?.message ?? 'Something went wrong',
+      });
+      return false;
+    }
+  } catch (error) {}
 };
 
 /**

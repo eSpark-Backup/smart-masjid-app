@@ -78,11 +78,13 @@ export default function MyToast({
             <MyTextSubHeader
               text={title!!}
               style={{
+                marginTop: 5,
                 textAlign: 'center',
               }}
             />
           )}
-          <View style={{ alignSelf: 'center', marginBottom: 40 }}>
+          <View
+            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 50 }}>
             {isSuccess ? <CheckSvg /> : <CautionDevice />}
           </View>
           <View
@@ -110,13 +112,15 @@ export default function MyToast({
             <Rounded onPress={onPress} label={btnText!!} />
           </View>
           <GapView />
-          <TouchableOpacity onPress={onSkip}>
-            <MyText
-              size={18}
-              text={'I’ll do it later'}
-              textStyle={{ color: colors.primary, textAlign: 'center' }}
-            />
-          </TouchableOpacity>
+          {onSkip && (
+            <TouchableOpacity onPress={onSkip}>
+              <MyText
+                size={18}
+                text={'I’ll do it later'}
+                textStyle={{ color: colors.primary, textAlign: 'center' }}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </Animated.View>
     </Animatable.View>
@@ -147,6 +151,6 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
     width: '85%',
-    top: 128,
+    top: 138,
   },
 });

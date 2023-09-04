@@ -1,5 +1,3 @@
-import { useHookstate } from '@hookstate/core';
-import moment from 'moment';
 import React, { useEffect } from 'react';
 import {
   StyleSheet,
@@ -8,11 +6,13 @@ import {
   Animated,
   TouchableOpacity,
 } from 'react-native';
+import { useHookstate } from '@hookstate/core';
+import moment from 'moment';
+
 import {
   GetAdhanTimings,
   GetIqamahHistory,
 } from '../../../../../../api/masjidController';
-
 import {
   GapView,
   MyText,

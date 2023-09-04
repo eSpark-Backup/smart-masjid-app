@@ -8,6 +8,8 @@ import {
   Animated,
 } from 'react-native';
 import crashlytics from '@react-native-firebase/crashlytics';
+import systemSetting from 'react-native-system-setting';
+import Toast from 'react-native-toast-message';
 
 import { SearchMasjidByLocation } from '../../../api/masjidController';
 import {
@@ -47,6 +49,7 @@ const SearchListing = ({
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('chala2');
           onCurrentLocationPress();
         } else {
           _requestUserLocationPermission();
@@ -58,8 +61,22 @@ const SearchListing = ({
     }
   };
 
+  const checkLocationAdapter = async () => {
+    const enable = await systemSetting.isLocationEnabled();
+    if (enable) {
+      console.log('chala');
+      checkLocation();
+    } else {
+      Toast.show({
+        text2: 'Enable Location Adapter',
+        type: 'warning',
+        visibilityTime: 10000,
+      });
+    }
+  };
+
   useEffect(() => {
-    checkLocation();
+    checkLocationAdapter();
   }, []);
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
@@ -114,7 +131,7 @@ const SearchListing = ({
                   setZipCode('');
                 }
               }}
-              onCurrentLocationPress={onCurrentLocationPress}
+              onCurrentLocationPress={() => checkLocationAdapter()}
               inputStyle={{ width: WINDOW_WIDTH - 80 }}
               placeholder="Enter Zip Code"
               onSearch={onSearch}

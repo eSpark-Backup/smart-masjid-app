@@ -1,6 +1,6 @@
 import { useHookstate } from '@hookstate/core';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Animated } from 'react-native';
+import { StyleSheet, View, Animated } from 'react-native';
 import { GetJummahHistory } from '../../../../../../api/masjidController';
 
 import {
@@ -40,7 +40,7 @@ export default function History({
         <GapView length={50} />
       </View>
 
-      <View style={{top: 85}}>
+      <View style={{ top: 85 }}>
         <TimeSheet data={convertResponseToData(jummahHistory) ?? []} />
       </View>
     </View>

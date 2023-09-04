@@ -60,6 +60,7 @@ type DSetupNavigationProps = NativeStackScreenProps<
 export default function DeviceSetupScreen() {
   // console.log('User ka bta id mili ha?', userStore.get());
 
+  let telemetryInterval: number;
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
   const isFocused = useIsFocused();
@@ -104,10 +105,6 @@ export default function DeviceSetupScreen() {
       setRetry(false);
     }
   }, [retry]);
-
-  // useEffect(() => {
-  //   console.log('milgaya parent ko', devInfo);
-  // }, [devInfo]);
 
   useEffect(() => {
     console.log('step current?', step);
@@ -305,9 +302,9 @@ export default function DeviceSetupScreen() {
           );
           console.log('kia res???', masjidDevRes);
           if (masjidDevRes) {
-            setTimeout(() => {
+            telemetryInterval = setInterval(() => {
               checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
-            }, 5000);
+            }, 10000);
           } else {
             setStep(8); // failed saving device (show error screen)
           }
@@ -316,9 +313,9 @@ export default function DeviceSetupScreen() {
           const userDevRes: any = await _saveDeviceToUser(devRes?.id);
           console.log('kia res???', userDevRes);
           if (userDevRes) {
-            setTimeout(() => {
+            telemetryInterval = setInterval(() => {
               checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
-            }, 5000);
+            }, 10000);
           } else {
             setStep(8); // failed saving device (show error screen)
           }
@@ -329,26 +326,39 @@ export default function DeviceSetupScreen() {
           wifiSsid: devInfo.ssid,
         });
         if (devRes) {
-          setTimeout(() => {
+          telemetryInterval = setInterval(() => {
             checkTelemetry(route?.params?.deviceData?.id.toString()); // check Telemetery for userDevice
-          }, 5000);
+          }, 10000);
         }
       }
     }
   };
 
+  let count = 0;
   const checkTelemetry = async (deviceId: string) => {
-    try {
-      const res = await _checkDeviceTelemetry(deviceId);
-      if (Boolean(res)) {
-        setStep(7); // successfully device added and found it out as well
-      } else {
-        handleDeleteDevice(deviceId); //FIXME: uncomment later
+    // function should not run more than 3 times
+    if (count >= 3) {
+      count = 0;
+      handleDeleteDevice(deviceId);
+      clearInterval(telemetryInterval);
+      return;
+    } else {
+      try {
+        const res = await _checkDeviceTelemetry(deviceId);
+        if (Boolean(res)) {
+          count = 0;
+          clearInterval(telemetryInterval);
+          setStep(7); // successfully device added and found it out as well
+        } else {
+          console.log('nhi mila telemetry');
+        }
+      } catch (error) {
+        crashlytics().recordError(error as Error);
+        console.log('error on call check device telemetry', error);
+        clearInterval(telemetryInterval);
+        handleDeleteDevice(deviceId);
       }
-    } catch (error) {
-      crashlytics().recordError(error as Error);
-      console.log('error on call check device telemetry', error);
-      setStep(8);
+      count++;
     }
   };
 
@@ -405,8 +415,12 @@ export default function DeviceSetupScreen() {
         new Set(issues),
       );
       setScannedDevices(newArr);
+      const macAdd = route?.params?.deviceData?.macAddress;
+      const isFound = !newArr.some(item =>
+        macAdd ? item.id === macAdd : true,
+      );
       if (issues.length === 0) {
-        if (newArr.length === 0) {
+        if (newArr.length === 0 || isFound) {
           setStep(8);
           setToastContent(state => ({
             ...state,
@@ -532,6 +546,7 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
+                onSkip={route.params?.from == 'Device' ? undefined : () => {}}
                 btnText={
                   route.params?.from == 'Device' ? 'Done' : 'Search Masjid'
                 }

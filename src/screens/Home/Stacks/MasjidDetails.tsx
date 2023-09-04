@@ -1,5 +1,4 @@
-import { Theme, useTheme } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,6 +6,9 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
+import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
+import { useHookstate } from '@hookstate/core';
+
 import { SyncSvg } from '../../../assets';
 import {
   GapView,
@@ -25,10 +27,37 @@ import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
+import { Masjid } from '../../../types/masjidControllerTypes';
+import { GetMasjidDevicesForUser } from '../../../api/deviceController';
+import { masjidStore } from '../../../store/MasjidStore';
+import { Device } from '../../../types/deviceControllerTypes';
 
-export default function MasjidDetails({ setStep, contentOpacity }: any) {
+export default function MasjidDetails({
+  setStep,
+  contentOpacity,
+  selectedMasjid,
+}: {
+  selectedMasjid?: Masjid;
+  setStep: (value: any) => void;
+  contentOpacity: any;
+}) {
   const { colors }: Theme = useTheme();
   const [currentDeviceId, setCurrentDeviceId] = useState(1);
+  const userData = useHookstate(userStore.userData).get();
+  const devices = useHookstate(masjidStore.connectedDevices).get();
+  const connectedDevices = useMemo(() => devices, [devices]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    GetMasjidDevicesForUser(
+      userData?.id?.toString() ?? '',
+      selectedMasjid?.id.toString(),
+    );
+  }, [isFocused]);
+
+  useEffect(() => {
+    setCurrentDeviceId(connectedDevices[0]?.id);
+  }, [connectedDevices]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -42,11 +71,11 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           top: 110,
-          paddingBottom: 70,
+          paddingBottom: 120,
           padding: 5,
           paddingHorizontal: 15,
         }}>
-        <MyTextHeader text="East Plano Islamic Center" />
+        <MyTextHeader text={selectedMasjid?.name ?? ''} />
         <GapView length={15} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <MyTextSubHeader
@@ -60,27 +89,20 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
-          data={[
-            {
-              id: 1,
-              name: 'Device 1, Device 1 Device 1',
-              isOnline: true,
-            },
-            { id: 2, name: 'Device 2', isOnline: false },
-            { id: 3, name: 'Device 3', isOnline: true },
-            { id: 4, name: 'Device 3', isOnline: true },
-            { id: 5, name: 'Device 3', isOnline: true },
-          ]}
-          renderItem={({ item, index }) => (
+          data={connectedDevices! as Device[]}
+          renderItem={({ item, index }: { item: Device; index: number }) => (
             <OutlineDeviceContainer
               onPress={() => {
                 setCurrentDeviceId(item.id);
               }}
               name={item.name}
               isActive={item.id == currentDeviceId}
-              isOnline={item?.isOnline}
+              isOnline={
+                item?.deviceTelemetry?.status == 'Online' ? true : false
+              }
             />
           )}
+          keyExtractor={item => item.id + (Math.random() * 999).toString()}
           ItemSeparatorComponent={() => <GapView mode="horizontal" />}
         />
         <GapView length={15} />
@@ -158,30 +180,35 @@ export default function MasjidDetails({ setStep, contentOpacity }: any) {
         <JumuahTable
           headings={['Salah', 'Khutba']}
           data={{
-            "id": 7,
-            "effectiveDate": "2023-07-07",
-            "jumuah1": "13:45:00",
-            "jumuah2": "15:15:00",
-            "jumuah3": null,
-            "createdBy": "User",
-            "createdDate": "2023-07-05T14:26:15.946+00:00"
+            id: 7,
+            effectiveDate: '2023-07-07',
+            jumuah1: '13:45:00',
+            jumuah2: '15:15:00',
+            jumuah3: null,
+            createdBy: 'User',
+            createdDate: '2023-07-05T14:26:15.946+00:00',
           }}
         />
         <GapView length={15} />
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={{
-            height: 41,
-            width: '70%',
-            backgroundColor: '#FF6464',
-            borderRadius: 50,
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-          }}
-          onPress={() => {}}>
-          <TextLabel label="Unsubscribe" textStyle={{ color: '#ffffff' }} />
-        </TouchableOpacity>
+        <View style={{ width: '100%', alignItems: 'center' }}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={{
+              height: 41,
+              width: '85%',
+              backgroundColor: '#FF6464',
+              borderRadius: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+            }}
+            onPress={() => {}}>
+            <TextLabel
+              label="Unsubscribe"
+              textStyle={{ color: '#ffffff', fontWeight: '400' }}
+            />
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );

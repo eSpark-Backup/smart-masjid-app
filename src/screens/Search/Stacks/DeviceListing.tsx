@@ -1,6 +1,7 @@
-import { useHookstate } from '@hookstate/core';
 import React from 'react';
 import { FlatList, View, Animated } from 'react-native';
+import { useHookstate } from '@hookstate/core';
+
 import {
   DeviceListItem,
   GapView,
@@ -28,21 +29,25 @@ const DeviceListing = ({
   return (
     <View
       style={{
-        minHeight: WINDOW_HEIGHT/2
+        minHeight: WINDOW_HEIGHT / 2,
       }}>
       <View style={{ alignSelf: 'center', top: 100 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle
-            text="Masjid Search"
-          />
+          <MyTitle text="Masjid Search" />
         </Animated.View>
         <GapView length={50} />
       </View>
 
-      <View style={{top: 110}}>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <MyText textStyle={{fontWeight: '400'}} text='You’re subscribing to:' />
-            <MyText textStyle={{fontWeight: '500'}}  text={masjidDetails?.name ?? ''} />
+      <View style={{ top: 110 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <MyText
+            textStyle={{ fontWeight: '400' }}
+            text="You’re subscribing to: "
+          />
+          <MyText
+            textStyle={{ fontWeight: '400', color: '#3e3e3e' }}
+            text={masjidDetails?.name ?? ''}
+          />
         </View>
         <GapView length={15} />
         <MyText
@@ -57,15 +62,22 @@ const DeviceListing = ({
           <View>
             <FlatList
               data={devices}
-              renderItem={({ item }: { item: Device }) => (
-                <DeviceListItem
-                  onPress={() => onPress?.(item)}
-                  title={item.deviceType.name}
-                  subTitle={item.masjid ? item.masjid.name : 'No Subscription'}
-                  disabled={!!item.masjid}
-                  online={Boolean(item.deviceTelemetry)}
-                />
-              )}
+              renderItem={({ item }: { item: Device }) => {
+                console.log('obj', item);
+                return (
+                  <DeviceListItem
+                    onPress={() => onPress?.(item)}
+                    title={item.name}
+                    subTitle={
+                      item.masjid ? item.masjid.name : 'No Subscription'
+                    }
+                    disabled={!!item.masjid}
+                    online={
+                      item?.deviceTelemetry?.status == 'Online' ? true : false
+                    }
+                  />
+                );
+              }}
               ListEmptyComponent={() => (
                 <View style={{ padding: 10, alignItems: 'center' }}>
                   <MyText text="You have not setup any device till now" />

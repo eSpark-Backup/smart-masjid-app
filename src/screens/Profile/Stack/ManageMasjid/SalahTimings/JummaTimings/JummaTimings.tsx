@@ -1,6 +1,8 @@
-import { useHookstate } from '@hookstate/core';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Animated, FlatList } from 'react-native';
+import moment from 'moment';
+import { useHookstate } from '@hookstate/core';
+
 import { GetMasjidJummahTiming } from '../../../../../../api/masjidController';
 import { PlusCircle } from '../../../../../../assets';
 import {
@@ -11,7 +13,6 @@ import {
   OverlayLoader,
 } from '../../../../../../components';
 import { masjidStore } from '../../../../../../store/MasjidStore';
-import moment from 'moment';
 import TimeTableCard from '../../../../../../components/TimeTableCard';
 import {
   JummahTime,
@@ -39,7 +40,9 @@ export default function JummaTimings({
       let jumuahs: jumuahsData[] = [];
       let jumuah: Array<'jumuah1' | 'jumuah2' | 'jumuah3'> = Object.keys(
         jumuahTime,
-      ).filter(val => val.includes('jumuah'));
+      ).filter(val => val.includes('jumuah')) as Array<
+        'jumuah1' | 'jumuah2' | 'jumuah3'
+      >;
 
       jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
         let data: jumuahsData;

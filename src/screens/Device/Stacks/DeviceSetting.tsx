@@ -70,23 +70,25 @@ const DeviceSetting = ({
     }
   };
 
-  const updateDeviceName = async (text?: string) => {
-    setLoader(true);
-    console.log('text res', text);
-    try {
-      const res = await _updateDevice({
-        ...device!,
-        name: text ?? device?.name!,
-      });
-      console.log('update res', res);
-      if (res) {
+  const updateDeviceName = async (text?: string, oldText?: string) => {
+    console.log('text res', text, oldText);
+    if (text !== oldText) {
+      setLoader(true);
+      try {
+        const res = await _updateDevice({
+          ...device!,
+          name: text ?? device?.name!,
+        });
+        console.log('update res', res);
+        if (res) {
+          setLoader(false);
+          goBack?.();
+        }
+      } catch (error) {
+        crashlytics().recordError(error as Error);
         setLoader(false);
-        goBack?.();
+        console.error(error);
       }
-    } catch (error) {
-      crashlytics().recordError(error as Error);
-      setLoader(false);
-      console.error(error);
     }
   };
 
@@ -101,7 +103,8 @@ const DeviceSetting = ({
           {
             label: 'Update Password',
             onPress: () => {
-              goBack?.();
+              // goBack?.();
+              console.log('error', device);
               navigation.navigate('DSetup', {
                 from: 'SelectedDevice',
                 deviceData: device,
@@ -113,7 +116,7 @@ const DeviceSetting = ({
           {
             label: 'Connect new Wi-Fi',
             onPress: () => {
-              goBack?.();
+              // goBack?.();
               navigation.navigate('DSetup', {
                 from: 'SelectedDevice',
                 deviceData: device,
@@ -161,14 +164,17 @@ const DeviceSetting = ({
                 title: 'General',
                 data: [
                   {
-                    title: 'Nick Name',
+                    title: 'Name',
                     subtitle: device?.name,
                     icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                     isEdit: isEditable,
                     onPress: () => setIsEditable(true),
                     onDoneEdit: text => {
-                      updateDeviceName(text);
+                      console.log('avla', text);
+                      if (text?.length! < 0) {
+                        updateDeviceName(text, device?.name);
+                      }
                       setIsEditable(false);
                     },
                   },
@@ -187,11 +193,11 @@ const DeviceSetting = ({
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    rightArrow: device?.deviceType.id == 1 ? true : false,
-                    onPress:
-                      device?.deviceType.id == 1
-                        ? () => console.log('he')
-                        : undefined,
+                    rightArrow: false,
+                    // onPress:
+                    //   device?.deviceType.id == 1
+                    //     ? () => console.log('he')
+                    //     : undefined,
                   },
                 ],
               },

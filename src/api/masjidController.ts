@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
-import { IqamahTime, JummahTime } from '../types/masjidControllerTypes';
+import { IqamahTime, JummahTime, Masjid } from '../types/masjidControllerTypes';
 
 /**
  *
@@ -271,5 +271,20 @@ export const SearchMasjidByLocation = async (
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('error SearchMasjidByLocation', error);
+  }
+};
+
+/**
+ *
+ * @description Get list of masjid subscribed by user
+ * @returns get masjid and and return masjid list
+ */
+export const getListMasjidSubscribedByUser = async (userId: string) => {
+  try {
+    const result = await api.get(`/masjid/subscriptions/user/${userId}`);
+    const masjidList = result.data as Masjid[];
+    masjidStore.userMasjidList.set(masjidList);
+  } catch (error) {
+    console.log('getListMasjidSubscribedByUser error: ', error);
   }
 };

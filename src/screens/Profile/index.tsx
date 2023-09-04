@@ -28,7 +28,7 @@ import {
   JummaTimings,
   ManageAccount,
   ManageMasjid,
-  ModifyAccount,
+  // ModifyAccount,
   SalahTimings,
   IqamahHistory,
   JummaHistory,
@@ -43,11 +43,18 @@ import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { useHookstate } from '@hookstate/core';
 import { userStore } from '../../store/UserStore';
 import { UserResponse } from '../../types/userControllerApiResponse';
+import { jumuahsData } from '../../types/masjidControllerTypes';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
   'Profile'
 >;
+
+interface selectedJummmaData {
+  id: number;
+  data: jumuahsData[];
+  date: string;
+}
 
 export default function Profile() {
   const navigation = useNavigation<ProfileNavigationProp['navigation']>();
@@ -212,12 +219,12 @@ export default function Profile() {
                 showVerification={true}
               />
             ) : null}
-            {flag == 'modAcc' && (
+            {/* {flag == 'modAcc' && (
               <ModifyAccount
                 contentOpacity={props.contentOpacity}
                 setFlag={(value: string) => setFlag(value)}
               />
-            )}
+            )} */}
             {flag == 'mMas' && (
               <ManageMasjid
                 contentOpacity={props.contentOpacity}
@@ -276,7 +283,7 @@ export default function Profile() {
                 contentOpacity={props.contentOpacity}
                 setFlag={(value: string) => setFlag(value)}
                 jummaType={'Edit'}
-                selectedJumma={jummaData}
+                selectedJumma={jummaData as selectedJummmaData}
               />
             )}
             {flag == 'jAdd' && (
