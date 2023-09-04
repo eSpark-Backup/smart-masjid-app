@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, PermissionsAndroid, Animated } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
 import { useTheme } from '@react-navigation/native';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { LockSvg, WifiSvg } from '../../assets';
 import {
@@ -58,8 +59,9 @@ export default function WifiSelectForm({
         setIssues('Location permission denied');
         // _requestUserLocationPermission();
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.error(error);
     }
   };
 
@@ -96,8 +98,9 @@ export default function WifiSelectForm({
       } else {
         setData(newArr);
       }
-    } catch (e) {
-      console.log('Cannot get wifiList', e);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('Cannot get wifiList', error);
     }
   };
 

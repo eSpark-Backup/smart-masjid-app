@@ -13,6 +13,7 @@ import II from 'react-native-vector-icons/Ionicons';
 import { useHookstate } from '@hookstate/core';
 import MI from 'react-native-vector-icons/MaterialIcons';
 import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
@@ -137,8 +138,9 @@ export default function MyInput(props: MyInputProps) {
           setLocationPermission(false);
         }
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.error(error);
     }
   };
 

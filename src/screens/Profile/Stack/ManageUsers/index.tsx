@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   DeleteAdminFromMasjid,
@@ -43,8 +44,9 @@ export default function ManageUsers({
       .then(() => {
         setLoading(false);
       })
-      .catch(() => {
+      .catch(error => {
         setLoading(false);
+        crashlytics().recordError(error as Error);
       });
   }, []);
 

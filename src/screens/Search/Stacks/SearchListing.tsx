@@ -7,6 +7,7 @@ import {
   Platform,
   Animated,
 } from 'react-native';
+import crashlytics from '@react-native-firebase/crashlytics';
 import systemSetting from 'react-native-system-setting';
 import Toast from 'react-native-toast-message';
 
@@ -54,8 +55,9 @@ const SearchListing = ({
           _requestUserLocationPermission();
         }
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.error(error);
     }
   };
 

@@ -1,6 +1,8 @@
+import crashlytics from '@react-native-firebase/crashlytics';
+import Toast from 'react-native-toast-message';
+
 import { api, xApi } from '.';
 import { externalStore } from '../store/ExternalStore';
-import Toast from 'react-native-toast-message';
 import { userStore } from '../store/UserStore';
 import { setDataInLocalStorage } from '../utils';
 import { globalStore } from '../store/GlobalStates';
@@ -22,7 +24,9 @@ export const GetCountryCodes = async () => {
     if (result.status == 200) {
       externalStore.countryCodes.set([...result.data]);
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
 /**
  *
@@ -51,6 +55,7 @@ export const SendOTP = async (email?: string, phone?: string) => {
       return false;
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error SendOTP', error);
   }
 };
@@ -89,6 +94,7 @@ export const ValidateOTP = async (
       return false;
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error ValidateOTP', error);
   }
 };
@@ -110,6 +116,7 @@ export const RefreshToken = async () => {
     });
     setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error RefreshToken', error);
   }
 };
@@ -126,7 +133,7 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         phone ? phone.replace('+', '%2B') : ''
       }`,
     );
-    console.log('result LoginUser', result);
+    console.log('result LoginUser', result.data);
     if (result.data) {
       const login = await xApi.put(`/users/${result?.data?.id}/login`, {
         phoneDeviceId: globalStore.phoneId?.get(),
@@ -143,6 +150,13 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         Authorization: `Bearer ${token?.data?.token}`,
       });
       userStore.userData.set(result.data);
+      crashlytics().setAttributes({
+        id: result.data?.id.toString(),
+        email: result.data?.email,
+        phone: result.data?.phone,
+        token: token?.data?.token,
+      });
+
       setDataInLocalStorage('user', JSON.stringify(result.data));
       setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
       console.log('token', JSON.stringify(token?.data?.token));
@@ -155,6 +169,7 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
       });
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error LoginUser', error, 'Request', email);
   }
 };
@@ -178,8 +193,9 @@ export const CheckUserExists = async (email: string, phone: string) => {
     } else {
       return null;
     }
-  } catch (err) {
-    console.log('err CheckUserExists', err);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('err CheckUserExists', error);
   }
 };
 
@@ -198,8 +214,9 @@ export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
       '/external/phone/exists?deviceId=' + phoneId,
     );
     if (res.data) return res.data;
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log(error);
   }
 }
 
@@ -235,6 +252,7 @@ export const CreateUser = async (
       return result.data;
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error CreateUser', error, 'Request', data);
   }
 };
@@ -261,7 +279,8 @@ export async function _checkDeviceExists(mac_address: string) {
     } else {
       console.log('Problem status', res.status, res.data);
     }
-  } catch (e) {
-    console.log('when device exists problems', e);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when device exists problems', error);
   }
 }

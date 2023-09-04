@@ -1,6 +1,8 @@
 import { Formik } from 'formik';
 import React, { useState } from 'react';
 import { ScrollView, View, Animated } from 'react-native';
+import crashlytics from '@react-native-firebase/crashlytics';
+
 import { api } from '../../../../api';
 import { CheckUserExists } from '../../../../api/externalControllers';
 import { AddAdminIntoMasjid } from '../../../../api/userController';
@@ -56,7 +58,9 @@ export default function AddUsers({
         }
         setLoading(false);
       }
-    } catch (error) {}
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+    }
   };
   return (
     <ScrollView style={{ flexGrow: 1, marginTop: 0 }}>

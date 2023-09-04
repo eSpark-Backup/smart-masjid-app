@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View, Animated } from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   BatteryBar,
@@ -64,6 +65,7 @@ const DeviceSetting = ({
       }
     } catch (error) {
       setLoader(false);
+      crashlytics().recordError(error as Error);
       console.error(error);
     }
   };
@@ -83,6 +85,7 @@ const DeviceSetting = ({
           goBack?.();
         }
       } catch (error) {
+        crashlytics().recordError(error as Error);
         setLoader(false);
         console.error(error);
       }

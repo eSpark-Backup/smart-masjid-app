@@ -1,8 +1,10 @@
+import crashlytics from '@react-native-firebase/crashlytics';
+import Toast from 'react-native-toast-message';
+import moment from 'moment';
+
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
 import { IqamahTime, JummahTime, Masjid } from '../types/masjidControllerTypes';
-import Toast from 'react-native-toast-message';
-import moment from 'moment';
 
 /**
  *
@@ -15,7 +17,9 @@ export const GetMasjid = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.masjid.set(result.data);
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
 
 /**
@@ -29,7 +33,9 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.adhanConfig.set(result.data);
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
 
 /**
@@ -45,6 +51,7 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
       return result.data;
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -71,6 +78,7 @@ export const AddMasjidIqamahTiming = async (
       });
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -100,6 +108,7 @@ export const UpdatedMasjidIqamahTiming = async (
       });
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -115,7 +124,9 @@ export const GetIqamahHistory = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.iqamahHistory.set(result.data);
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
 
 /**
@@ -131,12 +142,14 @@ export const GetAdhanTimings = async (
   try {
     const result: any = await api.get(`/masjid/${masjidId}/adhan`, {
       date: '2023-08-18',
-      range: 'WEEK',
+      range: 'MONTH',
     });
     if (result.status == 200) {
       masjidStore.adhanTimings.set(result.data);
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
 
 /**
@@ -158,6 +171,7 @@ export const GetMasjidJummahTiming = async (
       return result.data;
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -173,7 +187,9 @@ export const GetJummahHistory = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.JummahHistory.set(result.data);
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
 
 /**
@@ -200,6 +216,7 @@ export const AddMasjidJummahTiming = async (
       });
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -227,6 +244,7 @@ export const UpdatedMasjidJummahTiming = async (
       });
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error', error);
   }
 };
@@ -251,10 +269,10 @@ export const SearchMasjidByLocation = async (
       return result.data;
     }
   } catch (error) {
+    crashlytics().recordError(error as Error);
     console.log('error SearchMasjidByLocation', error);
   }
 };
-
 
 /**
  *
@@ -263,12 +281,10 @@ export const SearchMasjidByLocation = async (
  */
 export const getListMasjidSubscribedByUser = async (userId: string) => {
   try {
-    const result = await api.get(
-      `/masjid/subscriptions/user/${userId}`
-    );
-    const masjidList = result.data as Masjid[]
-    masjidStore.userMasjidList.set(masjidList)
+    const result = await api.get(`/masjid/subscriptions/user/${userId}`);
+    const masjidList = result.data as Masjid[];
+    masjidStore.userMasjidList.set(masjidList);
   } catch (error) {
-    console.log("getListMasjidSubscribedByUser error: ", error);
+    console.log('getListMasjidSubscribedByUser error: ', error);
   }
-}
+};

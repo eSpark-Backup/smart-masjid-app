@@ -135,7 +135,7 @@ export default function EditJummaTimings({
                 <View>
                   <MyDatePicker
                     currentDate={
-                      loading ? new Date() : new Date(data.effectiveDate)
+                      loading ? new Date() : new Date(data?.effectiveDate)
                     }
                     minimumDate={new Date()}
                     onDateChange={date => {

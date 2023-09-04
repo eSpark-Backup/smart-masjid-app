@@ -8,6 +8,7 @@ import BleManager, {
   PeripheralInfo,
 } from 'react-native-ble-manager';
 import BluetoothStateManager from 'react-native-bluetooth-state-manager';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
@@ -76,6 +77,7 @@ export async function _scanBleDevices(time?: number) {
           resolve(peripheralsArray);
         })
         .catch(error => {
+          crashlytics().recordError(error as Error);
           reject(error);
         });
     }, scanTime * 1000);
@@ -96,14 +98,16 @@ export async function _connectBleDevice(devInfo: DeviceInfo) {
             // Success code
             resolve(peripheralInfo);
           })
-          .catch(err => {
-            reject(err);
-            console.log('error while retrieve services', err);
+          .catch(error => {
+            reject(error);
+            crashlytics().recordError(error as Error);
+            console.log('error while retrieve services', error);
           });
       })
       .catch(error => {
         // Failure code
         reject(error);
+        crashlytics().recordError(error as Error);
         console.log('error while connecting', error);
       });
   });
@@ -127,6 +131,7 @@ export async function _disconnectBleDevice(devInfo: DeviceInfo) {
         })
         .catch(error => {
           // Failure code
+          crashlytics().recordError(error as Error);
           console.log('error while disconnecting', error);
         });
     });
@@ -138,6 +143,7 @@ export async function _disconnectBleDevice(devInfo: DeviceInfo) {
       })
       .catch(error => {
         // Failure code
+        crashlytics().recordError(error as Error);
         console.log('error while disconnecting', error);
       });
   }
@@ -157,6 +163,7 @@ export async function _readFromDevice(
       })
       .catch(error => {
         // Failure code
+        crashlytics().recordError(error as Error);
         console.log(error);
       });
   });
@@ -182,6 +189,7 @@ export async function _writeToDevice(
     .catch(error => {
       // Failure code
       // reject(error)
+      crashlytics().recordError(error as Error);
       console.log(error);
     });
   // });
