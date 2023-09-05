@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
-import { IqamahTime, JummahTime, Masjid } from '../types/masjidControllerTypes';
+import { IqamahTime, JummahTime, Masjid, SalahTimings } from '../types/masjidControllerTypes';
 
 /**
  *
@@ -283,7 +283,26 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
   try {
     const result = await api.get(`/masjid/subscriptions/user/${userId}`);
     const masjidList = result.data as Masjid[];
-    masjidStore.userMasjidList.set(masjidList);
+    // console.log("masjidList", masjidList);
+    masjidStore?.userMasjidList?.set(
+      masjidList?.length > 0 ? masjidList : null,
+    );
+  } catch (error) {
+    console.log('getListMasjidSubscribedByUser error: ', error);
+  }
+};
+
+/**
+ *
+ * @description Get Salah Timing of masjid
+ * @returns return Salah Timing of masjid
+ */
+export const getSalahTimingsOfMasjid = async (masjidId: string) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/salah`);
+    const timings = result?.data?.timings as SalahTimings[];
+    // console.log("masjidList", masjidList);
+    masjidStore?.salahTimings?.set(timings ?? []);
   } catch (error) {
     console.log('getListMasjidSubscribedByUser error: ', error);
   }

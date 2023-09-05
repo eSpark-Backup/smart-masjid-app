@@ -93,7 +93,7 @@ export const GetMasjidAdmins = async (id: string) => {
   try {
     const result: any = await api.get(`/users/masjid/${id}`);
     if (result.data && result.status === 200) {
-      userStore.masjidAdmins.set(result.data);
+      userStore.masjidAdmins.set([]);
     }
   } catch (error) {
     crashlytics().recordError(error as Error);

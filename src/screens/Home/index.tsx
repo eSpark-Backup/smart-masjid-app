@@ -73,24 +73,29 @@ export default function Home() {
 
   const uniqueObjects: Masjid[] = [];
   const uniqueIds = new Set();
-  userMasjidList.forEach(obj => {
-    if (!uniqueIds.has(obj.id)) {
-      uniqueIds.add(obj.id);
-      uniqueObjects.push(obj as any);
+  userMasjidList?.forEach(obj => {
+    if (!uniqueIds?.has(obj.id)) {
+      uniqueIds?.add(obj.id);
+      uniqueObjects?.push(obj as any);
     }
   });
 
   useEffect(() => {
-    setStep(0);
+    setStep(0)
     GetUserDevices(userData?.id?.toString() ?? '');
     getMasjidListSubscribedByUser(userData?.id?.toString() ?? '');
   }, [isFocused]);
 
   useEffect(() => {
-    if (step == 0 && uniqueObjects?.length == 1) {
-      console.log('chala', uniqueObjects);
+    if (step == 0 && uniqueObjects?.length == 1 && uniqueObjects != null) {
       setStep(1);
-      setSelectedMasjid(uniqueObjects?.[0]);
+      if (typeof uniqueObjects?.[0] == 'object') {
+        setSelectedMasjid(uniqueObjects?.[0]);
+      }
+    } else {
+      if (step != 1) {
+        setSelectedMasjid(null);
+      }
     }
   }, [uniqueObjects]);
 
@@ -104,7 +109,7 @@ export default function Home() {
 
   return (
     <Wrapper
-      showBack={step == 0 ? false : true}
+      showBack={step == 0 ? false : (uniqueObjects?.length == 1 ?  false : true)}
       onBackPress={onBackPress}
       showFooter={false}
       title={'Masjid Subscriptions'}
@@ -124,7 +129,8 @@ export default function Home() {
               <MasjidDetails
                 contentOpacity={props.contentOpacity}
                 setStep={setStep}
-                selectedMasjid={selectedMasjid as Masjid}
+                isSingle={uniqueObjects?.length == 1}
+                selectedMasjid={selectedMasjid as unknown as Masjid}
               />
             )}
             {step == 2 && (
