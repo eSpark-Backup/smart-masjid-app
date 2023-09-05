@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
 import { useHookstate } from '@hookstate/core';
+import Toast from 'react-native-toast-message';
 
 import { SyncSvg } from '../../../assets';
 import {
@@ -18,6 +19,7 @@ import {
   MyTextSubHeader,
   MyTitle,
   OutlineDeviceContainer,
+  OverlayLoader,
   SwipeableTimeTable,
   TextLabel,
   TimeTable,
@@ -28,7 +30,10 @@ import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
 import { Masjid } from '../../../types/masjidControllerTypes';
-import { GetMasjidDevicesForUser } from '../../../api/deviceController';
+import {
+  GetMasjidDevicesForUser,
+  unSubscribeMasjid,
+} from '../../../api/deviceController';
 import { masjidStore } from '../../../store/MasjidStore';
 import { Device } from '../../../types/deviceControllerTypes';
 
@@ -42,11 +47,16 @@ export default function MasjidDetails({
   contentOpacity: any;
 }) {
   const { colors }: Theme = useTheme();
-  const [currentDeviceId, setCurrentDeviceId] = useState(1);
   const userData = useHookstate(userStore.userData).get();
   const devices = useHookstate(masjidStore.connectedDevices).get();
+  const [loading, setLoading] = useState<boolean>(false);
   const connectedDevices = useMemo(() => devices, [devices]);
+  const [currentDevice, setCurrentDevice] = useState<Device>();
   const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setCurrentDevice(connectedDevices[0] as Device);
+  }, []);
 
   useEffect(() => {
     GetMasjidDevicesForUser(
@@ -55,12 +65,9 @@ export default function MasjidDetails({
     );
   }, [isFocused]);
 
-  useEffect(() => {
-    setCurrentDeviceId(connectedDevices[0]?.id);
-  }, [connectedDevices]);
-
   return (
     <View style={{ flex: 1 }}>
+      <OverlayLoader isShow={loading} noBg={false} />
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Masjid Subscriptions" />
@@ -93,10 +100,10 @@ export default function MasjidDetails({
           renderItem={({ item, index }: { item: Device; index: number }) => (
             <OutlineDeviceContainer
               onPress={() => {
-                setCurrentDeviceId(item.id);
+                setCurrentDevice(item);
               }}
               name={item.name}
-              isActive={item.id == currentDeviceId}
+              isActive={item.id == currentDevice?.id}
               isOnline={
                 item?.deviceTelemetry?.status == 'Online' ? true : false
               }
@@ -202,7 +209,29 @@ export default function MasjidDetails({
               justifyContent: 'center',
               flexDirection: 'row',
             }}
-            onPress={() => {}}>
+            onPress={async () => {
+              console.log(
+                'val',
+                currentDevice,
+                selectedMasjid?.id?.toString()!,
+              );
+              if (currentDevice?.deviceTelemetry.status === 'Online') {
+                setLoading(true);
+                const res = await unSubscribeMasjid(
+                  currentDevice?.id?.toString()!,
+                  selectedMasjid?.id?.toString()!,
+                );
+                if (res) {
+                  setStep(0);
+                  setLoading(false);
+                }
+              } else {
+                Toast.show({
+                  text2: 'Selected Device is Offline',
+                  type: 'error',
+                });
+              }
+            }}>
             <TextLabel
               label="Unsubscribe"
               textStyle={{ color: '#ffffff', fontWeight: '400' }}
