@@ -8,6 +8,7 @@ import {
   View,
   ViewStyle,
   PermissionsAndroid,
+  TextStyle,
 } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
 import { useHookstate } from '@hookstate/core';
@@ -36,7 +37,7 @@ interface MyInputProps {
   onPhoneCodeChange?: (country: CountryCodes) => void;
   onChangeText?: (value: string) => void;
   containerStyle?: ViewStyle;
-  inputStyle?: ViewStyle;
+  inputStyle?: TextStyle;
   dropStyle?: ViewStyle;
   placeholder: string;
   placeholderColor?: string;
@@ -53,6 +54,8 @@ interface MyInputProps {
   disabled?: boolean;
   selectMode?: boolean;
   phoneCodeContainerStyle?: ViewStyle;
+  multiline?: boolean;
+  numberOfLines?: number;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -80,6 +83,8 @@ export default function MyInput(props: MyInputProps) {
     disabled,
     selectMode,
     phoneCodeContainerStyle,
+    multiline,
+    numberOfLines,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), [props]);
@@ -193,7 +198,12 @@ export default function MyInput(props: MyInputProps) {
           textStyle={{ fontWeight: '400', color: '#3E3E3E' }}
         />
       )}
-      <View style={[styles.container, containerStyle]}>
+      <View
+        style={[
+          styles.container,
+          containerStyle,
+          { height: multiline ? undefined : 50 },
+        ]}>
         {isPhoneCode && (
           <TouchableOpacity
             onPress={() => setShowCountryPicker(true)}
@@ -208,7 +218,7 @@ export default function MyInput(props: MyInputProps) {
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
           </TouchableOpacity>
         )}
-        {helpSearch ? null : (
+        {helpSearch || multiline ? null : (
           <View
             style={{
               position: 'absolute',
@@ -248,7 +258,7 @@ export default function MyInput(props: MyInputProps) {
                 { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
                 inputStyle,
               ]}
-              placeholder={helpSearch ? placeholder : ''}
+              placeholder={helpSearch || multiline ? placeholder : ''}
               placeholderTextColor={'#9E9F9F'}
               onChangeText={handleTextChange}
               onFocus={() => setGetFocused(true)}
@@ -261,6 +271,8 @@ export default function MyInput(props: MyInputProps) {
               onPressIn={onFocus}
               onSubmitEditing={onBlur}
               secureTextEntry={isSecure}
+              numberOfLines={4}
+              multiline={multiline}
             />
             {error && (
               <MyText
@@ -317,7 +329,6 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       flexDirection: 'row',
       borderBottomColor: isDivider ? dividerColor : 'transparent',
       borderBottomWidth: isDivider ? dividerWidth : 0,
-      height: 50,
     },
     inputStyle: {
       paddingHorizontal: 20,

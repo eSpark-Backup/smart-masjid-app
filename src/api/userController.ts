@@ -31,6 +31,23 @@ export const RegisterUserPhone = async (
 
 /**
  *
+ * @description Update/Add Registered User Phone Device in Server
+ */
+export const updateUserPhone = async (
+  data: RequestRegisterPhone,
+  userId: string,
+  phoneDeviceId: string,
+): Promise<void> => {
+  try {
+    await api.post(`/users/${userId}/phones/${phoneDeviceId}`, data);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error UpdateUserPhone', error, 'Request', data, userId);
+  }
+};
+
+/**
+ *
  * @description Login User
  * @returns get data of user and save to userStore
  */

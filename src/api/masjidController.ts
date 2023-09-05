@@ -88,7 +88,7 @@ export const AddMasjidIqamahTiming = async (
  * @description Get Adhan Configuration
  * @returns get data of masjid adhan config and save to masjidStore
  */
-export const UpdatedMasjidIqamahTiming = async (
+export const UpdateMasjidIqamahTiming = async (
   masjidId: string,
   data: IqamahTime,
 ) => {
@@ -96,6 +96,35 @@ export const UpdatedMasjidIqamahTiming = async (
     const result: any = await api.put(
       `/masjid/${masjidId}/iqama/${data.id}`,
       data,
+    );
+    if (result.status == 200) {
+      masjidStore.iqamahTime.set(result.data);
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error', error);
+  }
+};
+
+/**
+ *
+ * @description Get Adhan Configuration
+ * @returns get data of masjid adhan config and save to masjidStore
+ */
+export const DeleteMasjidIqamahTiming = async (
+  masjidId: string,
+  iqamaId: string,
+) => {
+  try {
+    const result: any = await api.delete(
+      `/masjid/${masjidId}/iqama/${iqamaId}`,
     );
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);

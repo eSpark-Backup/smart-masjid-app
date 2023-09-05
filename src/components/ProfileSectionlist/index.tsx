@@ -58,7 +58,12 @@ export default function ProfileSectionlist({
           );
         } else return <View />;
       }}
-      ListFooterComponentStyle={{ position: 'absolute', bottom: 0 }}
+      ListFooterComponentStyle={{
+        position: 'absolute',
+        bottom: 0,
+        left: 4,
+        padding: 10,
+      }}
       ListFooterComponent={
         <View>
           {footerData?.map((item, index) => {

@@ -358,7 +358,8 @@ function convertResponseToData(
             value = currValue?.slice(0, -3);
           } else {
             // it is a valid date string, so extract the date part
-            value = dateValue.toISOString().slice(0, 10);
+            // value = dateValue.toISOString().slice(0, 10);
+            value = moment(dateValue).format('DD/MM/YYYY');
           }
         } else if (currValue instanceof Date) {
           // it is a Date object, so extract the date part

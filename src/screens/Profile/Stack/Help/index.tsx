@@ -74,7 +74,9 @@ export default function HelpScreen({
           }}>
           <MyText size={16} text={`Can't find what your looking for?`} />
           <GapView />
-          <TouchableOpacity style={{ flexDirection: 'row' }}>
+          <TouchableOpacity
+            style={{ flexDirection: 'row' }}
+            onPress={() => setFlag('cUs')}>
             <ContactUs />
             <MyText
               size={16}

@@ -17,11 +17,13 @@ const TimeTableCard = ({
   date = '',
   deleteBtn,
   onEdit,
+  onDelete,
 }: {
   data: TimeTableData[];
   date: string;
   deleteBtn?: boolean;
   onEdit?: () => void;
+  onDelete?: () => void;
 }) => {
   return (
     <View style={{ marginVertical: 5 }}>
@@ -35,7 +37,7 @@ const TimeTableCard = ({
               <MyText text={date} size={12} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {deleteBtn ? <Delete /> : null}
+              {deleteBtn ? <Delete onPress={onDelete} /> : null}
               <GapView length={5} mode="horizontal" />
               <EditPencil onPress={onEdit} />
             </View>

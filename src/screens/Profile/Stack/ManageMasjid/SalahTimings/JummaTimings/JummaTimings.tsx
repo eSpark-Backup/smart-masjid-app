@@ -35,34 +35,36 @@ export default function JummaTimings({
 
   useEffect(() => {
     setLoading(true);
-    GetMasjidJummahTiming('1').then((jumuahTime: JummahTime) => {
-      let jumuahData = [];
-      let jumuahs: jumuahsData[] = [];
-      let jumuah: Array<'jumuah1' | 'jumuah2' | 'jumuah3'> = Object.keys(
-        jumuahTime,
-      ).filter(val => val.includes('jumuah')) as Array<
-        'jumuah1' | 'jumuah2' | 'jumuah3'
-      >;
+    GetMasjidJummahTiming('1', moment(new Date()).format('YYYY-MM-DD')).then(
+      (jumuahTime: JummahTime) => {
+        let jumuahData = [];
+        let jumuahs: jumuahsData[] = [];
+        let jumuah: Array<'jumuah1' | 'jumuah2' | 'jumuah3'> = Object.keys(
+          jumuahTime,
+        ).filter(val => val.includes('jumuah')) as Array<
+          'jumuah1' | 'jumuah2' | 'jumuah3'
+        >;
 
-      jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
-        let data: jumuahsData;
-        data = {
-          name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
-          value: moment(jumuahTime[`${jumuah}`], 'HH:mm:ss').format('LT'),
+        jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
+          let data: jumuahsData;
+          data = {
+            name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
+            value: moment(jumuahTime[`${jumuah}`], 'HH:mm:ss').format('LT'),
+          };
+          console.log('data', data);
+          jumuahTime[`${jumuah}`] != null ? jumuahs.push(data) : null;
+        });
+        console.log('jumuahs', jumuahs);
+        const namazData = {
+          id: jumuahTime.id,
+          date: jumuahTime.effectiveDate,
+          data: jumuahs,
         };
-        console.log('data', data);
-        jumuahTime[`${jumuah}`] != null ? jumuahs.push(data) : null;
-      });
-      console.log('jumuahs', jumuahs);
-      const namazData = {
-        id: jumuahTime.id,
-        date: jumuahTime.effectiveDate,
-        data: jumuahs,
-      };
-      jumuahData.push(namazData);
-      setData(jumuahData);
-      setLoading(false);
-    });
+        jumuahData.push(namazData);
+        setData(jumuahData);
+        setLoading(false);
+      },
+    );
   }, []);
 
   // Here we Convert the single object to an arrays of jumuah timings

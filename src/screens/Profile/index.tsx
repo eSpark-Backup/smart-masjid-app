@@ -38,12 +38,14 @@ import {
   HelpScreen,
   EditIqamahTimings,
   EditJummaTimings,
+  ContactUsScreen,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { useHookstate } from '@hookstate/core';
 import { userStore } from '../../store/UserStore';
 import { UserResponse } from '../../types/userControllerApiResponse';
 import { jumuahsData } from '../../types/masjidControllerTypes';
+import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -62,6 +64,11 @@ export default function Profile() {
   const [jummaData, setJummaData] = useState<object | null>(null);
   const [iqamaData, setIqamaData] = useState<object | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
+
+  const getFAQAndReason = async () => {
+    await GetContactReasons();
+    await GetHelpFAQs();
+  };
 
   const handleBack = (currScreen: string) => {
     console.log(currScreen);
@@ -105,6 +112,10 @@ export default function Profile() {
       setFlag('mMas');
       return;
     }
+    if (currScreen == 'cUs') {
+      setFlag('help');
+      return;
+    }
     if (currScreen == 'uInfo') {
       navigation.navigate('Home');
     } else {
@@ -118,6 +129,10 @@ export default function Profile() {
     console.log('current flag', flag);
     return true;
   };
+
+  useEffect(() => {
+    getFAQAndReason();
+  }, []);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -188,6 +203,9 @@ export default function Profile() {
     }
     if (flag == 'help') {
       return 'Help';
+    }
+    if (flag == 'cUs') {
+      return 'Contact Us';
     }
   };
 
@@ -323,6 +341,12 @@ export default function Profile() {
             )}
             {flag == 'help' && (
               <HelpScreen
+                contentOpacity={props.contentOpacity}
+                setFlag={(value: string) => setFlag(value)}
+              />
+            )}
+            {flag == 'cUs' && (
+              <ContactUsScreen
                 contentOpacity={props.contentOpacity}
                 setFlag={(value: string) => setFlag(value)}
               />
