@@ -8,14 +8,17 @@ import {
   StyleSheet,
   Keyboard,
   Platform,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import { WINDOW_WIDTH } from '../../constants';
 import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
-import { ArrowDown } from '../../assets';
+import { ArrowDown, ArrowUp } from '../../assets';
 import { useLayoutAnimation } from '../../utils/hooks';
+import { TouchableNativeFeedback } from 'react-native';
 
 interface Item {
   id: number;
@@ -104,10 +107,19 @@ export default function MyDropdown({
     setData([...updatedList]);
   };
 
+  const openDropDown = () => {
+    if (disabled) return;
+    useLayoutAnimation(200);
+    setShow(!show);
+    Keyboard.dismiss();
+  };
+
   return (
-    <>
-      <View
-        style={{ ...styles.container, paddingHorizontal: containerPadding }}>
+    <View>
+      <TouchableOpacity
+        onPress={openDropDown}
+        style={{ ...styles.container, paddingHorizontal: containerPadding }}
+        activeOpacity={0.6}>
         <MyInput
           disabled={disabled}
           title={title}
@@ -138,57 +150,66 @@ export default function MyDropdown({
             top: 0,
           }}
         />
-        <ArrowDown
-          onPress={() => {
-            if (disabled) return;
-            useLayoutAnimation(200);
-            setShow(!show);
-            Keyboard.dismiss();
-          }}
-          style={{
-            bottom: 15,
-            right: title ? 35 : 15,
-            position: 'absolute',
-            zIndex: 1,
-          }}
-        />
-      </View>
+        {show ? (
+          <ArrowUp
+            onPress={openDropDown}
+            style={{
+              bottom: 15,
+              right: title ? 35 : 15,
+              position: 'absolute',
+              zIndex: 1,
+            }}
+          />
+        ) : (
+          <ArrowDown
+            onPress={openDropDown}
+            style={{
+              bottom: 15,
+              right: title ? 35 : 15,
+              position: 'absolute',
+              zIndex: 1,
+            }}
+          />
+        )}
+      </TouchableOpacity>
       {show && (
-        <FlatList
-          data={data}
-          contentContainerStyle={{
-            borderWidth: 1,
-            borderColor: '#9E9F9F',
-            borderRadius: 12,
-            width: width ?? WINDOW_WIDTH - 45,
-            marginTop: 5,
-            alignSelf: 'center',
-          }}
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item, index }) => {
-            return (
-              <TouchableOpacity
-                key={`${item?.name}-${index}`}
-                activeOpacity={0.9}
-                onPress={() => {
-                  if (disabled) return;
-                  setSelectedItem(item);
-                  onChangeValue(item);
-                  setShow(false);
-                }}
-                style={{
-                  height: 40,
-                  justifyContent: 'center',
-                  paddingHorizontal: 20,
-                }}>
-                <MyText text={item.name} />
-              </TouchableOpacity>
-            );
-          }}
-          ItemSeparatorComponent={MyDivider}
-        />
+        <View style={{ flex: 0.05 }}>
+          <FlatList
+            data={data}
+            contentContainerStyle={{
+              borderWidth: 1,
+              borderColor: '#9E9F9F',
+              borderRadius: 12,
+              width: width ?? WINDOW_WIDTH - 45,
+              marginTop: 5,
+              alignSelf: 'center',
+            }}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item, index }) => {
+              return (
+                <TouchableOpacity
+                  key={`${item?.name}-${index}`}
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    if (disabled) return;
+                    setSelectedItem(item);
+                    onChangeValue(item);
+                    setShow(false);
+                  }}
+                  style={{
+                    height: 40,
+                    justifyContent: 'center',
+                    paddingHorizontal: 20,
+                  }}>
+                  <MyText text={item.name} />
+                </TouchableOpacity>
+              );
+            }}
+            ItemSeparatorComponent={MyDivider}
+          />
+        </View>
       )}
-    </>
+    </View>
   );
 }
 

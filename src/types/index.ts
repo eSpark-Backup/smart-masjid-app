@@ -54,8 +54,20 @@ export type DeviceStoreProps = {
   masjidDevices: Device[];
 };
 
+export type HelpStoreProps = {
+  FAQs: FAQ[];
+  reasons: FAQ[] | null;
+};
+
 export type ExternalStoreProps = {
   countryCodes: CountryCodes[];
+};
+
+export type FAQ = {
+  id: number;
+  question: string;
+  answer: string;
+  category: string;
 };
 
 export type CountryCodes = {
@@ -84,4 +96,9 @@ export interface SalahInfo {
 export interface IPrayerTimeForPeriod {
   date: string;
   salah: SalahInfo[];
+}
+export interface supportRequestData {
+  reasonId: number;
+  problem: string;
+  userId: string;
 }

@@ -22,7 +22,7 @@ import {
   OverlayLoader,
   SLoader,
 } from '../../components';
-import { RegisterUserPhone } from '../../api/userController';
+import { RegisterUserPhone, updateUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
   UserResponse,
@@ -57,6 +57,8 @@ export default function UserSetupScreen() {
     lastName: 'string',
     userType: 'Customer',
   });
+
+  console.log('isDevice Registered?', isDeviceRegistered);
 
   useEffect(() => {
     if (route.params?.type == 'setup') {
@@ -112,6 +114,12 @@ export default function UserSetupScreen() {
       await RegisterUserPhone(
         { deviceId: phoneId, fcmToken: fcmToken as string },
         res?.id.toString(),
+      );
+    } else if (res?.id && phoneId && isDeviceRegistered) {
+      await updateUserPhone(
+        { deviceId: phoneId, fcmToken: fcmToken as string },
+        res?.id.toString(),
+        phoneId,
       );
     }
 

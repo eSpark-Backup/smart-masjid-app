@@ -6,6 +6,7 @@ import {
   Animated,
   TouchableOpacity,
   ScrollView,
+  FlatList,
 } from 'react-native';
 
 import { ContactUs } from '../../../../assets';
@@ -45,7 +46,7 @@ export default function HelpScreen({
           justifyContent: 'space-between',
           paddingBottom: 112,
         }}>
-        <View>
+        <View style={{ flex: 1 }}>
           <Card
             backgroundColor="#ffffff"
             height={45}
@@ -60,12 +61,11 @@ export default function HelpScreen({
             />
           </Card>
           <GapView />
-          <View>
-            <Accordian />
-            <Accordian />
-            <Accordian />
-            <Accordian />
-          </View>
+          <FlatList
+            data={[1, 2, 3, 4]}
+            renderItem={() => <Accordian />}
+            ItemSeparatorComponent={() => <GapView />}
+          />
         </View>
         <View
           style={{
@@ -74,7 +74,9 @@ export default function HelpScreen({
           }}>
           <MyText size={16} text={`Can't find what your looking for?`} />
           <GapView />
-          <TouchableOpacity style={{ flexDirection: 'row' }}>
+          <TouchableOpacity
+            style={{ flexDirection: 'row' }}
+            onPress={() => setFlag('cUs')}>
             <ContactUs />
             <MyText
               size={16}

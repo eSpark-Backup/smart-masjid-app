@@ -3,10 +3,14 @@ import { StyleSheet, View, ScrollView, Animated } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
-import { GetMasjidIqamahTiming } from '../../../../../../api/masjidController';
+import {
+  DeleteMasjidIqamahTiming,
+  GetMasjidIqamahTiming,
+} from '../../../../../../api/masjidController';
 import { HistoryBox, PlusCircle } from '../../../../../../assets';
 import {
   GapView,
+  LogoutModal,
   MyText,
   MyTextSubHeader,
   MyTitle,
@@ -28,14 +32,43 @@ export default function IqamahTimings({
   selectedIqamah: (value: object) => void;
 }) {
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
+  const [currentData, setCurrentData] = useState<any>(null);
   const [data, setData] = useState<any>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    getAllIqamahTimings();
+  }, []);
+
+  const getAllIqamahTimings = () => {
     GetMasjidIqamahTiming('1').then(iqamahTime => {
       let iqamahData: any = [];
       iqamahTime?.map((i: IqamahTime) => {
+        if (
+          moment(i?.effectiveDate).format('YYYY-MM-DD') <=
+          moment(new Date(new Date())).format('YYYY-MM-DD')
+        ) {
+          const namazData = {
+            id: i.id,
+            date: i.effectiveDate,
+            data: [
+              { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
+              {
+                name: 'dhuhr',
+                value: moment(i?.dhuhr, 'HH:mm:ss').format('LT'),
+              },
+              { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
+              { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
+              { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
+            ],
+            type: i.type,
+          };
+          setCurrentData(namazData);
+          return;
+        }
         const namazData = {
           id: i.id,
           date: i.effectiveDate,
@@ -53,28 +86,17 @@ export default function IqamahTimings({
       setData(iqamahData);
       setLoading(false);
     });
-  }, []);
-
-  const foundIndex =
-    data?.length > 0
-      ? iqamahTimings?.findIndex(
-          e =>
-            moment(e?.effectiveDate).format('YYYY-MM-DD') ==
-            moment(new Date(new Date())).format('YYYY-MM-DD'),
-        )
-      : -1;
+  };
 
   const contentToRender = () => {
-    return foundIndex! > -1 ? (
+    return currentData != null ? (
       <TimeTableCard
         onEdit={() => {
-          console.log('item', iqamahTimings![foundIndex!]);
-
-          selectedIqamah(iqamahTimings![foundIndex!]);
+          selectedIqamah(currentData);
           setFlag('iEdit');
         }}
-        date={data[foundIndex!]?.date}
-        data={data[foundIndex!]?.data}
+        date={currentData?.date}
+        data={currentData?.data}
       />
     ) : loading ? null : (
       <MyText
@@ -82,6 +104,13 @@ export default function IqamahTimings({
         text="Nothing to show yet!"
       />
     );
+  };
+
+  const deleteIqamahTime = () => {
+    setIsVisible(false);
+    setLoading(true);
+    DeleteMasjidIqamahTiming('1', deleteId as string);
+    getAllIqamahTimings();
   };
 
   return (
@@ -118,31 +147,44 @@ export default function IqamahTimings({
             style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
             <MyTextSubHeader text="Upcoming" />
           </View>
-          <FlatList
-            data={data}
-            renderItem={({ item }) => (
-              <TimeTableCard
-                onEdit={() => {
-                  const ind = iqamahTimings?.findIndex(e => e.id == item.id);
-                  selectedIqamah(iqamahTimings![ind!]);
-                  setFlag('iEdit');
-                }}
-                key={item.date}
-                date={item.date}
-                data={item.data}
-                deleteBtn
-              />
-            )}
-            ListEmptyComponent={
-              loading ? null : (
+          {loading ? null : (
+            <FlatList
+              data={data}
+              renderItem={({ item }) => (
+                <TimeTableCard
+                  onEdit={() => {
+                    const ind = iqamahTimings?.findIndex(e => e.id == item.id);
+                    selectedIqamah(iqamahTimings![ind!]);
+                    setFlag('iEdit');
+                  }}
+                  key={item.date}
+                  date={item.date}
+                  data={item.data}
+                  deleteBtn
+                  onDelete={() => {
+                    setIsVisible(true);
+                    setDeleteId(item.id);
+                  }}
+                />
+              )}
+              ListEmptyComponent={
                 <MyText
                   textStyle={{ textAlign: 'center', marginVertical: 10 }}
                   text="Nothing to show yet!"
                 />
-              )
-            }
-          />
+              }
+            />
+          )}
         </ScrollView>
+        <LogoutModal
+          message="Do you wish to delete?"
+          visible={isVisible}
+          onAllowed={deleteIqamahTime}
+          onClose={() => {
+            setIsVisible(!isVisible);
+            console.log('Cancelled');
+          }}
+        />
       </View>
     </>
   );

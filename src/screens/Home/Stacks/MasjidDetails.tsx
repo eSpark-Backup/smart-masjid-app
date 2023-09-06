@@ -43,7 +43,7 @@ export default function MasjidDetails({
   setStep,
   contentOpacity,
   selectedMasjid,
-  isSingle
+  isSingle,
 }: {
   selectedMasjid?: Masjid | null;
   setStep: (value: any) => void;
@@ -71,14 +71,14 @@ export default function MasjidDetails({
     GetMasjidDevicesForUser(
       userData?.id?.toString() ?? '',
       selectedMasjid?.id.toString(),
-    ).then((res) => {
+    ).then(res => {
       setCurrentDevice(connectedDevices[0] as Device);
     });
     getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '');
   }, [isFocused]);
 
-  console.log("salahTimings", salahTimings);
-  
+  console.log('salahTimings', salahTimings);
+
   return (
     <View style={{ flex: 1 }}>
       <OverlayLoader isShow={loading} noBg={false} />
@@ -92,7 +92,7 @@ export default function MasjidDetails({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           top: isSingle ? 140 : 110,
-          paddingBottom: 120,
+          paddingBottom: 150,
           padding: 5,
           paddingHorizontal: 15,
         }}>
@@ -132,7 +132,7 @@ export default function MasjidDetails({
         <SwipeableTimeTable
           isMute
           isInfo
-          data={salahTimings as SalahTimings[] ?? []}
+          data={(salahTimings as SalahTimings[]) ?? []}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />

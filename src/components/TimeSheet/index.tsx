@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, ScrollView, FlatList } from 'react-native';
 import React from 'react';
 import MyText from '../MyText';
+import { useTheme } from '@react-navigation/native';
 
 interface Props {
   heading: string;
@@ -8,12 +9,15 @@ interface Props {
 }
 
 export default function TimeSheet({ data }: { data: Array<Props> }) {
+  console.log('timesheet data', data);
+
+  const { colors } = useTheme();
   const renderTable = ({ item, index }: { item: Props; index: number }) => {
     return (
       <View>
         <View
           style={{
-            backgroundColor: '#6E6E6E',
+            backgroundColor: colors.primary,
             paddingHorizontal: 8,
             paddingVertical: 5,
             borderColor: '#9E9F9F',

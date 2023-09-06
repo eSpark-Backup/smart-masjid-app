@@ -1,54 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  LogBox,
-} from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { StyleSheet, View, ScrollView, Animated } from 'react-native';
 import moment from 'moment';
-import Toast from 'react-native-toast-message';
 
 import {
   AddMasjidJummahTiming,
-  GetMasjidIqamahTiming,
   GetMasjidJummahTiming,
-  UpdatedMasjidIqamahTiming,
-  UpdatedMasjidJummahTiming,
 } from '../../../../../../api/masjidController';
-import {
-  Calendar,
-  Delete,
-  EditPencil,
-  EditTimeTable,
-  History,
-  HistoryBox,
-  PlusCircle,
-} from '../../../../../../assets';
+
 import {
   GapView,
-  MyDivider,
-  MyDropDown,
-  MyText,
-  MyTextSubHeader,
   MyTitle,
   OverlayLoader,
   Rounded,
-  TextLabel,
   TimeTable,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
-import { WINDOW_WIDTH } from '../../../../../../constants';
-import { masjidStore } from '../../../../../../store/MasjidStore';
+
 import {
-  IqamahTime,
   JummahTime,
   jumuahsData,
 } from '../../../../../../types/masjidControllerTypes';
-import { Card } from '../../../../../../containers';
-import { FlatList } from 'react-native-gesture-handler';
 
 interface selectedJummmaData {
   id: number;
@@ -67,7 +38,6 @@ export default function EditJummaTimings({
   jummaType: 'Add' | 'Edit';
   selectedJumma?: selectedJummmaData | null;
 }) {
-  const [edit, setEdit] = useState(false);
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
@@ -104,7 +74,6 @@ export default function EditJummaTimings({
     setLoading(true);
     await AddMasjidJummahTiming('1', data);
     setLoading(false);
-    setEdit(false);
     setData(null);
     setFlag('jTime');
   };

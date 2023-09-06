@@ -1,48 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  LogBox,
-} from 'react-native';
+import { StyleSheet, View, ScrollView, Animated } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
-import Toast from 'react-native-toast-message';
 
 import {
   AddMasjidIqamahTiming,
-  GetMasjidIqamahTiming,
-  UpdatedMasjidIqamahTiming,
+  UpdateMasjidIqamahTiming,
 } from '../../../../../../api/masjidController';
-import {
-  Calendar,
-  Delete,
-  EditPencil,
-  EditTimeTable,
-  History,
-  HistoryBox,
-  PlusCircle,
-} from '../../../../../../assets';
+
 import {
   GapView,
-  MyDivider,
   MyDropDown,
-  MyText,
-  MyTextSubHeader,
   MyTitle,
   OverlayLoader,
   Rounded,
-  TextLabel,
   TimeTable,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
-import { Card } from '../../../../../../containers';
-import { FlatList } from 'react-native-gesture-handler';
 
 export default function EditIqamahTimings({
   setFlag,
@@ -119,7 +96,7 @@ export default function EditIqamahTimings({
       if (iqamahType == 'Add') {
         await AddMasjidIqamahTiming('1', dataObj);
       } else {
-        await UpdatedMasjidIqamahTiming('1', dataObj);
+        await UpdateMasjidIqamahTiming('1', dataObj);
       }
     }
     setLoading(false);
@@ -136,13 +113,13 @@ export default function EditIqamahTimings({
     //   if ((iqamahType = 'Add')) {
     //     await AddMasjidIqamahTiming('1', dataObj);
     //   } else {
-    //     await UpdatedMasjidIqamahTiming('1', dataObj);
+    //     await UpdateMasjidIqamahTiming('1', dataObj);
     //   }
     // }
 
     // if (dataObj.type == 'F') {
     //   setLoading(true);
-    //   await UpdatedMasjidIqamahTiming('1', {
+    //   await UpdateMasjidIqamahTiming('1', {
     //     effectiveDate: dataObj.effectiveDate,
     //     type: dataObj.type,
     //     asr: dataObj.asr,
@@ -170,7 +147,7 @@ export default function EditIqamahTimings({
     //     return;
     //   }
     //   setLoading(true);
-    //   await UpdatedMasjidIqamahTiming('1', {
+    //   await UpdateMasjidIqamahTiming('1', {
     //     effectiveDate: dataObj.effectiveDate,
     //     type: dataObj.type,
     //     fajrDelay: dataObj.fajrDelay,
@@ -298,9 +275,7 @@ export default function EditIqamahTimings({
               },
               {
                 name: 'Maghrib',
-                iqamahTiming: edit
-                  ? data?.maghribDelay?.toString()
-                  : data?.maghribDelay?.toString(),
+                iqamahTiming: data?.maghribDelay?.toString(),
                 onChange: value => {
                   setData({
                     ...data,
@@ -329,12 +304,10 @@ export default function EditIqamahTimings({
             editView={true}
             footer={
               <>
-                {/* {edit && ( */}
                 <View style={{ alignSelf: 'center' }}>
                   <GapView />
                   <Rounded label="Save" onPress={onUpdate} />
                 </View>
-                {/* )} */}
               </>
             }
           />
