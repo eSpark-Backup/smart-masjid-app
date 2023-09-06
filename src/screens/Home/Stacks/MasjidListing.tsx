@@ -26,11 +26,11 @@ export default function MasjidListing({
         </Animated.View>
         <GapView length={50} />
       </View>
-
       <FlatList
-        style={{ top: 130 }}
+        style={{ top: 120 }}
         data={data}
         contentContainerStyle={{ paddingBottom: 140, paddingTop: 15 }}
+        keyExtractor={(item, index) => item.id.toString() + index.toString()}
         renderItem={({ item, index }) => (
           <MasjidListCard
             key={index}

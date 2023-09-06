@@ -23,7 +23,7 @@ type HomeNavigationProps = NativeStackScreenProps<
 // Screen Components
 export const ListEmptyComponent = ({
   navigation,
-  message1 = `You have not subscribes to a\nmasjid yet`,
+  message1 = `You have not subscribed to a\nmasjid yet`,
   message2 = `Search for a masjid near you`,
   isShowBtn = true,
 }: {
@@ -35,10 +35,9 @@ export const ListEmptyComponent = ({
   return (
     <ScrollView>
       <View style={{ alignItems: 'center' }}>
-        <GapView length={30} />
         <MyText
           text={message1}
-          textStyle={{ textAlign: 'center', fontSize: 16 }}
+          textStyle={{ textAlign: 'center', fontSize: 16, fontWeight: '500' }}
         />
         <GapView length={30} />
         <SearchMasjidSvg />
@@ -47,7 +46,7 @@ export const ListEmptyComponent = ({
           text={message2}
           textStyle={{ textAlign: 'center', fontSize: 16 }}
         />
-        <GapView />
+        <GapView length={40} />
         {isShowBtn && (
           <Rounded
             onPress={() => navigation.navigate('Search')}
@@ -72,18 +71,33 @@ export default function Home() {
     isLoading,
   } = useMasjid();
 
+  const uniqueObjects: Masjid[] = [];
+  const uniqueIds = new Set();
+  userMasjidList?.forEach(obj => {
+    if (!uniqueIds?.has(obj.id)) {
+      uniqueIds?.add(obj.id);
+      uniqueObjects?.push(obj as any);
+    }
+  });
+
   useEffect(() => {
-    setStep(0);
+    setStep(0)
     GetUserDevices(userData?.id?.toString() ?? '');
     getMasjidListSubscribedByUser(userData?.id?.toString() ?? '');
   }, [isFocused]);
 
   useEffect(() => {
-    if (step == 0 && userMasjidList?.length == 1) {
+    if (step == 0 && uniqueObjects?.length == 1 && uniqueObjects != null) {
       setStep(1);
-      setSelectedMasjid(userMasjidList?.[0]);
+      if (typeof uniqueObjects?.[0] == 'object') {
+        setSelectedMasjid(uniqueObjects?.[0]);
+      }
+    } else {
+      if (step != 1) {
+        setSelectedMasjid(null);
+      }
     }
-  }, [userMasjidList]);
+  }, [uniqueObjects]);
 
   const onBackPress = () => {
     if (step != 0) {
@@ -95,7 +109,7 @@ export default function Home() {
 
   return (
     <Wrapper
-      showBack={step == 0 ? false : true}
+      showBack={step == 0 ? false : (uniqueObjects?.length == 1 ?  false : true)}
       onBackPress={onBackPress}
       showFooter={false}
       title={'Masjid Subscriptions'}
@@ -115,7 +129,8 @@ export default function Home() {
               <MasjidDetails
                 contentOpacity={props.contentOpacity}
                 setStep={setStep}
-                selectedMasjid={selectedMasjid as Masjid}
+                isSingle={uniqueObjects?.length == 1}
+                selectedMasjid={selectedMasjid as unknown as Masjid}
               />
             )}
             {step == 2 && (

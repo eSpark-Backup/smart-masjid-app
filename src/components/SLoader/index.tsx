@@ -38,7 +38,13 @@ export default function SLoader({
           />
           <GapView length={60} />
           <View>
-            <Image source={GLoad} style={styles.loader} resizeMode="contain" />
+            <Image
+              defaultSource={GLoad}
+              source={GLoad}
+              style={styles.loader}
+              resizeMode="contain"
+              accessible={true}
+            />
             <View
               style={{
                 width: 10,
@@ -68,6 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loader: {
+    display: 'flex',
     height: 60,
     width: 60,
     alignSelf: 'center',

@@ -8,6 +8,7 @@ import {
   MyTextHeader,
   MyTextSubHeader,
   MyTitle,
+  OverlayLoader,
   Rounded,
   SalahTable,
   TextLabel,
@@ -61,6 +62,10 @@ const MasjidDetails = ({
       },
     );
   }, []);
+
+  useEffect(() => {
+    console.log('ka', subscribe);
+  }, [subscribe]);
 
   const subscriptions = [] as SubscriptionList[];
   // _normalizedSubscriptions(
@@ -224,7 +229,7 @@ const MasjidDetails = ({
         <GapView length={15} />
 
         {!subscribe ? (
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Rounded
               onPress={onSubscribe}
               disabled={false}
