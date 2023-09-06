@@ -5,6 +5,7 @@ import {
   IqamahTime,
   JummahTime,
   Masjid,
+  SalahTimings,
 } from './masjidControllerTypes';
 import { UserResponse } from './userControllerApiResponse';
 
@@ -43,8 +44,9 @@ export type MasjidStoreProps = {
   iqamahHistory: IqamahTime[];
   JummahTime: JummahTime | null;
   JummahHistory: JummahTime[];
-  userMasjidList: Masjid[];
+  userMasjidList: Masjid[] | null;
   connectedDevices: Device[];
+  salahTimings: SalahTimings[]
 };
 
 export type DeviceStoreProps = {
