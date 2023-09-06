@@ -95,3 +95,8 @@ export interface IPrayerTimeForPeriod {
   date: string;
   salah: SalahInfo[];
 }
+export interface supportRequestData {
+  reasonId: number;
+  problem: string;
+  userId: string;
+}

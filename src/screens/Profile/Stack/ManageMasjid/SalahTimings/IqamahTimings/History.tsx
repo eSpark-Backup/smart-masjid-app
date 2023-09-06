@@ -94,7 +94,7 @@ export default function History({
         <GapView length={45} />
         <MyDatePicker
           minimumDate={moment().toDate()}
-          maximumDate={moment().add(3, 'month').toDate()}
+          maximumDate={moment().add(4, 'month').toDate()}
           type="standard"
           currentDate={new Date()}
           onDateChange={onDateChange}

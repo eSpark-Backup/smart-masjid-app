@@ -103,7 +103,7 @@ export default function JummaTimings({
 
   const contentToRender = () => {
     return !loading ? (
-      moment(data[0]?.date).format('YYYY-MM-DD') ==
+      moment(data[0]?.date).format('YYYY-MM-DD') <=
       moment(new Date()).format('YYYY-MM-DD') ? (
         <TimeTableCard
           onEdit={() => {

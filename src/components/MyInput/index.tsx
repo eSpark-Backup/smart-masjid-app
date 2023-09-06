@@ -218,7 +218,7 @@ export default function MyInput(props: MyInputProps) {
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
           </TouchableOpacity>
         )}
-        {helpSearch || multiline ? null : (
+        {helpSearch ? null : (
           <View
             style={{
               position: 'absolute',
@@ -229,6 +229,8 @@ export default function MyInput(props: MyInputProps) {
                     : -10
                   : isDropDown
                   ? 18
+                  : multiline
+                  ? 8
                   : 15,
               left: isPhoneCode ? 95 : 15,
               backgroundColor: theme.colors.background,
@@ -247,44 +249,42 @@ export default function MyInput(props: MyInputProps) {
           </View>
         )}
         <View>
-          <View>
-            <TextInput
-              editable={selectMode && !disabled}
-              autoComplete="off"
-              autoCorrect={false}
-              keyboardType={isPhoneCode ? 'number-pad' : 'default'}
-              style={[
-                styles.inputStyle,
-                { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
-                inputStyle,
-              ]}
-              placeholder={helpSearch || multiline ? placeholder : ''}
-              placeholderTextColor={'#9E9F9F'}
-              onChangeText={handleTextChange}
-              onFocus={() => setGetFocused(true)}
-              onBlur={() => setGetFocused(false)}
-              value={
-                isPhoneCode
-                  ? text?.replace(currentCountry?.code ?? '+1', '')
-                  : text
-              }
-              onPressIn={onFocus}
-              onSubmitEditing={onBlur}
-              secureTextEntry={isSecure}
-              numberOfLines={4}
-              multiline={multiline}
+          <TextInput
+            editable={selectMode && !disabled}
+            autoComplete="off"
+            autoCorrect={false}
+            keyboardType={isPhoneCode ? 'number-pad' : 'default'}
+            style={[
+              styles.inputStyle,
+              { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
+              inputStyle,
+            ]}
+            placeholder={helpSearch ? placeholder : ''}
+            placeholderTextColor={'#9E9F9F'}
+            onChangeText={handleTextChange}
+            onFocus={() => setGetFocused(true)}
+            onBlur={() => setGetFocused(false)}
+            value={
+              isPhoneCode
+                ? text?.replace(currentCountry?.code ?? '+1', '')
+                : text
+            }
+            onPressIn={onFocus}
+            onSubmitEditing={onBlur}
+            secureTextEntry={isSecure}
+            numberOfLines={4}
+            multiline={multiline}
+          />
+          {error && (
+            <MyText
+              text={error}
+              textStyle={{
+                color: 'red',
+                width: WINDOW_WIDTH - 110,
+                marginTop: 4,
+              }}
             />
-            {error && (
-              <MyText
-                text={error}
-                textStyle={{
-                  color: 'red',
-                  width: WINDOW_WIDTH - 110,
-                  marginTop: 4,
-                }}
-              />
-            )}
-          </View>
+          )}
         </View>
         {searchBar && (
           <>
@@ -331,6 +331,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       borderBottomWidth: isDivider ? dividerWidth : 0,
     },
     inputStyle: {
+      paddingTop: 8,
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 75 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,

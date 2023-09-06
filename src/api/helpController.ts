@@ -1,8 +1,10 @@
 import crashlytics from '@react-native-firebase/crashlytics';
+import Toast from 'react-native-toast-message';
 
 import { api } from '.';
 import { SalahTimings } from '../types/masjidControllerTypes';
 import { helpStore } from '../store/HelpStore';
+import { supportRequestData } from '../types';
 
 /**
  *
@@ -45,11 +47,13 @@ export const GetContactReasons = async () => {
  * @param {requestData} requestData - Data for Contact Us request
  * @returns - list of iqamah timings from API response
  */
-export const CreateSupportRequest = async (requestData: string) => {
+export const CreateSupportRequest = async (requestData: supportRequestData) => {
   try {
     const result = await api.post(`help/contact`, requestData);
     if (result.status == 200 && result.data) {
-      console.log('Support Request Created Successfully');
+      Toast.show({
+        text2: result.data ?? 'Request Submitted Successfully',
+      });
       return result.data;
     }
   } catch (error) {

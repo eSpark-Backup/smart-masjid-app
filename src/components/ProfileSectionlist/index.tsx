@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleProp,
   ViewStyle,
+  TextStyle,
 } from 'react-native';
 
 import GapView from '../GapView';
@@ -67,7 +68,14 @@ export default function ProfileSectionlist({
       ListFooterComponent={
         <View>
           {footerData?.map((item, index) => {
-            return <SectionCard key={index} item={item} index={index} />;
+            return (
+              <SectionCard
+                key={index}
+                cardTextStyle={{ color: '#006870' }}
+                item={item}
+                index={index}
+              />
+            );
           })}
         </View>
       }
@@ -79,10 +87,12 @@ const SectionCard = ({
   item,
   index,
   cardStyle,
+  cardTextStyle,
 }: {
   item: any;
   index: number;
   cardStyle?: StyleProp<ViewStyle>;
+  cardTextStyle?: TextStyle;
 }) => {
   return (
     <View style={[{ ...styles.cartContainer }, cardStyle]}>
@@ -96,7 +106,7 @@ const SectionCard = ({
         onPress={item.onPress}>
         {item.icon}
         <GapView mode="horizontal" />
-        <MyText text={item.title} textStyle={{ fontSize: 16 }} />
+        <MyText text={item.title} size={16} textStyle={cardTextStyle} />
       </TouchableOpacity>
       <GapView mode="horizontal" length={5} />
       {item.value && (

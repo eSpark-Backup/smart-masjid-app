@@ -32,6 +32,7 @@ export default function IqamahTimings({
   selectedIqamah: (value: object) => void;
 }) {
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
+  const [currentData, setCurrentData] = useState<any>(null);
   const [data, setData] = useState<any>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -46,6 +47,28 @@ export default function IqamahTimings({
     GetMasjidIqamahTiming('1').then(iqamahTime => {
       let iqamahData: any = [];
       iqamahTime?.map((i: IqamahTime) => {
+        if (
+          moment(i?.effectiveDate).format('YYYY-MM-DD') <=
+          moment(new Date(new Date())).format('YYYY-MM-DD')
+        ) {
+          const namazData = {
+            id: i.id,
+            date: i.effectiveDate,
+            data: [
+              { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
+              {
+                name: 'dhuhr',
+                value: moment(i?.dhuhr, 'HH:mm:ss').format('LT'),
+              },
+              { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
+              { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
+              { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
+            ],
+            type: i.type,
+          };
+          setCurrentData(namazData);
+          return;
+        }
         const namazData = {
           id: i.id,
           date: i.effectiveDate,
@@ -65,26 +88,15 @@ export default function IqamahTimings({
     });
   };
 
-  const foundIndex =
-    data?.length! > 0
-      ? data?.findIndex(
-          (e: any) =>
-            moment(e?.date).format('YYYY-MM-DD') ==
-            moment(new Date(new Date())).format('YYYY-MM-DD'),
-        )
-      : -1;
-
   const contentToRender = () => {
-    return foundIndex! > -1 ? (
+    return currentData != null ? (
       <TimeTableCard
         onEdit={() => {
-          console.log('item', iqamahTimings![foundIndex!]);
-
-          selectedIqamah(iqamahTimings![foundIndex!]);
+          selectedIqamah(currentData);
           setFlag('iEdit');
         }}
-        date={data[foundIndex!]?.date}
-        data={data[foundIndex!]?.data}
+        date={currentData?.date}
+        data={currentData?.data}
       />
     ) : loading ? null : (
       <MyText
