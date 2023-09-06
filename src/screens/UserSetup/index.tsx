@@ -292,7 +292,7 @@ export default function UserSetupScreen() {
                   isSuccess={true}
                   onPress={() => navigation.navigate('DSetup')}
                   onSkip={async () => {
-                    await userStore.userData.set(
+                    userStore.userData.set(
                       JSON.parse(
                         JSON.stringify(userStore.currentRegisterUser.get()),
                       ),

@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 import { View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
+import { getPreciseDistance, getDistance } from 'geolib';
+
 import { SubscribeMasjid } from '../../api/deviceController';
 import { ConnectedDevice } from '../../assets';
 import {
@@ -25,8 +28,6 @@ import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { DeviceListing, MasjidDetails, SearchListing } from './Stacks';
-import Toast from 'react-native-toast-message';
-import { getPreciseDistance, getDistance } from 'geolib';
 
 type SearchNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
