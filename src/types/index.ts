@@ -17,7 +17,7 @@ export type RootStackParamList = {
 };
 
 export type BottomNavigationParamList = {
-  Home: undefined;
+  Home: { masjidId?: string } | undefined;
   Search: undefined;
   Device?: { from?: string };
   Profile: undefined;

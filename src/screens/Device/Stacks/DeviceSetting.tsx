@@ -1,8 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View, Animated } from 'react-native';
-import { Theme, useNavigation, useTheme } from '@react-navigation/native';
+import {
+  Theme,
+  useNavigation,
+  useRoute,
+  useTheme,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import crashlytics from '@react-native-firebase/crashlytics';
+import Toast from 'react-native-toast-message';
 
 import {
   BatteryBar,
@@ -46,6 +52,7 @@ const DeviceSetting = ({
 }) => {
   const theme: Theme = useTheme();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
+
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -193,11 +200,24 @@ const DeviceSetting = ({
                     title: 'Subscription',
                     subtitle: device?.masjid?.name ?? 'No Subscription',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    rightArrow: false,
-                    // onPress:
-                    //   device?.deviceType.id == 1
-                    //     ? () => console.log('he')
-                    //     : undefined,
+                    rightArrow: device?.deviceType.id == 1 ? true : false,
+                    onPress:
+                      device?.deviceType.id == 1
+                        ? () => {
+                            if (!device?.masjid?.id.toString()) {
+                              Toast.show({
+                                text1: 'Warning!',
+                                text2: 'Subscribe to a Masjid First',
+                                type: 'warning',
+                              });
+                              return;
+                            }
+                            goBack?.();
+                            navigation.navigate('Home', {
+                              masjidId: device?.masjid?.id.toString(),
+                            });
+                          }
+                        : undefined,
                   },
                 ],
               },

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Immutable, useHookstate } from '@hookstate/core';
 
@@ -20,6 +24,8 @@ type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
   'Home'
 >;
+
+type RouteProps = NativeStackScreenProps<BottomNavigationParamList, 'Home'>;
 
 // Screen Components
 export const ListEmptyComponent = ({
@@ -61,6 +67,7 @@ export const ListEmptyComponent = ({
 
 export default function Home() {
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
+  const { params } = useRoute<RouteProps['route']>();
   const isFocused = useIsFocused();
   const userData = useHookstate(userStore.userData).get();
   const [step, setStep] = useState(0);
@@ -71,6 +78,8 @@ export default function Home() {
     store: { userMasjidList },
     isLoading,
   } = useMasjid();
+
+  console.log('params =>>>>>>>>>>>>>', params?.masjidId);
 
   const uniqueObjects: Masjid[] = [];
   const uniqueIds = new Set();
@@ -88,8 +97,7 @@ export default function Home() {
   }, [isFocused]);
 
   useEffect(() => {
-    console.log('chala kia?');
-
+    console.log('kia ha', uniqueObjects);
     if (step == 0 && uniqueObjects?.length == 1 && uniqueObjects != null) {
       setStep(1);
       if (typeof uniqueObjects?.[0] == 'object') {
@@ -97,8 +105,19 @@ export default function Home() {
       }
     } else {
       if (step != 1) {
-        setSelectedMasjid(null);
-        masjidStore.salahTimings.set([]);
+        if (params?.masjidId) {
+          setStep(1);
+          if (typeof uniqueObjects?.[0] == 'object') {
+            const selectedMasjid = uniqueObjects.filter(
+              item => item.id.toString() === params?.masjidId,
+            );
+            console.log('chala ha xxx', selectedMasjid?.[0]);
+            setSelectedMasjid(selectedMasjid?.[0]);
+          }
+        } else {
+          setSelectedMasjid(null);
+          masjidStore.salahTimings.set([]);
+        }
       }
     }
   }, [uniqueObjects]);
@@ -127,7 +146,7 @@ export default function Home() {
                 contentOpacity={props.contentOpacity}
                 setStep={setStep}
                 onPress={setSelectedMasjid}
-                data={userMasjidList as Masjid[]}
+                data={uniqueObjects as Masjid[]}
               />
             )}
             {step == 1 && (

@@ -178,7 +178,7 @@ export default function DeviceSetupScreen() {
     const loc = await _checkLocationStatus();
     setBleStatus(ble);
     setlocationStatus(loc);
-    setStep(1);
+    setStep(1); //todo: first 6 then 1
     setConnFlag(true);
     await handlePermissions(ble, loc);
   };
@@ -364,6 +364,20 @@ export default function DeviceSetupScreen() {
 
   const handleDeleteDevice = async (deviceId: string) => {
     try {
+      setToastContent(state => ({
+        ...state,
+        title: 'Device setup error',
+        message: 'Please Check',
+        points: [
+          'Device is powered on',
+          'Phone is within range of the device',
+          'Device LED is yellow',
+          'WiFi is working',
+        ],
+        onPress: () => {
+          setRetry(true);
+        },
+      }));
       const res = await _resetDevice(deviceId);
       console.log('kia mila delte pr', res);
       if (Boolean(res)) {
@@ -571,8 +585,8 @@ export default function DeviceSetupScreen() {
                 isSuccess={false}
                 btnText={toastContent.btnText ?? 'Try Again'}
                 onPress={toastContent.onPress}
-                title={toastContent.title ?? 'Device not found'}
-                message={toastContent.message ?? 'Issues Found'}
+                title={toastContent.title ?? 'Device setup error'}
+                message={toastContent.message ?? 'Please check'}
                 points={
                   toastContent.points ?? [
                     'Device is powered on',

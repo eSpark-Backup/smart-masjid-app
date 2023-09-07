@@ -44,7 +44,7 @@ const toastConfig = {
       style={styles.successStyle}
       text1Style={styles.text1Style}
       text2Style={styles.text2Style}
-      text1="Success!"
+      text1={props.text1 ?? 'Success!'}
     />
   ),
   /*
@@ -57,7 +57,7 @@ const toastConfig = {
       style={styles.errorStyle}
       text1Style={styles.text1Style}
       text2Style={styles.text2Style}
-      text1="Error!"
+      text1={props.text1 ?? 'Error!'}
     />
   ),
 
@@ -67,7 +67,7 @@ const toastConfig = {
       style={styles.warningStyle}
       text1Style={styles.text1Style}
       text2Style={styles.text2Style}
-      text1="Hold Up!"
+      text1={props.text1 ?? 'Hold Up!'}
     />
   ),
 };
