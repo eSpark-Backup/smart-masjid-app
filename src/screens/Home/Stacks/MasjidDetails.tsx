@@ -29,7 +29,11 @@ import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
-import { Masjid, SalahTimings } from '../../../types/masjidControllerTypes';
+import {
+  Masjid,
+  SalahTimings,
+  SubscriptionList,
+} from '../../../types/masjidControllerTypes';
 import {
   GetMasjidDevicesForUser,
   unSubscribeMasjid,
@@ -67,6 +71,8 @@ export default function MasjidDetails({
     setCurrentDevice(connectedDevices[0] as Device);
   }, []);
 
+  // console.log('salahTimings', selectedMasjid);
+
   useEffect(() => {
     GetMasjidDevicesForUser(
       userData?.id?.toString() ?? '',
@@ -76,8 +82,6 @@ export default function MasjidDetails({
     });
     getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '');
   }, [isFocused]);
-
-  console.log('salahTimings', salahTimings);
 
   return (
     <View style={{ flex: 1 }}>
@@ -132,13 +136,23 @@ export default function MasjidDetails({
         <SwipeableTimeTable
           isMute
           isInfo
+          deviceInfo={currentDevice!}
+          masjidSubscriptions={
+            selectedMasjid?.subscriptionList as SubscriptionList[]
+          }
           data={(salahTimings as SalahTimings[]) ?? []}
+          setLoading={val => setLoading(val)}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
         <JumuahTable
           headings={['Salah', 'Khutba']}
+          masjidSubscriptions={
+            selectedMasjid?.subscriptionList as SubscriptionList[]
+          }
+          deviceInfo={currentDevice!}
+          isMute={true}
           data={{
             id: 7,
             effectiveDate: '2023-07-07',
@@ -148,6 +162,7 @@ export default function MasjidDetails({
             createdBy: 'User',
             createdDate: '2023-07-05T14:26:15.946+00:00',
           }}
+          setLoading={val => setLoading(val)}
         />
         <GapView length={15} />
         <View style={{ width: '100%', alignItems: 'center' }}>

@@ -91,6 +91,10 @@ export default function MyDropdown({
     if (defaultValue) setSelectedItem(defaultValue);
   }, [defaultValue]);
 
+  useEffect(() => {
+    useLayoutAnimation();
+  }, [show]);
+
   const onSearch = (text: string) => {
     if (selectedItem != null) {
       setSelectedItem(null);

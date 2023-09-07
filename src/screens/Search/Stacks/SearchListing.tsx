@@ -123,7 +123,10 @@ const SearchListing = ({
       </View>
       <View style={{ top: 110 }}>
         <View>
-          <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
+          <Card
+            backgroundColor="#ffffff"
+            style={{ elevation: 3 }}
+            width={WINDOW_WIDTH - 28}>
             <MyInput
               searchBar
               onFocus={() => {

@@ -46,7 +46,7 @@ export type MasjidStoreProps = {
   JummahHistory: JummahTime[];
   userMasjidList: Masjid[] | null;
   connectedDevices: Device[];
-  salahTimings: SalahTimings[]
+  salahTimings: SalahTimings[];
 };
 
 export type DeviceStoreProps = {
@@ -56,7 +56,7 @@ export type DeviceStoreProps = {
 
 export type HelpStoreProps = {
   FAQs: FAQ[];
-  reasons: FAQ[] | null;
+  reasons: FAQ[];
 };
 
 export type ExternalStoreProps = {

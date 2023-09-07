@@ -4,7 +4,12 @@ import moment from 'moment';
 
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
-import { IqamahTime, JummahTime, Masjid, SalahTimings } from '../types/masjidControllerTypes';
+import {
+  IqamahTime,
+  JummahTime,
+  Masjid,
+  SalahTimings,
+} from '../types/masjidControllerTypes';
 
 /**
  *
@@ -330,9 +335,9 @@ export const getSalahTimingsOfMasjid = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/salah`);
     const timings = result?.data?.timings as SalahTimings[];
-    // console.log("masjidList", masjidList);
+    console.log('masjidList', result?.data);
     masjidStore?.salahTimings?.set(timings ?? []);
   } catch (error) {
-    console.log('getListMasjidSubscribedByUser error: ', error);
+    console.log('getSalahTimingsOfMasjid error: ', error);
   }
 };

@@ -13,9 +13,10 @@ import { supportRequestData } from '../types';
  */
 export const GetHelpFAQs = async () => {
   try {
-    const result = await api.get(`/help`);
+    const result: any = await api.get(`/help`);
     if (result.status == 200 && result.data) {
       console.log('FAQ result', result.data);
+      helpStore.FAQs.set(result?.data);
       return result.data;
     }
   } catch (error) {
@@ -49,12 +50,11 @@ export const GetContactReasons = async () => {
  */
 export const CreateSupportRequest = async (requestData: supportRequestData) => {
   try {
-    const result = await api.post(`help/contact`, requestData);
+    const result: any = await api.post(`help/contact`, requestData);
     if (result.status == 200 && result.data) {
       Toast.show({
-        text2: result.data ?? 'Request Submitted Successfully',
+        text2: result.data?.message ?? 'Request Submitted Successfully',
       });
-      return result.data;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);

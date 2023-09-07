@@ -11,10 +11,12 @@ export default function MasjidListing({
   data,
   setStep = () => {},
   contentOpacity = 0,
+  onPress,
 }: {
   data: Masjid[];
   setStep: any;
   contentOpacity?: Animated.AnimatedInterpolation<string | number> | number;
+  onPress: (data: Masjid) => void;
 }) {
   const navigation = useNavigation();
 
@@ -34,8 +36,12 @@ export default function MasjidListing({
         renderItem={({ item, index }) => (
           <MasjidListCard
             key={index}
-            onPress={() => setStep(1)}
+            onPress={() => {
+              setStep(1);
+              onPress(item);
+            }}
             masjidName={item.name ?? ''}
+            masjidLogo={item.logo ? { uri: item.logo } : undefined}
           />
         )}
         ItemSeparatorComponent={GapView}

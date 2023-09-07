@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 
 import { MuteSvg, VolumUpGreen } from '../../assets';
@@ -7,15 +7,37 @@ import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import moment from 'moment';
+import { SubscriptionList } from '../../types/masjidControllerTypes';
+import {
+  addSubscription,
+  getDeviceSubscriptions,
+  removeSubscription,
+} from '../../api/deviceController';
+import { Device } from '../../types/deviceControllerTypes';
 
 const RowItem = ({
   item,
-  isMute,
+  isMute = false,
+  subscribed,
+  subscriptionData,
+  setSubscriptions,
 }: {
   item: { name: string; khutba: string };
   isMute: boolean;
+  subscribed: boolean;
+  subscriptionData?: SubscriptionList;
+  setSubscriptions: (id: string, adhanName: string) => void;
 }) => {
-  const [toggleMute, setToggleMute] = useState(true);
+  const toggleSubscription = () => {
+    setSubscriptions(
+      subscriptionData?.id.toString() as string,
+      item.name == 'Jumuah 1'
+        ? 'JUMUAH_1'
+        : item.name == 'Jumuah 2'
+        ? 'JUMUAH_2'
+        : 'JUMUAH_3',
+    );
+  };
   return (
     <TouchableOpacity activeOpacity={0.9}>
       <View style={[styles.contentRow, { height: 40 }]}>
@@ -34,18 +56,14 @@ const RowItem = ({
         </View>
         {isMute ? (
           <View style={styles.contentIcon}>
-            {toggleMute ? (
-              <MuteSvg
-                onPress={() => setToggleMute(!toggleMute)}
+            {subscribed ? (
+              <VolumUpGreen
+                onPress={toggleSubscription}
                 height={16}
                 width={16}
               />
             ) : (
-              <VolumUpGreen
-                onPress={() => setToggleMute(!toggleMute)}
-                height={16}
-                width={16}
-              />
+              <MuteSvg onPress={toggleSubscription} height={16} width={16} />
             )}
           </View>
         ) : (
@@ -61,6 +79,9 @@ export default function JumuahTable({
   headings = ['Salah', 'Adhan', 'Iqama'],
   header = <></>,
   isMute = true,
+  masjidSubscriptions,
+  deviceInfo,
+  setLoading,
 }: {
   data?: {
     id: number;
@@ -74,7 +95,51 @@ export default function JumuahTable({
   headings?: string[];
   header?: React.ReactNode;
   isMute?: boolean;
+  masjidSubscriptions: SubscriptionList[];
+  deviceInfo: Device;
+  setLoading: (val: boolean) => void;
 }) {
+  const [subscriptions, setSubscriptions] = useState<SubscriptionList[]>([]);
+
+  useEffect(() => {
+    getSubscriptions();
+  }, [deviceInfo]);
+
+  const getSubscriptions = () => {
+    if (deviceInfo) {
+      setLoading(true);
+      getDeviceSubscriptions(deviceInfo?.id.toString()).then(data => {
+        setSubscriptions(data);
+        setLoading(false);
+      });
+    }
+  };
+
+  const updateSubscriptions = (id: string, adhanName: string) => {
+    if (id) {
+      console.log('id', id);
+      setLoading(true);
+      removeSubscription(deviceInfo?.id.toString(), id).then(data => {
+        console.log('data', data);
+        setSubscriptions(data.subscriptions);
+        setLoading(false);
+      });
+    } else {
+      setLoading(true);
+      const adhanData = masjidSubscriptions.find(
+        item => item.subscriptionType.name == adhanName.toUpperCase(),
+      );
+      addSubscription(
+        deviceInfo?.id.toString(),
+        adhanData?.id.toString() as string,
+      ).then(data => {
+        console.log('data', data);
+        setSubscriptions(data.subscriptions);
+        setLoading(false);
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
@@ -93,17 +158,38 @@ export default function JumuahTable({
         <RowItem
           item={{ name: 'Jumuah 1', khutba: data?.jumuah1 ?? '' }}
           isMute={isMute}
+          subscribed={subscriptions.some(
+            item => item.subscriptionType.name == 'JUMUAH_1',
+          )}
+          setSubscriptions={updateSubscriptions}
+          subscriptionData={subscriptions.find(
+            item => item.subscriptionType.name == 'JUMUAH_1',
+          )}
         />
         {data?.jumuah2 ? (
           <RowItem
             item={{ name: 'Jumuah 2', khutba: data?.jumuah2 ?? '' }}
             isMute={isMute}
+            subscribed={subscriptions.some(
+              item => item.subscriptionType.name == 'JUMUAH_2',
+            )}
+            setSubscriptions={updateSubscriptions}
+            subscriptionData={subscriptions.find(
+              item => item.subscriptionType.name == 'JUMUAH_2',
+            )}
           />
         ) : null}
         {data?.jumuah3 ? (
           <RowItem
             item={{ name: 'Jumuah 3', khutba: data?.jumuah3 ?? '' }}
             isMute={isMute}
+            subscribed={subscriptions.some(
+              item => item.subscriptionType.name == 'JUMUAH_3',
+            )}
+            setSubscriptions={updateSubscriptions}
+            subscriptionData={subscriptions.find(
+              item => item.subscriptionType.name == 'JUMUAH_3',
+            )}
           />
         ) : null}
       </View>

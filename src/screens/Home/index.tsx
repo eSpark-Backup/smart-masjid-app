@@ -14,6 +14,7 @@ import { GetUserDevices } from '../../api/deviceController';
 import { userStore } from '../../store/UserStore';
 import { useMasjid } from '../../utils/hooks';
 import { Masjid } from '../../types/masjidControllerTypes';
+import { masjidStore } from '../../store/MasjidStore';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -81,12 +82,14 @@ export default function Home() {
   });
 
   useEffect(() => {
-    setStep(0)
+    setStep(0);
     GetUserDevices(userData?.id?.toString() ?? '');
     getMasjidListSubscribedByUser(userData?.id?.toString() ?? '');
   }, [isFocused]);
 
   useEffect(() => {
+    console.log('chala kia?');
+
     if (step == 0 && uniqueObjects?.length == 1 && uniqueObjects != null) {
       setStep(1);
       if (typeof uniqueObjects?.[0] == 'object') {
@@ -95,6 +98,7 @@ export default function Home() {
     } else {
       if (step != 1) {
         setSelectedMasjid(null);
+        masjidStore.salahTimings.set([]);
       }
     }
   }, [uniqueObjects]);
@@ -109,7 +113,7 @@ export default function Home() {
 
   return (
     <Wrapper
-      showBack={step == 0 ? false : (uniqueObjects?.length == 1 ?  false : true)}
+      showBack={step == 0 ? false : uniqueObjects?.length == 1 ? false : true}
       onBackPress={onBackPress}
       showFooter={false}
       title={'Masjid Subscriptions'}
@@ -122,6 +126,7 @@ export default function Home() {
               <MasjidListing
                 contentOpacity={props.contentOpacity}
                 setStep={setStep}
+                onPress={setSelectedMasjid}
                 data={userMasjidList as Masjid[]}
               />
             )}
