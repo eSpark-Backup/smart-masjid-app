@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Image, StyleSheet, Animated } from 'react-native';
 
-import { GLoad } from '../../assets';
+import { SL } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
+import FastImage from 'react-native-fast-image';
 
 export default function SLoader({
   title,
@@ -38,12 +39,14 @@ export default function SLoader({
           />
           <GapView length={60} />
           <View>
-            <Image
-              defaultSource={GLoad}
-              source={GLoad}
-              style={styles.loader}
-              resizeMode="contain"
-              accessible={true}
+            <FastImage
+              source={SL}
+              style={{
+                height: 60,
+                width: 60,
+                alignSelf: 'center',
+              }}
+              resizeMode={FastImage.resizeMode.contain}
             />
             <View
               style={{
@@ -74,10 +77,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loader: {
-    display: 'flex',
     height: 60,
     width: 60,
     alignSelf: 'center',
-    backgroundColor: '#fff',
   },
 });
