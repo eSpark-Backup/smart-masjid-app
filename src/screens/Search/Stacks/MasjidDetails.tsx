@@ -121,7 +121,12 @@ const MasjidDetails = ({
               <GapView length={5} mode="horizontal" />
               <View style={{ maxWidth: '87%' }}>
                 <MyText
-                  text={masjidDetails?.address1 ?? ''}
+                  text={
+                    (masjidDetails?.address1 ?? '') +
+                    (', ' + masjidDetails?.city ?? '') +
+                    (' ' + masjidDetails?.state ?? '') +
+                    (' ' + masjidDetails?.zip ?? '')
+                  }
                   size={16}
                   textStyle={{ color: '#3E3E3E' }}
                   lines={1}
