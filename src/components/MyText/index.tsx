@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextStyle, TouchableOpacity } from 'react-native';
+import { Text, TextStyle, TouchableOpacity, StyleProp } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 export default function MyText({

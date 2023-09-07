@@ -89,12 +89,12 @@ export default function History({
     <View style={{ flex: 1, alignItems: 'center' }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Iqama History" />
+          <MyTitle text="Monthly Schedule" />
         </Animated.View>
         <GapView length={45} />
         <MyDatePicker
           minimumDate={moment().toDate()}
-          maximumDate={moment().add(3, 'month').toDate()}
+          maximumDate={moment().add(4, 'month').toDate()}
           type="standard"
           currentDate={new Date()}
           onDateChange={onDateChange}

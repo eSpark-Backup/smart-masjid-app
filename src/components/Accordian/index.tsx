@@ -75,7 +75,7 @@ export default function Accordian({
             textStyle={{ width: WINDOW_WIDTH - 80 }}
           />
           <Animated.View style={[rotateStyle]}>
-            <ArrowDown height={16} width={16} />
+            <ArrowDown height={12} width={12} />
           </Animated.View>
         </Animated.View>
 

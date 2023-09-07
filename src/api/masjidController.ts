@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
-import { IqamahTime, JummahTime, Masjid } from '../types/masjidControllerTypes';
+import { IqamahTime, JummahTime, Masjid, SalahTimings } from '../types/masjidControllerTypes';
 
 /**
  *
@@ -88,7 +88,7 @@ export const AddMasjidIqamahTiming = async (
  * @description Get Adhan Configuration
  * @returns get data of masjid adhan config and save to masjidStore
  */
-export const UpdatedMasjidIqamahTiming = async (
+export const UpdateMasjidIqamahTiming = async (
   masjidId: string,
   data: IqamahTime,
 ) => {
@@ -96,6 +96,35 @@ export const UpdatedMasjidIqamahTiming = async (
     const result: any = await api.put(
       `/masjid/${masjidId}/iqama/${data.id}`,
       data,
+    );
+    if (result.status == 200) {
+      masjidStore.iqamahTime.set(result.data);
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error', error);
+  }
+};
+
+/**
+ *
+ * @description Get Adhan Configuration
+ * @returns get data of masjid adhan config and save to masjidStore
+ */
+export const DeleteMasjidIqamahTiming = async (
+  masjidId: string,
+  iqamaId: string,
+) => {
+  try {
+    const result: any = await api.delete(
+      `/masjid/${masjidId}/iqama/${iqamaId}`,
     );
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
@@ -283,7 +312,26 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
   try {
     const result = await api.get(`/masjid/subscriptions/user/${userId}`);
     const masjidList = result.data as Masjid[];
-    masjidStore.userMasjidList.set(masjidList);
+    // console.log("masjidList", masjidList);
+    masjidStore?.userMasjidList?.set(
+      masjidList?.length > 0 ? masjidList : null,
+    );
+  } catch (error) {
+    console.log('getListMasjidSubscribedByUser error: ', error);
+  }
+};
+
+/**
+ *
+ * @description Get Salah Timing of masjid
+ * @returns return Salah Timing of masjid
+ */
+export const getSalahTimingsOfMasjid = async (masjidId: string) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/salah`);
+    const timings = result?.data?.timings as SalahTimings[];
+    // console.log("masjidList", masjidList);
+    masjidStore?.salahTimings?.set(timings ?? []);
   } catch (error) {
     console.log('getListMasjidSubscribedByUser error: ', error);
   }

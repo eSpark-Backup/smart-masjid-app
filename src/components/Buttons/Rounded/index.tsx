@@ -35,6 +35,10 @@ export default function Rounded({
             borderWidth: outlined ? 1.5 : 0,
             borderColor: colors.primary,
           }}
+          start={{ x: -0.002, y: 0.0 }}
+          end={{ x: 0.998, y: 0.0 }}
+          // useAngle={true}
+          // angle={90}
           colors={
             !disabled
               ? outlined

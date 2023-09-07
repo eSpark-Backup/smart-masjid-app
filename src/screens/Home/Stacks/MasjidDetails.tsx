@@ -29,22 +29,26 @@ import MyDatePicker from '../../../components/MyDatePicker';
 import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
-import { Masjid } from '../../../types/masjidControllerTypes';
+import { Masjid, SalahTimings } from '../../../types/masjidControllerTypes';
 import {
   GetMasjidDevicesForUser,
   unSubscribeMasjid,
 } from '../../../api/deviceController';
 import { masjidStore } from '../../../store/MasjidStore';
 import { Device } from '../../../types/deviceControllerTypes';
+import { useMasjid } from '../../../utils/hooks';
+import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
 
 export default function MasjidDetails({
   setStep,
   contentOpacity,
   selectedMasjid,
+  isSingle,
 }: {
-  selectedMasjid?: Masjid;
+  selectedMasjid?: Masjid | null;
   setStep: (value: any) => void;
   contentOpacity: any;
+  isSingle?: boolean;
 }) {
   const { colors }: Theme = useTheme();
   const userData = useHookstate(userStore.userData).get();
@@ -54,6 +58,11 @@ export default function MasjidDetails({
   const [currentDevice, setCurrentDevice] = useState<Device>();
   const isFocused = useIsFocused();
 
+  const {
+    getMasjidListSubscribedByUser,
+    store: { salahTimings },
+  } = useMasjid();
+
   useEffect(() => {
     setCurrentDevice(connectedDevices[0] as Device);
   }, []);
@@ -62,13 +71,18 @@ export default function MasjidDetails({
     GetMasjidDevicesForUser(
       userData?.id?.toString() ?? '',
       selectedMasjid?.id.toString(),
-    );
+    ).then(res => {
+      setCurrentDevice(connectedDevices[0] as Device);
+    });
+    getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '');
   }, [isFocused]);
+
+  console.log('salahTimings', salahTimings);
 
   return (
     <View style={{ flex: 1 }}>
       <OverlayLoader isShow={loading} noBg={false} />
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View style={{ alignSelf: 'center', top: isSingle ? 140 : 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Masjid Subscriptions" />
         </Animated.View>
@@ -77,8 +91,8 @@ export default function MasjidDetails({
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          top: 110,
-          paddingBottom: 120,
+          top: isSingle ? 140 : 110,
+          paddingBottom: 150,
           padding: 5,
           paddingHorizontal: 15,
         }}>
@@ -118,68 +132,7 @@ export default function MasjidDetails({
         <SwipeableTimeTable
           isMute
           isInfo
-          data={[
-            {
-              date: '2023-08-07',
-              salah: [
-                {
-                  name: 'Fajr',
-                  adhanTime: '04:15:00',
-                  iqamaTime: '06:00:00',
-                },
-                {
-                  name: 'Dhuhr',
-                  adhanTime: '12:35:00',
-                  iqamaTime: '14:00:00',
-                },
-                {
-                  name: 'Asr',
-                  adhanTime: '17:17:00',
-                  iqamaTime: '18:00:00',
-                },
-                {
-                  name: 'Maghrib',
-                  adhanTime: '19:25:00',
-                  iqamaTime: '19:40:00',
-                },
-                {
-                  name: 'Isha',
-                  adhanTime: '20:54:00',
-                  iqamaTime: '21:30:00',
-                },
-              ],
-            },
-            {
-              date: '2023-08-08',
-              salah: [
-                {
-                  name: 'Fajr',
-                  adhanTime: '04:15:00',
-                  iqamaTime: '06:00:00',
-                },
-                {
-                  name: 'Dhuhr',
-                  adhanTime: '12:35:00',
-                  iqamaTime: '14:00:00',
-                },
-                {
-                  name: 'Asr',
-                  adhanTime: '17:17:00',
-                  iqamaTime: '18:00:00',
-                },
-                {
-                  name: 'Maghrib',
-                  adhanTime: '19:25:00',
-                  iqamaTime: '19:40:00',
-                },
-                {
-                  name: 'Isha',
-                  adhanTime: '20:54:00',
-                  iqamaTime: '21:30:00',
-                },
-              ],
-            },
-          ]}
+          data={(salahTimings as SalahTimings[]) ?? []}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
@@ -210,18 +163,17 @@ export default function MasjidDetails({
               flexDirection: 'row',
             }}
             onPress={async () => {
-              console.log(
-                'val',
-                currentDevice,
-                selectedMasjid?.id?.toString()!,
-              );
               if (currentDevice?.deviceTelemetry.status === 'Online') {
                 setLoading(true);
                 const res = await unSubscribeMasjid(
                   currentDevice?.id?.toString()!,
                   selectedMasjid?.id?.toString()!,
                 );
+                console.log('res', res);
                 if (res) {
+                  await getMasjidListSubscribedByUser(
+                    userData?.id?.toString() ?? '',
+                  );
                   setStep(0);
                   setLoading(false);
                 }

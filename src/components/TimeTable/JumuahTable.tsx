@@ -49,7 +49,7 @@ const RowItem = ({
             )}
           </View>
         ) : (
-          <View style={styles.contentIcon}/>
+          <View style={styles.contentIcon} />
         )}
       </View>
     </TouchableOpacity>
@@ -94,14 +94,18 @@ export default function JumuahTable({
           item={{ name: 'Jumuah 1', khutba: data?.jumuah1 ?? '' }}
           isMute={isMute}
         />
-        <RowItem
-          item={{ name: 'Jumuah 2', khutba: data?.jumuah2 ?? '' }}
-          isMute={isMute}
-        />
-        <RowItem
-          item={{ name: 'Jumuah 3', khutba: data?.jumuah3 ?? '' }}
-          isMute={isMute}
-        />
+        {data?.jumuah2 ? (
+          <RowItem
+            item={{ name: 'Jumuah 2', khutba: data?.jumuah2 ?? '' }}
+            isMute={isMute}
+          />
+        ) : null}
+        {data?.jumuah3 ? (
+          <RowItem
+            item={{ name: 'Jumuah 3', khutba: data?.jumuah3 ?? '' }}
+            isMute={isMute}
+          />
+        ) : null}
       </View>
     </View>
   );

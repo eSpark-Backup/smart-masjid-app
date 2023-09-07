@@ -8,6 +8,7 @@ import {
   View,
   ViewStyle,
   PermissionsAndroid,
+  TextStyle,
 } from 'react-native';
 import II from 'react-native-vector-icons/Ionicons';
 import { useHookstate } from '@hookstate/core';
@@ -36,7 +37,7 @@ interface MyInputProps {
   onPhoneCodeChange?: (country: CountryCodes) => void;
   onChangeText?: (value: string) => void;
   containerStyle?: ViewStyle;
-  inputStyle?: ViewStyle;
+  inputStyle?: TextStyle;
   dropStyle?: ViewStyle;
   placeholder: string;
   placeholderColor?: string;
@@ -53,6 +54,8 @@ interface MyInputProps {
   disabled?: boolean;
   selectMode?: boolean;
   phoneCodeContainerStyle?: ViewStyle;
+  multiline?: boolean;
+  numberOfLines?: number;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -80,6 +83,8 @@ export default function MyInput(props: MyInputProps) {
     disabled,
     selectMode,
     phoneCodeContainerStyle,
+    multiline,
+    numberOfLines,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), [props]);
@@ -193,7 +198,12 @@ export default function MyInput(props: MyInputProps) {
           textStyle={{ fontWeight: '400', color: '#3E3E3E' }}
         />
       )}
-      <View style={[styles.container, containerStyle]}>
+      <View
+        style={[
+          styles.container,
+          containerStyle,
+          { height: multiline ? undefined : 50 },
+        ]}>
         {isPhoneCode && (
           <TouchableOpacity
             onPress={() => setShowCountryPicker(true)}
@@ -219,6 +229,8 @@ export default function MyInput(props: MyInputProps) {
                     : -10
                   : isDropDown
                   ? 18
+                  : multiline
+                  ? 8
                   : 15,
               left: isPhoneCode ? 95 : 15,
               backgroundColor: theme.colors.background,
@@ -237,42 +249,42 @@ export default function MyInput(props: MyInputProps) {
           </View>
         )}
         <View>
-          <View>
-            <TextInput
-              editable={selectMode && !disabled}
-              autoComplete="off"
-              autoCorrect={false}
-              keyboardType={isPhoneCode ? 'number-pad' : 'default'}
-              style={[
-                styles.inputStyle,
-                { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
-                inputStyle,
-              ]}
-              placeholder={helpSearch ? placeholder : ''}
-              placeholderTextColor={'#9E9F9F'}
-              onChangeText={handleTextChange}
-              onFocus={() => setGetFocused(true)}
-              onBlur={() => setGetFocused(false)}
-              value={
-                isPhoneCode
-                  ? text?.replace(currentCountry?.code ?? '+1', '')
-                  : text
-              }
-              onPressIn={onFocus}
-              onSubmitEditing={onBlur}
-              secureTextEntry={isSecure}
+          <TextInput
+            editable={selectMode && !disabled}
+            autoComplete="off"
+            autoCorrect={false}
+            keyboardType={isPhoneCode ? 'number-pad' : 'default'}
+            style={[
+              styles.inputStyle,
+              { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
+              inputStyle,
+            ]}
+            placeholder={helpSearch ? placeholder : ''}
+            placeholderTextColor={'#9E9F9F'}
+            onChangeText={handleTextChange}
+            onFocus={() => setGetFocused(true)}
+            onBlur={() => setGetFocused(false)}
+            value={
+              isPhoneCode
+                ? text?.replace(currentCountry?.code ?? '+1', '')
+                : text
+            }
+            onPressIn={onFocus}
+            onSubmitEditing={onBlur}
+            secureTextEntry={isSecure}
+            numberOfLines={4}
+            multiline={multiline}
+          />
+          {error && (
+            <MyText
+              text={error}
+              textStyle={{
+                color: 'red',
+                width: WINDOW_WIDTH - 110,
+                marginTop: 4,
+              }}
             />
-            {error && (
-              <MyText
-                text={error}
-                textStyle={{
-                  color: 'red',
-                  width: WINDOW_WIDTH - 110,
-                  marginTop: 4,
-                }}
-              />
-            )}
-          </View>
+          )}
         </View>
         {searchBar && (
           <>
@@ -317,9 +329,9 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       flexDirection: 'row',
       borderBottomColor: isDivider ? dividerColor : 'transparent',
       borderBottomWidth: isDivider ? dividerWidth : 0,
-      height: 50,
     },
     inputStyle: {
+      paddingTop: 8,
       paddingHorizontal: 20,
       width: WINDOW_WIDTH - 75 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,

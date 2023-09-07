@@ -63,6 +63,7 @@ const RowItem = ({
                         maxLength={2}
                         keyboardType={'decimal-pad'}
                         style={{
+                          fontSize: 16,
                           borderWidth: 0.5,
                           color: colors.text,
                           borderColor: '#3E3E3E',
