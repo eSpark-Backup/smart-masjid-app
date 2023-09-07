@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { ListEmptyComponent } from '..';
@@ -10,10 +10,12 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 export default function MasjidListing({
   data,
   setStep = () => {},
+  onPress,
   contentOpacity = 0,
 }: {
   data: Masjid[];
   setStep: any;
+  onPress: (item: Masjid) => void;
   contentOpacity?: Animated.AnimatedInterpolation<string | number> | number;
 }) {
   const navigation = useNavigation();
@@ -34,8 +36,12 @@ export default function MasjidListing({
         renderItem={({ item, index }) => (
           <MasjidListCard
             key={index}
-            onPress={() => setStep(1)}
+            onPress={() => {
+              setStep(1);
+              onPress(item);
+            }}
             masjidName={item.name ?? ''}
+            masjidLogo={item.logo ? { uri: item?.logo } : undefined}
           />
         )}
         ItemSeparatorComponent={GapView}

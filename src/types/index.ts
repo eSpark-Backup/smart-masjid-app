@@ -17,7 +17,7 @@ export type RootStackParamList = {
 };
 
 export type BottomNavigationParamList = {
-  Home: undefined;
+  Home: { masjidId?: string } | undefined;
   Search: undefined;
   Device?: { from?: string };
   Profile: undefined;
@@ -46,7 +46,7 @@ export type MasjidStoreProps = {
   JummahHistory: JummahTime[];
   userMasjidList: Masjid[] | null;
   connectedDevices: Device[];
-  salahTimings: SalahTimings[]
+  salahTimings: SalahTimings[];
 };
 
 export type DeviceStoreProps = {
