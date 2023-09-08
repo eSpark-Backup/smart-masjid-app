@@ -19,6 +19,7 @@ import { userStore } from '../../store/UserStore';
 import { useMasjid } from '../../utils/hooks';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { masjidStore } from '../../store/MasjidStore';
+import { getListMasjidSubscribedByUser } from '../../api/masjidController';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -71,56 +72,73 @@ export default function Home() {
   const isFocused = useIsFocused();
   const userData = useHookstate(userStore.userData).get();
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [uniqueObjects, setUniqueObjects] = useState<Masjid[]>([]);
   const [selectedMasjid, setSelectedMasjid] =
     useState<Immutable<Masjid> | null>(null);
   const {
-    getMasjidListSubscribedByUser,
+    // getMasjidListSubscribedByUser,
     store: { userMasjidList },
     isLoading,
   } = useMasjid();
 
-  console.log('params =>>>>>>>>>>>>>', params?.masjidId);
-
-  const uniqueObjects: Masjid[] = [];
-  const uniqueIds = new Set();
-  userMasjidList?.forEach(obj => {
-    if (!uniqueIds?.has(obj.id)) {
-      uniqueIds?.add(obj.id);
-      uniqueObjects?.push(obj as any);
-    }
-  });
-
   useEffect(() => {
-    setStep(0);
-    GetUserDevices(userData?.id?.toString() ?? '');
-    getMasjidListSubscribedByUser(userData?.id?.toString() ?? '');
-  }, [isFocused]);
-
-  useEffect(() => {
-    console.log('kia ha', uniqueObjects);
-    if (step == 0 && uniqueObjects?.length == 1 && uniqueObjects != null) {
-      setStep(1);
-      if (typeof uniqueObjects?.[0] == 'object') {
-        setSelectedMasjid(uniqueObjects?.[0]);
-      }
-    } else {
-      if (step != 1) {
-        if (params?.masjidId) {
-          setStep(1);
-          if (typeof uniqueObjects?.[0] == 'object') {
-            const selectedMasjid = uniqueObjects.filter(
-              item => item.id.toString() === params?.masjidId,
-            );
-            console.log('chala ha xxx', selectedMasjid?.[0]);
-            setSelectedMasjid(selectedMasjid?.[0]);
+    if (isFocused && step == 0) {
+      setLoading(true);
+      GetUserDevices(userData?.id?.toString() ?? '');
+      getListMasjidSubscribedByUser(userData?.id?.toString() ?? '').then(
+        data => {
+          let sData = data as Masjid[];
+          const uniqueObj: Masjid[] = [];
+          const uniqueIds = new Set();
+          sData?.forEach(obj => {
+            if (!uniqueIds?.has(obj?.id)) {
+              uniqueIds?.add(obj?.id);
+              uniqueObj?.push(obj as any);
+            }
+          });
+          console.log('kiya mila', uniqueObj);
+          setUniqueObjects(uniqueObj);
+          if (step == 0 && uniqueObj?.length == 1 && uniqueObj != null) {
+            setStep(1);
+            if (typeof uniqueObj?.[0] == 'object') {
+              setSelectedMasjid(uniqueObj?.[0]);
+            }
           }
-        } else {
-          setSelectedMasjid(null);
-          masjidStore.salahTimings.set([]);
-        }
-      }
+          setLoading(false);
+        },
+      );
     }
-  }, [uniqueObjects]);
+  }, [isFocused, step]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      setStep(0);
+      console.log('huwa back?');
+    }
+    // if (step == 0 && uniqueObjects?.length == 1 && uniqueObjects != null) {
+    //   setStep(1);
+    //   if (typeof uniqueObjects?.[0] == 'object') {
+    //     setSelectedMasjid(uniqueObjects?.[0]);
+    //   }
+    // } else {
+    //   if (step != 1) {
+    //     if (params?.masjidId) {
+    //       setStep(1);
+    //       if (typeof uniqueObjects?.[0] == 'object') {
+    //         const selectedMasjid = uniqueObjects.filter(
+    //           item => item.id.toString() === params?.masjidId,
+    //         );
+    //         console.log('chala ha xxx', selectedMasjid?.[0]);
+    //         setSelectedMasjid(selectedMasjid?.[0]);
+    //       }
+    //     } else {
+    //       setSelectedMasjid(null);
+    //       masjidStore.salahTimings.set([]);
+    //     }
+    //   }
+    // }
+  }, [isFocused]);
 
   const onBackPress = () => {
     if (step != 0) {
@@ -129,6 +147,8 @@ export default function Home() {
       navigation.goBack();
     }
   };
+
+  console.log('uniqueObjects', uniqueObjects);
 
   return (
     <Wrapper
@@ -140,7 +160,7 @@ export default function Home() {
       {({ props }) => {
         return (
           <>
-            <OverlayLoader isShow={isLoading} />
+            <OverlayLoader isShow={loading} />
             {step == 0 && (
               <MasjidListing
                 contentOpacity={props.contentOpacity}

@@ -30,18 +30,23 @@ import { getCurrentMonthAdhanData } from '../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
 import {
+  JummahTime,
   Masjid,
   SalahTimings,
   SubscriptionList,
 } from '../../../types/masjidControllerTypes';
 import {
+  getDeviceSubscriptions,
   GetMasjidDevicesForUser,
   unSubscribeMasjid,
 } from '../../../api/deviceController';
 import { masjidStore } from '../../../store/MasjidStore';
 import { Device } from '../../../types/deviceControllerTypes';
 import { useMasjid } from '../../../utils/hooks';
-import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
+import {
+  GetMasjidJummahTiming,
+  getSalahTimingsOfMasjid,
+} from '../../../api/masjidController';
 
 export default function MasjidDetails({
   setStep,
@@ -58,30 +63,58 @@ export default function MasjidDetails({
   const userData = useHookstate(userStore.userData).get();
   const devices = useHookstate(masjidStore.connectedDevices).get();
   const [loading, setLoading] = useState<boolean>(false);
+  const [subs, setSubs] = useState<SubscriptionList[]>([]);
   const connectedDevices = useMemo(() => devices, [devices]);
+  const [salahTime, setSalahTime] = useState<SalahTimings[]>([]);
   const [currentDevice, setCurrentDevice] = useState<Device>();
   const isFocused = useIsFocused();
 
   const {
     getMasjidListSubscribedByUser,
-    store: { salahTimings },
+    store: { salahTimings, JummahTime },
   } = useMasjid();
 
   useEffect(() => {
     setCurrentDevice(connectedDevices[0] as Device);
   }, []);
 
-  // console.log('salahTimings', selectedMasjid);
+  useEffect(() => {
+    if (isFocused) {
+      getSalahTimes();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
-    GetMasjidDevicesForUser(
+    if (currentDevice) {
+      getSubscriptions(currentDevice?.id.toString()!);
+    }
+  }, [currentDevice]);
+
+  const getSalahTimes = async () => {
+    setLoading(true);
+    await GetMasjidDevicesForUser(
       userData?.id?.toString() ?? '',
       selectedMasjid?.id.toString(),
     ).then(res => {
       setCurrentDevice(connectedDevices[0] as Device);
     });
-    getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '');
-  }, [isFocused]);
+    getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(data => {
+      setSalahTime(data as SalahTimings[]);
+      setLoading(false);
+    });
+    await GetMasjidJummahTiming(selectedMasjid?.id.toString() ?? '');
+  };
+
+  const getSubscriptions = (id: string) => {
+    getDeviceSubscriptions(id).then(data => {
+      setSubs(data);
+      setTimeout(() => {
+        if (loading) {
+          setLoading(false);
+        }
+      }, 2000);
+    });
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -140,7 +173,9 @@ export default function MasjidDetails({
           masjidSubscriptions={
             selectedMasjid?.subscriptionList as SubscriptionList[]
           }
-          data={(salahTimings as SalahTimings[]) ?? []}
+          data={(salahTime as SalahTimings[]) ?? []}
+          subscriptions={subs}
+          setSubscriptions={setSubs}
           setLoading={val => setLoading(val)}
         />
         <GapView length={15} />
@@ -151,17 +186,11 @@ export default function MasjidDetails({
           masjidSubscriptions={
             selectedMasjid?.subscriptionList as SubscriptionList[]
           }
+          subscriptions={subs}
+          setSubscriptions={setSubs}
           deviceInfo={currentDevice!}
           isMute={true}
-          data={{
-            id: 7,
-            effectiveDate: '2023-07-07',
-            jumuah1: '13:45:00',
-            jumuah2: '15:15:00',
-            jumuah3: null,
-            createdBy: 'User',
-            createdDate: '2023-07-05T14:26:15.946+00:00',
-          }}
+          data={JummahTime as JummahTime}
           setLoading={val => setLoading(val)}
         />
         <GapView length={15} />
@@ -186,9 +215,9 @@ export default function MasjidDetails({
                 );
                 console.log('res', res);
                 if (res) {
-                  await getMasjidListSubscribedByUser(
-                    userData?.id?.toString() ?? '',
-                  );
+                  // await getMasjidListSubscribedByUser(
+                  //   userData?.id?.toString() ?? '',
+                  // );
                   setStep(0);
                   setLoading(false);
                 }

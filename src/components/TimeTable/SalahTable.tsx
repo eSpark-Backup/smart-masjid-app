@@ -54,7 +54,7 @@ export default function SalahTable({
     ({ item, index }: { item: IPrayerTimeForPeriod; index: number }) => {
       return (
         <View key={index} style={{ width: WINDOW_WIDTH - 50 }}>
-          {item.salah.map((data, i) => (
+          {item?.salah?.map((data, i) => (
             <RowItem
               key={index + Math.random() * 9999}
               item={{
@@ -93,6 +93,12 @@ export default function SalahTable({
         viewabilityConfig={{
           itemVisiblePercentThreshold: 100,
         }}
+        ListEmptyComponent={
+          <MyText
+            textStyle={{ textAlign: 'center', marginVertical: 10 }}
+            text="Nothing to show"
+          />
+        }
       />
     </View>
   );

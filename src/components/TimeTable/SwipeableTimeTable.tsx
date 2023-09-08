@@ -90,6 +90,8 @@ interface ViewabilityConfigCallbackPair {
 
 export default function SwipeableTimeTable({
   data,
+  subscriptions,
+  setSubscriptions,
   masjidSubscriptions,
   isMute = false,
   isEdit = false,
@@ -105,6 +107,8 @@ export default function SwipeableTimeTable({
   setLoading,
 }: {
   data: SalahTimings[];
+  subscriptions: SubscriptionList[];
+  setSubscriptions: (data: SubscriptionList[]) => void;
   masjidSubscriptions: SubscriptionList[];
   isMute?: boolean;
   isEdit?: boolean;
@@ -123,21 +127,6 @@ export default function SwipeableTimeTable({
     data?.length > 0 ? data[0] : null,
   );
   const slider = useRef<FlatList>(null);
-  const [subscriptions, setSubscriptions] = useState<SubscriptionList[]>([]);
-
-  useEffect(() => {
-    getSubscriptions();
-  }, [deviceInfo]);
-
-  const getSubscriptions = () => {
-    if (deviceInfo) {
-      setLoading(true);
-      getDeviceSubscriptions(deviceInfo?.id.toString()).then(data => {
-        setSubscriptions(data);
-        setLoading(false);
-      });
-    }
-  };
 
   const updateSubscriptions = (id: string, adhanName: string) => {
     if (id) {
@@ -188,7 +177,7 @@ export default function SwipeableTimeTable({
                   Iqama: data?.iqamaTime?.toString(),
                 }}
                 isMute={isMute}
-                subscribed={subscriptions.some(
+                subscribed={subscriptions?.some(
                   item =>
                     item.subscriptionType.name == data?.name.toUpperCase(),
                 )}
@@ -212,7 +201,7 @@ export default function SwipeableTimeTable({
     return (
       <View key={index}>
         <View style={{ width: WINDOW_WIDTH - 50 }}>
-          {item.salah.map((data, i) => (
+          {item?.salah?.map((data, i) => (
             <RowItem
               key={i}
               item={{
@@ -221,10 +210,10 @@ export default function SwipeableTimeTable({
                 Iqama: data?.iqamaTime?.toString(),
               }}
               isMute={isMute}
-              subscribed={subscriptions.some(
+              subscribed={subscriptions?.some(
                 item => item.subscriptionType.name == data?.name.toUpperCase(),
               )}
-              subscriptionData={subscriptions.find(
+              subscriptionData={subscriptions?.find(
                 item => item.subscriptionType.name == data?.name.toUpperCase(),
               )}
               setSubscriptions={updateSubscriptions}
@@ -303,13 +292,24 @@ export default function SwipeableTimeTable({
         viewabilityConfig={{
           itemVisiblePercentThreshold: 100,
         }}
+        ListEmptyComponent={
+          <MyText
+            textStyle={{
+              textAlign: 'center',
+              alignSelf: 'center',
+              marginVertical: 10,
+              width: WINDOW_WIDTH - 50,
+            }}
+            text="Nothing to show"
+          />
+        }
       />
-      {footer && (
+      {/* {footer && (
         <>
           <GapView />
           {footer}
         </>
-      )}
+      )} */}
     </View>
   );
 }

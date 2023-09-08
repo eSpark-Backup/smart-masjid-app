@@ -43,7 +43,9 @@ export default function Search() {
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
-    setStep(0);
+    if (isFocused) {
+      setStep(0);
+    }
   }, [isFocused]);
 
   const onBackPress = () => {
@@ -113,6 +115,7 @@ export default function Search() {
                 setUserLocation={setUserLocation}
               />
             )}
+
             {step == 1 && (
               <MasjidDetails
                 contentOpacity={props.contentOpacity}
@@ -123,6 +126,7 @@ export default function Search() {
                     latitude: selectedMasjid?.location.coordinates[0],
                     longitude: selectedMasjid?.location.coordinates[1],
                   });
+                  // for converting meter into mile dividing distance by 1609
                   if (distance / 1609 > 10) {
                     setShowError(true);
                   } else {

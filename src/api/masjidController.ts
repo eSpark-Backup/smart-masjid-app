@@ -321,6 +321,7 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
     masjidStore?.userMasjidList?.set(
       masjidList?.length > 0 ? masjidList : null,
     );
+    return result.data;
   } catch (error) {
     console.log('getListMasjidSubscribedByUser error: ', error);
   }
@@ -337,6 +338,7 @@ export const getSalahTimingsOfMasjid = async (masjidId: string) => {
     const timings = result?.data?.timings as SalahTimings[];
     console.log('masjidList', result?.data);
     masjidStore?.salahTimings?.set(timings ?? []);
+    return timings;
   } catch (error) {
     console.log('getSalahTimingsOfMasjid error: ', error);
   }

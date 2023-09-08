@@ -7,7 +7,10 @@ import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import moment from 'moment';
-import { SubscriptionList } from '../../types/masjidControllerTypes';
+import {
+  JummahTime,
+  SubscriptionList,
+} from '../../types/masjidControllerTypes';
 import {
   addSubscription,
   getDeviceSubscriptions,
@@ -24,7 +27,7 @@ const RowItem = ({
 }: {
   item: { name: string; khutba: string };
   isMute: boolean;
-  subscribed: boolean;
+  subscribed?: boolean;
   subscriptionData?: SubscriptionList;
   setSubscriptions: (id: string, adhanName: string) => void;
 }) => {
@@ -80,62 +83,39 @@ export default function JumuahTable({
   header = <></>,
   isMute = true,
   masjidSubscriptions,
+  subscriptions,
+  setSubscriptions,
   deviceInfo,
   setLoading,
 }: {
-  data?: {
-    id: number;
-    effectiveDate: string;
-    jumuah1?: string | null;
-    jumuah2?: string | null;
-    jumuah3?: string | null;
-    createdBy: string;
-    createdDate: string;
-  };
+  data?: JummahTime;
   headings?: string[];
   header?: React.ReactNode;
   isMute?: boolean;
-  masjidSubscriptions: SubscriptionList[];
-  deviceInfo: Device;
-  setLoading: (val: boolean) => void;
+  masjidSubscriptions?: SubscriptionList[];
+  subscriptions?: SubscriptionList[];
+  setSubscriptions?: (data: SubscriptionList[]) => void;
+  deviceInfo?: Device;
+  setLoading?: (val: boolean) => void;
 }) {
-  const [subscriptions, setSubscriptions] = useState<SubscriptionList[]>([]);
-
-  useEffect(() => {
-    getSubscriptions();
-  }, [deviceInfo]);
-
-  const getSubscriptions = () => {
-    if (deviceInfo) {
-      setLoading(true);
-      getDeviceSubscriptions(deviceInfo?.id.toString()).then(data => {
-        setSubscriptions(data);
-        setLoading(false);
-      });
-    }
-  };
-
   const updateSubscriptions = (id: string, adhanName: string) => {
     if (id) {
-      console.log('id', id);
-      setLoading(true);
-      removeSubscription(deviceInfo?.id.toString(), id).then(data => {
-        console.log('data', data);
-        setSubscriptions(data.subscriptions);
-        setLoading(false);
+      setLoading!(true);
+      removeSubscription(deviceInfo?.id.toString() as string, id).then(data => {
+        setSubscriptions!(data.subscriptions);
+        setLoading!(false);
       });
     } else {
-      setLoading(true);
-      const adhanData = masjidSubscriptions.find(
+      setLoading!(true);
+      const adhanData = masjidSubscriptions?.find(
         item => item.subscriptionType.name == adhanName.toUpperCase(),
       );
       addSubscription(
-        deviceInfo?.id.toString(),
+        deviceInfo?.id.toString() as string,
         adhanData?.id.toString() as string,
       ).then(data => {
-        console.log('data', data);
-        setSubscriptions(data.subscriptions);
-        setLoading(false);
+        setSubscriptions!(data.subscriptions);
+        setLoading!(false);
       });
     }
   };
@@ -155,26 +135,34 @@ export default function JumuahTable({
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
       <View style={{ width: WINDOW_WIDTH - 50 }}>
-        <RowItem
-          item={{ name: 'Jumuah 1', khutba: data?.jumuah1 ?? '' }}
-          isMute={isMute}
-          subscribed={subscriptions.some(
-            item => item.subscriptionType.name == 'JUMUAH_1',
-          )}
-          setSubscriptions={updateSubscriptions}
-          subscriptionData={subscriptions.find(
-            item => item.subscriptionType.name == 'JUMUAH_1',
-          )}
-        />
+        {!data?.jumuah1 && !data?.jumuah2 && !data?.jumuah3 ? (
+          <MyText
+            textStyle={{ textAlign: 'center', marginVertical: 10 }}
+            text="Nothing to show"
+          />
+        ) : null}
+        {data?.jumuah1 ? (
+          <RowItem
+            item={{ name: 'Jumuah 1', khutba: data?.jumuah1 ?? '' }}
+            isMute={isMute}
+            subscribed={subscriptions?.some(
+              item => item.subscriptionType.name == 'JUMUAH_1',
+            )}
+            setSubscriptions={updateSubscriptions}
+            subscriptionData={subscriptions?.find(
+              item => item.subscriptionType.name == 'JUMUAH_1',
+            )}
+          />
+        ) : null}
         {data?.jumuah2 ? (
           <RowItem
             item={{ name: 'Jumuah 2', khutba: data?.jumuah2 ?? '' }}
             isMute={isMute}
-            subscribed={subscriptions.some(
+            subscribed={subscriptions?.some(
               item => item.subscriptionType.name == 'JUMUAH_2',
             )}
             setSubscriptions={updateSubscriptions}
-            subscriptionData={subscriptions.find(
+            subscriptionData={subscriptions?.find(
               item => item.subscriptionType.name == 'JUMUAH_2',
             )}
           />
@@ -183,11 +171,11 @@ export default function JumuahTable({
           <RowItem
             item={{ name: 'Jumuah 3', khutba: data?.jumuah3 ?? '' }}
             isMute={isMute}
-            subscribed={subscriptions.some(
+            subscribed={subscriptions?.some(
               item => item.subscriptionType.name == 'JUMUAH_3',
             )}
             setSubscriptions={updateSubscriptions}
-            subscriptionData={subscriptions.find(
+            subscriptionData={subscriptions?.find(
               item => item.subscriptionType.name == 'JUMUAH_3',
             )}
           />
