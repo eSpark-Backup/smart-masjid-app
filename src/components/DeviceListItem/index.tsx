@@ -11,7 +11,7 @@ const DeviceListItem = ({
   subTitle = '',
   disabled = false,
   online = true,
-  onPress = () => {}
+  onPress = () => {},
 }: {
   title: string;
   subTitle?: string;
@@ -19,17 +19,17 @@ const DeviceListItem = ({
   online?: boolean;
   onPress?: () => void;
 }) => {
-  const isDisabled = disabled || !online
+  const isDisabled = disabled || !online;
   return (
     <>
       <TouchableOpacity
         disabled={isDisabled}
-        activeOpacity={.8}
+        activeOpacity={0.8}
         onPress={onPress}
         style={{
           paddingHorizontal: 20,
           paddingVertical: 15,
-          opacity: isDisabled ? .5 : 1
+          opacity: isDisabled ? 0.5 : 1,
         }}>
         <View
           style={{
@@ -52,7 +52,9 @@ const DeviceListItem = ({
               {subTitle && (
                 <TextLabel
                   label={subTitle}
+                  lines={1}
                   textStyle={{
+                    width: 180,
                     color: '#3E3E3E',
                     fontWeight: '400',
                     fontSize: 14,
