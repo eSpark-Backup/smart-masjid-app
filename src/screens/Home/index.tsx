@@ -116,28 +116,21 @@ export default function Home() {
       setStep(0);
       console.log('huwa back?');
     }
-    // if (step == 0 && uniqueObjects?.length == 1 && uniqueObjects != null) {
-    //   setStep(1);
-    //   if (typeof uniqueObjects?.[0] == 'object') {
-    //     setSelectedMasjid(uniqueObjects?.[0]);
-    //   }
-    // } else {
-    //   if (step != 1) {
-    //     if (params?.masjidId) {
-    //       setStep(1);
-    //       if (typeof uniqueObjects?.[0] == 'object') {
-    //         const selectedMasjid = uniqueObjects.filter(
-    //           item => item.id.toString() === params?.masjidId,
-    //         );
-    //         console.log('chala ha xxx', selectedMasjid?.[0]);
-    //         setSelectedMasjid(selectedMasjid?.[0]);
-    //       }
-    //     } else {
-    //       setSelectedMasjid(null);
-    //       masjidStore.salahTimings.set([]);
-    //     }
-    //   }
-    // }
+    if (step != 1) {
+      if (params?.masjidId) {
+        setStep(1);
+        if (typeof uniqueObjects?.[0] == 'object') {
+          const selectedMasjid = uniqueObjects.filter(
+            item => item.id.toString() === params?.masjidId,
+          );
+          console.log('chala ha xxx', selectedMasjid?.[0]);
+          setSelectedMasjid(selectedMasjid?.[0]);
+        }
+      } else {
+        setSelectedMasjid(null);
+        masjidStore.salahTimings.set([]);
+      }
+    }
   }, [isFocused]);
 
   const onBackPress = () => {
