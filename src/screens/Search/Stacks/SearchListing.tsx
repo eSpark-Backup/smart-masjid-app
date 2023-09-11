@@ -10,6 +10,8 @@ import {
 import crashlytics from '@react-native-firebase/crashlytics';
 import systemSetting from 'react-native-system-setting';
 import Toast from 'react-native-toast-message';
+//@ts-ignore
+import RNSettings from 'react-native-settings';
 
 import { SearchMasjidByLocation } from '../../../api/masjidController';
 import {
@@ -25,6 +27,7 @@ import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
+import { _startLocationCheck } from '../utils/functions';
 
 const SearchListing = ({
   onPress,
@@ -61,11 +64,13 @@ const SearchListing = ({
     }
   };
 
-  const checkLocationAdapter = async () => {
+  const checkLocationAdapter = async (e?: any) => {
     const enable = await systemSetting.isLocationEnabled();
     if (enable) {
       console.log('chala');
-      checkLocation();
+      if (e[RNSettings.LOCATION_SETTING] !== RNSettings.DISABLED) {
+        checkLocation();
+      }
     } else {
       Toast.show({
         text2: 'Enable Location Adapter',
@@ -76,7 +81,8 @@ const SearchListing = ({
   };
 
   useEffect(() => {
-    checkLocationAdapter();
+    // checkLocationAdapter();
+    _startLocationCheck(checkLocationAdapter);
   }, []);
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
