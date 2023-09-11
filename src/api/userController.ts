@@ -66,6 +66,22 @@ export const LogoutUser = async (userId: string) => {
 
 /**
  *
+ * @description Delete User
+ * @returns delete your user from database
+ */
+export const DeleteUser = async (userId: string) => {
+  try {
+    const res = await api.delete(`/users/${userId}`);
+    await removeDatafromLocalStorage('user');
+    userStore.userData.set(null);
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error DeleteUser', error);
+  }
+};
+
+/**
+ *
  * @description Update the user data from profile screen
  * @returns get data of user and save to userStore
  */

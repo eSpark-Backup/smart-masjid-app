@@ -100,10 +100,10 @@ export default function Home() {
           console.log('kiya mila', uniqueObj);
           setUniqueObjects(uniqueObj);
           if (step == 0 && uniqueObj?.length == 1 && uniqueObj != null) {
-            setStep(1);
             if (typeof uniqueObj?.[0] == 'object') {
               setSelectedMasjid(uniqueObj?.[0]);
             }
+            setStep(1);
           }
           setLoading(false);
         },
@@ -140,8 +140,6 @@ export default function Home() {
       navigation.goBack();
     }
   };
-
-  console.log('uniqueObjects', uniqueObjects);
 
   return (
     <Wrapper

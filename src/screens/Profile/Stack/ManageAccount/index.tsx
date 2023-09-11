@@ -11,7 +11,11 @@ import Toast from 'react-native-toast-message';
 import phone from 'phone';
 import crashlytics from '@react-native-firebase/crashlytics';
 
-import { LogoutUser, UpdateUser } from '../../../../api/userController';
+import {
+  DeleteUser,
+  LogoutUser,
+  UpdateUser,
+} from '../../../../api/userController';
 import { Email, Phone, ProfileUser } from '../../../../assets';
 import {
   GapView,
@@ -33,9 +37,17 @@ import {
 } from '../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
-import { CountryCodes } from '../../../../types';
+import { BottomNavigationParamList, CountryCodes } from '../../../../types';
 import { OtpForm } from '../../ProfileForms';
 import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
+import { deviceStore } from '../../../../store/DeviceStore';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+type HomeNavigationProps = NativeStackScreenProps<
+  BottomNavigationParamList,
+  'Home'
+>;
 
 export default function ManageAccount({
   setFlag,
@@ -46,9 +58,12 @@ export default function ManageAccount({
   showVerification?: boolean;
   contentOpacity?: any;
 }) {
+  const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const [isVisible, setIsVisible] = useState(false);
+  const [isDVisible, setIsDVisible] = useState(false);
   const [country, setCountry] = useState<CountryCodes>();
   const userObj = useHookstate(userStore.userData);
+  const devices: any = useHookstate(deviceStore?.devices)?.get();
   const userData = userObj?.get();
   const [data, setData] = useState<any>({
     firstName: userData?.firstName,
@@ -309,6 +324,24 @@ export default function ManageAccount({
                 >
                   <TextLabel label="Logout" textStyle={{ color: '#ffffff' }} />
                 </TouchableOpacity>
+                <GapView length={20} />
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  style={{
+                    height: 41,
+                    width: '100%',
+                    backgroundColor: '#FF6464',
+                    borderRadius: 50,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                  }}
+                  onPress={() => setIsDVisible(true)}>
+                  <TextLabel
+                    label="Delete Account"
+                    textStyle={{ color: '#ffffff' }}
+                  />
+                </TouchableOpacity>
               </>
             )}
           </View>
@@ -322,6 +355,33 @@ export default function ManageAccount({
             }}
             onClose={() => {
               setIsVisible(!isVisible);
+              console.log('Cancelled');
+            }}
+          />
+          <LogoutModal
+            message="Do you wish to delete your account?"
+            visible={isDVisible && devices.length < 1}
+            onAllowed={async () => {
+              await DeleteUser(userData?.id?.toString() ?? '');
+              setIsDVisible(false);
+              console.log('Delete User');
+            }}
+            onClose={() => {
+              setIsDVisible(false);
+              console.log('Cancelled');
+            }}
+          />
+          <LogoutModal
+            message="Reset connected devices to delete your account?"
+            visible={isDVisible && devices.length > 0}
+            title1={'Cancel'}
+            title2={'Reset'}
+            onAllowed={async () => {
+              navigation.navigate('Device');
+              setIsDVisible(false);
+            }}
+            onClose={() => {
+              setIsDVisible(false);
               console.log('Cancelled');
             }}
           />

@@ -87,6 +87,7 @@ export const GetMasjidDevicesForUser = async (
     // console.log('resultxxx', result);
     if (result.status == 200 && result.data) {
       masjidStore.connectedDevices.set(result.data);
+      return result.data;
     } else {
       Toast.show({
         text1: result?.data?.message ?? 'Something went wrong',
