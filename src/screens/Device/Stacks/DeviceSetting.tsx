@@ -146,7 +146,7 @@ const DeviceSetting = ({
         <DeviceErrorBox
           show={device?.deviceTelemetry?.status == 'Online' ? false : true}
           onClose={() => console.log('on Close Box', device)}
-          message="Looks like your device is offline. Please power off and power on the device."
+          message="Looks like your device is offline. Tap here to see causes."
         />
         <View style={styles.deviceSettingContainer}>
           <View style={styles.subHeader}>
