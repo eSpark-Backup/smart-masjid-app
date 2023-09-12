@@ -27,7 +27,7 @@ import { Card } from '../../../containers';
 import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
-import { _startLocationCheck } from '../utils/functions';
+import { _startLocationCheck, _stopLocationCheck } from '../utils/functions';
 
 const SearchListing = ({
   onPress,
@@ -41,6 +41,7 @@ const SearchListing = ({
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
   const [zipCode, setZipCode] = useState('');
   const [loader, setLoader] = useState(false);
+  const [locationStatus, setlocationStatus] = useState(false);
 
   const checkLocation = async () => {
     try {
@@ -64,13 +65,10 @@ const SearchListing = ({
     }
   };
 
-  const checkLocationAdapter = async (e?: any) => {
+  const checkLocationAdapter = async () => {
     const enable = await systemSetting.isLocationEnabled();
-    if (enable) {
-      console.log('chala');
-      if (e[RNSettings.LOCATION_SETTING] !== RNSettings.DISABLED) {
-        checkLocation();
-      }
+    if (enable || locationStatus) {
+      checkLocation();
     } else {
       Toast.show({
         text2: 'Enable Location Adapter',
@@ -80,9 +78,20 @@ const SearchListing = ({
     }
   };
 
+  function _handleGPSProviderEvent(e: any) {
+    if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
+      setlocationStatus(false);
+    } else {
+      setlocationStatus(true);
+    }
+  }
+
   useEffect(() => {
-    // checkLocationAdapter();
-    _startLocationCheck(checkLocationAdapter);
+    _startLocationCheck(_handleGPSProviderEvent);
+    checkLocationAdapter();
+    return () => {
+      _stopLocationCheck();
+    };
   }, []);
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
@@ -137,7 +146,7 @@ const SearchListing = ({
                   setZipCode('');
                 }
               }}
-              onCurrentLocationPress={() => checkLocationAdapter()}
+              onCurrentLocationPress={checkLocationAdapter}
               inputStyle={{ width: WINDOW_WIDTH - 80 }}
               placeholder="Enter Zip Code"
               onSearch={onSearch}

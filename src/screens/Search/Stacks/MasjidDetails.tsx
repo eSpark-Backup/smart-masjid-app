@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, View, Animated } from 'react-native';
+import {
+  ScrollView,
+  TouchableOpacity,
+  View,
+  Animated,
+  StyleSheet,
+} from 'react-native';
+import moment from 'moment';
+
 import {
   GapView,
   JumuahTable,
@@ -32,9 +40,7 @@ import {
   GetMasidIqamaTimings,
 } from '../../../api/search.controller';
 import { _normalizedSubscriptions, openMap } from '../../../utils/functions';
-import moment from 'moment';
 import { Card } from '../../../containers';
-import { StyleSheet } from 'react-native';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -116,7 +122,10 @@ const MasjidDetails = ({
         <GapView length={15} />
         <Card>
           <View style={{ padding: 10 }}>
-            <View style={styles.infoCardRowContainer}>
+            <View
+              style={{
+                ...styles.infoCardRowContainer,
+              }}>
               <LocationSvg />
               <GapView length={5} mode="horizontal" />
               <View style={{ maxWidth: '87%' }}>
