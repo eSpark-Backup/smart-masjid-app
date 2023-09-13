@@ -103,16 +103,23 @@ export const GetMasjidDevicesForUser = async (
  * @todo //todo: Delete This later
  */
 
-export async function _checkDeviceTelemetry(deviceId: string) {
+export async function _checkDeviceTelemetry(
+  deviceId: string,
+  checkTime?: boolean,
+) {
   console.log('now checking device Telemetry for Deivce id =>', deviceId);
   try {
     const res = await api.get<any>(`devices/${deviceId}/telemetry`);
     if (res?.ok) {
-      console.log('Gotten Telemetry', res.data);
-      if (res.data?.status == 'Online') {
-        return true;
+      if (checkTime) {
+        console.log('Gotten Telemetry', res.data);
+        return res?.data;
       } else {
-        return false;
+        if (res.data?.status == 'Online') {
+          return true;
+        } else {
+          return false;
+        }
       }
     } else {
       console.log('Problem status', res.status, res.data);
@@ -233,14 +240,24 @@ export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
  * @todo //todo: Delete This later
  */
 
-export async function _updateDevice(devInfo: Device) {
-  const { id, firmwareVersion, name, wifiSsid, deviceTelemetry } = devInfo;
-  console.log('Device info in api???', devInfo);
+export async function _updateDevice(
+  devInfo: Device & { wifiPassword?: string },
+) {
+  const { id, firmwareVersion, name, wifiSsid, deviceTelemetry, wifiPassword } =
+    devInfo;
+  console.log('Device info in api???', {
+    name: name,
+    firmwareVersion: firmwareVersion,
+    wifiSsid: wifiSsid,
+    wifiPassword: wifiPassword,
+    status: deviceTelemetry.status,
+  });
   try {
     const res = await api.put<any>('devices/' + id, {
       name: name,
       firmwareVersion: firmwareVersion,
       wifiSsid: wifiSsid,
+      wifiPassword: wifiPassword,
       status: deviceTelemetry.status,
     });
     if (res?.ok) {
@@ -257,7 +274,7 @@ export async function _updateDevice(devInfo: Device) {
         autoHide: true,
         visibilityTime: 10000,
       });
-      console.log('Problem status when device save', res.status, res.data);
+      console.log('Problem status when device save', res.problem);
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
