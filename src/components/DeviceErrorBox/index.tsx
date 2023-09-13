@@ -1,18 +1,26 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 
 import { Card } from '../../containers';
 import MyText from '../MyText';
-import { Close } from '../../assets';
+import { Close, InfoRed } from '../../assets';
 
 export default function DeviceErrorBox({
   show,
   message,
   onClose,
+  onIconPress,
 }: {
   show: boolean;
   message?: string;
   onClose?: () => void;
+  onIconPress?: () => void;
 }) {
   if (show) {
     return (
@@ -30,6 +38,11 @@ export default function DeviceErrorBox({
             }}>
             <MyText
               text={message!!}
+              icon={
+                <TouchableOpacity onPress={onIconPress}>
+                  <InfoRed />
+                </TouchableOpacity>
+              }
               textStyle={{
                 color: '#FF6464',
                 fontSize: 14,
