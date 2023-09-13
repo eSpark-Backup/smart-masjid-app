@@ -43,16 +43,16 @@ export default function ContactUsScreen({
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedReasonId, setSelectedReasonId] = useState<number | null>(null);
-  console.log('userData', userData.id);
 
   const requestToSupport = async () => {
     setLoading(true);
-    if (!userData?.id || selectedReasonId == null || description == '') {
+    if (!userData?.id || selectedReasonId == null || description.length == 0) {
       Toast.show({
         type: 'error',
         text2: 'Please fill given fields',
       });
       setLoading(false);
+      return;
     }
     const data: supportRequestData = {
       userId: userData?.id,

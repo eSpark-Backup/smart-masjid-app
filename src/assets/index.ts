@@ -39,6 +39,8 @@ export { default as SalahTimingsSVG } from './images/SalahTimings.svg';
 export { default as USFlag } from './images/USFlag.svg';
 
 //* vector/svg
+export { default as InfoRed } from './vectors/InfoRed.svg';
+export { default as CloseIcon } from './vectors/CloseIcon.svg';
 export { default as AccountGear } from './vectors/account-gear.svg';
 export { default as Privacy } from './vectors/Privacy.svg';
 export { default as Help } from './vectors/Help.svg';

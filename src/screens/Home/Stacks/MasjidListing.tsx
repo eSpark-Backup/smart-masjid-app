@@ -10,13 +10,13 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 export default function MasjidListing({
   data,
   setStep = () => {},
-  onPress,
   contentOpacity = 0,
+  onPress,
 }: {
   data: Masjid[];
   setStep: any;
-  onPress: (item: Masjid) => void;
   contentOpacity?: Animated.AnimatedInterpolation<string | number> | number;
+  onPress: (data: Masjid) => void;
 }) {
   const navigation = useNavigation();
 
@@ -33,17 +33,21 @@ export default function MasjidListing({
         data={data}
         contentContainerStyle={{ paddingBottom: 140, paddingTop: 15 }}
         keyExtractor={(item, index) => item.id.toString() + index.toString()}
-        renderItem={({ item, index }) => (
-          <MasjidListCard
-            key={index}
-            onPress={() => {
-              setStep(1);
-              onPress(item);
-            }}
-            masjidName={item.name ?? ''}
-            masjidLogo={item.logo ? { uri: item?.logo } : undefined}
-          />
-        )}
+        renderItem={({ item, index }) => {
+          console.log('masjid item', item);
+
+          return (
+            <MasjidListCard
+              key={index}
+              onPress={() => {
+                setStep(1);
+                onPress(item);
+              }}
+              masjidName={item.name ?? ''}
+              masjidLogo={item.logo ? { uri: item.logo } : undefined}
+            />
+          );
+        }}
         ItemSeparatorComponent={GapView}
         ListEmptyComponent={<ListEmptyComponent navigation={navigation} />}
       />

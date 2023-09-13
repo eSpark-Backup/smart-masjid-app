@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 import { View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
+import { getPreciseDistance, getDistance } from 'geolib';
+
 import { SubscribeMasjid } from '../../api/deviceController';
 import { ConnectedDevice } from '../../assets';
 import {
@@ -25,8 +28,6 @@ import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { DeviceListing, MasjidDetails, SearchListing } from './Stacks';
-import Toast from 'react-native-toast-message';
-import { getPreciseDistance, getDistance } from 'geolib';
 
 type SearchNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -43,7 +44,9 @@ export default function Search() {
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
-    setStep(0);
+    if (isFocused) {
+      setStep(0);
+    }
   }, [isFocused]);
 
   const onBackPress = () => {
@@ -113,6 +116,7 @@ export default function Search() {
                 setUserLocation={setUserLocation}
               />
             )}
+
             {step == 1 && (
               <MasjidDetails
                 contentOpacity={props.contentOpacity}
@@ -123,6 +127,7 @@ export default function Search() {
                     latitude: selectedMasjid?.location.coordinates[0],
                     longitude: selectedMasjid?.location.coordinates[1],
                   });
+                  // for converting meter into mile dividing distance by 1609
                   if (distance / 1609 > 10) {
                     setShowError(true);
                   } else {

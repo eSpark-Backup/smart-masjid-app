@@ -1,5 +1,4 @@
-import { Theme, useTheme } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +7,8 @@ import {
   ScrollView,
   FlatList,
 } from 'react-native';
+import { useHookstate } from '@hookstate/core';
+import { Theme, useTheme } from '@react-navigation/native';
 
 import { ContactUs } from '../../../../assets';
 
@@ -20,6 +21,8 @@ import {
 } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
+import { helpStore } from '../../../../store/HelpStore';
+import { FAQ } from '../../../../types';
 
 export default function HelpScreen({
   setFlag,
@@ -29,6 +32,27 @@ export default function HelpScreen({
   contentOpacity?: any;
 }) {
   const { colors }: Theme = useTheme();
+  const FAQData: any = useHookstate(helpStore.FAQs).get();
+  const [FAQs, setFAQs] = useState<FAQ[]>([]);
+
+  useEffect(() => {
+    setFAQs(FAQData);
+  }, []);
+
+  const onSearch = (text: string) => {
+    if (text.length == 0) {
+      setFAQs(FAQData);
+      return;
+    }
+    const FQs = FAQData.filter(
+      (item: FAQ) =>
+        item.question.toLowerCase().includes(text.toLowerCase()) ||
+        item.answer.toLowerCase().includes(text.toLowerCase()) ||
+        item.category.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFAQs(FQs);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
@@ -56,14 +80,16 @@ export default function HelpScreen({
               helpSearch
               inputStyle={{ width: WINDOW_WIDTH - 30 }}
               placeholder="Search"
-              // onSearch={onSearch}
+              onChangeText={onSearch}
               // value={value}
             />
           </Card>
           <GapView />
           <FlatList
-            data={[1, 2, 3, 4]}
-            renderItem={() => <Accordian />}
+            data={FAQs}
+            renderItem={({ item }) => (
+              <Accordian question={item.question} answer={item.answer} />
+            )}
             ItemSeparatorComponent={() => <GapView />}
           />
         </View>

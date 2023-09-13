@@ -55,6 +55,8 @@ export default function Joined({
       <TouchableWithoutFeedback onPress={onPress2}>
         {activeButton == 'two' ? (
           <LinearGradient
+            start={{ x: -0.002, y: 0.0 }}
+            end={{ x: 0.998, y: 0.0 }}
             colors={activeButton == 'two' ? GradientColors : ['#fff', '#fff']}
             style={
               activeButton == 'two' ? styles.rightGradient : styles.hollow

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View, Animated } from 'react-native';
+import { ScrollView, StyleSheet, View, Animated, Text } from 'react-native';
 import {
   Theme,
   useNavigation,
@@ -16,6 +16,7 @@ import {
   DeviceReset,
   DeviceSvg,
   Heart,
+  InfoRed,
   Version,
   Wifi,
 } from '../../../assets';
@@ -30,6 +31,7 @@ import {
   OverlayLoader,
   LogoutModal,
   MyTitle,
+  PossibleCauseErrorModal,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
@@ -57,6 +59,7 @@ const DeviceSetting = ({
   const [loader, setLoader] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isEditable, setIsEditable] = useState<boolean>(false);
+  const [offlineErrors, setOfflineErrors] = useState<boolean>(false);
   console.log('deive selectedx ??', device);
 
   const styles = useMemo(() => makeStyles(theme), []);
@@ -142,11 +145,16 @@ const DeviceSetting = ({
         </Animated.View>
         <GapView length={40} />
       </View>
-      <ScrollView style={{ top: 100 }}>
+      <ScrollView style={{ top: 112 }}>
         <DeviceErrorBox
           show={device?.deviceTelemetry?.status == 'Online' ? false : true}
           onClose={() => console.log('on Close Box', device)}
           message="Looks like your device is offline. Tap here to see causes."
+          onIconPress={() => setOfflineErrors(true)}
+        />
+        <PossibleCauseErrorModal
+          visible={offlineErrors}
+          onClose={() => setOfflineErrors(false)}
         />
         <View style={styles.deviceSettingContainer}>
           <View style={styles.subHeader}>
