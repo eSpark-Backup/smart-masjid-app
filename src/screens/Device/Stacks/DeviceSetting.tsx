@@ -176,6 +176,7 @@ const DeviceSetting = ({
                     icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                     isEdit: isEditable,
+                    charLength: 25,
                     onPress: () => setIsEditable(true),
                     onDoneEdit: text => {
                       console.log('avla', text);

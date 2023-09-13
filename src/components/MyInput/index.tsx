@@ -57,6 +57,7 @@ interface MyInputProps {
   phoneCodeContainerStyle?: ViewStyle;
   multiline?: boolean;
   numberOfLines?: number;
+  length?: number;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -85,6 +86,7 @@ export default function MyInput(props: MyInputProps) {
     selectMode,
     phoneCodeContainerStyle,
     multiline,
+    length,
     numberOfLines,
   } = props;
   const theme: Theme = useTheme();
@@ -252,6 +254,7 @@ export default function MyInput(props: MyInputProps) {
           <TextInput
             editable={selectMode && !disabled}
             autoComplete="off"
+            maxLength={length}
             autoCorrect={false}
             keyboardType={isPhoneCode ? 'number-pad' : 'default'}
             style={[

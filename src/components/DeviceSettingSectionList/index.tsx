@@ -30,6 +30,7 @@ interface DataProp {
   isEdit?: boolean;
   rightArrow?: boolean;
   danger?: boolean;
+  charLength?: number;
   onDoneEdit?: (text: string | undefined) => void;
 }
 
@@ -126,6 +127,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                 <MyInput
                   placeholderColor="#CFCFCF"
                   placeholder={item.title}
+                  length={item.charLength}
                   onChangeText={(value: string) => setDName(value)}
                   value={item.subtitle}
                 />
