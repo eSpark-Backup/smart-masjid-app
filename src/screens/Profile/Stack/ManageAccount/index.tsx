@@ -200,6 +200,11 @@ export default function ManageAccount({
                           {val.icon}
                           <GapView mode="horizontal" />
                           <MyInput
+                            maxLength={
+                              val.key == 'firstName' || val.key == 'lastName'
+                                ? 25
+                                : undefined
+                            }
                             placeholderColor="#CFCFCF"
                             placeholder={val.title}
                             onChangeText={(value: string) =>
@@ -218,6 +223,7 @@ export default function ManageAccount({
                           {val.icon}
                           <GapView mode="horizontal" />
                           <MyInput
+                            maxLength={10}
                             placeholder="Phone"
                             isPhoneCode
                             placeholderColor="#CFCFCF"
