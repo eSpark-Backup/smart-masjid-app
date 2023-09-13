@@ -57,6 +57,7 @@ interface MyInputProps {
   phoneCodeContainerStyle?: ViewStyle;
   multiline?: boolean;
   numberOfLines?: number;
+  maxLength?: number;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -86,6 +87,7 @@ export default function MyInput(props: MyInputProps) {
     phoneCodeContainerStyle,
     multiline,
     numberOfLines,
+    maxLength,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), [props]);
@@ -250,6 +252,7 @@ export default function MyInput(props: MyInputProps) {
         )}
         <View>
           <TextInput
+            maxLength={maxLength}
             editable={selectMode && !disabled}
             autoComplete="off"
             autoCorrect={false}

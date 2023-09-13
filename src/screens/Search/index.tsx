@@ -128,7 +128,7 @@ export default function Search() {
                     longitude: selectedMasjid?.location.coordinates[1],
                   });
                   // for converting meter into mile dividing distance by 1609
-                  if (distance / 1609 > 10) {
+                  if (distance / 1609 > 50) {
                     setShowError(true);
                   } else {
                     setStep(2);
