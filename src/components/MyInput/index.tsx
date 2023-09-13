@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Theme, useTheme } from '@react-navigation/native';
 import {
   Platform,
@@ -15,6 +15,7 @@ import { useHookstate } from '@hookstate/core';
 import MI from 'react-native-vector-icons/MaterialIcons';
 import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
 import crashlytics from '@react-native-firebase/crashlytics';
+import systemSetting from 'react-native-system-setting';
 
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
@@ -117,6 +118,7 @@ export default function MyInput(props: MyInputProps) {
   }, [getFocused]);
 
   const checkLocation = async () => {
+    console.log('chala');
     try {
       if (Platform.OS == 'ios') {
         checkMultiple([
@@ -150,9 +152,7 @@ export default function MyInput(props: MyInputProps) {
   };
 
   useEffect(() => {
-    if (searchBar) {
-      checkLocation();
-    }
+    checkLocation();
   }, [checkLocation, searchBar]);
 
   const handleTextChange = (newText: string) => {
