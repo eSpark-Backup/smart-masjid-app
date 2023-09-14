@@ -4,7 +4,9 @@ import moment from 'moment';
 
 import {
   AddMasjidJummahTiming,
+  GetMasjidCurrentJummahTiming,
   GetMasjidJummahTiming,
+  UpdatedMasjidJummahTiming,
 } from '../../../../../../api/masjidController';
 
 import {
@@ -49,7 +51,7 @@ export default function EditJummaTimings({
   useEffect(() => {
     if (jummaType == 'Edit') {
       setLoading(true);
-      GetMasjidJummahTiming(
+      GetMasjidCurrentJummahTiming(
         '1',
         moment(selectedJumma?.date).format('YYYY-MM-DD'),
       ).then((jumuahTime: JummahTime) => {
@@ -72,7 +74,11 @@ export default function EditJummaTimings({
   const onUpdate = async () => {
     console.log('data', data);
     setLoading(true);
-    await AddMasjidJummahTiming('1', data);
+    if (jummaType == 'Add') {
+      await AddMasjidJummahTiming('1', data);
+    } else {
+      await UpdatedMasjidJummahTiming('1', data);
+    }
     setLoading(false);
     setData(null);
     setFlag('jTime');

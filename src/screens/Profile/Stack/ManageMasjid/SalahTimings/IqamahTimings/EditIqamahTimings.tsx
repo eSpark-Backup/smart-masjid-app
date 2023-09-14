@@ -37,6 +37,8 @@ export default function EditIqamahTimings({
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
+  console.log('selectedIqamah', selectedIqamah);
+
   useEffect(() => {
     if (iqamahType == 'Edit') {
       setData(selectedIqamah);

@@ -56,7 +56,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
   };
 
   return (
-    <View style={{ marginTop: 30 }}>
+    <View style={{ marginTop: 30, paddingHorizontal: 10 }}>
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ flexDirection: 'row' }}>

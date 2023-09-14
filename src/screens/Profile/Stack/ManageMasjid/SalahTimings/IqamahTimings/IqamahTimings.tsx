@@ -92,7 +92,8 @@ export default function IqamahTimings({
     return currentData != null ? (
       <TimeTableCard
         onEdit={() => {
-          selectedIqamah(currentData);
+          const ind = iqamahTimings?.findIndex(e => e.id == currentData.id);
+          selectedIqamah(iqamahTimings![ind!]);
           setFlag('iEdit');
         }}
         date={currentData?.date}
@@ -157,7 +158,7 @@ export default function IqamahTimings({
                     selectedIqamah(iqamahTimings![ind!]);
                     setFlag('iEdit');
                   }}
-                  key={item.date}
+                  key={item.id}
                   date={item.date}
                   data={item.data}
                   deleteBtn

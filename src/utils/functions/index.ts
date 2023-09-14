@@ -337,13 +337,12 @@ function convertResponseToData(
         key !== 'asrDelay'
       ) {
         // find the index of the key in the accumulator array
-        const index = acc.findIndex(
-          item =>
-            item.heading ===
-            (key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'EffectiveDate'
-              ? 'Effective Date'
-              : key?.charAt(0)?.toUpperCase() + key?.slice(1)),
-        );
+        const index = acc.findIndex(item => {
+          console.log('item.heading', item.heading);
+          return item.heading === key?.charAt(0)?.toUpperCase() + key?.slice(1);
+        });
+
+        console.log('index', index);
 
         // get the value of the key and slice it to remove the seconds part
         var value = null;
@@ -376,10 +375,7 @@ function convertResponseToData(
         // otherwise, add a new object to the accumulator array
         else {
           acc.push({
-            heading:
-              key?.charAt(0)?.toUpperCase() + key?.slice(1) == 'EffectiveDate'
-                ? 'Date'
-                : key?.charAt(0)?.toUpperCase() + key?.slice(1),
+            heading: key?.charAt(0)?.toUpperCase() + key?.slice(1),
             values: [value ?? '-'],
           });
         }
@@ -388,6 +384,7 @@ function convertResponseToData(
 
     return acc;
   }, []);
+  console.log('table data', data);
 
   return data;
 }

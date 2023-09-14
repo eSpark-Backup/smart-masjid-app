@@ -46,7 +46,7 @@ export default function History({
 
   useEffect(() => {
     // GetIqamahHistory('1');
-    GetAdhanTimings('1');
+    GetAdhanTimings('2', moment().startOf('month').format('YYYY-MM-DD'));
   }, []);
 
   const onDateChange = (e: Date) => {
@@ -68,20 +68,55 @@ export default function History({
   console.log('adhanTimings', adhanTimings);
   const timingsData = [
     {
-      effectiveDate: '2023-08-16',
+      date: '2023-08-16',
       fajr: '06:00:00',
+      // fajrIqamah: '06:00:00',
       dhuhr: '14:00:00',
       asr: '18:00:00',
       maghrib: 15,
       isha: '21:30:00',
-      asrDelay: null,
+      // asrDelay: null,
       createdBy: 'User',
       createdDate: '2023-06-16T10:37:56.355+00:00',
-      dhuhrDelay: null,
-      fajrDelay: null,
+      // dhuhrDelay: null,
+      // fajrDelay: null,
       id: 9,
-      ishaDelay: null,
-      type: 'F',
+      // ishaDelay: null,
+      // type: 'F',
+    },
+    {
+      date: '2023-08-17',
+      fajr: '06:00:00',
+      // fajrIqamah: '06:00:00',
+      dhuhr: '14:00:00',
+      asr: '18:00:00',
+      maghrib: 15,
+      isha: '21:30:00',
+      // asrDelay: null,
+      createdBy: 'User',
+      createdDate: '2023-06-17T10:37:56.355+00:00',
+      // dhuhrDelay: null,
+      // fajrDelay: null,
+      id: 9,
+      // ishaDelay: null,
+      // type: 'F',
+    },
+    {
+      date: '2023-08-18',
+      fajr: '06:00:00',
+      // fajrIqamah: '06:00:00',
+      dhuhr: '14:00:00',
+      asr: '18:00:00',
+      maghrib: 15,
+      isha: '21:30:00',
+      // asrDelay: null,
+      createdBy: 'User',
+      createdDate: '2023-06-17T10:37:56.355+00:00',
+      // dhuhrDelay: null,
+      // fajrDelay: null,
+      id: 9,
+      // ishaDelay: null,
+      // type: 'F',
     },
   ];
 
@@ -93,7 +128,7 @@ export default function History({
         </Animated.View>
         <GapView length={45} />
         <MyDatePicker
-          minimumDate={moment().toDate()}
+          minimumDate={moment().startOf('month').toDate()}
           maximumDate={moment().add(4, 'month').toDate()}
           type="standard"
           currentDate={new Date()}
