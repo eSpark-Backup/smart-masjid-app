@@ -12,6 +12,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
+import moment from 'moment';
 
 import { userStore } from '../../store/UserStore';
 import { Wrapper } from '../../containers';
@@ -51,7 +52,6 @@ import {
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
 import { UserToken } from '../../types/userControllerApiResponse';
-import moment from 'moment';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -318,8 +318,9 @@ export default function DeviceSetupScreen() {
         message: undefined,
         btnText: undefined,
         onPress: () => {
-          setStep(1);
-          setRetry(true);
+          navigation.navigate('HomeBottomTab', {
+            screen: 'Device',
+          });
         },
       });
     }
@@ -420,8 +421,9 @@ export default function DeviceSetupScreen() {
                   message: undefined,
                   btnText: undefined,
                   onPress: () => {
-                    setStep(1);
-                    setRetry(true);
+                    navigation.navigate('HomeBottomTab', {
+                      screen: 'Device',
+                    });
                   },
                 }));
           } else {
