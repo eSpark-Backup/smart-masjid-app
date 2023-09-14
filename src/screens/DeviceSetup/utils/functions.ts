@@ -23,8 +23,12 @@ const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export async function _startBluetooth() {
-  await BleManager.start({ showAlert: false });
-  console.log('Ble Module Intialized');
+  try {
+    await BleManager.start({ showAlert: false });
+    console.log('Ble Module Intialized');
+  } catch (e) {
+    console.log('error at bluetooth start', e);
+  }
 }
 
 export function _startLocationCheck(callback: (e: Event) => void) {
@@ -66,22 +70,26 @@ export function _checkLocationStatus() {
 }
 
 export async function _scanBleDevices(time?: number) {
-  await BleManager.scan([], time ?? scanTime, true);
-  // Success code
-  console.log('Scan started');
-  return new Promise((resolve: (value: Peripheral[]) => any, reject) => {
-    setTimeout(() => {
-      BleManager.getDiscoveredPeripherals()
-        .then(peripheralsArray => {
-          // Success code
-          resolve(peripheralsArray);
-        })
-        .catch(error => {
-          crashlytics().recordError(error as Error);
-          reject(error);
-        });
-    }, scanTime * 1000);
-  });
+  try {
+    await BleManager.scan([], time ?? scanTime, true);
+    // Success code
+    console.log('Scan started');
+    return new Promise((resolve: (value: Peripheral[]) => any, reject) => {
+      setTimeout(() => {
+        BleManager.getDiscoveredPeripherals()
+          .then(peripheralsArray => {
+            // Success code
+            resolve(peripheralsArray);
+          })
+          .catch(error => {
+            crashlytics().recordError(error as Error);
+            reject(error);
+          });
+      }, scanTime * 1000);
+    });
+  } catch (e) {
+    console.log('caught at scan and discover', e);
+  }
 }
 
 export async function _connectBleDevice(devInfo: DeviceInfo) {
@@ -113,28 +121,40 @@ export async function _connectBleDevice(devInfo: DeviceInfo) {
   });
 }
 
-export async function _disconnectBleDevice(devInfo: DeviceInfo) {
+export async function _disconnectBleDevice(
+  devInfo: DeviceInfo,
+  isOnline: boolean,
+) {
+  if (isOnline) {
+    return;
+  }
   if (!devInfo.macId) {
-    BleManager.getConnectedPeripherals([]).then(peripheralsArray => {
-      // Success code
-      console.log('Connected peripherals: ' + JSON.stringify(peripheralsArray));
-      const dev: Peripheral | undefined = peripheralsArray.find(item =>
-        item.name?.includes('MYESP'),
-      );
-      if (!dev) {
-        return;
-      }
-      BleManager.disconnect(dev?.id)
-        .then(() => {
-          // Success code
-          console.log('Disconnected from Connected');
-        })
-        .catch(error => {
-          // Failure code
-          crashlytics().recordError(error as Error);
-          console.log('error while disconnecting', error);
-        });
-    });
+    BleManager.getConnectedPeripherals([])
+      .then(peripheralsArray => {
+        // Success code
+        console.log(
+          'Connected peripherals: ' + JSON.stringify(peripheralsArray),
+        );
+        const dev: Peripheral | undefined = peripheralsArray.find(item =>
+          item.name?.includes('MYESP'),
+        );
+        if (!dev) {
+          return;
+        }
+        BleManager.disconnect(dev?.id)
+          .then(() => {
+            // Success code
+            console.log('Disconnected from Connected');
+          })
+          .catch(error => {
+            // Failure code
+            crashlytics().recordError(error as Error);
+            console.log('error while disconnecting', error);
+          });
+      })
+      .catch(e => {
+        console.log('caught at get connected peripherals', e);
+      });
   } else {
     BleManager.disconnect(devInfo?.macId!!)
       .then(() => {

@@ -96,7 +96,10 @@ export default function DeviceSetupScreen() {
 
   useEffect(() => {
     return () => {
-      _disconnectBleDevice(devInfo);
+      _disconnectBleDevice(
+        devInfo,
+        route?.params?.deviceData?.deviceTelemetry?.status === 'Online',
+      );
     };
   }, []);
 
@@ -199,9 +202,9 @@ export default function DeviceSetupScreen() {
       setStep(4);
     } else {
       setStep(1); //todo: first 6 then 1
+      setConnFlag(true);
+      await handlePermissions(ble, loc);
     }
-    setConnFlag(true);
-    await handlePermissions(ble, loc);
   };
 
   const handleShowBack = (currStep: number) => {
@@ -268,7 +271,7 @@ export default function DeviceSetupScreen() {
       );
       const response = await _scanBleDevices(5);
       if (
-        response.some(item => {
+        response?.some(item => {
           item?.id === devInfo?.macId;
         })
       ) {
@@ -318,6 +321,7 @@ export default function DeviceSetupScreen() {
         message: undefined,
         btnText: undefined,
         onPress: () => {
+          console.log('kia ha');
           navigation.navigate('HomeBottomTab', {
             screen: 'Device',
           });
@@ -494,8 +498,8 @@ export default function DeviceSetupScreen() {
     if (bleCheck && locationCheck) {
       await _startBluetooth();
       const res = await _scanBleDevices();
-      console.log('devices found', res.length);
-      const newArr = res.filter(item => {
+      console.log('devices found', res?.length);
+      const newArr = res?.filter(item => {
         if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
           return item;
         }
@@ -508,13 +512,13 @@ export default function DeviceSetupScreen() {
         locationStatus,
         new Set(issues),
       );
-      setScannedDevices(newArr);
+      setScannedDevices(newArr!);
       const macAdd = route?.params?.deviceData?.macAddress;
-      const isFound = !newArr.some(item =>
+      const isFound = !newArr?.some(item =>
         macAdd ? item.id === macAdd : true,
       );
       if (issues.length === 0) {
-        if (newArr.length === 0 || isFound) {
+        if (newArr?.length === 0 || isFound) {
           setStep(8);
           setToastContent(state => ({
             ...state,
