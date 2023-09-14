@@ -444,8 +444,9 @@ function _normalizedSubscriptions(subscriptions?: SubscriptionList[]) {
   }, {} as NormalizedSubscriptions);
 }
 
-async function openMap(address: string, city: string, zipCode: string) {
-  const destination = encodeURIComponent(`${address} ${zipCode}, ${city}`);
+async function openMap(lat: string, long: string) {
+  // const destination = encodeURIComponent(`${address} ${zipCode}, ${city}`);
+  const destination = encodeURIComponent(`${lat},${long}`);
   const provider = Platform.OS === 'ios' ? 'apple' : 'google';
   const link = `http://maps.${provider}.com/?daddr=${destination}`;
   try {

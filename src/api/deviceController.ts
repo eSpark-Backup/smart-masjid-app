@@ -87,6 +87,7 @@ export const GetMasjidDevicesForUser = async (
     // console.log('resultxxx', result);
     if (result.status == 200 && result.data) {
       masjidStore.connectedDevices.set(result.data);
+      return result.data;
     } else {
       Toast.show({
         text1: result?.data?.message ?? 'Something went wrong',
@@ -309,6 +310,85 @@ export async function _resetDevice(deviceId: string) {
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('when device exists problems', error);
+    return false;
+  }
+}
+
+/**
+ *
+ * @description Get Device's Subscribe ADHANs
+ * @returns subscribed adhans list
+ */
+
+export async function getDeviceSubscriptions(deviceId: string) {
+  console.log('Deleting Device now =>', deviceId);
+  try {
+    const res = await api.get<any>(`/devices/${deviceId}/subscriptions`);
+    if (res?.ok) {
+      // console.log('Device Subscriptions', res.data);
+      return res.data;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return null;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device subscriptions problems', error);
+    return false;
+  }
+}
+
+/**
+ *
+ * @description  Subscribe, unsubscribed ADHAN Timing
+ * @returns device info
+ */
+
+export async function addSubscription(
+  deviceId: string,
+  subscriptionId: string,
+) {
+  try {
+    const res = await api.post<any>(
+      `/devices/${deviceId}/subscription/${subscriptionId}`,
+    );
+    if (res?.ok) {
+      // console.log('Device Subscriptions', res.data);
+      return res.data;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return null;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device subscriptions problems', error);
+    return false;
+  }
+}
+/**
+ *
+ * @description  Unsubscribe, subscribed ADHAN Timing
+ * @returns device info
+ */
+
+export async function removeSubscription(
+  deviceId: string,
+  subscriptionId: string,
+) {
+  try {
+    const res = await api.delete<any>(
+      `/devices/${deviceId}/subscription/${subscriptionId}`,
+    );
+    if (res?.ok) {
+      // console.log('Device Subscriptions', res.data);
+      return res.data;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return null;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device subscriptions problems', error);
     return false;
   }
 }

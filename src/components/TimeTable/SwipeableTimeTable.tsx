@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,16 +15,34 @@ import MyDatePicker from '../MyDatePicker';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import Tooltip from '../Tooltip';
-import { SalahTimings } from '../../types/masjidControllerTypes';
+import {
+  SalahTimings,
+  SubscriptionList,
+} from '../../types/masjidControllerTypes';
+import { Device } from '../../types/deviceControllerTypes';
+import {
+  addSubscription,
+  getDeviceSubscriptions,
+  removeSubscription,
+} from '../../api/deviceController';
 
 const RowItem = ({
   item,
   isMute,
+  subscribed,
+  subscriptionData,
+  setSubscriptions,
 }: {
   item: { name: string; adhan: string; Iqama: string };
   isMute: boolean;
+  subscribed?: boolean;
+  subscriptionData?: SubscriptionList;
+  setSubscriptions: (id: string, adhanName: string) => void;
 }) => {
-  const [toggleMute, setToggleMute] = useState(true);
+  const toggleSubscription = () => {
+    setSubscriptions(subscriptionData?.id.toString() as string, item.name);
+  };
+
   return (
     <TouchableOpacity activeOpacity={0.9}>
       <View style={[styles.contentRow, { height: 40 }]}>
@@ -45,18 +63,14 @@ const RowItem = ({
         </View>
         {isMute && (
           <View style={styles.contentIcon}>
-            {toggleMute ? (
-              <MuteSvg
-                onPress={() => setToggleMute(!toggleMute)}
+            {subscribed ? (
+              <VolumUpGreen
+                onPress={toggleSubscription}
                 height={16}
                 width={16}
               />
             ) : (
-              <VolumUpGreen
-                onPress={() => setToggleMute(!toggleMute)}
-                height={16}
-                width={16}
-              />
+              <MuteSvg onPress={toggleSubscription} height={16} width={16} />
             )}
           </View>
         )}
@@ -76,6 +90,9 @@ interface ViewabilityConfigCallbackPair {
 
 export default function SwipeableTimeTable({
   data,
+  subscriptions,
+  setSubscriptions,
+  masjidSubscriptions,
   isMute = false,
   isEdit = false,
   isInfo = false,
@@ -86,8 +103,13 @@ export default function SwipeableTimeTable({
   },
   editView = false,
   footer = <></>,
+  deviceInfo,
+  setLoading,
 }: {
   data: SalahTimings[];
+  subscriptions: SubscriptionList[];
+  setSubscriptions: (data: SubscriptionList[]) => void;
+  masjidSubscriptions: SubscriptionList[];
   isMute?: boolean;
   isEdit?: boolean;
   isInfo?: boolean;
@@ -98,11 +120,38 @@ export default function SwipeableTimeTable({
   onSubmitEditing?: () => void;
   editView?: boolean;
   footer?: React.ReactNode;
+  deviceInfo: Device;
+  setLoading: (val: boolean) => void;
 }) {
   const [currentItem, setCurrentItem] = useState<IPrayerTimeForPeriod | null>(
     data?.length > 0 ? data[0] : null,
   );
   const slider = useRef<FlatList>(null);
+
+  const updateSubscriptions = (id: string, adhanName: string) => {
+    if (id) {
+      console.log('id', id);
+      setLoading(true);
+      removeSubscription(deviceInfo?.id.toString(), id).then(data => {
+        console.log('data', data);
+        setSubscriptions(data.subscriptions);
+        setLoading(false);
+      });
+    } else {
+      setLoading(true);
+      const adhanData = masjidSubscriptions.find(
+        item => item.subscriptionType.name == adhanName.toUpperCase(),
+      );
+      addSubscription(
+        deviceInfo?.id.toString(),
+        adhanData?.id.toString() as string,
+      ).then(data => {
+        console.log('data', data);
+        setSubscriptions(data.subscriptions);
+        setLoading(false);
+      });
+    }
+  };
 
   const onViewRef = React.useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -114,7 +163,7 @@ export default function SwipeableTimeTable({
     },
   );
 
-  const renderItem = useCallback(
+  const renderItem1 = useCallback(
     ({ item, index }: { item: IPrayerTimeForPeriod; index: number }) => {
       return (
         <View key={index}>
@@ -128,6 +177,11 @@ export default function SwipeableTimeTable({
                   Iqama: data?.iqamaTime?.toString(),
                 }}
                 isMute={isMute}
+                subscribed={subscriptions?.some(
+                  item =>
+                    item.subscriptionType.name == data?.name.toUpperCase(),
+                )}
+                setSubscriptions={() => console.log('subscrive update')}
               />
             ))}
           </View>
@@ -136,6 +190,39 @@ export default function SwipeableTimeTable({
     },
     [],
   );
+
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: IPrayerTimeForPeriod;
+    index: number;
+  }) => {
+    return (
+      <View key={index}>
+        <View style={{ width: WINDOW_WIDTH - 50 }}>
+          {item?.salah?.map((data, i) => (
+            <RowItem
+              key={i}
+              item={{
+                name: data?.name,
+                adhan: data?.adhanTime?.toString(),
+                Iqama: data?.iqamaTime?.toString(),
+              }}
+              isMute={isMute}
+              subscribed={subscriptions?.some(
+                item => item.subscriptionType.name == data?.name.toUpperCase(),
+              )}
+              subscriptionData={subscriptions?.find(
+                item => item.subscriptionType.name == data?.name.toUpperCase(),
+              )}
+              setSubscriptions={updateSubscriptions}
+            />
+          ))}
+        </View>
+      </View>
+    );
+  };
 
   const onDateChange = (e: Date) => {
     const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
@@ -205,13 +292,24 @@ export default function SwipeableTimeTable({
         viewabilityConfig={{
           itemVisiblePercentThreshold: 100,
         }}
+        ListEmptyComponent={
+          <MyText
+            textStyle={{
+              textAlign: 'center',
+              alignSelf: 'center',
+              marginVertical: 10,
+              width: WINDOW_WIDTH - 50,
+            }}
+            text="Nothing to show"
+          />
+        }
       />
-      {footer && (
+      {/* {footer && (
         <>
           <GapView />
           {footer}
         </>
-      )}
+      )} */}
     </View>
   );
 }

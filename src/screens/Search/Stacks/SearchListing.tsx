@@ -119,8 +119,6 @@ const SearchListing = ({
     });
   };
 
-  console.log('masjifList', masjidList);
-
   return (
     <View
       style={{
@@ -138,7 +136,10 @@ const SearchListing = ({
       </View>
       <View style={{ top: 110 }}>
         <View>
-          <Card backgroundColor="#ffffff" width={WINDOW_WIDTH - 28}>
+          <Card
+            backgroundColor="#ffffff"
+            style={{ elevation: 3 }}
+            width={WINDOW_WIDTH - 30}>
             <MyInput
               searchBar
               onFocus={() => {

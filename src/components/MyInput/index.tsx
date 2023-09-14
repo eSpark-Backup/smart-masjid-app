@@ -57,7 +57,7 @@ interface MyInputProps {
   phoneCodeContainerStyle?: ViewStyle;
   multiline?: boolean;
   numberOfLines?: number;
-  length?: number;
+  maxLength?: number;
 }
 
 export default function MyInput(props: MyInputProps) {
@@ -86,8 +86,8 @@ export default function MyInput(props: MyInputProps) {
     selectMode,
     phoneCodeContainerStyle,
     multiline,
-    length,
     numberOfLines,
+    maxLength,
   } = props;
   const theme: Theme = useTheme();
   const styles = useMemo(() => getStyles(theme, props), [props]);
@@ -98,14 +98,14 @@ export default function MyInput(props: MyInputProps) {
   const [locationPermission, setLocationPermission] = useState(false);
   const [getFocused, setGetFocused] = useState(false);
 
-  console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
+  // console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
 
   useEffect(() => {
     if (isPhoneCode) {
       const data = countries?.find(country =>
         phoneCodeValue?.includes(country?.code),
       );
-      console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
+      // console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
       setCurrentCountry(data ?? countries[0]);
       onPhoneCodeChange?.(data ?? countries[0]);
     }
@@ -220,7 +220,7 @@ export default function MyInput(props: MyInputProps) {
             <II name="caret-down-sharp" size={10} color="#3E3E3E" />
           </TouchableOpacity>
         )}
-        {helpSearch ? null : (
+        {helpSearch || searchBar ? null : (
           <View
             style={{
               position: 'absolute',
@@ -252,9 +252,9 @@ export default function MyInput(props: MyInputProps) {
         )}
         <View>
           <TextInput
+            maxLength={maxLength}
             editable={selectMode && !disabled}
             autoComplete="off"
-            maxLength={length}
             autoCorrect={false}
             keyboardType={isPhoneCode ? 'number-pad' : 'default'}
             style={[
@@ -262,7 +262,7 @@ export default function MyInput(props: MyInputProps) {
               { borderColor: getFocused ? theme.colors.primary : '#9E9F9F' },
               inputStyle,
             ]}
-            placeholder={helpSearch ? placeholder : ''}
+            placeholder={helpSearch || searchBar ? placeholder : ''}
             placeholderTextColor={'#9E9F9F'}
             onChangeText={handleTextChange}
             onFocus={() => setGetFocused(true)}
@@ -339,13 +339,13 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       width: WINDOW_WIDTH - 75 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,
       top: Platform.OS == 'ios' ? 17 : 0,
-      borderWidth: helpSearch ? 0 : 1,
+      borderWidth: helpSearch || searchBar ? 0 : 1,
       borderRadius: 10,
       borderTopRightRadius: searchBar ? 0 : 10,
       borderBottomRightRadius: searchBar ? 0 : 10,
       borderTopLeftRadius: isPhoneCode ? 0 : 10,
       borderBottomLeftRadius: isPhoneCode ? 0 : 10,
-      borderLeftWidth: isPhoneCode || helpSearch ? 0 : 1,
+      borderLeftWidth: isPhoneCode || helpSearch || searchBar ? 0 : 1,
     },
     phoneCodeContainer: {
       width: 80,

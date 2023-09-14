@@ -25,8 +25,10 @@ import {
 } from '../../../components';
 import {
   IqamahTime,
+  JummahTime,
   Masjid,
   PrayerTimes,
+  SalahTimings,
   SubscriptionList,
 } from '../../../types/masjidControllerTypes';
 import {
@@ -41,6 +43,12 @@ import {
 } from '../../../api/search.controller';
 import { _normalizedSubscriptions, openMap } from '../../../utils/functions';
 import { Card } from '../../../containers';
+import { useMasjid } from '../../../utils/hooks';
+import {
+  GetMasjidJummahTiming,
+  getSalahTimingsOfMasjid,
+} from '../../../api/masjidController';
+import { useIsFocused } from '@react-navigation/native';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -52,57 +60,29 @@ const MasjidDetails = ({
   contentOpacity?: any;
 }) => {
   const [subscribe, setSubscribe] = useState(false);
-  const [adhanTimings, setAdhanTiming] = useState<PrayerTimes>();
-  const [iqamaTimings, setIqamaTiming] = useState<IqamahTime>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const isFocused = useIsFocused();
+
+  const {
+    store: { salahTimings, JummahTime },
+  } = useMasjid();
+
+  const getSalahTimes = async () => {
+    setLoading(true);
+    await getSalahTimingsOfMasjid(masjidDetails?.id.toString() ?? '');
+    await GetMasjidJummahTiming(masjidDetails?.id.toString() ?? '');
+    setLoading(false);
+  };
 
   useEffect(() => {
-    GetMasidAdhanTimings(masjidDetails?.id?.toString() ?? '').then(
-      (res: any) => {
-        setAdhanTiming(res[0]);
-      },
-    );
-
-    GetMasidIqamaTimings(masjidDetails?.id?.toString() ?? '').then(
-      (res: any) => {
-        setIqamaTiming(res);
-      },
-    );
-  }, []);
-
-  useEffect(() => {
-    console.log('ka', subscribe);
-  }, [subscribe]);
-
-  const subscriptions = [] as SubscriptionList[];
-  // _normalizedSubscriptions(
-  //   masjidDetails?.subscriptionList,
-  // )?.ADHAN?.map(val => {
-  //   return {
-  //     name: val?.subscriptionType?.name?.toLowerCase(),
-  //     azanTiming: adhanTimings
-  //       ? // @ts-ignore
-  //         adhanTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
-  //       : '-',
-  //     iqamahTiming: iqamaTimings
-  //       ? val?.subscriptionType?.name?.toLowerCase() == 'maghrib'
-  //         ? // @ts-ignore
-  //           moment(adhanTimings['maghrib'], 'HH:mm:ss').add(
-  //             'minutes',
-  //             // @ts-ignore
-  //             iqamaTimings[
-  //               `${val?.subscriptionType?.name?.toLowerCase()}Delay`
-  //             ],
-  //           )
-  //         : // @ts-ignore
-  //           iqamaTimings[val?.subscriptionType?.name?.toLowerCase()] ?? '-'
-  //       : '-',
-  //   };
-  // });
-
-  console.log('subscriptions', masjidDetails);
+    if (isFocused) {
+      getSalahTimes();
+    }
+  }, [isFocused]);
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
+      <OverlayLoader isShow={loading} noBg={false} />
       <View style={{ alignSelf: 'center', top: 100 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Masjid Search" />
@@ -144,10 +124,14 @@ const MasjidDetails = ({
               <GapView length={5} mode="horizontal" />
               <NavigationSvg
                 onPress={() => {
+                  // openMap(
+                  //   masjidDetails?.address1 ?? '',
+                  //   masjidDetails?.city ?? '',
+                  //   masjidDetails?.zip ?? '',
+                  // );
                   openMap(
-                    masjidDetails?.address1 ?? '',
-                    masjidDetails?.city ?? '',
-                    masjidDetails?.zip ?? '',
+                    masjidDetails?.location?.coordinates[0].toString() ?? '',
+                    masjidDetails?.location?.coordinates[1].toString() ?? '',
                   );
                 }}
               />
@@ -187,57 +171,19 @@ const MasjidDetails = ({
             </View>
           </View>
         </Card>
-        <GapView length={20} />
+        <GapView length={15} />
+        <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
+        <GapView length={15} />
         <SalahTable
           // @ts-ignore
-          data={[
-            {
-              date: '2023-08-07',
-              salah: [
-                {
-                  name: 'Fajr',
-                  adhanTime: '04:15:00',
-                  iqamaTime: '06:00:00',
-                },
-                {
-                  name: 'Dhuhr',
-                  adhanTime: '12:35:00',
-                  iqamaTime: '14:00:00',
-                },
-                {
-                  name: 'Asr',
-                  adhanTime: '17:17:00',
-                  iqamaTime: '18:00:00',
-                },
-                {
-                  name: 'Maghrib',
-                  adhanTime: '19:25:00',
-                  iqamaTime: '19:40:00',
-                },
-                {
-                  name: 'Isha',
-                  adhanTime: '20:54:00',
-                  iqamaTime: '21:30:00',
-                },
-              ],
-            },
-          ]}
+          data={salahTimings}
         />
-
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
         <JumuahTable
           headings={['Salah', 'Khutba']}
-          data={{
-            id: 7,
-            effectiveDate: '2023-07-07',
-            jumuah1: '13:45:00',
-            jumuah2: '15:15:00',
-            jumuah3: null,
-            createdBy: 'User',
-            createdDate: '2023-07-05T14:26:15.946+00:00',
-          }}
+          data={JummahTime as JummahTime}
           isMute={false}
         />
         <GapView length={15} />

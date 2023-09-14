@@ -56,7 +56,7 @@ export type DeviceStoreProps = {
 
 export type HelpStoreProps = {
   FAQs: FAQ[];
-  reasons: FAQ[] | null;
+  reasons: FAQ[];
 };
 
 export type ExternalStoreProps = {

@@ -367,6 +367,15 @@ function UserInformation({
 }) {
   const userData = useHookstate(userStore.userData).get();
 
+  console.log(userData?.userType.id);
+  console.log(userData?.userType);
+  // console.log(
+  //   userData?.userType.id == 1 ||
+  //     userData?.userType?.permissions?.filter(
+  //       val => val?.name == 'MANAGE_MASJID',
+  //     )?.length,
+  // );
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignSelf: 'center', top: 70, alignItems: 'center' }}>

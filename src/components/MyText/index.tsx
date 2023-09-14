@@ -1,6 +1,8 @@
 import React from 'react';
 import { Text, TextStyle, TouchableOpacity, StyleProp } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import { InfoRed } from '../../assets';
+import { View } from 'react-native-animatable';
 
 export default function MyText({
   text,
@@ -9,6 +11,7 @@ export default function MyText({
   onPress,
   pressable = false,
   lines,
+  icon,
 }: {
   text: string;
   size?: number;
@@ -16,6 +19,7 @@ export default function MyText({
   pressable?: boolean;
   onPress?: () => void;
   lines?: number;
+  icon?: JSX.Element;
 }) {
   const { colors } = useTheme();
   return (
@@ -30,6 +34,7 @@ export default function MyText({
           ...textStyle,
         }}>
         {text}
+        {icon}
       </Text>
     </TouchableOpacity>
   );

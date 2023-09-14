@@ -125,6 +125,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                 {item.icon}
                 <GapView mode="horizontal" />
                 <MyInput
+                  maxLength={item.title == 'Name' ? 25 : undefined}
                   placeholderColor="#CFCFCF"
                   placeholder={item.title}
                   length={item.charLength}
