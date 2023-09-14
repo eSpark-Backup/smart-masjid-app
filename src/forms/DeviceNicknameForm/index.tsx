@@ -69,7 +69,7 @@ export default function DeviceNicknameForm({
                 placeholder="Device Name"
                 onChangeText={handleChange('nickName')}
                 value={values.nickName}
-                length={25}
+                maxLength={25}
               />
               {errors.nickName && touched.nickName && (
                 <MyText

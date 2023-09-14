@@ -128,7 +128,6 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                   maxLength={item.title == 'Name' ? 25 : undefined}
                   placeholderColor="#CFCFCF"
                   placeholder={item.title}
-                  length={item.charLength}
                   onChangeText={(value: string) => setDName(value)}
                   value={item.subtitle}
                 />
