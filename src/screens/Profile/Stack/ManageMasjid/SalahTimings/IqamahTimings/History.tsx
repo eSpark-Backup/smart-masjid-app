@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,12 +12,14 @@ import moment from 'moment';
 import {
   GetAdhanTimings,
   GetIqamahHistory,
+  getSalahTimingsOfMasjid,
 } from '../../../../../../api/masjidController';
 import {
   GapView,
   MyText,
   MyTextHeader,
   MyTitle,
+  OverlayLoader,
   TextLabel,
   TimeSheet,
 } from '../../../../../../components';
@@ -27,8 +29,11 @@ import {
   AdhanTime,
   IqamahTime,
   JummahTime,
+  Salah,
+  SalahTimings,
 } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
+import { userStore } from '../../../../../../store/UserStore';
 
 export default function History({
   setFlag,
@@ -37,16 +42,18 @@ export default function History({
   setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
-  const iqamahHistory: any = useHookstate<IqamahTime[]>(
-    masjidStore.iqamahHistory,
-  ).get();
-  const adhanTimings: any = useHookstate<AdhanTime[]>(
-    masjidStore.adhanTimings,
-  ).get();
+  const userData = useHookstate(userStore.userData).get();
+  const [adhaTime, setAdhaTime] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // GetIqamahHistory('1');
-    GetAdhanTimings('2', moment().startOf('month').format('YYYY-MM-DD'));
+    setLoading(true);
+    getSalahTimingsOfMasjid(userData?.masjid.id.toString() as string).then(
+      (timings: SalahTimings[] | undefined) => {
+        convertTimings(timings);
+        setLoading(false);
+      },
+    );
   }, []);
 
   const onDateChange = (e: Date) => {
@@ -64,65 +71,24 @@ export default function History({
     // }
   };
 
-  console.log('iqamahHistory', iqamahHistory);
-  console.log('adhanTimings', adhanTimings);
-  const timingsData = [
-    {
-      date: '2023-08-16',
-      fajr: '06:00:00',
-      // fajrIqamah: '06:00:00',
-      dhuhr: '14:00:00',
-      asr: '18:00:00',
-      maghrib: 15,
-      isha: '21:30:00',
-      // asrDelay: null,
-      createdBy: 'User',
-      createdDate: '2023-06-16T10:37:56.355+00:00',
-      // dhuhrDelay: null,
-      // fajrDelay: null,
-      id: 9,
-      // ishaDelay: null,
-      // type: 'F',
-    },
-    {
-      date: '2023-08-17',
-      fajr: '06:00:00',
-      // fajrIqamah: '06:00:00',
-      dhuhr: '14:00:00',
-      asr: '18:00:00',
-      maghrib: 15,
-      isha: '21:30:00',
-      // asrDelay: null,
-      createdBy: 'User',
-      createdDate: '2023-06-17T10:37:56.355+00:00',
-      // dhuhrDelay: null,
-      // fajrDelay: null,
-      id: 9,
-      // ishaDelay: null,
-      // type: 'F',
-    },
-    {
-      date: '2023-08-18',
-      fajr: '06:00:00',
-      // fajrIqamah: '06:00:00',
-      dhuhr: '14:00:00',
-      asr: '18:00:00',
-      maghrib: 15,
-      isha: '21:30:00',
-      // asrDelay: null,
-      createdBy: 'User',
-      createdDate: '2023-06-17T10:37:56.355+00:00',
-      // dhuhrDelay: null,
-      // fajrDelay: null,
-      id: 9,
-      // ishaDelay: null,
-      // type: 'F',
-    },
-  ];
+  const convertTimings = (timings: SalahTimings[] | undefined) => {
+    let adhanTiming: any = timings?.map(item => {
+      let time: any = {
+        date: item.date,
+      };
+      item.salah.forEach(sItem => {
+        time[sItem.name + ' Adhan'] = sItem.adhanTime;
+        time[sItem.name + ' Iqamah'] = sItem.iqamaTime;
+      });
+      return time;
+    });
+    setAdhaTime(adhanTiming);
+  };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
+    <View style={{ alignItems: 'center' }}>
       <View style={{ alignSelf: 'center', top: 110 }}>
+        <OverlayLoader isShow={loading} />
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Monthly Schedule" />
         </Animated.View>
@@ -137,9 +103,15 @@ export default function History({
         />
         <GapView length={13} />
       </View>
-
-      <View style={{ top: 110 }}>
-        <TimeSheet data={convertResponseToData(timingsData) ?? []} />
+      <View style={{ top: 112, paddingBottom: 100 }}>
+        {adhaTime.length < 1 && !loading ? (
+          <MyText
+            textStyle={{ textAlign: 'center', marginVertical: 10 }}
+            text="Nothing to show yet!"
+          />
+        ) : (
+          <TimeSheet data={convertResponseToData(adhaTime) ?? []} />
+        )}
       </View>
     </View>
   );

@@ -111,6 +111,12 @@ export type JummahTime = {
   [key: `jumuah${number}`]: string;
 };
 
+export type subJummas = {
+  jumma1: boolean;
+  jumma2: boolean;
+  jumma3: boolean;
+};
+
 export type jumuahsData = {
   name: string;
   value: string;

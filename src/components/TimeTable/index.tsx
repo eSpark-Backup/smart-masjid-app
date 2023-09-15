@@ -161,7 +161,7 @@ export default function TimeTable({
   type = 'F',
   containerStyle,
 }: {
-  data: DataProps[];
+  data: (DataProps | false)[];
   isMute?: boolean;
   isEdit?: boolean;
   isInfo?: boolean;
@@ -203,18 +203,21 @@ export default function TimeTable({
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-      {data?.map((item: any, index) => (
-        <RowItem
-          key={`${index}`}
-          item={item}
-          index={index}
-          isEdit={isEdit}
-          isMute={isMute}
-          onSubmitEditing={onSubmitEditing}
-          edit={editView}
-          type={type}
-        />
-      ))}
+      {data?.map(
+        (item: any, index) =>
+          item && (
+            <RowItem
+              key={`${index}`}
+              item={item}
+              index={index}
+              isEdit={isEdit}
+              isMute={isMute}
+              onSubmitEditing={onSubmitEditing}
+              edit={editView}
+              type={type}
+            />
+          ),
+      )}
       {footer && (
         <>
           <GapView length={15} />

@@ -338,11 +338,8 @@ function convertResponseToData(
       ) {
         // find the index of the key in the accumulator array
         const index = acc.findIndex(item => {
-          console.log('item.heading', item.heading);
           return item.heading === key?.charAt(0)?.toUpperCase() + key?.slice(1);
         });
-
-        console.log('index', index);
 
         // get the value of the key and slice it to remove the seconds part
         var value = null;
@@ -384,7 +381,6 @@ function convertResponseToData(
 
     return acc;
   }, []);
-  console.log('table data', data);
 
   return data;
 }

@@ -22,6 +22,9 @@ import {
   JummahTime,
   jumuahsData,
 } from '../../../../../../types/masjidControllerTypes';
+import { useHookstate } from '@hookstate/core';
+import { masjidStore } from '../../../../../../store/MasjidStore';
+import { userStore } from '../../../../../../store/UserStore';
 
 interface selectedJummmaData {
   id: number;
@@ -40,19 +43,24 @@ export default function EditJummaTimings({
   jummaType: 'Add' | 'Edit';
   selectedJumma?: selectedJummmaData | null;
 }) {
+  const masjid = useHookstate(masjidStore.masjid).get();
+  const jummas = useHookstate(masjidStore.masjidsJummaSubs).get();
+  const userData = useHookstate(userStore.userData).get();
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
-  let comingJumma = new Date();
-  comingJumma.setDate(
-    comingJumma.getDate() + ((0 - 1 - comingJumma.getDay() + 5) % 5) + 1,
-  );
+  console.log('jummas', jummas);
+
+  // let comingJumma = new Date();
+  // comingJumma.setDate(
+  //   comingJumma.getDate() + ((0 - 1 - comingJumma.getDay() + 5) % 5) + 1,
+  // );
 
   useEffect(() => {
     if (jummaType == 'Edit') {
       setLoading(true);
       GetMasjidCurrentJummahTiming(
-        '1',
+        userData?.masjid.id.toString() as string,
         moment(selectedJumma?.date).format('YYYY-MM-DD'),
       ).then((jumuahTime: JummahTime) => {
         console.log('jumuahTimes', jumuahTime);
@@ -62,7 +70,7 @@ export default function EditJummaTimings({
       });
     } else {
       let defaultData = {
-        effectiveDate: moment(comingJumma).format('YYYY-MM-DD'),
+        effectiveDate: moment().format('YYYY-MM-DD'),
         jumuah1: '13:45:00',
         jumuah2: '15:15:00',
         jumuah3: null,
@@ -75,9 +83,15 @@ export default function EditJummaTimings({
     console.log('data', data);
     setLoading(true);
     if (jummaType == 'Add') {
-      await AddMasjidJummahTiming('1', data);
+      await AddMasjidJummahTiming(
+        userData?.masjid.id.toString() as string,
+        data,
+      );
     } else {
-      await UpdatedMasjidJummahTiming('1', data);
+      await UpdatedMasjidJummahTiming(
+        userData?.masjid.id.toString() as string,
+        data,
+      );
     }
     setLoading(false);
     setData(null);
@@ -128,7 +142,7 @@ export default function EditJummaTimings({
               </>
             }
             data={[
-              {
+              jummas!.jumma1 && {
                 name: 'Jumuah 1',
                 khutbahTiming:
                   data?.jumuah1 != null
@@ -141,7 +155,7 @@ export default function EditJummaTimings({
                   });
                 },
               },
-              {
+              jummas!.jumma2 && {
                 name: 'Jumuah 2',
                 khutbahTiming:
                   data?.jumuah2 != null
@@ -154,7 +168,7 @@ export default function EditJummaTimings({
                   });
                 },
               },
-              {
+              jummas!.jumma3 && {
                 name: 'Jumuah 3',
                 khutbahTiming:
                   data?.jumuah3 != null
@@ -172,12 +186,10 @@ export default function EditJummaTimings({
             editView={true}
             footer={
               <>
-                {/* {edit && ( */}
                 <View style={{ alignSelf: 'center' }}>
                   <GapView />
                   <Rounded label="Save" onPress={onUpdate} />
                 </View>
-                {/* )} */}
               </>
             }
           />

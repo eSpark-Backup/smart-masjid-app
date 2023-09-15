@@ -21,6 +21,7 @@ import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import { FlatList } from 'react-native-gesture-handler';
 import TimeTableCard from '../../../../../../components/TimeTableCard';
+import { userStore } from '../../../../../../store/UserStore';
 
 export default function IqamahTimings({
   setFlag,
@@ -31,6 +32,7 @@ export default function IqamahTimings({
   contentOpacity?: any;
   selectedIqamah: (value: object) => void;
 }) {
+  const userData = useHookstate(userStore.userData).get();
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [currentData, setCurrentData] = useState<any>(null);
   const [data, setData] = useState<any>([]);
@@ -44,13 +46,38 @@ export default function IqamahTimings({
   }, []);
 
   const getAllIqamahTimings = () => {
-    GetMasjidIqamahTiming('1').then(iqamahTime => {
-      let iqamahData: any = [];
-      iqamahTime?.map((i: IqamahTime) => {
-        if (
-          moment(i?.effectiveDate).format('YYYY-MM-DD') <=
-          moment(new Date(new Date())).format('YYYY-MM-DD')
-        ) {
+    GetMasjidIqamahTiming(userData?.masjid.id.toString() as string).then(
+      iqamahTime => {
+        let iqamahData: any = [];
+        iqamahTime?.map((i: IqamahTime) => {
+          if (
+            moment(i?.effectiveDate).format('YYYY-MM-DD') <=
+            moment(new Date(new Date())).format('YYYY-MM-DD')
+          ) {
+            const namazData = {
+              id: i.id,
+              date: i.effectiveDate,
+              data: [
+                {
+                  name: 'fajr',
+                  value: moment(i?.fajr, 'HH:mm:ss').format('LT'),
+                },
+                {
+                  name: 'dhuhr',
+                  value: moment(i?.dhuhr, 'HH:mm:ss').format('LT'),
+                },
+                { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
+                { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
+                {
+                  name: 'isha',
+                  value: moment(i?.isha, 'HH:mm:ss').format('LT'),
+                },
+              ],
+              type: i.type,
+            };
+            setCurrentData(namazData);
+            return;
+          }
           const namazData = {
             id: i.id,
             date: i.effectiveDate,
@@ -66,26 +93,12 @@ export default function IqamahTimings({
             ],
             type: i.type,
           };
-          setCurrentData(namazData);
-          return;
-        }
-        const namazData = {
-          id: i.id,
-          date: i.effectiveDate,
-          data: [
-            { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
-            { name: 'dhuhr', value: moment(i?.dhuhr, 'HH:mm:ss').format('LT') },
-            { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
-            { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
-            { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
-          ],
-          type: i.type,
-        };
-        iqamahData.push(namazData);
-      });
-      setData(iqamahData);
-      setLoading(false);
-    });
+          iqamahData.push(namazData);
+        });
+        setData(iqamahData);
+        setLoading(false);
+      },
+    );
   };
 
   const contentToRender = () => {
@@ -110,7 +123,10 @@ export default function IqamahTimings({
   const deleteIqamahTime = () => {
     setIsVisible(false);
     setLoading(true);
-    DeleteMasjidIqamahTiming('1', deleteId as string);
+    DeleteMasjidIqamahTiming(
+      userData?.masjid.id.toString() as string,
+      deleteId as string,
+    );
     getAllIqamahTimings();
   };
 

@@ -9,8 +9,6 @@ interface Props {
 }
 
 export default function TimeSheet({ data }: { data: Array<Props> }) {
-  console.log('timesheet data', data);
-
   const { colors } = useTheme();
   const renderTable = ({ item, index }: { item: Props; index: number }) => {
     return (
@@ -57,17 +55,18 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
 
   return (
     <View style={{ marginTop: 30, paddingHorizontal: 10 }}>
-      <ScrollView
+      {/* <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ flexDirection: 'row' }}>
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 30 }}
-          data={data ?? []}
-          renderItem={renderTable}
-        />
-      </ScrollView>
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexDirection: 'row' }}> */}
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 30 }}
+        data={data ?? []}
+        renderItem={renderTable}
+      />
+      {/* </ScrollView> */}
     </View>
   );
 }

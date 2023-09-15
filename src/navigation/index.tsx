@@ -30,6 +30,8 @@ import {
   _checkPhoneId,
 } from '../api/externalControllers';
 import { api } from '../api';
+import { subJummas, SubscriptionList } from '../types/masjidControllerTypes';
+import { masjidStore } from '../store/MasjidStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,7 +81,24 @@ export default function App() {
 
   useEffect(() => {
     handleDeviceIdCheck();
+    getSubscribedJummas();
   }, [userData]);
+
+  const getSubscribedJummas = () => {
+    let jummas: subJummas;
+    userData
+      .get()
+      ?.masjid.subscriptionList.forEach((item: SubscriptionList) => {
+        if (item.subscriptionType.name == 'JUMUAH_1') {
+          jummas = { ...jummas, jumma1: true };
+        } else if (item.subscriptionType.name == 'JUMUAH_2') {
+          jummas = { ...jummas, jumma2: true };
+        } else if (item.subscriptionType.name == 'JUMUAH_3') {
+          jummas = { ...jummas, jumma3: true };
+        }
+        masjidStore.masjidsJummaSubs.set(jummas);
+      });
+  };
 
   useEffect(() => {
     GetCountryCodes();

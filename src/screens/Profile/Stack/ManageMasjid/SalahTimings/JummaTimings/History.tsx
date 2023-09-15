@@ -10,6 +10,7 @@ import {
   TimeSheet,
 } from '../../../../../../components';
 import { masjidStore } from '../../../../../../store/MasjidStore';
+import { userStore } from '../../../../../../store/UserStore';
 import { JummahTime } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 
@@ -20,12 +21,13 @@ export default function History({
   setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
+  const userData = useHookstate(userStore.userData).get();
   const jummahHistory: any = useHookstate<JummahTime[]>(
     masjidStore.JummahHistory,
   ).get();
 
   useEffect(() => {
-    GetJummahHistory('1');
+    GetJummahHistory(userData?.masjid.id.toString() as string);
   }, []);
 
   return (

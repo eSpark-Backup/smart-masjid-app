@@ -34,8 +34,6 @@ export default function MasjidListing({
         contentContainerStyle={{ paddingBottom: 140, paddingTop: 15 }}
         keyExtractor={(item, index) => item.id.toString() + index.toString()}
         renderItem={({ item, index }) => {
-          console.log('masjid item', item);
-
           return (
             <MasjidListCard
               key={index}

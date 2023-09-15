@@ -390,9 +390,10 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
  */
 export const getSalahTimingsOfMasjid = async (masjidId: string) => {
   try {
-    const result: any = await api.get(`/masjid/${masjidId}/salah`);
+    const result: any = await api.get(`/masjid/${masjidId}/salah`, {
+      range: 'MONTH',
+    });
     const timings = result?.data?.timings as SalahTimings[];
-    console.log('masjidList', result?.data);
     masjidStore?.salahTimings?.set(timings ?? []);
     return timings;
   } catch (error) {
