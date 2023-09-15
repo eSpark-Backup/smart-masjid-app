@@ -30,6 +30,7 @@ interface DataProp {
   isEdit?: boolean;
   rightArrow?: boolean;
   danger?: boolean;
+  charLength?: number;
   onDoneEdit?: (text: string | undefined) => void;
 }
 
@@ -45,7 +46,7 @@ export default function DeviceSettingSectionList({
         sections={data ?? []}
         keyExtractor={(item, index) => item.title + index}
         renderItem={({ item }) => <SectionCard item={item} />}
-        ListFooterComponent={() => <GapView length={100} />}
+        ListFooterComponent={() => <GapView length={110} />}
         renderSectionHeader={({ section: { title } }) => (
           <>
             <View style={{ alignItems: 'center' }}>

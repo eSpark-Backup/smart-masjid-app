@@ -130,8 +130,8 @@ export default function MyToast({
 const Points = ({ data, success }: { data?: string[]; success: boolean }) => {
   return (
     <>
-      {data?.map((item: string) => (
-        <View>
+      {data?.map((item: string, index: number) => (
+        <View key={index + item}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {success ? <Check /> : <CrossC />}
             <GapView length={10} mode="horizontal" />

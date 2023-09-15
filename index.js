@@ -9,7 +9,7 @@ import App from './src/navigation';
 import { name as appName } from './app.json';
 import { _requestUserNotificationPermission } from './src/utils/functions';
 
-LogBox.ignoreLogs(['VirtualizedList']);
+LogBox.ignoreLogs(['VirtualizedList', 'new NativeEventEmitter()']);
 
 _requestUserNotificationPermission();
 enableLatestRenderer();

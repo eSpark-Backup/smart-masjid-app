@@ -107,7 +107,11 @@ const DeviceSetting = ({
       <OverlayLoader isShow={loader} />
       <ErrorModal
         visible={errorShow}
-        message="Looks like your device is offline, what would you like to do ?"
+        message={
+          device?.deviceTelemetry?.status == 'Online'
+            ? 'What would you like to do ?'
+            : 'Looks like your device is offline, what would you like to do ?'
+        }
         onClose={() => setErrorShow(false)}
         options={[
           {
@@ -184,6 +188,7 @@ const DeviceSetting = ({
                     icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                     isEdit: isEditable,
+                    charLength: 25,
                     onPress: () => setIsEditable(true),
                     onDoneEdit: text => {
                       console.log('avla', text);

@@ -28,11 +28,19 @@ export default function DeviceCard({
           onPress={onPress}
           activeOpacity={0.9}
           style={styles.container}>
-          <View style={{ width: '100%', paddingHorizontal: 10 }}>
+          <View style={{ width: '100%', flex: 1 }}>
             <GapView mode="horizontal" length={15} />
-            <View>
+            <View
+              style={{
+                flex: 1,
+                width: '100%',
+                // backgroundColor: 'pink',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
               <TextLabel
                 label={deviceData?.name}
+                // label={'Sint cillum sit amet incididunt officia.'.slice(0, 25)}
                 textStyle={{
                   alignItems: 'center',
                   fontSize: 14,
@@ -40,7 +48,6 @@ export default function DeviceCard({
                   fontWeight: '500',
                 }}
               />
-              <GapView length={25} />
               {deviceData?.deviceType?.modelNumber.includes('SBB') ? (
                 <ButtonIcon
                   height={50}
@@ -54,7 +61,6 @@ export default function DeviceCard({
                   style={{ alignSelf: 'center' }}
                 />
               )}
-              <GapView length={25} />
               <View
                 style={{
                   alignItems: 'center',
@@ -79,9 +85,11 @@ export default function DeviceCard({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    padding: 12,
+    paddingHorizontal: 15,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   status: {
