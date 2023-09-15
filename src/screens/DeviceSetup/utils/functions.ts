@@ -123,49 +123,33 @@ export async function _connectBleDevice(devInfo: DeviceInfo) {
 
 export async function _disconnectBleDevice(
   devInfo: DeviceInfo,
-  isOnline: boolean,
+  isOnline?: boolean,
 ) {
-  if (isOnline) {
-    return;
-  }
-  if (!devInfo.macId) {
-    BleManager.getConnectedPeripherals([])
-      .then(peripheralsArray => {
-        // Success code
-        console.log(
-          'Connected peripherals: ' + JSON.stringify(peripheralsArray),
-        );
-        const dev: Peripheral | undefined = peripheralsArray.find(item =>
-          item.name?.includes('MYESP'),
-        );
-        if (!dev) {
-          return;
-        }
-        BleManager.disconnect(dev?.id)
-          .then(() => {
-            // Success code
-            console.log('Disconnected from Connected');
-          })
-          .catch(error => {
-            // Failure code
-            crashlytics().recordError(error as Error);
-            console.log('error while disconnecting', error);
-          });
-      })
-      .catch(e => {
-        console.log('caught at get connected peripherals', e);
-      });
-  } else {
-    BleManager.disconnect(devInfo?.macId!!)
-      .then(() => {
-        // Success code
-        console.log('Disconnected');
-      })
-      .catch(error => {
-        // Failure code
-        crashlytics().recordError(error as Error);
-        console.log('error while disconnecting', error);
-      });
+  console.log('Disconnect Crashing why??????');
+  try {
+    if (isOnline) {
+      return;
+    }
+    if (!devInfo.macId) {
+      const peripheralsArray = await BleManager.getConnectedPeripherals([]);
+      console.log('Connected peripherals: ' + JSON.stringify(peripheralsArray));
+
+      const dev: Peripheral | undefined = peripheralsArray.find(item =>
+        item.name?.includes('MYESP'),
+      );
+
+      if (dev) {
+        await BleManager.disconnect(dev.id);
+        console.log('Disconnected from Connected');
+      }
+    } else {
+      await BleManager.disconnect(devInfo.macId);
+      console.log('Disconnected');
+    }
+  } catch (error) {
+    // Handle errors appropriately
+    console.error('Error:', error);
+    crashlytics().recordError(error as Error);
   }
 }
 

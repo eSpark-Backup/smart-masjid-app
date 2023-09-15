@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { DeviceEventEmitter, ScrollView, Text } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { BackHandler, ScrollView } from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -92,16 +92,48 @@ export default function DeviceSetupScreen() {
       setStep(1);
       setRetry(true);
     },
+    points: [],
   });
 
+  const toastContentRef = useRef<string[]>([]);
+
+  const backAction = () => {
+    console.log('current flag', route?.params?.from);
+    if (
+      route.params.from === 'Device' ||
+      route.params.from === 'SelectedDevice'
+    ) {
+      navigation.navigate('HomeBottomTab', {
+        screen: 'Device',
+      });
+    }
+    return true;
+  };
+
   useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
     return () => {
-      _disconnectBleDevice(
-        devInfo,
-        route?.params?.deviceData?.deviceTelemetry?.status === 'Online',
-      );
+      backHandler.remove();
+      if (
+        !toastContentRef.current?.some(
+          (item: string) => item === 'Bluetooth permission denied',
+        ) ||
+        step !== 1
+      ) {
+        _disconnectBleDevice(
+          devInfo,
+          route?.params?.deviceData?.deviceTelemetry?.status === 'Online',
+        );
+      }
     };
   }, []);
+
+  useEffect(() => {
+    toastContentRef.current = toastContent.points as string[];
+  }, [toastContent.points]);
 
   useEffect(() => {
     if (retry) {
@@ -397,7 +429,7 @@ export default function DeviceSetupScreen() {
       differenceInMinutes,
     );
 
-    return differenceInMinutes > 2 ? false : true;
+    return differenceInMinutes < 2 ? true : false;
   };
 
   let count = 0;
@@ -425,9 +457,10 @@ export default function DeviceSetupScreen() {
                   message: undefined,
                   btnText: undefined,
                   onPress: () => {
-                    navigation.navigate('HomeBottomTab', {
-                      screen: 'Device',
-                    });
+                    // navigation.navigate('HomeBottomTab', {
+                    //   screen: 'Device',
+                    // });
+                    setStep(4);
                   },
                 }));
           } else {
@@ -495,7 +528,7 @@ export default function DeviceSetupScreen() {
         return [...state, 'Bluetooth permission denied'];
       });
     }
-    if (bleCheck && locationCheck) {
+    if (bleCheck && locationCheck && status) {
       await _startBluetooth();
       const res = await _scanBleDevices();
       console.log('devices found', res?.length);
@@ -561,6 +594,17 @@ export default function DeviceSetupScreen() {
         }
         setIssues(state => [...state, 'Bluetooth is turned off']);
       }
+    }
+  };
+
+  const handleSkip = () => {
+    if (route.params?.from == 'Device') {
+      return navigation.navigate('HomeBottomTab', { screen: 'Device' });
+    }
+    if (route.params?.from == 'SelectedDevice') {
+      return navigation.goBack();
+    } else {
+      return navigation.navigate('HomeBottomTab', { screen: 'Home' });
     }
   };
 
@@ -644,7 +688,7 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                onSkip={route.params?.from == 'Device' ? undefined : () => {}}
+                onSkip={handleSkip}
                 btnText={
                   route.params?.from == 'Device' ? 'Done' : 'Search Masjid'
                 }
@@ -666,6 +710,7 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 titleSize={16}
+                onSkip={handleSkip}
                 isSuccess={false}
                 btnText={toastContent.btnText ?? 'Try Again'}
                 onPress={toastContent.onPress}

@@ -107,7 +107,11 @@ const DeviceSetting = ({
       <OverlayLoader isShow={loader} />
       <ErrorModal
         visible={errorShow}
-        message="Looks like your device is offline, what would you like to do ?"
+        message={
+          device?.deviceTelemetry?.status == 'Online'
+            ? 'What would you like to do ?'
+            : 'Looks like your device is offline, what would you like to do ?'
+        }
         onClose={() => setErrorShow(false)}
         options={[
           {
