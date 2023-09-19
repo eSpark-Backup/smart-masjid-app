@@ -1,3 +1,5 @@
+import { Masjid } from './masjidControllerTypes';
+
 export type SuccessCheckPhoneId = {
   deviceId: string;
   fcmToken: string;
@@ -63,6 +65,7 @@ export type UserResponse = {
   email: string;
   phone: string;
   userType: UserType;
+  masjid: Masjid;
   status: string;
   createdBy: string;
   createdDate: string;

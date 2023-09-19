@@ -116,11 +116,7 @@ export default function UserSetupScreen() {
         res?.id.toString(),
       );
     } else if (res?.id && phoneId && isDeviceRegistered) {
-      await updateUserPhone(
-        { deviceId: phoneId, fcmToken: fcmToken as string },
-        res?.id.toString(),
-        phoneId,
-      );
+      await updateUserPhone(fcmToken as string, res?.id.toString(), phoneId);
     }
 
     if (res?.id) {

@@ -33,19 +33,20 @@ export default function ManageMasjid({
   contentOpacity?: any;
 }) {
   const userData = useHookstate(userStore.userData).get();
-  const masjidInfo = useHookstate(masjidStore.masjid).get();
+  // const masjidInfo = useHookstate(masjidStore.masjid).get();
+  const masjidInfo = userData?.masjid;
 
-  const [showLoader, setShowLoader] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
 
-  console.log('masjidInfo', masjidInfo);
-
-  useEffect(() => {
-    if (!masjidInfo) {
-      GetMasjid('1').then(() => setShowLoader(false));
-    } else {
-      setShowLoader(false);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!masjidInfo) {
+  //     GetMasjid(userData?.masjid.id.toString() as string).then(() =>
+  //       setShowLoader(false),
+  //     );
+  //   } else {
+  //     setShowLoader(false);
+  //   }
+  // }, []);
 
   return (
     <View style={{ flex: 1 }}>

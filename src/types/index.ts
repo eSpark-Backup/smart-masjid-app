@@ -6,6 +6,7 @@ import {
   JummahTime,
   Masjid,
   SalahTimings,
+  subJummas,
 } from './masjidControllerTypes';
 import { UserResponse } from './userControllerApiResponse';
 
@@ -41,6 +42,7 @@ export type MasjidStoreProps = {
   adhanTimings: AdhanTime[];
   iqamahTime: IqamahTime[] | null;
   masjid: Masjid | null;
+  masjidsJummaSubs: subJummas | null;
   iqamahHistory: IqamahTime[];
   JummahTime: JummahTime | null;
   JummahHistory: JummahTime[];

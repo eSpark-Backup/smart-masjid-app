@@ -20,6 +20,7 @@ import MyDatePicker from '../../../../../../components/MyDatePicker';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
+import { userStore } from '../../../../../../store/UserStore';
 
 export default function EditIqamahTimings({
   setFlag,
@@ -32,7 +33,7 @@ export default function EditIqamahTimings({
   iqamahType: 'Add' | 'Edit';
   selectedIqamah?: object | null;
 }) {
-  const [edit, setEdit] = useState(false);
+  const userData = useHookstate(userStore.userData).get();
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
@@ -58,33 +59,8 @@ export default function EditIqamahTimings({
     }
   }, []);
 
-  // const namazData = [
-  //   {
-  //     date: '2023-07-14',
-  //     data: [
-  //       { name: 'fajr', value: '18:00:00' },
-  //       { name: 'duhr', value: '18:00' },
-  //       { name: 'asr', value: '18:00' },
-  //       { name: 'maghrib', value: '18:00' },
-  //       { name: 'isha', value: '18:00' },
-  //     ],
-  //     type: 'F',
-  //   },
-  //   {
-  //     date: '2023-07-16',
-  //     data: [
-  //       { name: 'fajr', value: '16:00' },
-  //       { name: 'duhr', value: '16:00' },
-  //       { name: 'asr', value: '16:00' },
-  //       { name: 'maghrib', value: '16:00' },
-  //       { name: 'isha', value: '16:00' },
-  //     ],
-  //   },
-  // ];
-
   const onUpdate = async () => {
     var dataObj: IqamahTime = data;
-    // console.log('dataObj dataObj', dataObj);
     setLoading(true);
     if (
       (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
@@ -94,75 +70,21 @@ export default function EditIqamahTimings({
       !Boolean(dataObj.ishaDelay)
     ) {
       if (iqamahType == 'Add') {
-        await AddMasjidIqamahTiming('1', dataObj);
+        await AddMasjidIqamahTiming(
+          userData?.masjid.id.toString() as string,
+          dataObj,
+        );
       } else {
-        await UpdateMasjidIqamahTiming('1', dataObj);
+        await UpdateMasjidIqamahTiming(
+          userData?.masjid.id.toString() as string,
+          dataObj,
+        );
       }
     }
     setLoading(false);
     setData(null);
     setFlag('iTime');
-
-    // if (
-    //   (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
-    //   !Boolean(dataObj.dhuhrDelay) ||
-    //   !Boolean(dataObj.asrDelay) ||
-    //   !Boolean(dataObj.maghribDelay) ||
-    //   !Boolean(dataObj.ishaDelay)
-    // ) {
-    //   if ((iqamahType = 'Add')) {
-    //     await AddMasjidIqamahTiming('1', dataObj);
-    //   } else {
-    //     await UpdateMasjidIqamahTiming('1', dataObj);
-    //   }
-    // }
-
-    // if (dataObj.type == 'F') {
-    //   setLoading(true);
-    //   await UpdateMasjidIqamahTiming('1', {
-    //     effectiveDate: dataObj.effectiveDate,
-    //     type: dataObj.type,
-    //     asr: dataObj.asr,
-    //     fajr: dataObj.fajr,
-    //     dhuhr: dataObj.dhuhr,
-    //     isha: dataObj.isha,
-    //     maghribDelay: dataObj.maghribDelay,
-    //   });
-    //   setLoading(false);
-    //   setEdit(false);
-    //   setData(null);
-    // } else {
-    //   if (
-    //     !Boolean(dataObj.fajrDelay) ||
-    //     !Boolean(dataObj.dhuhrDelay) ||
-    //     !Boolean(dataObj.asrDelay) ||
-    //     !Boolean(dataObj.maghribDelay) ||
-    //     !Boolean(dataObj.ishaDelay)
-    //   ) {
-    //     Toast.show({
-    //       text2: 'delay value should be greater than zero',
-    //       type: 'error',
-    //       visibilityTime: 10000,
-    //     });
-    //     return;
-    //   }
-    //   setLoading(true);
-    //   await UpdateMasjidIqamahTiming('1', {
-    //     effectiveDate: dataObj.effectiveDate,
-    //     type: dataObj.type,
-    //     fajrDelay: dataObj.fajrDelay,
-    //     dhuhrDelay: dataObj.dhuhrDelay,
-    //     asrDelay: dataObj.asrDelay,
-    //     maghribDelay: dataObj.maghribDelay,
-    //     ishaDelay: dataObj.ishaDelay,
-    //   });
-    //   setLoading(false);
-    //   setEdit(false);
-    //   setData(null);
-    // }
   };
-
-  console.log('iqamahTimings', iqamahTimings);
 
   const type = data?.type;
   return (

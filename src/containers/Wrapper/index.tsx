@@ -85,8 +85,9 @@ export default function Wrapper({
             <ScrollView
               onScroll={handleScroll}
               scrollEventThrottle={16}
-              contentContainerStyle={{flexGrow: 1}}
-              style={{ zIndex: -1}}>
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ flexGrow: 1 }}
+              style={{ zIndex: -1 }}>
               {children({ props: { contentOpacity: contentOpacity } })}
             </ScrollView>
           </ImageBackground>

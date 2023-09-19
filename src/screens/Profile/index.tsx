@@ -173,12 +173,7 @@ export default function Profile() {
     if (flag == 'aSet') {
       return 'Adhan Settings';
     }
-    if (
-      flag == 'iTime' ||
-      flag == 'iEdit' ||
-      flag == 'iHist' ||
-      flag == 'iAdd'
-    ) {
+    if (flag == 'iTime' || flag == 'iEdit' || flag == 'iAdd') {
       return 'Iqama Timings';
     }
     if (
@@ -191,6 +186,9 @@ export default function Profile() {
     }
     if (flag == 'vUser' || flag == 'addUser') {
       return 'User Information';
+    }
+    if (flag == 'iHist') {
+      return 'Monthly Schedule';
     }
     if (flag == 'addUser') {
       return 'Add User';

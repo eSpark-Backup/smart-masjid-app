@@ -6,6 +6,7 @@ import { GetMasjidAdhanSetting } from '../../../../api/masjidController';
 import { GapView, MyText, MyTitle } from '../../../../components';
 import { masjidStore } from '../../../../store/MasjidStore';
 import { WINDOW_WIDTH } from '../../../../constants';
+import { userStore } from '../../../../store/UserStore';
 
 export default function AdhanSettings({
   setFlag,
@@ -15,9 +16,11 @@ export default function AdhanSettings({
   contentOpacity?: any;
 }) {
   const adhanConfig = useHookstate(masjidStore.adhanConfig).get();
+  const userData = useHookstate(userStore.userData).get();
+
   useEffect(() => {
     if (!adhanConfig) {
-      GetMasjidAdhanSetting('1');
+      GetMasjidAdhanSetting(userData?.masjid.id.toString() as string);
     }
   }, []);
 

@@ -54,16 +54,18 @@ export default function SalahTable({
     ({ item, index }: { item: IPrayerTimeForPeriod; index: number }) => {
       return (
         <View key={index} style={{ width: WINDOW_WIDTH - 50 }}>
-          {item?.salah?.map((data, i) => (
-            <RowItem
-              key={index + Math.random() * 9999}
-              item={{
-                name: data?.name,
-                adhan: data?.adhanTime?.toString(),
-                Iqama: data?.iqamaTime?.toString(),
-              }}
-            />
-          ))}
+          {moment(item.date).format('YYYY-MM-DD') ==
+            moment().format('YYYY-MM-DD') &&
+            item?.salah?.map((data, i) => (
+              <RowItem
+                key={index + Math.random() * 9999}
+                item={{
+                  name: data?.name,
+                  adhan: data?.adhanTime?.toString(),
+                  Iqama: data?.iqamaTime?.toString(),
+                }}
+              />
+            ))}
         </View>
       );
     },

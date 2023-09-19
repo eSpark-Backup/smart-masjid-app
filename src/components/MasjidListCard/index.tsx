@@ -108,7 +108,7 @@ export default function MasjidListCard(
                 }}>
                 <SujudSvg />
                 <GapView mode="horizontal" length={5} />
-                <MyText text={'Maghrib'} />
+                <MyText text={namazName ?? 'Maghrib'} />
                 <GapView mode="horizontal" length={10} />
                 <View style={styles.row}>
                   <Speaker height={20} width={20} />

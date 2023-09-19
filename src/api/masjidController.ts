@@ -174,8 +174,10 @@ export const GetAdhanTimings = async (
   range?: string,
 ) => {
   try {
+    console.log('date', date);
+
     const result: any = await api.get(`/masjid/${masjidId}/adhan`, {
-      date: '2023-08-18',
+      date: '2023-09-01',
       range: 'MONTH',
     });
     if (result.status == 200) {
@@ -212,6 +214,117 @@ export const GetMasjidJummahTiming = async (
 
 /**
  *
+ * @description Get Current Jummah Timings
+ * @returns get data of masjid Jummah and save to masjidStore
+ */
+export const GetMasjidCurrentJummahTiming = async (
+  masjidId: string,
+  date?: string,
+) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/jumuah/current`, {
+      date: date,
+    });
+
+    if (result.status == 200) {
+      masjidStore.JummahTime.set(result.data);
+      return result.data;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error', error);
+  }
+};
+
+/**
+ *
+ * @description Add Jumuah Timing
+ * @returns get data of masjid jumuah and save to masjidStore
+ */
+export const AddMasjidJummahTiming = async (
+  masjidId: string,
+  data: JummahTime,
+) => {
+  try {
+    const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
+    if (result.status == 200) {
+      masjidStore.JummahTime.set(result.data);
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error', error);
+  }
+};
+
+/**
+ *
+ * @description Update Jumuah Timing
+ * @returns get data of masjid Jumuah and save to masjidStore
+ */
+export const UpdatedMasjidJummahTiming = async (
+  masjidId: string,
+  data: JummahTime,
+) => {
+  try {
+    const result: any = await api.put(
+      `/masjid/${masjidId}/jumuah/${data.id}`,
+      data,
+    );
+    console.log(result);
+    if (result.status == 200) {
+      masjidStore.JummahTime.set(result.data);
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error', error);
+  }
+};
+
+/**
+ *
+ * @description Delete Jummah Time
+ * @returns get data of masjid Jummah and save to masjidStore
+ */
+export const DeleteMasjidJummahTiming = async (
+  masjidId: string,
+  jumuahId: string,
+) => {
+  try {
+    const result: any = await api.delete(
+      `/masjid/${masjidId}/jumuah/${jumuahId}`,
+    );
+    if (result.status == 200) {
+      masjidStore.JummahTime.set(result.data);
+    } else {
+      Toast.show({
+        text2: result.data?.message ?? 'Something went wrong',
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('error', error);
+  }
+};
+
+/**
+ *
  * @description Get Jummah history
  * @returns get Jummah history of masjid and save to masjidStore
  */
@@ -223,63 +336,6 @@ export const GetJummahHistory = async (masjidId: string) => {
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
-  }
-};
-
-/**
- *
- * @description Get Adhan Configuration
- * @returns get data of masjid adhan config and save to masjidStore
- */
-export const AddMasjidJummahTiming = async (
-  masjidId: string,
-  data: JummahTime,
-) => {
-  try {
-    const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
-    console.log('AddMasjidJummahTiming result', result);
-
-    if (result.status == 200) {
-      masjidStore.JummahTime.set(result.data);
-    } else {
-      Toast.show({
-        text2: result.data?.message ?? 'Something went wrong',
-        type: 'error',
-        autoHide: true,
-        visibilityTime: 10000,
-      });
-    }
-  } catch (error) {
-    crashlytics().recordError(error as Error);
-    console.log('error', error);
-  }
-};
-/**
- *
- * @description Get Adhan Configuration
- * @returns get data of masjid adhan config and save to masjidStore
- */
-export const UpdatedMasjidJummahTiming = async (
-  masjidId: string,
-  data: JummahTime,
-) => {
-  try {
-    const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
-    console.log('UpdatedMasjidJummahTiming result', result);
-
-    if (result.status == 200) {
-      masjidStore.JummahTime.set(result.data);
-    } else {
-      Toast.show({
-        text2: result.data?.message ?? 'Something went wrong',
-        type: 'error',
-        autoHide: true,
-        visibilityTime: 10000,
-      });
-    }
-  } catch (error) {
-    crashlytics().recordError(error as Error);
-    console.log('error', error);
   }
 };
 
@@ -334,9 +390,10 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
  */
 export const getSalahTimingsOfMasjid = async (masjidId: string) => {
   try {
-    const result: any = await api.get(`/masjid/${masjidId}/salah`);
+    const result: any = await api.get(`/masjid/${masjidId}/salah`, {
+      range: 'MONTH',
+    });
     const timings = result?.data?.timings as SalahTimings[];
-    console.log('masjidList', result?.data);
     masjidStore?.salahTimings?.set(timings ?? []);
     return timings;
   } catch (error) {

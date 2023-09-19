@@ -3,10 +3,14 @@ import { StyleSheet, View, Animated, FlatList } from 'react-native';
 import moment from 'moment';
 import { useHookstate } from '@hookstate/core';
 
-import { GetMasjidJummahTiming } from '../../../../../../api/masjidController';
+import {
+  DeleteMasjidJummahTiming,
+  GetMasjidJummahTiming,
+} from '../../../../../../api/masjidController';
 import { PlusCircle } from '../../../../../../assets';
 import {
   GapView,
+  LogoutModal,
   MyText,
   MyTextSubHeader,
   MyTitle,
@@ -18,6 +22,7 @@ import {
   JummahTime,
   jumuahsData,
 } from '../../../../../../types/masjidControllerTypes';
+import { userStore } from '../../../../../../store/UserStore';
 
 export default function JummaTimings({
   setFlag,
@@ -28,44 +33,73 @@ export default function JummaTimings({
   contentOpacity?: any;
   selectedJumma?: (value: JummahTime) => void;
 }) {
-  const [edit, setEdit] = useState(false);
   const jummahTimings: any = useHookstate(masjidStore.JummahTime).get();
-  const [data, setData] = useState<any>({});
+  const userData = useHookstate(userStore.userData).get();
+  const [data, setData] = useState<any>([]);
+  const [currentData, setCurrentData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    GetMasjidJummahTiming('1', moment(new Date()).format('YYYY-MM-DD')).then(
-      (jumuahTime: JummahTime) => {
-        let jumuahData = [];
-        let jumuahs: jumuahsData[] = [];
-        let jumuah: Array<'jumuah1' | 'jumuah2' | 'jumuah3'> = Object.keys(
-          jumuahTime,
-        ).filter(val => val.includes('jumuah')) as Array<
-          'jumuah1' | 'jumuah2' | 'jumuah3'
-        >;
-
-        jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
-          let data: jumuahsData;
-          data = {
-            name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
-            value: moment(jumuahTime[`${jumuah}`], 'HH:mm:ss').format('LT'),
-          };
-          console.log('data', data);
-          jumuahTime[`${jumuah}`] != null ? jumuahs.push(data) : null;
-        });
-        console.log('jumuahs', jumuahs);
-        const namazData = {
-          id: jumuahTime.id,
-          date: jumuahTime.effectiveDate,
-          data: jumuahs,
-        };
-        jumuahData.push(namazData);
-        setData(jumuahData);
-        setLoading(false);
-      },
-    );
+    getAllJumuahTimings();
   }, []);
+
+  const getAllJumuahTimings = () => {
+    GetMasjidJummahTiming(
+      userData?.masjid.id.toString() as string,
+      moment(new Date()).format('YYYY-MM-DD'),
+    ).then((jumuahTime: JummahTime[]) => {
+      if (jumuahTime.length > 0) {
+        jumuahTime.map((item, index) => {
+          let jumuahData = [];
+          let jumuahs: jumuahsData[] = [];
+          let jumuah = Object.keys(item).filter(val =>
+            val.includes('jumuah'),
+          ) as Array<'jumuah1' | 'jumuah2' | 'jumuah3'>;
+          jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
+            let data: jumuahsData;
+            data = {
+              name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
+              value: moment(jumuahTime[index][`${jumuah}`], 'HH:mm:ss').format(
+                'LT',
+              ),
+            };
+            jumuahTime[index][`${jumuah}`] != null ? jumuahs.push(data) : null;
+          });
+          const namazData = {
+            id: jumuahTime[index].id,
+            date: jumuahTime[index].effectiveDate,
+            data: jumuahs,
+          };
+          if (
+            moment(namazData?.date).format('YYYY-MM-DD') <=
+            moment(new Date()).format('YYYY-MM-DD')
+          ) {
+            setCurrentData(namazData);
+          } else if (
+            moment(namazData?.date).format('YYYY-MM-DD') >
+            moment(new Date()).format('YYYY-MM-DD')
+          ) {
+            jumuahData.push(namazData);
+          }
+          setData(jumuahData);
+        });
+        setLoading(false);
+      } else setLoading(false);
+    });
+  };
+
+  const deleteJumuahTime = () => {
+    setIsVisible(false);
+    setLoading(true);
+    DeleteMasjidJummahTiming(
+      userData?.masjid.id.toString() as string,
+      deleteId as string,
+    );
+    getAllJumuahTimings();
+  };
 
   // Here we Convert the single object to an arrays of jumuah timings
 
@@ -103,15 +137,14 @@ export default function JummaTimings({
 
   const contentToRender = () => {
     return !loading ? (
-      moment(data[0]?.date).format('YYYY-MM-DD') <=
-      moment(new Date()).format('YYYY-MM-DD') ? (
+      currentData ? (
         <TimeTableCard
           onEdit={() => {
-            selectedJumma!(data[0]);
+            selectedJumma!(currentData);
             setFlag('jEdit');
           }}
-          date={data[0]?.date}
-          data={data[0]?.data}
+          date={currentData?.date}
+          data={currentData?.data}
         />
       ) : (
         <MyText
@@ -165,6 +198,10 @@ export default function JummaTimings({
                 date={item.date}
                 data={item.data}
                 deleteBtn
+                onDelete={() => {
+                  setIsVisible(true);
+                  setDeleteId(item.id);
+                }}
               />
             )}
             ListEmptyComponent={
@@ -177,6 +214,15 @@ export default function JummaTimings({
             }
           />
         </View>
+        <LogoutModal
+          message="Do you wish to delete?"
+          visible={isVisible}
+          onAllowed={deleteJumuahTime}
+          onClose={() => {
+            setIsVisible(!isVisible);
+            console.log('Cancelled');
+          }}
+        />
       </View>
     </>
   );

@@ -56,7 +56,17 @@ const RowItem = ({
                       initialValue={item[key]}
                     />
                   ) : (
-                    <View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderWidth: 0.5,
+                        borderColor: '#3E3E3E',
+                        borderRadius: 3,
+                        width: 155,
+                        height: 40,
+                      }}>
                       <TextInput
                         defaultValue={item[key]}
                         onChangeText={item?.onChange}
@@ -64,14 +74,22 @@ const RowItem = ({
                         keyboardType={'decimal-pad'}
                         style={{
                           fontSize: 16,
-                          borderWidth: 0.5,
                           color: colors.text,
-                          borderColor: '#3E3E3E',
-                          borderRadius: 3,
+                          // borderWidth: 0.5,
+                          // borderColor: '#3E3E3E',
+                          // borderRadius: 3,
                           height: 40,
-                          width: 155,
+                          // width: 155,
                           textAlign: 'center',
                         }}
+                      />
+                      {/* <GapView mode="horizontal" /> */}
+                      <MyText
+                        textStyle={{
+                          paddingBottom: 2,
+                        }}
+                        size={16}
+                        text="Mins"
                       />
                     </View>
                   )}
@@ -161,7 +179,7 @@ export default function TimeTable({
   type = 'F',
   containerStyle,
 }: {
-  data: DataProps[];
+  data: (DataProps | false)[];
   isMute?: boolean;
   isEdit?: boolean;
   isInfo?: boolean;
@@ -203,18 +221,21 @@ export default function TimeTable({
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-      {data?.map((item: any, index) => (
-        <RowItem
-          key={`${index}`}
-          item={item}
-          index={index}
-          isEdit={isEdit}
-          isMute={isMute}
-          onSubmitEditing={onSubmitEditing}
-          edit={editView}
-          type={type}
-        />
-      ))}
+      {data?.map(
+        (item: any, index) =>
+          item && (
+            <RowItem
+              key={`${index}`}
+              item={item}
+              index={index}
+              isEdit={isEdit}
+              isMute={isMute}
+              onSubmitEditing={onSubmitEditing}
+              edit={editView}
+              type={type}
+            />
+          ),
+      )}
       {footer && (
         <>
           <GapView length={15} />

@@ -52,7 +52,9 @@ const TimeTableCard = ({
             }}>
             {data.map(v => {
               return (
-                <View style={{ marginRight: data.length > 3 ? 0 : 20 }}>
+                <View
+                  key={v.name}
+                  style={{ marginRight: data.length > 3 ? 0 : 20 }}>
                   <MyText
                     textStyle={{ textTransform: 'capitalize' }}
                     text={v.name}
