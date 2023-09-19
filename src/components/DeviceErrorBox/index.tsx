@@ -10,6 +10,7 @@ import {
 import { Card } from '../../containers';
 import MyText from '../MyText';
 import { Close, InfoRed } from '../../assets';
+import GapView from '../GapView';
 
 export default function DeviceErrorBox({
   show,
@@ -40,7 +41,7 @@ export default function DeviceErrorBox({
               text={message!!}
               icon={
                 <TouchableOpacity onPress={onIconPress}>
-                  <InfoRed />
+                  <InfoRed style={{ bottom: -5 }} />
                 </TouchableOpacity>
               }
               textStyle={{
@@ -50,9 +51,6 @@ export default function DeviceErrorBox({
                 width: 310,
               }}
             />
-            {/* <TouchableWithoutFeedback onPress={onClose}>
-                <Close />
-              </TouchableWithoutFeedback> */}
           </View>
         </View>
       </View>

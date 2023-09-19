@@ -89,10 +89,14 @@ export default function WifiSelectForm({
         },
       }));
       if (autoSelect) {
+        console.log('kias', autoSelect, currentWifiSSID);
         newArr.filter(item => {
-          if (item.SSID == currentWifiSSID) {
+          if (currentWifiSSID === item?.SSID) {
+            console.log('yahan aya??', item.SSID);
             setSSID(item?.SSID);
             setStep(5);
+          } else {
+            setData(newArr);
           }
         });
       } else {

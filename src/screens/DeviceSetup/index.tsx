@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { DeviceEventEmitter, ScrollView, Text } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { BackHandler, ScrollView } from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -12,6 +12,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
+import moment from 'moment';
 
 import { userStore } from '../../store/UserStore';
 import { Wrapper } from '../../containers';
@@ -67,7 +68,9 @@ export default function DeviceSetupScreen() {
   const [bleStatus, setBleStatus] = useState<boolean | undefined>();
   const [locationStatus, setlocationStatus] = useState<boolean | undefined>();
   const [retry, setRetry] = useState<boolean>();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(
+    route?.params?.deviceData?.deviceTelemetry?.status !== 'Online' ? 1 : 4,
+  );
   const [devInfo, setDevInfo] = useState<DeviceInfo>({});
   const [issues, setIssues] = useState<string[]>([]);
   const [scannedDevices, setScannedDevices] = useState<
@@ -89,13 +92,48 @@ export default function DeviceSetupScreen() {
       setStep(1);
       setRetry(true);
     },
+    points: [],
   });
 
+  const toastContentRef = useRef<string[]>([]);
+
+  const backAction = () => {
+    console.log('current flag', route?.params?.from);
+    if (
+      route.params.from === 'Device' ||
+      route.params.from === 'SelectedDevice'
+    ) {
+      navigation.navigate('HomeBottomTab', {
+        screen: 'Device',
+      });
+    }
+    return true;
+  };
+
   useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
     return () => {
-      _disconnectBleDevice(devInfo);
+      backHandler.remove();
+      if (
+        !toastContentRef.current?.some(
+          (item: string) => item === 'Bluetooth permission denied',
+        ) ||
+        step !== 1
+      ) {
+        _disconnectBleDevice(
+          devInfo,
+          route?.params?.deviceData?.deviceTelemetry?.status === 'Online',
+        );
+      }
     };
   }, []);
+
+  useEffect(() => {
+    toastContentRef.current = toastContent.points as string[];
+  }, [toastContent.points]);
 
   useEffect(() => {
     if (retry) {
@@ -109,7 +147,13 @@ export default function DeviceSetupScreen() {
   useEffect(() => {
     console.log('step current?', step);
     if (step === 6) {
-      handleDeviceSetup();
+      if (route?.params?.deviceData?.deviceTelemetry?.status !== 'Online') {
+        handleDeviceSetup();
+      } else {
+        setTimeout(() => {
+          updateDevice();
+        }, 5000);
+      }
     }
     handleShowBack(step);
   }, [step]);
@@ -117,7 +161,9 @@ export default function DeviceSetupScreen() {
   useEffect(() => {
     checkStatus();
     _startLocationCheck(_handleGPSProviderEvent);
-    _startCheckBle(_handleBleStateEvent);
+    if (route?.params?.deviceData?.deviceTelemetry?.status != 'Online') {
+      _startCheckBle(_handleBleStateEvent);
+    }
     return () => {
       _stopLocationCheck();
     };
@@ -132,7 +178,10 @@ export default function DeviceSetupScreen() {
         return [...state, 'Location is turned off'];
       });
     }
-    if (bleStatus === false) {
+    if (
+      bleStatus === false &&
+      route?.params?.deviceData?.deviceTelemetry?.status != 'Online'
+    ) {
       setIssues(state => {
         return [...state, 'Bluetooth is turned off'];
       });
@@ -178,9 +227,16 @@ export default function DeviceSetupScreen() {
     const loc = await _checkLocationStatus();
     setBleStatus(ble);
     setlocationStatus(loc);
-    setStep(1); //todo: first 6 then 1
-    setConnFlag(true);
-    await handlePermissions(ble, loc);
+    if (
+      route?.params?.from === 'SelectedDevice' &&
+      route?.params?.deviceData?.deviceTelemetry?.status == 'Online'
+    ) {
+      setStep(4);
+    } else {
+      setStep(1); //todo: first 6 then 1
+      setConnFlag(true);
+      await handlePermissions(ble, loc);
+    }
   };
 
   const handleShowBack = (currStep: number) => {
@@ -247,7 +303,7 @@ export default function DeviceSetupScreen() {
       );
       const response = await _scanBleDevices(5);
       if (
-        response.some(item => {
+        response?.some(item => {
           item?.id === devInfo?.macId;
         })
       ) {
@@ -276,6 +332,33 @@ export default function DeviceSetupScreen() {
           setRetry(true);
         },
       }));
+    }
+  };
+
+  const updateDevice = async () => {
+    console.log('devInfoxxxxxxxxx', devInfo);
+    const devRes: any = await _updateDevice({
+      ...route?.params?.deviceData,
+      wifiSsid: devInfo.ssid,
+      wifiPassword: devInfo.password,
+    });
+    if (devRes) {
+      telemetryInterval = setInterval(() => {
+        checkTelemetry(route?.params?.deviceData?.id.toString(), true); // check Telemetery for userDevice
+      }, 10000);
+    } else {
+      setStep(8);
+      setToastContent({
+        title: undefined,
+        message: undefined,
+        btnText: undefined,
+        onPress: () => {
+          console.log('kia ha');
+          navigation.navigate('HomeBottomTab', {
+            screen: 'Device',
+          });
+        },
+      });
     }
   };
 
@@ -321,21 +404,36 @@ export default function DeviceSetupScreen() {
           }
         }
       } else {
-        const devRes: any = await _updateDevice({
-          ...route?.params?.deviceData,
-          wifiSsid: devInfo.ssid,
-        });
-        if (devRes) {
-          telemetryInterval = setInterval(() => {
-            checkTelemetry(route?.params?.deviceData?.id.toString()); // check Telemetery for userDevice
-          }, 10000);
-        }
+        setTimeout(() => {
+          updateDevice();
+        }, 5000);
       }
     }
   };
 
+  const validateUpdatedTime = (dateTime: string): boolean => {
+    const utcDateString = dateTime; // get a date/time
+    const timeNow = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // format the current time to the same format
+    const utcTimeNow = moment.utc(timeNow);
+    const differenceInMinutes = Math.abs(
+      moment(utcDateString).diff(moment(utcTimeNow), 'minutes'),
+    ); // check the difference in minutes: number
+    console.log(
+      'updatedTime:',
+      utcDateString,
+      '\n',
+      'timeNow:',
+      utcTimeNow,
+      '\n',
+      'Difference in Time:',
+      differenceInMinutes,
+    );
+
+    return differenceInMinutes < 2 ? true : false;
+  };
+
   let count = 0;
-  const checkTelemetry = async (deviceId: string) => {
+  const checkTelemetry = async (deviceId: string, checkTime?: boolean) => {
     // function should not run more than 3 times
     if (count >= 3) {
       count = 0;
@@ -344,11 +442,30 @@ export default function DeviceSetupScreen() {
       return;
     } else {
       try {
-        const res = await _checkDeviceTelemetry(deviceId);
+        const res = await _checkDeviceTelemetry(deviceId, checkTime);
         if (Boolean(res)) {
           count = 0;
           clearInterval(telemetryInterval);
-          setStep(7); // successfully device added and found it out as well
+          if (checkTime) {
+            console.log('kas', res);
+            const isValid = validateUpdatedTime(res?.updatedTime);
+            isValid
+              ? setStep(7)
+              : (setStep(8),
+                setToastContent({
+                  title: undefined,
+                  message: undefined,
+                  btnText: undefined,
+                  onPress: () => {
+                    // navigation.navigate('HomeBottomTab', {
+                    //   screen: 'Device',
+                    // });
+                    setStep(4);
+                  },
+                }));
+          } else {
+            setStep(7); // successfully device added and found it out as well
+          }
         } else {
           console.log('nhi mila telemetry');
         }
@@ -411,11 +528,11 @@ export default function DeviceSetupScreen() {
         return [...state, 'Bluetooth permission denied'];
       });
     }
-    if (bleCheck && locationCheck) {
+    if (bleCheck && locationCheck && status) {
       await _startBluetooth();
       const res = await _scanBleDevices();
-      console.log('devices found', res.length);
-      const newArr = res.filter(item => {
+      console.log('devices found', res?.length);
+      const newArr = res?.filter(item => {
         if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
           return item;
         }
@@ -428,13 +545,13 @@ export default function DeviceSetupScreen() {
         locationStatus,
         new Set(issues),
       );
-      setScannedDevices(newArr);
+      setScannedDevices(newArr!);
       const macAdd = route?.params?.deviceData?.macAddress;
-      const isFound = !newArr.some(item =>
+      const isFound = !newArr?.some(item =>
         macAdd ? item.id === macAdd : true,
       );
       if (issues.length === 0) {
-        if (newArr.length === 0 || isFound) {
+        if (newArr?.length === 0 || isFound) {
           setStep(8);
           setToastContent(state => ({
             ...state,
@@ -477,6 +594,17 @@ export default function DeviceSetupScreen() {
         }
         setIssues(state => [...state, 'Bluetooth is turned off']);
       }
+    }
+  };
+
+  const handleSkip = () => {
+    if (route.params?.from == 'Device') {
+      return navigation.navigate('HomeBottomTab', { screen: 'Device' });
+    }
+    if (route.params?.from == 'SelectedDevice') {
+      return navigation.goBack();
+    } else {
+      return navigation.navigate('HomeBottomTab', { screen: 'Home' });
     }
   };
 
@@ -560,7 +688,7 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                onSkip={route.params?.from == 'Device' ? undefined : () => {}}
+                onSkip={handleSkip}
                 btnText={
                   route.params?.from == 'Device' ? 'Done' : 'Search Masjid'
                 }
@@ -582,6 +710,7 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 titleSize={16}
+                onSkip={handleSkip}
                 isSuccess={false}
                 btnText={toastContent.btnText ?? 'Try Again'}
                 onPress={toastContent.onPress}
@@ -591,7 +720,7 @@ export default function DeviceSetupScreen() {
                   toastContent.points ?? [
                     'Device is powered on',
                     'Phone is within range of the device',
-                    'Device LED is yellow',
+                    'Device Light is yellow',
                     'WiFi is working',
                   ]
                 }
