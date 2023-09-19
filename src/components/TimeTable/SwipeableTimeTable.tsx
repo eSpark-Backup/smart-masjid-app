@@ -7,6 +7,8 @@ import {
   FlatList,
   ViewToken,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
+
 import { MuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { IPrayerTimeForPeriod } from '../../types';
@@ -24,6 +26,7 @@ import {
   addSubscription,
   getDeviceSubscriptions,
   removeSubscription,
+  _checkDeviceTelemetry,
 } from '../../api/deviceController';
 
 const RowItem = ({
@@ -128,7 +131,15 @@ export default function SwipeableTimeTable({
   );
   const slider = useRef<FlatList>(null);
 
-  const updateSubscriptions = (id: string, adhanName: string) => {
+  const updateSubscriptions = async (id: string, adhanName: string) => {
+    const isValid = await validateUpdatedTime();
+    if (!isValid) {
+      Toast.show({
+        type: 'error',
+        text2: 'Device is currently offline',
+      });
+      return;
+    }
     if (id) {
       console.log('id', id);
       setLoading(true);
@@ -235,6 +246,29 @@ export default function SwipeableTimeTable({
         animated: true,
       });
     }
+  };
+
+  const validateUpdatedTime = async (): Promise<boolean> => {
+    const res = await _checkDeviceTelemetry(deviceInfo.id.toString(), true);
+    if (res) {
+      const utcDateString = res.updatedTime; // get a date/time
+      const timeNow = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // format the current time to the same format
+      const utcTimeNow = moment.utc(timeNow);
+      const differenceInMinutes = Math.abs(
+        moment(utcDateString).diff(moment(utcTimeNow), 'minutes'),
+      ); // check the difference in minutes: number
+      console.log(
+        'updatedTime:',
+        utcDateString,
+        '\n',
+        'timeNow:',
+        utcTimeNow,
+        '\n',
+        'Difference in Time:',
+        differenceInMinutes,
+      );
+      return differenceInMinutes < 2 ? true : false;
+    } else return false;
   };
 
   return (
