@@ -135,15 +135,11 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
     );
     console.log('result LoginUser', result.data);
     if (result.data) {
-      const login = await xApi.put(`/users/${result?.data?.id}/login`, {
-        phoneDeviceId: globalStore.phoneId?.get(),
-      });
       const token: any = await xApi.post(`/external/auth/token/create`, {
         application: 'MOBILE',
         userId: result.data.id,
         lastOTPVerified: otp,
       });
-      console.log('login', login, '\n', 'token', token);
 
       userStore.token.set(token?.data?.token);
       api.setHeaders({

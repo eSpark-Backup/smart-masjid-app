@@ -180,3 +180,7 @@ export interface SalahTimings {
   date: string;
   salah: Salah[];
 }
+export interface AllSalahTimings {
+  id: string;
+  salahs: SalahTimings[];
+}

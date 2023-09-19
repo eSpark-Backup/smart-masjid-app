@@ -34,15 +34,30 @@ export const RegisterUserPhone = async (
  * @description Update/Add Registered User Phone Device in Server
  */
 export const updateUserPhone = async (
-  data: RequestRegisterPhone,
+  fcmToken: string,
   userId: string,
   phoneDeviceId: string,
 ): Promise<void> => {
   try {
-    await api.post(`/users/${userId}/phones/${phoneDeviceId}`, data);
+    const res = await api.put(`/users/${userId}/phones/${phoneDeviceId}`, {
+      fcmToken: fcmToken,
+    });
+    if (res.ok) {
+      const login = await api.put(`/users/${userId}/login`, {
+        phoneDeviceId: phoneDeviceId,
+      });
+      console.log('login', login);
+    }
+    console.log('update phone res', res);
   } catch (error) {
     crashlytics().recordError(error as Error);
-    console.log('error UpdateUserPhone', error, 'Request', data, userId);
+    console.log(
+      'error UpdateUserPhone',
+      error,
+      'Request',
+      { fcmToken },
+      userId,
+    );
   }
 };
 

@@ -136,7 +136,7 @@ const DeviceSetting = ({
           },
         ]}
       />
-      <View style={{ alignSelf: 'center', top: 100 }}>
+      <View style={{ alignSelf: 'center', top: 110 }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle
             text="Devices"
@@ -145,7 +145,7 @@ const DeviceSetting = ({
         </Animated.View>
         <GapView length={40} />
       </View>
-      <ScrollView style={{ top: 112 }}>
+      <ScrollView style={{ top: 112, padding: 10 }}>
         <DeviceErrorBox
           show={device?.deviceTelemetry?.status == 'Online' ? false : true}
           onClose={() => console.log('on Close Box', device)}
