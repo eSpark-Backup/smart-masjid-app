@@ -46,6 +46,7 @@ import { userStore } from '../../store/UserStore';
 import { UserResponse } from '../../types/userControllerApiResponse';
 import { jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
+import { WINDOW_HEIGHT } from '../../constants';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -402,9 +403,9 @@ function UserInformation({
         <GapView length={50} />
       </View>
 
-      <View style={{ top: 50 }}>
+      <View style={{ flex: 1, top: 50 }}>
         <ProfileSectionlist
-          containerStyle={{ height: '85%' }}
+          containerStyle={{ height: '93.5%' }}
           data={[
             {
               data: [

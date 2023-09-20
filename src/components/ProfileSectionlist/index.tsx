@@ -100,6 +100,7 @@ const SectionCard = ({
         key={index + item.title}
         activeOpacity={0.8}
         style={{
+          width: '95%',
           flexDirection: 'row',
           alignItems: 'center',
         }}

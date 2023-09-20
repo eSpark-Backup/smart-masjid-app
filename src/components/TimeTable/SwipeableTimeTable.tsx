@@ -67,13 +67,15 @@ const RowItem = ({
         {isMute && (
           <View style={styles.contentIcon}>
             {subscribed ? (
-              <VolumUpGreen
-                onPress={toggleSubscription}
-                height={16}
-                width={16}
-              />
+              <TouchableOpacity
+                style={{ padding: 5 }}
+                onPress={toggleSubscription}>
+                <VolumUpGreen height={16} width={16} />
+              </TouchableOpacity>
             ) : (
-              <MuteSvg onPress={toggleSubscription} height={16} width={16} />
+              <TouchableOpacity onPress={toggleSubscription}>
+                <MuteSvg height={16} width={16} />
+              </TouchableOpacity>
             )}
           </View>
         )}

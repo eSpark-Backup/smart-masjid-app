@@ -138,7 +138,16 @@ const SearchListing = ({
         <View>
           <Card
             backgroundColor="#ffffff"
-            style={{ elevation: 3 }}
+            style={{
+              elevation: 3,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.22,
+              shadowRadius: 2.22,
+            }}
             width={WINDOW_WIDTH - 30}>
             <MyInput
               searchBar

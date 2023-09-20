@@ -151,29 +151,31 @@ export default function MyDropdown({
             marginTop: 8,
             width: width,
             height: Platform.OS == 'ios' ? 40 : undefined,
-            top: 0,
+            fontFamily: 'roboto',
           }}
         />
         {show ? (
-          <ArrowUp
-            onPress={openDropDown}
+          <TouchableOpacity
             style={{
-              bottom: 15,
+              bottom: 17,
               right: title ? 35 : 15,
               position: 'absolute',
               zIndex: 1,
             }}
-          />
+            onPress={openDropDown}>
+            <ArrowUp />
+          </TouchableOpacity>
         ) : (
-          <ArrowDown
-            onPress={openDropDown}
+          <TouchableOpacity
             style={{
-              bottom: 15,
+              bottom: 17,
               right: title ? 35 : 15,
               position: 'absolute',
               zIndex: 1,
             }}
-          />
+            onPress={openDropDown}>
+            <ArrowDown onPress={openDropDown} />
+          </TouchableOpacity>
         )}
       </TouchableOpacity>
       {show && (
