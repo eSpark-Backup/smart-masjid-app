@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import AD from 'react-native-vector-icons/AntDesign';
@@ -21,7 +21,11 @@ export default function Header({
         justifyContent: 'center',
         paddingHorizontal: 25,
       }}>
-      {showBack && <ArrowLeft onPress={onBackPress} />}
+      {showBack && (
+        <TouchableOpacity style={{ width: 30 }} onPress={onBackPress}>
+          <ArrowLeft />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

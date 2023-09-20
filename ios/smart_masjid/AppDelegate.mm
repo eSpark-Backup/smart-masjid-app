@@ -20,8 +20,13 @@
   
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   [RNSplashScreen show];
+<<<<<<< HEAD
   // Add the following line
 //  [FIRApp configure]; 
+=======
+  // // Add the following line
+  // [FIRApp configure]; 
+>>>>>>> 5b5bae6 (Test and fixes done on iOS.)
   
   return YES;
 }
