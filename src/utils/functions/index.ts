@@ -53,14 +53,14 @@ async function _getFCMToken(): Promise<string> {
   // }
   let token = '';
   if (Platform.OS == 'ios') {
-    await messaging().registerDeviceForRemoteMessages();
-    messaging().setAutoInitEnabled(true);
-    const apns = await messaging().getAPNSToken();
-    await AsyncStorage.setItem('apns', apns ?? '');
-    console.log('sx getAPNSToken', apns);
-    await messaging().setAPNSToken(apns ?? '');
-    token = await messaging().getToken();
-    console.log('sx', apns, 'token \n', token);
+    // await messaging().registerDeviceForRemoteMessages();
+    // messaging().setAutoInitEnabled(true);
+    // const apns = await messaging().getAPNSToken();
+    // await AsyncStorage.setItem('apns', apns ?? '');
+    // console.log('sx getAPNSToken', apns);
+    // await messaging().setAPNSToken(apns ?? '');
+    // token = await messaging().getToken();
+    // console.log('sx', apns, 'token \n', token);
   } else {
     // Get the token
     token = await messaging().getToken();

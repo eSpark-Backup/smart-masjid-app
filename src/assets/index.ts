@@ -1,5 +1,6 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
+export { default as HeaderIOSBackgroundImage } from './images/Header2.png';
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
 export { default as SL } from './animations/simpleLoader.gif';
