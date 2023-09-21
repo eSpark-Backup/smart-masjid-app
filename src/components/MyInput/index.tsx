@@ -342,7 +342,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       fontFamily: 'roboto',
       // paddingTop: 8,
       paddingHorizontal: 20,
-      width: WINDOW_WIDTH - 75 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
+      width: WINDOW_WIDTH - 50 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
       color: colors.text,
       // top: Platform.OS == 'ios' ? 17 : 0,
       borderWidth: helpSearch || searchBar ? 0 : 1,

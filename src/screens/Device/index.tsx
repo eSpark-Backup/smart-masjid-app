@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Platform,
 } from 'react-native';
 import {
   Theme,
@@ -114,15 +115,23 @@ export default function Device({ contentOpacity = 0 }: any) {
         return (
           <>
             {step == 0 && (
-              <>
-                <View style={{ alignSelf: 'center', top: 100 }}>
+              <View>
+                <View
+                  style={{
+                    alignSelf: 'center',
+                    position: 'absolute',
+                    top:
+                      Platform.OS == 'ios'
+                        ? -WINDOW_WIDTH / 1.6 / 3
+                        : -WINDOW_WIDTH / 1.9 / 3,
+                  }}>
                   <Animated.View style={[{ opacity: props?.contentOpacity }]}>
                     <MyTitle text="Devices" />
                   </Animated.View>
                   <GapView length={50} />
                 </View>
 
-                <View style={{ top: 100 }}>
+                <View style={{ paddingTop: 10 }}>
                   {user?.userType?.name === 'Customer' ? (
                     <MyTitle
                       text="My Devices"
@@ -189,7 +198,7 @@ export default function Device({ contentOpacity = 0 }: any) {
                     />
                   </View>
                 </View>
-              </>
+              </View>
             )}
             {step == 1 && (
               <DeviceSetting
