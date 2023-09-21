@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  BackHandler,
 } from 'react-native';
 import {
   Theme,
@@ -92,12 +93,21 @@ export default function Device({ contentOpacity = 0 }: any) {
     }
   }, [isFocused, step]);
 
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onBackPress,
+    );
+    return () => backHandler.remove();
+  }, [step]);
+
   const onBackPress = () => {
     if (step != 0) {
       setStep(step - 1);
     } else {
       navigation.goBack();
     }
+    return true;
   };
 
   const finalData = activeTab == '1' ? devices : masjidDevices;

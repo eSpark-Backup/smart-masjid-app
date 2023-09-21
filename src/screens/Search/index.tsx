@@ -1,29 +1,12 @@
+import React, { useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
-import { View } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { getPreciseDistance, getDistance } from 'geolib';
 
 import { SubscribeMasjid } from '../../api/deviceController';
-import { ConnectedDevice } from '../../assets';
-import {
-  DeviceListItem,
-  GapView,
-  LogoutModal,
-  MapBox,
-  MasjidListCard,
-  MyDivider,
-  MyInput,
-  MyText,
-  OverlayLoader,
-  Rounded,
-  TextLabel,
-  TimeTable,
-} from '../../components';
-import { WINDOW_WIDTH } from '../../constants';
+import { LogoutModal, OverlayLoader } from '../../components';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { Masjid } from '../../types/masjidControllerTypes';
@@ -49,12 +32,21 @@ export default function Search() {
     }
   }, [isFocused]);
 
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onBackPress,
+    );
+    return () => backHandler.remove();
+  }, [step]);
+
   const onBackPress = () => {
     if (step != 0) {
       setStep(step - 1);
     } else {
       navigation.goBack();
     }
+    return true;
   };
 
   const onSubscribe = async (deviceId: string, masjidId: string) => {
@@ -79,7 +71,6 @@ export default function Search() {
         return 'Masjid Search';
       case 2:
         return 'Masjid Search';
-
       default:
         break;
     }

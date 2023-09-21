@@ -108,9 +108,7 @@ const DeviceSetting = ({
       <ErrorModal
         visible={errorShow}
         message={
-          device?.deviceTelemetry?.status == 'Online'
-            ? 'What would you like to do ?'
-            : 'Looks like your device is offline, what would you like to do ?'
+          'Looks like your device is offline, what would you like to do ?'
         }
         onClose={() => setErrorShow(false)}
         options={[
@@ -249,7 +247,13 @@ const DeviceSetting = ({
                       device?.deviceTelemetry?.status === 'Online'
                         ? false
                         : true,
-                    onPress: () => setErrorShow(true),
+                    onPress: () =>
+                      device?.deviceTelemetry?.status === 'Online'
+                        ? navigation.navigate('DSetup', {
+                            from: 'SelectedDevice',
+                            deviceData: device,
+                          })
+                        : setErrorShow(true),
                   },
                   {
                     title: 'Firmware Version',
