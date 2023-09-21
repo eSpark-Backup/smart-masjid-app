@@ -5,6 +5,7 @@ import {
   View,
   Animated,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
@@ -34,6 +35,7 @@ import {
 } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
+import { WINDOW_WIDTH } from '../../../../../../constants';
 
 export default function History({
   setFlag,
@@ -87,12 +89,21 @@ export default function History({
 
   return (
     <View style={{ alignItems: 'center' }}>
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <OverlayLoader isShow={loading} />
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Monthly Schedule" />
         </Animated.View>
-        <GapView length={45} />
+      </View>
+      <View>
         <MyDatePicker
           minimumDate={moment().startOf('month').toDate()}
           maximumDate={moment().add(4, 'month').toDate()}
@@ -101,9 +112,7 @@ export default function History({
           onDateChange={onDateChange}
           dateFormat={'Monthly'}
         />
-        <GapView length={13} />
-      </View>
-      <View style={{ top: 112, paddingBottom: 100 }}>
+        <GapView length={10} />
         {adhaTime.length < 1 && !loading ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}

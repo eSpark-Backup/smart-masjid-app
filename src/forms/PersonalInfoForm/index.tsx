@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 
 import {
   GapView,
@@ -24,14 +24,20 @@ export default function PersonalInfoForm({
 }) {
   return (
     <View style={styles.container}>
-      <View style={{ top: 130 }}>
+      <View
+        style={{
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text={'Create Account'} />
         </Animated.View>
-        <GapView length={50} />
       </View>
-
-      <View style={{ top: 140, alignItems: 'center' }}>
+      <GapView />
+      <View style={{ alignItems: 'center' }}>
         <MyTextSubHeader text="Lets have some details about you" />
         <GapView length={40} />
         <Formik

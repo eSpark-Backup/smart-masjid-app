@@ -1,5 +1,11 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View, TouchableOpacity, Animated } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Animated,
+  Platform,
+} from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import { Theme, useTheme } from '@react-navigation/native';
 import CountDown from 'react-native-countdown-component';
@@ -14,6 +20,7 @@ import {
 } from '../../components';
 import { MyLightTheme } from '../../theme';
 import { CreateUserRequest } from '../../types/userControllerApiResponse';
+import { WINDOW_WIDTH } from '../../constants';
 
 export default function OtpForm({
   type,
@@ -55,14 +62,20 @@ export default function OtpForm({
 
   return (
     <View style={styles.container}>
-      <View style={{ top: 110 }}>
+      <View
+        style={{
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text={title} />
         </Animated.View>
-        <GapView length={50} />
       </View>
-
-      <View style={{ alignItems: 'center', top: 115 }}>
+      <GapView />
+      <View style={{ alignItems: 'center' }}>
         <OverlayLoader isShow={loader} />
         <MyTextSubHeader text="One-time passcode sent to email" />
         <GapView length={10} />

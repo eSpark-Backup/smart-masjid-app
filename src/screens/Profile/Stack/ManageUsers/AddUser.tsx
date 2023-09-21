@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { useState } from 'react';
-import { ScrollView, View, Animated } from 'react-native';
+import { ScrollView, View, Animated, Platform } from 'react-native';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { api } from '../../../../api';
@@ -10,6 +10,7 @@ import {
   GapView,
   MyInput,
   MyText,
+  MyTitle,
   OverlayLoader,
   Rounded,
   TextLabel,
@@ -63,22 +64,30 @@ export default function AddUsers({
     }
   };
   return (
-    <ScrollView style={{ flexGrow: 1, marginTop: 0 }}>
+    <View>
       <OverlayLoader isShow={loading} />
-      <GapView length={20} />
-      <TextLabel label="" textStyle={{ alignSelf: 'center' }} />
-      <GapView length={50} />
-
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <TextLabel label="Add New User" textStyle={{ alignSelf: 'center' }} />
+          <MyTitle text="Add New User" />
         </Animated.View>
-        <GapView length={50} />
       </View>
 
-      <View style={{ top: 100 }}>
+      <View>
         <Formik
-          initialValues={{ firstName: '', lastName: '', email: '', phone: '' }}
+          initialValues={{
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+          }}
           validationSchema={AddAdminForSchema.AddAdminForSchema}
           onSubmit={onSubmit}>
           {({
@@ -96,40 +105,31 @@ export default function AddUsers({
                   <MyInput
                     placeholder="First Name"
                     placeholderColor="#CFCFCF"
-                    isDivider
-                    dividerWidth={0.25}
-                    dividerColor="rgba(158, 159, 159, 1)"
                     onChangeText={handleChange('firstName')}
                     value={values.firstName}
+                    containerStyle={{ marginVertical: 10 }}
                   />
                   <MyInput
                     placeholder="Last Name"
                     placeholderColor="#CFCFCF"
-                    isDivider
-                    dividerWidth={0.25}
-                    dividerColor="rgba(158, 159, 159, 1)"
                     onChangeText={handleChange('lastName')}
                     value={values.lastName}
+                    containerStyle={{ marginVertical: 10 }}
                   />
                   <MyInput
                     placeholder="Email"
                     placeholderColor="#CFCFCF"
-                    isDivider
-                    dividerWidth={0.25}
-                    dividerColor="rgba(158, 159, 159, 1)"
                     onChangeText={handleChange('email')}
                     value={values.email}
+                    containerStyle={{ marginVertical: 10 }}
                   />
                   <MyInput
                     placeholder="Phone Number"
                     placeholderColor="#CFCFCF"
-                    isDivider={false}
-                    dividerWidth={0.25}
-                    dividerColor="rgba(158, 159, 159, 1)"
                     isPhoneCode
-                    phoneCodeContainerStyle={{ borderTopLeftRadius: 0 }}
                     onChangeText={handleChange('phone')}
                     value={values.phone}
+                    containerStyle={{ marginVertical: 10 }}
                   />
                 </Card>
                 {Object.entries(errors).map(([key, value]) => {
@@ -151,8 +151,8 @@ export default function AddUsers({
               <View
                 style={{
                   alignSelf: 'center',
-                  marginTop: 80,
-                  marginBottom: 10,
+                  // marginTop: 80,
+                  marginVertical: 20,
                 }}>
                 <Rounded onPress={handleSubmit} label="Save" />
               </View>
@@ -160,6 +160,6 @@ export default function AddUsers({
           )}
         </Formik>
       </View>
-    </ScrollView>
+    </View>
   );
 }

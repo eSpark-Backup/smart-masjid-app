@@ -30,7 +30,7 @@ export default function DeviceErrorBox({
           paddingHorizontal: 10,
           alignSelf: 'center',
         }}>
-        <View style={{ padding: 10 }}>
+        <View>
           <View
             style={{
               flexDirection: 'row',

@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useHookstate } from '@hookstate/core';
-import { StyleSheet, Text, View, Animated, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import { GetMasjid } from '../../../../api/masjidController';
 
 import {
@@ -24,6 +31,7 @@ import {
 } from '../../../../components';
 import { masjidStore } from '../../../../store/MasjidStore';
 import { userStore } from '../../../../store/UserStore';
+import { WINDOW_WIDTH } from '../../../../constants';
 
 export default function ManageMasjid({
   setFlag,
@@ -51,14 +59,21 @@ export default function ManageMasjid({
   return (
     <View style={{ flex: 1 }}>
       <OverlayLoader isShow={showLoader} />
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Manage Masjid" />
         </Animated.View>
-        <GapView length={50} />
       </View>
 
-      <ScrollView style={{ top: 112, paddingBottom: 112 }}>
+      <ScrollView style={{}}>
         <View style={{ width: '92%', alignSelf: 'center' }}>
           <MyTextHeader style={{ paddingLeft: 5 }} text={masjidInfo?.name!} />
           <View

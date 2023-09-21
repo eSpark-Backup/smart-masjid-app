@@ -62,14 +62,11 @@ export default function Wrapper({
 
   return (
     <>
-      {/* <SafeAreaView style={{ flex: 1 }}> */}
       <Animated.View
         style={[
           {
             position: 'absolute',
             top: Platform.OS == 'ios' ? useSafeAreaInsets().top : 10,
-            left: WINDOW_WIDTH / 8,
-            right: 0,
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 1,
@@ -119,7 +116,6 @@ export default function Wrapper({
           )}
         </View>
       </View>
-      {/* </SafeAreaView> */}
     </>
   );
 }

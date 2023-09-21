@@ -1,12 +1,12 @@
+import React from 'react';
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Animated,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {
   GapView,
@@ -33,14 +33,20 @@ export default function AddPhoneForm({
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
-      <View style={{ top: 110 }}>
+      <View
+        style={{
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text={'Create Account'} />
         </Animated.View>
-        <GapView length={50} />
       </View>
-
-      <View style={{ alignItems: 'center', top: 120 }}>
+      <GapView />
+      <View style={{ alignItems: 'center' }}>
         <MyTextSubHeader text="Would you like to add a phone number?" />
         <GapView length={30} />
         <Formik
@@ -58,7 +64,7 @@ export default function AddPhoneForm({
             touched,
           }) => (
             <>
-              <Card backgroundColor="#fff" width={315}>
+              <Card backgroundColor="#fff" width={WINDOW_WIDTH - 50}>
                 <MyInput
                   placeholder="Phone"
                   onChangeText={handleChange('phone')}

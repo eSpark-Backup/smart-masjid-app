@@ -136,7 +136,7 @@ export default function MasjidDetails({
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          padding: 10,
+          paddingVertical: 10,
           paddingHorizontal: 15,
         }}>
         <MyTextHeader text={selectedMasjid?.name ?? ''} />

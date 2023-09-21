@@ -138,10 +138,9 @@ export default function Device({ contentOpacity = 0 }: any) {
                   <Animated.View style={[{ opacity: props?.contentOpacity }]}>
                     <MyTitle text="Devices" />
                   </Animated.View>
-                  <GapView length={50} />
                 </View>
-
-                <View style={{ paddingTop: 10 }}>
+                <GapView />
+                <View>
                   {user?.userType?.name === 'Customer' ? (
                     <MyTitle
                       text="My Devices"

@@ -62,8 +62,7 @@ export default function ProfileSectionlist({
       ListFooterComponentStyle={{
         position: 'absolute',
         bottom: 0,
-        left: 4,
-        padding: 10,
+        left: 15,
       }}
       ListFooterComponent={
         <View>
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     // paddingVertical: 8,
-    height: 44,
+    // height: 44,
     justifyContent: 'space-between',
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
