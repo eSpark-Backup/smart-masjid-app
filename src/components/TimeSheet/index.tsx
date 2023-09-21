@@ -54,7 +54,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
   };
 
   return (
-    <View style={{ marginTop: 30, paddingHorizontal: 10 }}>
+    <View style={{ padding: 10 }}>
       {/* <ScrollView
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
@@ -62,7 +62,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 30 }}
+        contentContainerStyle={{}}
         data={data ?? []}
         renderItem={renderTable}
       />

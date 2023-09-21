@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Animated,
+  Platform,
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
@@ -69,14 +70,21 @@ export default function ManageUsers({
         }}
       />
       <OverlayLoader isShow={loading} />
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Manage Users" />
         </Animated.View>
-        <GapView length={50} />
       </View>
-      <View style={{ top: 100 }}>
-        <GapView length={10} />
+      <GapView />
+      <View>
         <FlatList
           contentContainerStyle={{
             flexGrow: 1,

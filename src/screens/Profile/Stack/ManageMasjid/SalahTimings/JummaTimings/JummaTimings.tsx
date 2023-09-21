@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Animated, FlatList } from 'react-native';
+import { StyleSheet, View, Animated, FlatList, Platform } from 'react-native';
 import moment from 'moment';
 import { useHookstate } from '@hookstate/core';
 
@@ -23,6 +23,7 @@ import {
   jumuahsData,
 } from '../../../../../../types/masjidControllerTypes';
 import { userStore } from '../../../../../../store/UserStore';
+import { WINDOW_WIDTH } from '../../../../../../constants';
 
 export default function JummaTimings({
   setFlag,
@@ -159,14 +160,21 @@ export default function JummaTimings({
     <>
       <View style={{ flex: 1 }}>
         <OverlayLoader isShow={loading} />
-        <View style={{ alignSelf: 'center', top: 110 }}>
+        <View
+          style={{
+            alignSelf: 'center',
+            position: 'absolute',
+            top:
+              Platform.OS == 'ios'
+                ? -WINDOW_WIDTH / 1.6 / 3
+                : -WINDOW_WIDTH / 1.9 / 3,
+          }}>
           <Animated.View style={[{ opacity: contentOpacity }]}>
             <MyTitle text="Jumuah Timings" />
           </Animated.View>
-          <GapView length={50} />
         </View>
-
-        <View style={{ top: 110, paddingHorizontal: 15 }}>
+        <GapView />
+        <View style={{ paddingHorizontal: 15 }}>
           <OverlayLoader isShow={loading} />
           <View
             style={{

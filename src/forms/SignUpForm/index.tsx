@@ -1,7 +1,7 @@
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 import {
   GapView,
   MyInput,
@@ -28,14 +28,20 @@ export default function SignUpForm({
   const { colors }: Theme = useTheme();
   return (
     <View style={styles.container}>
-      <View style={{ top: 112 }}>
+      <View
+        style={{
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Create Account" />
         </Animated.View>
-        <GapView length={50} />
       </View>
-
-      <View style={{ alignItems: 'center', top: 110 }}>
+      <GapView />
+      <View style={{ alignItems: 'center' }}>
         <MyTextSubHeader text="Great! Let’s get your account created" />
         <GapView length={40} />
         <Formik

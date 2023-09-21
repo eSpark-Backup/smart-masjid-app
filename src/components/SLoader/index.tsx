@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet, Animated } from 'react-native';
+import { View, Image, StyleSheet, Animated, Platform } from 'react-native';
 
 import { SL } from '../../assets';
 import GapView from '../GapView';
@@ -8,6 +8,7 @@ import TextLabel from '../TextLabel';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
 import FastImage from 'react-native-fast-image';
+import { WINDOW_WIDTH } from '../../constants';
 
 export default function SLoader({
   title,
@@ -22,13 +23,21 @@ export default function SLoader({
 }) {
   return (
     <View style={styles.container}>
-      <View style={{ alignSelf: 'center', top: 128 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           {title && <MyTitle text={title!} />}
         </Animated.View>
-        <GapView length={50} />
       </View>
-      <View style={{ alignItems: 'center', top: 120 }}>
+      <GapView />
+      <View style={{ alignItems: 'center' }}>
         {subtitle && <MyTextSubHeader text={subtitle!!} />}
         <View style={{ alignSelf: 'center' }}>
           <GapView length={15} />

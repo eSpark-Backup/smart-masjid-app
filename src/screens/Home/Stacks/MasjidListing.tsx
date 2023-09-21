@@ -91,7 +91,7 @@ export default function MasjidListing({
       </View>
       <FlatList
         data={data}
-        contentContainerStyle={{ paddingBottom: 140, paddingTop: 10 }}
+        contentContainerStyle={{ paddingVertical: 10 }}
         keyExtractor={(item, index) => item.id.toString() + index.toString()}
         renderItem={({ item, index }) => {
           return (

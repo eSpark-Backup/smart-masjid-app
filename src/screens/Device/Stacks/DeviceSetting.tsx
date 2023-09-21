@@ -1,5 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View, Animated, Text } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Animated,
+  Text,
+  Platform,
+} from 'react-native';
 import {
   Theme,
   useNavigation,
@@ -103,7 +110,7 @@ const DeviceSetting = ({
   };
 
   return (
-    <>
+    <View>
       <OverlayLoader isShow={loader} />
       <ErrorModal
         visible={errorShow}
@@ -140,16 +147,20 @@ const DeviceSetting = ({
           },
         ]}
       />
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle
-            text="Devices"
-            style={{ alignSelf: 'center', fontWeight: '400' }}
-          />
+          <MyTitle text="Devices" style={{ fontWeight: '400' }} />
         </Animated.View>
-        <GapView length={40} />
       </View>
-      <ScrollView style={{ top: 112, padding: 10 }}>
+      <ScrollView>
         <DeviceErrorBox
           show={device?.deviceTelemetry?.status == 'Online' ? false : true}
           onClose={() => console.log('on Close Box', device)}
@@ -160,6 +171,7 @@ const DeviceSetting = ({
           visible={offlineErrors}
           onClose={() => setOfflineErrors(false)}
         />
+        <GapView />
         <View style={styles.deviceSettingContainer}>
           <View style={styles.subHeader}>
             <MyText
@@ -272,21 +284,21 @@ const DeviceSetting = ({
             ]}
           />
         </View>
-        <LogoutModal
-          message="The device will remove permanently. Do you still want to reset?"
-          visible={isVisible}
-          onAllowed={async () => {
-            await removeDevice();
-            setIsVisible(!isVisible);
-            console.log('Logged Out');
-          }}
-          onClose={() => {
-            setIsVisible(!isVisible);
-            console.log('Cancelled');
-          }}
-        />
       </ScrollView>
-    </>
+      <LogoutModal
+        message="The device will remove permanently. Do you still want to reset?"
+        visible={isVisible}
+        onAllowed={async () => {
+          await removeDevice();
+          setIsVisible(!isVisible);
+          console.log('Logged Out');
+        }}
+        onClose={() => {
+          setIsVisible(!isVisible);
+          console.log('Cancelled');
+        }}
+      />
+    </View>
   );
 };
 

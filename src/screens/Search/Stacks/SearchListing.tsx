@@ -141,7 +141,7 @@ const SearchListing = ({
           <MyTitle text="Search Masjid" />
         </Animated.View>
       </View>
-      <View style={{ paddingTop: 10 }}>
+      <View style={{ marginTop: 10 }}>
         <View>
           <Card
             backgroundColor="#ffffff"

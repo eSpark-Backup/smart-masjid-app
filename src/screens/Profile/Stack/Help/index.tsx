@@ -4,7 +4,7 @@ import {
   View,
   Animated,
   TouchableOpacity,
-  ScrollView,
+  Platform,
   FlatList,
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
@@ -55,20 +55,25 @@ export default function HelpScreen({
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ alignSelf: 'center', top: 110 }}>
-        <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Help" style={{ alignSelf: 'center' }} />
-        </Animated.View>
-        <GapView length={50} />
-      </View>
-
       <View
         style={{
-          top: 112,
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <MyTitle text="Help" />
+        </Animated.View>
+      </View>
+      <GapView />
+      <View
+        style={{
           flex: 1,
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingBottom: 112,
         }}>
         <View style={{ flex: 1 }}>
           <Card
