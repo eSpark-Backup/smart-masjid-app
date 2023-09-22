@@ -7,6 +7,8 @@ import {
   Platform,
 } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
+import { Theme, useTheme } from '@react-navigation/native';
+import CountDown from 'react-native-countdown-component';
 
 import {
   GapView,
@@ -17,8 +19,6 @@ import {
   Rounded,
 } from '../../components';
 import { MyLightTheme } from '../../theme';
-import { Theme, useTheme } from '@react-navigation/native';
-import CountDown from 'react-native-countdown-component';
 import { CreateUserRequest } from '../../types/userControllerApiResponse';
 import { WINDOW_WIDTH } from '../../constants';
 
@@ -171,7 +171,10 @@ const styles = StyleSheet.create({
   },
   underlineStyleBase: {
     borderWidth: 0,
+    borderRadius: 0,
     borderBottomWidth: 1,
+    marginRight: 15,
+    width: 40,
     color: 'black',
     fontSize: 16,
   },

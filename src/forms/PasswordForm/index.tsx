@@ -1,14 +1,6 @@
-import React, { useCallback, useState, useRef } from 'react';
-import {
-  Alert,
-  Button,
-  Linking,
-  StyleSheet,
-  View,
-  Animated,
-  Platform,
-} from 'react-native';
-import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
+import React, { useState } from 'react';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
+import WifiManager from 'react-native-wifi-reborn';
 import RnWifi from '@react-native-tethering/wifi';
 import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
@@ -22,7 +14,6 @@ import {
   MyTitle,
   OverlayLoader,
   Rounded,
-  TextLabel,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { DeviceSetupSchema } from '../../constants/validations/schema';
@@ -40,13 +31,16 @@ export default function PasswordForm({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const connectToWifi = async ({
-    ssid,
-    password,
-  }: {
-    ssid: string;
-    password: string;
-  }) => {
+  const connectToWifi = async (
+    {
+      ssid,
+      password,
+    }: {
+      ssid: string;
+      password: string;
+    },
+    clear: () => void,
+  ) => {
     setLoading(true);
     try {
       const res = await WifiManager.connectToProtectedSSID(
@@ -60,6 +54,7 @@ export default function PasswordForm({
           console.log('Connected Successfully', res);
           setLoading(false);
           setStep(6);
+          clear();
         })
         .catch(error => {
           console.error(error);
@@ -75,6 +70,7 @@ export default function PasswordForm({
         type: 'error',
         visibilityTime: 10000,
       });
+      clear();
       // setStep(4);
     }
   };
@@ -117,8 +113,7 @@ export default function PasswordForm({
           onSubmit={({ password }, { resetForm }) => {
             // setStep(6);
             setPass(password);
-            connectToWifi({ ssid: ssid ?? '', password });
-            resetForm();
+            connectToWifi({ ssid: ssid ?? '', password }, resetForm);
           }}>
           {({ handleChange, handleSubmit, values, errors, touched }) => (
             <View style={{ alignItems: 'center' }}>
