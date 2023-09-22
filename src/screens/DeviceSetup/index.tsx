@@ -668,9 +668,10 @@ export default function DeviceSetupScreen() {
       onBackPress={() => disable && setStep(handleBack)}>
       {({ props }) => {
         return (
-          <ScrollView
-            nestedScrollEnabled
-            contentContainerStyle={{ paddingBottom: 30, flexGrow: 1 }}>
+          // <ScrollView
+          //   nestedScrollEnabled
+          //   contentContainerStyle={{ paddingBottom: 30, flexGrow: 1 }}>
+          <View>
             {step == 1 && <DLoader contentOpacity={props.contentOpacity} />}
             {step == 2 && (
               <DeviceSelectForm
@@ -778,7 +779,8 @@ export default function DeviceSetupScreen() {
                 }
               />
             )}
-          </ScrollView>
+          </View>
+          // {/* </ScrollView> */}
         );
       }}
     </Wrapper>

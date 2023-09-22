@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { useEffect } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View, Platform } from 'react-native';
 
 import {
   GapView,
@@ -37,13 +37,21 @@ export default function DeviceNicknameForm({
 
   return (
     <View style={styles.container}>
-      <View style={{ alignSelf: 'center', top: 128 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text={'Device Setup'} />
         </Animated.View>
-        <GapView length={50} />
       </View>
-      <View style={{ top: 130 }}>
+      <GapView />
+      <View>
         <MyTextSubHeader
           text="Let’s give your device a name"
           style={{ alignSelf: 'center' }}
@@ -81,7 +89,8 @@ export default function DeviceNicknameForm({
                   }}
                 />
               )}
-              <View style={{ marginTop: 30, marginBottom: 40 }}>
+              <GapView length={30} />
+              <View>
                 <Rounded label="Next" width={250} onPress={handleSubmit} />
               </View>
             </View>

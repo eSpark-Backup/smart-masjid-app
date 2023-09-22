@@ -14,7 +14,7 @@ import {
   OverlayLoader,
   TextLabel,
 } from '../../components';
-import { WINDOW_HEIGHT } from '../../constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { _requestUserLocationPermission } from '../../utils/functions';
 
 export default function WifiSelectForm({
