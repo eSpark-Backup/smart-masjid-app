@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Animated } from 'react-native';
+import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
@@ -90,16 +90,21 @@ export default function EditIqamahTimings({
   return (
     <>
       <View style={{ flex: 1 }}>
-        <View style={{ alignSelf: 'center', top: 110 }}>
+        <View
+          style={{
+            alignSelf: 'center',
+            position: 'absolute',
+            top:
+              Platform.OS == 'ios'
+                ? -WINDOW_WIDTH / 1.6 / 3
+                : -WINDOW_WIDTH / 1.9 / 3,
+          }}>
           <Animated.View style={[{ opacity: contentOpacity }]}>
             <MyTitle text="Iqama Timings" />
           </Animated.View>
-          <GapView length={50} />
         </View>
 
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 110, paddingHorizontal: 15 }}
-          style={{ top: 110 }}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
           <OverlayLoader isShow={loading} />
           <TimeTable
             type={data?.type}
@@ -108,8 +113,6 @@ export default function EditIqamahTimings({
             }}
             header={
               <>
-                <GapView />
-
                 <View>
                   <MyDropDown
                     title={''}

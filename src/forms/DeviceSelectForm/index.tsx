@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Animated, View } from 'react-native';
+import { Animated, View, Platform } from 'react-native';
 import { Peripheral } from 'react-native-ble-manager';
 import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -16,6 +16,7 @@ import {
 } from '../../components';
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { Device } from '../../types/deviceControllerTypes';
+import { WINDOW_WIDTH } from '../../constants';
 
 export default function DeviceSelectForm({
   data = [],
@@ -119,15 +120,23 @@ export default function DeviceSelectForm({
 
   return (
     <View style={{ alignItems: 'center' }}>
-      <View style={{ alignSelf: 'center', top: 128 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text={'Device Setup'} />
         </Animated.View>
-        <GapView length={50} />
       </View>
-      <View style={{ top: 130 }}>
+      <GapView />
+      <View>
         <MyTextSubHeader text="Devices found" style={{ alignSelf: 'center' }} />
-        <GapView length={50} />
+        <GapView length={30} />
         {loading ? (
           <OverlayLoader isShow={loading} noBg={true} />
         ) : (

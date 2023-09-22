@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Animated } from 'react-native';
+import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
@@ -22,6 +22,7 @@ import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import { FlatList } from 'react-native-gesture-handler';
 import TimeTableCard from '../../../../../../components/TimeTableCard';
 import { userStore } from '../../../../../../store/UserStore';
+import { WINDOW_WIDTH } from '../../../../../../constants';
 
 export default function IqamahTimings({
   setFlag,
@@ -133,16 +134,21 @@ export default function IqamahTimings({
   return (
     <>
       <View style={{ flex: 1 }}>
-        <View style={{ alignSelf: 'center', top: 110 }}>
+        <View
+          style={{
+            alignSelf: 'center',
+            position: 'absolute',
+            top:
+              Platform.OS == 'ios'
+                ? -WINDOW_WIDTH / 1.6 / 3
+                : -WINDOW_WIDTH / 1.9 / 3,
+          }}>
           <Animated.View style={[{ opacity: contentOpacity }]}>
             <MyTitle text="Iqama Timings" />
           </Animated.View>
-          <GapView length={50} />
         </View>
-
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 110, paddingHorizontal: 15 }}
-          style={{ top: 110 }}>
+        <GapView />
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
           <OverlayLoader isShow={loading} />
           <View
             style={{

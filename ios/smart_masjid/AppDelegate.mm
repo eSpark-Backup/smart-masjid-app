@@ -20,8 +20,8 @@
   
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   [RNSplashScreen show];
-  // Add the following line
-  [FIRApp configure]; 
+  // // Add the following line
+  // [FIRApp configure]; 
   
   return YES;
 }

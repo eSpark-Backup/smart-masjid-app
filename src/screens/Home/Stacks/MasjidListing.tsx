@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 
@@ -8,6 +8,7 @@ import { GapView, MasjidListCard, MyTitle } from '../../../components';
 import { AllSalahTimings, Masjid } from '../../../types/masjidControllerTypes';
 import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
 import moment from 'moment';
+import { WINDOW_WIDTH } from '../../../constants';
 
 export default function MasjidListing({
   data,
@@ -75,16 +76,22 @@ export default function MasjidListing({
 
   return (
     <View>
-      <View style={{ alignSelf: 'center', top: 130 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Masjid Subscriptions" />
         </Animated.View>
-        <GapView length={50} />
       </View>
       <FlatList
-        style={{ top: 120 }}
         data={data}
-        contentContainerStyle={{ paddingBottom: 140, paddingTop: 15 }}
+        contentContainerStyle={{ paddingVertical: 10 }}
         keyExtractor={(item, index) => item.id.toString() + index.toString()}
         renderItem={({ item, index }) => {
           return (

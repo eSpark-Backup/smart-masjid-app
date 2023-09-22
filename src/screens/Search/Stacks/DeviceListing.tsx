@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Animated } from 'react-native';
+import { FlatList, View, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 
 import {
@@ -31,14 +31,21 @@ const DeviceListing = ({
       style={{
         minHeight: WINDOW_HEIGHT / 2,
       }}>
-      <View style={{ alignSelf: 'center', top: 100 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Masjid Search" />
         </Animated.View>
-        <GapView length={50} />
       </View>
 
-      <View style={{ top: 110 }}>
+      <View style={{ paddingVertical: 10 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <MyText
             textStyle={{ fontWeight: '400' }}

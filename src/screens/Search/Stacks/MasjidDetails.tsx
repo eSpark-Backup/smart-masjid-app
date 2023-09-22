@@ -5,6 +5,7 @@ import {
   View,
   Animated,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import moment from 'moment';
 
@@ -49,6 +50,7 @@ import {
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
 import { useIsFocused } from '@react-navigation/native';
+import { WINDOW_WIDTH } from '../../../constants';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -83,19 +85,24 @@ const MasjidDetails = ({
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <OverlayLoader isShow={loading} noBg={false} />
-      <View style={{ alignSelf: 'center', top: 100 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Masjid Search" />
         </Animated.View>
-        <GapView length={50} />
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          top: 110,
-          paddingBottom: 130,
-          padding: 5,
+          paddingVertical: 10,
           paddingHorizontal: 15,
         }}>
         <MyTextHeader text={masjidDetails?.name ?? ''} />

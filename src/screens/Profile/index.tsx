@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, BackHandler, Animated } from 'react-native';
+import { View, BackHandler, Animated, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -46,6 +46,7 @@ import { userStore } from '../../store/UserStore';
 import { UserResponse } from '../../types/userControllerApiResponse';
 import { jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -376,7 +377,16 @@ function UserInformation({
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ alignSelf: 'center', top: 70, alignItems: 'center' }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 2
+              : -WINDOW_WIDTH / 1.9 / 1.8,
+          alignItems: 'center',
+        }}>
         <View
           style={{
             borderRadius: 50,
@@ -399,12 +409,11 @@ function UserInformation({
             }
           />
         </Animated.View>
-        <GapView length={50} />
       </View>
-
-      <View style={{ top: 50 }}>
+      <GapView />
+      <View style={{ flex: 1 }}>
         <ProfileSectionlist
-          containerStyle={{ height: '85%' }}
+          containerStyle={{ height: '100%' }}
           data={[
             {
               data: [

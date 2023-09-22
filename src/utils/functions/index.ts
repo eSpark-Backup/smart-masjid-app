@@ -45,13 +45,28 @@ async function _getPhoneId(): Promise<string> {
  */
 
 async function _getFCMToken(): Promise<string> {
-  if (!messaging().isDeviceRegisteredForRemoteMessages) {
-    await messaging().registerDeviceForRemoteMessages();
+  // if (
+  //   Platform.OS == 'android' &&
+  //   !messaging().isDeviceRegisteredForRemoteMessages
+  // ) {
+  //   await messaging().registerDeviceForRemoteMessages();
+  // }
+  let token = '';
+  if (Platform.OS == 'ios') {
+    // await messaging().registerDeviceForRemoteMessages();
+    // messaging().setAutoInitEnabled(true);
+    // const apns = await messaging().getAPNSToken();
+    // await AsyncStorage.setItem('apns', apns ?? '');
+    // console.log('sx getAPNSToken', apns);
+    // await messaging().setAPNSToken(apns ?? '');
+    // token = await messaging().getToken();
+    // console.log('sx', apns, 'token \n', token);
+  } else {
+    // Get the token
+    token = await messaging().getToken();
+    globalStore.fcmToken.set(token);
   }
-  // Get the token
-  const fcmToken = await messaging().getToken();
-  globalStore.fcmToken.set(fcmToken);
-  return fcmToken;
+  return token;
 }
 
 /**

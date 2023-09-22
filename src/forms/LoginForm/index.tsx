@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik, FormikFormProps, FormikProps } from 'formik';
 import { phone as isValidPhone } from 'phone';
@@ -41,14 +41,20 @@ const LoginForm = ({
 
   return (
     <View style={styles.container}>
-      <View style={{ top: 134 }}>
+      <View
+        style={{
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Login" />
         </Animated.View>
-        <GapView length={50} />
       </View>
-
-      <View style={{ alignItems: 'center', top: 140 }}>
+      <GapView length={5} />
+      <View style={{ alignItems: 'center' }}>
         <TabView
           tab1Title="Email"
           tab2Title="Phone number"

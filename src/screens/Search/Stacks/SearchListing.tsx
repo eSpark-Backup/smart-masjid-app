@@ -128,17 +128,33 @@ const SearchListing = ({
         width: WINDOW_WIDTH,
       }}>
       <OverlayLoader isShow={loader} />
-      <View style={{ alignSelf: 'center', top: 110 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Search Masjid" />
         </Animated.View>
-        <GapView length={50} />
       </View>
-      <View style={{ top: 110 }}>
+      <View style={{ marginTop: 10 }}>
         <View>
           <Card
             backgroundColor="#ffffff"
-            style={{ elevation: 3 }}
+            style={{
+              elevation: 3,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.22,
+              shadowRadius: 2.22,
+            }}
             width={WINDOW_WIDTH - 30}>
             <MyInput
               searchBar

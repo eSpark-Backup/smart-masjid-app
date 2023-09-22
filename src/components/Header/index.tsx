@@ -1,9 +1,10 @@
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import AD from 'react-native-vector-icons/AntDesign';
 import { WINDOW_HEIGHT } from '../../constants';
 import { ArrowLeft } from '../../assets';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Header({
   onBackPress,
@@ -16,12 +17,16 @@ export default function Header({
   return (
     <View
       style={{
-        top: WINDOW_HEIGHT / 27,
-        width: '100%',
+        position: 'absolute',
+        top: Platform.OS == 'ios' ? useSafeAreaInsets().top : 10,
         justifyContent: 'center',
         paddingHorizontal: 25,
       }}>
-      {showBack && <ArrowLeft onPress={onBackPress} />}
+      {showBack && (
+        <TouchableOpacity style={{ width: 30 }} onPress={onBackPress}>
+          <ArrowLeft />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

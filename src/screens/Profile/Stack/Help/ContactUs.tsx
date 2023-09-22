@@ -2,13 +2,7 @@ import { useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import Toast from 'react-native-toast-message';
-import {
-  StyleSheet,
-  View,
-  Animated,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 
 import { CreateSupportRequest } from '../../../../api/helpController';
 
@@ -67,18 +61,23 @@ export default function ContactUsScreen({
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <View style={{ alignSelf: 'center', top: 110 }}>
-        <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Contact Us" style={{ alignSelf: 'center' }} />
-        </Animated.View>
-        <GapView length={55} />
-      </View>
-
       <View
         style={{
-          top: 112,
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <MyTitle text="Contact Us" />
+        </Animated.View>
+      </View>
+      <GapView />
+      <View
+        style={{
           alignItems: 'center',
-          paddingBottom: 112,
         }}>
         <OverlayLoader isShow={loading} />
         <MyDropDown

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Animated } from 'react-native';
+import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
 import moment from 'moment';
 
 import {
@@ -19,12 +19,14 @@ import {
 import MyDatePicker from '../../../../../../components/MyDatePicker';
 
 import {
+  AddJummas,
   JummahTime,
   jumuahsData,
 } from '../../../../../../types/masjidControllerTypes';
 import { useHookstate } from '@hookstate/core';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { userStore } from '../../../../../../store/UserStore';
+import { WINDOW_WIDTH } from '../../../../../../constants';
 
 interface selectedJummmaData {
   id: number;
@@ -46,7 +48,7 @@ export default function EditJummaTimings({
   const masjid = useHookstate(masjidStore.masjid).get();
   const jummas = useHookstate(masjidStore.masjidsJummaSubs).get();
   const userData = useHookstate(userStore.userData).get();
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<AddJummas | null>(null);
   const [loading, setLoading] = useState(false);
 
   console.log('jummas', jummas);
@@ -62,19 +64,19 @@ export default function EditJummaTimings({
       GetMasjidCurrentJummahTiming(
         userData?.masjid.id.toString() as string,
         moment(selectedJumma?.date).format('YYYY-MM-DD'),
-      ).then((jumuahTime: JummahTime) => {
+      ).then((jumuahTime: JummahTime | AddJummas) => {
         console.log('jumuahTimes', jumuahTime);
 
-        setData(jumuahTime);
+        setData(jumuahTime as AddJummas);
         setLoading(false);
       });
     } else {
-      let defaultData = {
+      let defaultData: AddJummas = {
         effectiveDate: moment().format('YYYY-MM-DD'),
-        jumuah1: '13:45:00',
-        jumuah2: '15:15:00',
-        jumuah3: null,
       };
+      jummas?.jumma1 ? (defaultData.jumuah1 = '13:45:00') : null;
+      jummas?.jumma2 ? (defaultData.jumuah2 = '15:15:00') : null;
+      jummas?.jumma3 ? (defaultData.jumuah3 = '16:10:00') : null;
       setData(defaultData);
     }
   }, []);
@@ -85,12 +87,12 @@ export default function EditJummaTimings({
     if (jummaType == 'Add') {
       await AddMasjidJummahTiming(
         userData?.masjid.id.toString() as string,
-        data,
+        data as AddJummas,
       );
     } else {
       await UpdatedMasjidJummahTiming(
         userData?.masjid.id.toString() as string,
-        data,
+        data as AddJummas,
       );
     }
     setLoading(false);
@@ -98,20 +100,23 @@ export default function EditJummaTimings({
     setFlag('jTime');
   };
 
-  const type = data?.type;
   return (
     <>
       <View style={{ flex: 1 }}>
-        <View style={{ alignSelf: 'center', top: 110 }}>
+        <View
+          style={{
+            alignSelf: 'center',
+            position: 'absolute',
+            top:
+              Platform.OS == 'ios'
+                ? -WINDOW_WIDTH / 1.6 / 3
+                : -WINDOW_WIDTH / 1.9 / 3,
+          }}>
           <Animated.View style={[{ opacity: contentOpacity }]}>
             <MyTitle text="Jumuah Timings" />
           </Animated.View>
-          <GapView length={50} />
         </View>
-
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 110, paddingHorizontal: 15 }}
-          style={{ top: 110 }}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
           <OverlayLoader isShow={loading} />
           <TimeTable
             type={'J'}
@@ -124,7 +129,9 @@ export default function EditJummaTimings({
                 <View>
                   <MyDatePicker
                     currentDate={
-                      loading ? new Date() : new Date(data?.effectiveDate)
+                      loading
+                        ? new Date()
+                        : new Date(data?.effectiveDate as string)
                     }
                     minimumDate={new Date()}
                     onDateChange={date => {
@@ -150,7 +157,7 @@ export default function EditJummaTimings({
                     : '0',
                 onChange: value => {
                   setData({
-                    ...data,
+                    ...(data as AddJummas),
                     jumuah1: moment(value, 'hh:mm').format('HH:mm:ss'),
                   });
                 },
@@ -163,7 +170,7 @@ export default function EditJummaTimings({
                     : '0',
                 onChange: value => {
                   setData({
-                    ...data,
+                    ...(data as AddJummas),
                     jumuah2: moment(value, 'hh:mm').format('HH:mm:ss'),
                   });
                 },
@@ -176,7 +183,7 @@ export default function EditJummaTimings({
                     : '0',
                 onChange: value => {
                   setData({
-                    ...data,
+                    ...(data as AddJummas),
                     jumuah3: moment(value, 'hh:mm').format('HH:mm:ss'),
                   });
                 },

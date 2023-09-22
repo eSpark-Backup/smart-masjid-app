@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import {
   View,
-  Image,
   StyleSheet,
   Animated,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 
@@ -15,6 +15,7 @@ import * as Animatable from 'react-native-animatable';
 import GapView from '../GapView';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
+import { WINDOW_WIDTH } from '../../constants';
 
 export default function MyToast({
   heading,
@@ -67,18 +68,25 @@ export default function MyToast({
         ]}>
         <View style={styles.container}>
           {heading && (
-            <>
+            <View
+              style={{
+                alignSelf: 'center',
+                position: 'absolute',
+                top:
+                  Platform.OS == 'ios'
+                    ? -WINDOW_WIDTH / 1.6 / 3
+                    : -WINDOW_WIDTH / 1.9 / 3,
+              }}>
               <Animated.View style={[{ opacity: contentOpacity }]}>
                 <MyTitle text={heading} />
               </Animated.View>
-              <GapView length={50} />
-            </>
+            </View>
           )}
+          <GapView />
           {title && (
             <MyTextSubHeader
               text={title!!}
               style={{
-                marginTop: 5,
                 textAlign: 'center',
               }}
             />
@@ -151,6 +159,5 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
     width: '85%',
-    top: 138,
   },
 });

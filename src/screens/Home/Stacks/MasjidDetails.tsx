@@ -5,6 +5,7 @@ import {
   ScrollView,
   Animated,
   FlatList,
+  Platform,
 } from 'react-native';
 import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
 import { useHookstate } from '@hookstate/core';
@@ -119,18 +120,23 @@ export default function MasjidDetails({
   return (
     <View style={{ flex: 1 }}>
       <OverlayLoader isShow={loading} noBg={false} />
-      <View style={{ alignSelf: 'center', top: isSingle ? 140 : 110 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Masjid Subscriptions" />
         </Animated.View>
-        <GapView length={50} />
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          top: isSingle ? 140 : 110,
-          paddingBottom: 150,
-          padding: 5,
+          paddingVertical: 10,
           paddingHorizontal: 15,
         }}>
         <MyTextHeader text={selectedMasjid?.name ?? ''} />

@@ -32,6 +32,7 @@ interface MyInputProps {
   dividerColor?: string;
   dividerWidth?: number;
   isPhoneCode?: boolean;
+  isMAccont?: boolean;
   phoneCodeValue: string;
   isDropDown?: boolean;
   onDropPress?: () => void;
@@ -227,17 +228,19 @@ export default function MyInput(props: MyInputProps) {
               top:
                 value || getFocused
                   ? isDropDown
-                    ? -3
-                    : -10
+                    ? -16
+                    : -25
                   : isDropDown
-                  ? 18
+                  ? 5
                   : multiline
-                  ? 8
-                  : 15,
+                  ? 0
+                  : 0,
               left: isPhoneCode ? 95 : 15,
-              backgroundColor: theme.colors.background,
+              // backgroundColor: theme.colors.background,
+              backgroundColor: 'transparent',
               zIndex: value || getFocused ? 1 : 0,
-              paddingHorizontal: 5,
+              height: 50,
+              justifyContent: 'center',
             }}>
             <MyText
               textStyle={{
@@ -245,6 +248,9 @@ export default function MyInput(props: MyInputProps) {
                   (value && isDropDown) || getFocused
                     ? theme.colors.primary
                     : '#9E9F9F',
+                backgroundColor: theme.colors.background,
+                paddingHorizontal: 5,
+                // bottom: Platform.OS == 'android' ? 0.5 : 0,
               }}
               text={placeholder}
             />
@@ -324,6 +330,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
     dividerWidth,
     searchBar,
     isPhoneCode,
+    isMAccont,
     helpSearch,
   } = props;
 
@@ -334,11 +341,17 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       borderBottomWidth: isDivider ? dividerWidth : 0,
     },
     inputStyle: {
-      paddingTop: 8,
+      fontFamily: 'roboto',
+      // paddingTop: 8,
       paddingHorizontal: 20,
-      width: WINDOW_WIDTH - 75 - (isPhoneCode ? 80 : 0) - (searchBar ? 44 : 0),
+      width:
+        WINDOW_WIDTH -
+        50 -
+        (isMAccont ? 25 : 0) -
+        (isPhoneCode ? 80 : 0) -
+        (searchBar ? 44 : 0),
       color: colors.text,
-      top: Platform.OS == 'ios' ? 17 : 0,
+      // top: Platform.OS == 'ios' ? 17 : 0,
       borderWidth: helpSearch || searchBar ? 0 : 1,
       borderRadius: 10,
       borderTopRightRadius: searchBar ? 0 : 10,
@@ -346,6 +359,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       borderTopLeftRadius: isPhoneCode ? 0 : 10,
       borderBottomLeftRadius: isPhoneCode ? 0 : 10,
       borderLeftWidth: isPhoneCode || helpSearch || searchBar ? 0 : 1,
+      height: Platform.OS == 'ios' ? 50 : undefined,
     },
     phoneCodeContainer: {
       width: 80,

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
   ViewStyle,
+  Platform,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
@@ -75,22 +76,28 @@ const RowItem = ({
                         style={{
                           fontSize: 16,
                           color: colors.text,
-                          // borderWidth: 0.5,
-                          // borderColor: '#3E3E3E',
-                          // borderRadius: 3,
                           height: 40,
                           // width: 155,
                           textAlign: 'center',
+                          fontWeight: '400',
+                          fontFamily: 'roboto',
                         }}
                       />
                       {/* <GapView mode="horizontal" /> */}
-                      <MyText
-                        textStyle={{
-                          paddingBottom: 2,
-                        }}
-                        size={16}
-                        text="Mins"
-                      />
+                      <View
+                        style={{
+                          justifyContent: 'center',
+                          height: 40,
+                          marginLeft: Platform.OS == 'ios' ? 5 : 0,
+                        }}>
+                        <MyText
+                          textStyle={{
+                            bottom: Platform.OS == 'android' ? 2.5 : 0,
+                          }}
+                          size={16}
+                          text="Mins"
+                        />
+                      </View>
                     </View>
                   )}
                   {/* {type == 'F' && item[key]?.search(':') != -1 ? (

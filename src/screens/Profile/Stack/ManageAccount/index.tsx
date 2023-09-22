@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   Animated,
+  Platform,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import phone from 'phone';
@@ -144,14 +145,20 @@ export default function ManageAccount({
       <OverlayLoader isShow={loading} />
       {!showVerification ? (
         <>
-          <View style={{ alignSelf: 'center', top: 110 }}>
+          <View
+            style={{
+              alignSelf: 'center',
+              position: 'absolute',
+              top:
+                Platform.OS == 'ios'
+                  ? -WINDOW_WIDTH / 1.6 / 3
+                  : -WINDOW_WIDTH / 1.9 / 3,
+            }}>
             <Animated.View style={[{ opacity: contentOpacity }]}>
               <MyTitle text="Manage Account" />
             </Animated.View>
-            <GapView length={50} />
           </View>
-
-          <View style={{ top: 100 }}>
+          <View>
             <MyText text="Tap to edit" textStyle={{ alignSelf: 'center' }} />
             <GapView />
             {displayData.map((val, ind) => {
@@ -205,6 +212,7 @@ export default function ManageAccount({
                                 ? 25
                                 : undefined
                             }
+                            isMAccont
                             placeholderColor="#CFCFCF"
                             placeholder={val.title}
                             onChangeText={(value: string) =>
@@ -225,6 +233,7 @@ export default function ManageAccount({
                           <MyInput
                             maxLength={10}
                             placeholder="Phone"
+                            isMAccont
                             isPhoneCode
                             placeholderColor="#CFCFCF"
                             phoneCodeValue={userData?.phone}
