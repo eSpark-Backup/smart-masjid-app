@@ -170,8 +170,8 @@ export default function SwipeableTimeTable({
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       // Use viewable items in state or as intended
       if (viewableItems.length > 0) {
-        let index: any = viewableItems[0].index;
-        setCurrentItem(data[index]);
+        let itemData: any = viewableItems[0].item;
+        setCurrentItem(itemData);
       }
     },
   );
@@ -326,7 +326,7 @@ export default function SwipeableTimeTable({
         renderItem={renderItem}
         keyExtractor={(_, index) => `list_item${index}`}
         viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
+          itemVisiblePercentThreshold: 80,
         }}
         ListEmptyComponent={
           <MyText

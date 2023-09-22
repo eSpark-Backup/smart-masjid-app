@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   Animated,
+  Platform,
 } from 'react-native';
 import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
 import RnWifi from '@react-native-tethering/wifi';
@@ -81,13 +82,21 @@ export default function PasswordForm({
   return (
     <View style={styles.container}>
       <OverlayLoader isShow={loading} />
-      <View style={{ alignSelf: 'center', top: 128 }}>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
         </Animated.View>
-        <GapView length={50} />
       </View>
-      <View style={{ top: 130 }}>
+      <GapView />
+      <View>
         <MyTextSubHeader
           text="Enter Wi-Fi password"
           style={{ ...styles.text, color: '#0e0e0e' }}
@@ -100,7 +109,7 @@ export default function PasswordForm({
             style={{ ...styles.text, color: '#0e0e0e' }}
           />
         </View>
-        <GapView length={60} />
+        <GapView length={30} />
         <Formik
           enableReinitialize={true}
           initialValues={{ password: '' }}
@@ -131,8 +140,7 @@ export default function PasswordForm({
               )}
               <View
                 style={{
-                  marginTop: 60,
-                  marginBottom: 40,
+                  marginTop: 30,
                 }}>
                 <Rounded label="Connect" width={250} onPress={handleSubmit} />
               </View>

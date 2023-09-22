@@ -5,6 +5,7 @@ import moment from 'moment';
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
 import {
+  AddJummas,
   IqamahTime,
   JummahTime,
   Masjid,
@@ -243,7 +244,7 @@ export const GetMasjidCurrentJummahTiming = async (
  */
 export const AddMasjidJummahTiming = async (
   masjidId: string,
-  data: JummahTime,
+  data: AddJummas,
 ) => {
   try {
     const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
@@ -270,7 +271,7 @@ export const AddMasjidJummahTiming = async (
  */
 export const UpdatedMasjidJummahTiming = async (
   masjidId: string,
-  data: JummahTime,
+  data: AddJummas,
 ) => {
   try {
     const result: any = await api.put(

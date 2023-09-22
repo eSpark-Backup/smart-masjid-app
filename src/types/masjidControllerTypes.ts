@@ -111,6 +111,14 @@ export type JummahTime = {
   [key: `jumuah${number}`]: string;
 };
 
+export type AddJummas = {
+  id?: string;
+  effectiveDate: string;
+  jumuah1?: string;
+  jumuah2?: string;
+  jumuah3?: string;
+};
+
 export type subJummas = {
   jumma1: boolean;
   jumma2: boolean;

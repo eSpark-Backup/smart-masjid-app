@@ -383,7 +383,7 @@ function UserInformation({
           position: 'absolute',
           top:
             Platform.OS == 'ios'
-              ? -WINDOW_WIDTH / 1.6 / 1.8
+              ? -WINDOW_WIDTH / 1.6 / 2
               : -WINDOW_WIDTH / 1.9 / 1.8,
           alignItems: 'center',
         }}>

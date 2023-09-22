@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, PermissionsAndroid, Animated } from 'react-native';
+import { View, PermissionsAndroid, Animated, Platform } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
 import { useTheme } from '@react-navigation/native';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -14,7 +14,7 @@ import {
   OverlayLoader,
   TextLabel,
 } from '../../components';
-import { WINDOW_HEIGHT } from '../../constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { _requestUserLocationPermission } from '../../utils/functions';
 
 export default function WifiSelectForm({
@@ -113,13 +113,21 @@ export default function WifiSelectForm({
       <>
         <OverlayLoader noBg={true} isShow={loading} />
         <View style={{ alignItems: 'center' }}>
-          <View style={{ alignSelf: 'center', top: 128 }}>
+          <View
+            style={{
+              alignSelf: 'center',
+              position: 'absolute',
+              top:
+                Platform.OS == 'ios'
+                  ? -WINDOW_WIDTH / 1.6 / 3
+                  : -WINDOW_WIDTH / 1.9 / 3,
+            }}>
             <Animated.View style={[{ opacity: contentOpacity }]}>
               <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
             </Animated.View>
-            <GapView length={50} />
           </View>
-          <View style={{ top: 130 }}>
+          <GapView />
+          <View>
             <MyTextSubHeader
               style={{
                 alignItems: 'center',
@@ -145,11 +153,18 @@ export default function WifiSelectForm({
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <View style={{ alignSelf: 'center', top: 128 }}>
+          <View
+            style={{
+              alignSelf: 'center',
+              position: 'absolute',
+              top:
+                Platform.OS == 'ios'
+                  ? -WINDOW_WIDTH / 1.6 / 3
+                  : -WINDOW_WIDTH / 1.9 / 3,
+            }}>
             <Animated.View style={[{ opacity: contentOpacity }]}>
               <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
             </Animated.View>
-            <GapView length={50} />
           </View>
           <View
             style={{

@@ -212,6 +212,7 @@ export default function ManageAccount({
                                 ? 25
                                 : undefined
                             }
+                            isMAccont
                             placeholderColor="#CFCFCF"
                             placeholder={val.title}
                             onChangeText={(value: string) =>
@@ -232,6 +233,7 @@ export default function ManageAccount({
                           <MyInput
                             maxLength={10}
                             placeholder="Phone"
+                            isMAccont
                             isPhoneCode
                             placeholderColor="#CFCFCF"
                             phoneCodeValue={userData?.phone}
