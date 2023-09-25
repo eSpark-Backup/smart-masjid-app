@@ -82,14 +82,15 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               <GapView mode="horizontal" length={15} />
               <View>
                 <View>
-                  <MyText text={item?.title} />
+                  <MyText text={item?.title} size={16} />
                   <GapView mode="horizontal" length={5} />
                   <MyText
                     text={
                       item?.danger && item.title == 'Battery'
-                        ? item?.subtitle!! + ' Battery Low'
+                        ? item?.subtitle!!
                         : item?.subtitle!!
                     }
+                    size={16}
                     textStyle={{
                       color:
                         item?.danger && item.title == 'Battery'
