@@ -40,9 +40,12 @@ export default function DeviceErrorBox({
             <MyText
               text={message!!}
               icon={
-                <TouchableOpacity onPress={onIconPress}>
-                  <InfoRed style={{ bottom: -5 }} />
-                </TouchableOpacity>
+                message !==
+                'Device battery low. Please power on your device.' ? (
+                  <TouchableOpacity onPress={onIconPress}>
+                    <InfoRed style={{ bottom: -5 }} />
+                  </TouchableOpacity>
+                ) : undefined
               }
               textStyle={{
                 color: '#FF6464',

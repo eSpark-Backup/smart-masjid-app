@@ -160,9 +160,16 @@ const DeviceSetting = ({
       </View>
       <ScrollView>
         <DeviceErrorBox
-          show={device?.deviceTelemetry?.status == 'Online' ? false : true}
+          show={Boolean(
+            device?.deviceTelemetry?.status == 'Offline' ||
+              device?.deviceTelemetry?.status == 'Low battery',
+          )}
           onClose={() => console.log('on Close Box', device)}
-          message="Looks like your device is offline. Tap here to see causes."
+          message={
+            device?.deviceTelemetry?.status == 'Low battery'
+              ? 'Device battery low. Please power on your device.'
+              : 'Looks like your device is offline. Tap here to see causes.'
+          }
           onIconPress={() => setOfflineErrors(true)}
         />
         <PossibleCauseErrorModal
@@ -182,7 +189,7 @@ const DeviceSetting = ({
             />
             <DeviceStatus
               online={
-                device?.deviceTelemetry?.status == 'Online' ? true : false
+                device?.deviceTelemetry?.status !== 'Offline' ? true : false
               }
             />
           </View>
@@ -252,11 +259,11 @@ const DeviceSetting = ({
                     subtitle: device?.wifiSsid,
                     icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
                     isEditable:
-                      device?.deviceTelemetry?.status === 'Online'
+                      device?.deviceTelemetry?.status !== 'Offline'
                         ? true
                         : false,
                     danger:
-                      device?.deviceTelemetry?.status === 'Online'
+                      device?.deviceTelemetry?.status !== 'Offline'
                         ? false
                         : true,
                     onPress: () =>
@@ -318,7 +325,7 @@ const makeStyles = (theme: Theme) => {
     subHeader: {
       flexDirection: 'row',
       width: '100%',
-      paddingHorizontal: 14,
+      paddingHorizontal: 4,
       justifyContent: 'space-between',
       alignItems: 'center',
     },
