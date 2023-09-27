@@ -6,6 +6,11 @@ import {
 import BleManager, {
   Peripheral,
   PeripheralInfo,
+  BleDisconnectPeripheralEvent,
+  BleManagerDidUpdateValueForCharacteristicEvent,
+  BleScanCallbackType,
+  BleScanMatchMode,
+  BleScanMode,
 } from 'react-native-ble-manager';
 import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -17,7 +22,9 @@ import { bytesToString, stringToBytes } from 'convert-string';
 
 import { DeviceInfo } from '../../../types';
 
-const scanTime = 10;
+const SECONDS_TO_SCAN_FOR = 10;
+const SERVICE_UUIDS: string[] = [];
+const ALLOW_DUPLICATES = true;
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -71,7 +78,16 @@ export function _checkLocationStatus() {
 
 export async function _scanBleDevices(time?: number) {
   try {
-    await BleManager.scan([], time ?? scanTime, true);
+    await BleManager.scan(
+      SERVICE_UUIDS,
+      time ?? SECONDS_TO_SCAN_FOR,
+      ALLOW_DUPLICATES,
+      {
+        matchMode: BleScanMatchMode.Sticky,
+        scanMode: BleScanMode.LowLatency,
+        callbackType: BleScanCallbackType.AllMatches,
+      },
+    );
     // Success code
     console.log('Scan started');
     return new Promise((resolve: (value: Peripheral[]) => any, reject) => {
@@ -85,7 +101,7 @@ export async function _scanBleDevices(time?: number) {
             crashlytics().recordError(error as Error);
             reject(error);
           });
-      }, scanTime * 1000);
+      }, SECONDS_TO_SCAN_FOR * 1000);
     });
   } catch (e) {
     console.log('caught at scan and discover', e);

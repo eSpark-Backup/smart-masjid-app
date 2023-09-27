@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { BackHandler, ScrollView } from 'react-native';
+import {
+  BackHandler,
+  ScrollView,
+  NativeModules,
+  NativeEventEmitter,
+  Platform,
+} from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -57,6 +63,8 @@ type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
   'DSetup'
 >;
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export default function DeviceSetupScreen() {
   // console.log('User ka bta id mili ha?', userStore.get());
@@ -157,6 +165,24 @@ export default function DeviceSetupScreen() {
     }
     handleShowBack(step);
   }, [step]);
+
+  // useEffect(() => {
+  //   if (Platform.OS == 'ios') {
+  //     const listeners = [
+  //       bleManagerEmitter.addListener(
+  //         'BleManagerDiscoverPeripheral',
+  //         (per) => console.log('kia ha discovered', per),
+  //       ),
+  //       bleManagerEmitter.addListener('BleManagerStopScan', () => console.log('scan stopped')),
+  //     ];
+  //     return () => {
+  //       console.debug('[app] main component unmounting. Removing listeners...');
+  //       for (const listener of listeners) {
+  //     }
+  //       listener.remove();
+  //     }
+  //   }
+  // }, [])
 
   useEffect(() => {
     checkStatus();
