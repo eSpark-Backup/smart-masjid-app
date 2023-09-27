@@ -3,11 +3,13 @@ import { number } from 'yup';
 type AdhanCalcConfig = {
   id: number;
   name: string;
+  calculation: string;
 };
 
 type AdhanJuristicConfig = {
   id: number;
   name: string;
+  juristicId: number;
 };
 
 type AdhanCustomConfig = {

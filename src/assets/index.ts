@@ -99,7 +99,7 @@ export { default as CrossC } from './vectors/close-circle.svg';
 export { default as CautionDevice } from './vectors/caution-device.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
-export { default as NavigationSvg } from './vectors/navigation.svg';
+export { default as NavigationSvg } from './vectors/navigation1.svg';
 export { default as EditPencil } from './vectors/EditPencil.svg';
 export { default as DeviceActiveNew } from './vectors/device-active.svg';
 export { default as DeviceUnactiveNew } from './vectors/device-unactive.svg';
