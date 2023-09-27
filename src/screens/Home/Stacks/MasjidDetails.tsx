@@ -147,7 +147,7 @@ export default function MasjidDetails({
             style={{ color: '#3E3E3E' }}
           />
           <GapView length={5} mode="horizontal" />
-          <Tooltip content="Content will show here" />
+          <Tooltip content="These are your devices connected to this masjid. Click on each device to manage the subscriptions." />
         </View>
         <GapView length={15} />
         <FlatList

@@ -76,6 +76,29 @@ const MasjidDetails = ({
     setLoading(false);
   };
 
+  const adhanCalculations = (): string => {
+    let masjidAdhanCalcConfig =
+      masjidDetails?.masjidAdhanConfig.adhanCalcConfig;
+    let masjidAdhanCustomConfig =
+      masjidDetails?.masjidAdhanConfig.adhanCustomConfig;
+    let toolTip = '';
+    if (!masjidDetails?.masjidAdhanConfig.adhanCustomConfig) {
+      toolTip = `This masjid uses ${masjidAdhanCalcConfig?.name} for Adhan calculation. ${masjidAdhanCalcConfig?.calculation}`;
+      return toolTip;
+    } else {
+      toolTip = `This masjid uses ${
+        masjidAdhanCalcConfig?.name
+      } for Adhan calculation. Fajr: ${
+        masjidAdhanCustomConfig?.fajrAngle
+      }° Maghrib: ${masjidAdhanCustomConfig?.maghribValue} ${
+        masjidAdhanCustomConfig?.maghribRule == 'ANGLE' ? '°' : 'mins'
+      } Isha: ${masjidAdhanCustomConfig?.ishaValue} ${
+        masjidAdhanCustomConfig?.ishaRule == 'ANGLE' ? '°' : 'mins'
+      }`;
+      return toolTip;
+    }
+  };
+
   useEffect(() => {
     if (isFocused) {
       getSalahTimes();
@@ -149,14 +172,16 @@ const MasjidDetails = ({
               <GapView length={5} mode="horizontal" />
               <View style={{ maxWidth: '87%' }}>
                 <MyText
-                  text={'Islamic Society of North America' ?? ''}
+                  text={
+                    masjidDetails?.masjidAdhanConfig.adhanCalcConfig.name ?? ''
+                  }
                   size={16}
                   textStyle={{ color: '#3E3E3E' }}
-                  lines={2}
+                  lines={1}
                 />
               </View>
               <GapView length={5} mode="horizontal" />
-              <Tooltip content="Check this out" />
+              <Tooltip content={adhanCalculations()} />
             </View>
             <GapView length={5} />
             <View style={styles.infoCardRowContainer}>
@@ -174,7 +199,9 @@ const MasjidDetails = ({
                 />
               </View>
               <GapView length={5} mode="horizontal" />
-              <Tooltip content="Check this out" />
+              <Tooltip
+                content={`This masjid uses ${masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name} fiqh for Asr time calculation.`}
+              />
             </View>
           </View>
         </Card>

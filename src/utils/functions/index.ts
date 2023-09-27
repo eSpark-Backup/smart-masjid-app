@@ -64,6 +64,8 @@ async function _getFCMToken(): Promise<string> {
   } else {
     // Get the token
     token = await messaging().getToken();
+    console.log('token', token);
+
     globalStore.fcmToken.set(token);
   }
   return token;
