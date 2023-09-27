@@ -1,4 +1,6 @@
-export { default as DeviceSelectForm } from '../../../forms/DeviceSelectForm';
-export { default as WifiSelectForm } from '../../../forms/WifiSelectForm';
-export { default as PasswordForm } from '../../../forms/PasswordForm';
-export { default as DeviceNicknameForm } from '../../../forms/DeviceNicknameForm';
+import DeviceSelectForm from '../../../forms/DeviceSelectForm';
+import WifiSelectForm from '../../../forms/WifiSelectForm';
+import PasswordForm from '../../../forms/PasswordForm';
+import DeviceNicknameForm from '../../../forms/DeviceNicknameForm';
+
+export { DeviceSelectForm, WifiSelectForm, PasswordForm, DeviceNicknameForm };

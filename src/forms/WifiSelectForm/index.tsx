@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, PermissionsAndroid, Animated } from 'react-native';
+import { View, PermissionsAndroid, Animated, Platform } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
 import { useTheme } from '@react-navigation/native';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -49,15 +49,20 @@ export default function WifiSelectForm({
 
   const checkLocation = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      console.log('granted', granted);
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getWifiList();
+      if (Platform.OS == 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        console.log('granted', granted);
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          getWifiList();
+        } else {
+          setIssues('Location permission denied');
+          // _requestUserLocationPermission();
+        }
       } else {
-        setIssues('Location permission denied');
-        // _requestUserLocationPermission();
+        const ssid = await WifiManager.getCurrentWifiSSID();
+        console.log('ssid bta', ssid);
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
@@ -108,67 +113,77 @@ export default function WifiSelectForm({
     }
   };
 
-  if (data?.length > 0) {
-    return (
-      <>
-        <OverlayLoader noBg={true} isShow={loading} />
-        <View style={{ alignItems: 'center' }}>
-          <View style={{ alignSelf: 'center', top: 128 }}>
-            <Animated.View style={[{ opacity: contentOpacity }]}>
-              <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
-            </Animated.View>
-            <GapView length={50} />
-          </View>
-          <View style={{ top: 130 }}>
-            <MyTextSubHeader
-              style={{
-                alignItems: 'center',
-                alignSelf: 'center',
-              }}
-              text="Select Wi-Fi network"
-            />
-            <GapView length={50} />
-            <View style={{ height: '100%' }}>
-              <ButtonListing data={data} titleWidth={'60%'} lines={2} />
+  if (Platform.OS == 'android') {
+    if (data?.length > 0) {
+      return (
+        <>
+          <OverlayLoader noBg={true} isShow={loading} />
+          <View style={{ alignItems: 'center' }}>
+            <View style={{ alignSelf: 'center', top: 128 }}>
+              <Animated.View style={[{ opacity: contentOpacity }]}>
+                <MyTitle
+                  text={'Device Setup'}
+                  style={{ alignSelf: 'center' }}
+                />
+              </Animated.View>
+              <GapView length={50} />
+            </View>
+            <View style={{ top: 130 }}>
+              <MyTextSubHeader
+                style={{
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                }}
+                text="Select Wi-Fi network"
+              />
+              <GapView length={50} />
+              <View style={{ height: '100%' }}>
+                <ButtonListing data={data} titleWidth={'60%'} lines={2} />
+              </View>
             </View>
           </View>
-        </View>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <OverlayLoader noBg={true} isShow={loading} />
-        <View
-          style={{
-            height: WINDOW_HEIGHT,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <View style={{ alignSelf: 'center', top: 128 }}>
-            <Animated.View style={[{ opacity: contentOpacity }]}>
-              <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
-            </Animated.View>
-            <GapView length={50} />
-          </View>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <OverlayLoader noBg={true} isShow={loading} />
           <View
             style={{
-              flex: 1,
+              height: WINDOW_HEIGHT,
+              alignItems: 'center',
               justifyContent: 'center',
-              bottom: 10,
             }}>
-            <MyText
-              textStyle={{
-                fontSize: 14,
-                fontWeight: '400',
-                top: loading ? 60 : 0,
-              }}
-              text={loading ? 'Checking Wifi List' : "No Wifi's Found"}
-            />
-            <GapView length={WINDOW_HEIGHT / 3.5} />
+            <View style={{ alignSelf: 'center', top: 128 }}>
+              <Animated.View style={[{ opacity: contentOpacity }]}>
+                <MyTitle
+                  text={'Device Setup'}
+                  style={{ alignSelf: 'center' }}
+                />
+              </Animated.View>
+              <GapView length={50} />
+            </View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                bottom: 10,
+              }}>
+              <MyText
+                textStyle={{
+                  fontSize: 14,
+                  fontWeight: '400',
+                  top: loading ? 60 : 0,
+                }}
+                text={loading ? 'Checking Wifi List' : "No Wifi's Found"}
+              />
+              <GapView length={WINDOW_HEIGHT / 3.5} />
+            </View>
           </View>
-        </View>
-      </>
-    );
+        </>
+      );
+    }
+  } else {
+    return <View />;
   }
 }

@@ -2,6 +2,7 @@ import {
   NativeModules,
   NativeEventEmitter,
   DeviceEventEmitter,
+  Platform,
 } from 'react-native';
 import BleManager, {
   Peripheral,
@@ -95,7 +96,9 @@ export async function _scanBleDevices(time?: number) {
         BleManager.getDiscoveredPeripherals()
           .then(peripheralsArray => {
             // Success code
-            resolve(peripheralsArray);
+            Platform.OS == 'ios'
+              ? resolve(peripheralsArray)
+              : resolve(peripheralsArray);
           })
           .catch(error => {
             crashlytics().recordError(error as Error);
