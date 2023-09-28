@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/espark/Documents/GitHub/Smart-Masjid-App/ios/SmartMasjid.xcodeproj">
+      location = "group:smart_masjid.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
