@@ -30,6 +30,8 @@ import {
 import WifiSelectForm from '../../forms/WifiSelectForm';
 import DeviceNicknameForm from '../../forms/DeviceNicknameForm';
 import DeviceSelectForm from '../../forms/DeviceSelectForm';
+// import PasswordForm from '../../forms/PasswordForm';
+
 import {
   BottomNavigationParamList,
   DeviceInfo,

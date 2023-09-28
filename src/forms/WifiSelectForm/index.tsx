@@ -62,7 +62,9 @@ export default function WifiSelectForm({
         }
       } else {
         const ssid = await WifiManager.getCurrentWifiSSID();
-        console.log('ssid bta', ssid);
+        console.log('ios ke ssid bta', ssid);
+        setSSID(ssid);
+        setStep(5);
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
