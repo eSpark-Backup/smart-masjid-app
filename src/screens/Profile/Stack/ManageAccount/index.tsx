@@ -2,15 +2,14 @@ import { useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   Animated,
   Platform,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import phone from 'phone';
-import crashlytics from '@react-native-firebase/crashlytics';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
   DeleteUser,
@@ -21,29 +20,21 @@ import { Email, Phone, ProfileUser } from '../../../../assets';
 import {
   GapView,
   LogoutModal,
-  MyDivider,
   MyInput,
   MyText,
   MyTitle,
   OverlayLoader,
-  ProfileAvatar,
-  ProfileSectionlist,
   Rounded,
   TextLabel,
 } from '../../../../components';
 import { userStore } from '../../../../store/UserStore';
-import {
-  isValidPhoneNumber,
-  removeDatafromLocalStorage,
-} from '../../../../utils/functions';
+import { isValidPhoneNumber } from '../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { BottomNavigationParamList, CountryCodes } from '../../../../types';
 import { OtpForm } from '../../ProfileForms';
 import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 import { deviceStore } from '../../../../store/DeviceStore';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,

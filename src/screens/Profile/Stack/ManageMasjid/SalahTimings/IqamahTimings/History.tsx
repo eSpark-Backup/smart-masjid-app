@@ -1,38 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
-import {
-  GetAdhanTimings,
-  GetIqamahHistory,
-  getSalahTimingsOfMasjid,
-} from '../../../../../../api/masjidController';
+import { getSalahTimingsOfMasjid } from '../../../../../../api/masjidController';
 import {
   GapView,
   MyText,
-  MyTextHeader,
   MyTitle,
   OverlayLoader,
-  TextLabel,
   TimeSheet,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
-import { masjidStore } from '../../../../../../store/MasjidStore';
-import {
-  AdhanTime,
-  IqamahTime,
-  JummahTime,
-  Salah,
-  SalahTimings,
-} from '../../../../../../types/masjidControllerTypes';
+import { SalahTimings } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
@@ -60,17 +40,6 @@ export default function History({
 
   const onDateChange = (e: Date) => {
     console.log('e', e);
-
-    // const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
-    //   return value.date == moment(e).format('YYYY-MM-DD');
-    // });
-
-    // if (currentIndex != -1) {
-    //   slider.current?.scrollToIndex({
-    //     index: currentIndex,
-    //     animated: true,
-    //   });
-    // }
   };
 
   const convertTimings = (timings: SalahTimings[] | undefined) => {

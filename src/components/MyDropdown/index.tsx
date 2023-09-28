@@ -1,15 +1,11 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   View,
-  Text,
   TouchableOpacity,
-  Alert,
   StyleSheet,
   Keyboard,
   Platform,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
 } from 'react-native';
 
 import { WINDOW_WIDTH } from '../../constants';
@@ -18,7 +14,6 @@ import MyInput from '../MyInput';
 import MyText from '../MyText';
 import { ArrowDown, ArrowUp } from '../../assets';
 import { useLayoutAnimation } from '../../utils/hooks';
-import { TouchableNativeFeedback } from 'react-native';
 
 interface Item {
   id: number;

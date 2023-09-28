@@ -7,8 +7,6 @@ import {
 import BleManager, {
   Peripheral,
   PeripheralInfo,
-  BleDisconnectPeripheralEvent,
-  BleManagerDidUpdateValueForCharacteristicEvent,
   BleScanCallbackType,
   BleScanMatchMode,
   BleScanMode,

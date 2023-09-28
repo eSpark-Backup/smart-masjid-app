@@ -2,25 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, BackHandler, Animated, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useHookstate } from '@hookstate/core';
 
-import {
-  About,
-  AccountGear,
-  Help,
-  InfoCircle,
-  ManageUser,
-  MasjidGear,
-  Privacy,
-  ProfileDummy,
-} from '../../assets';
-import {
-  ErrorModal,
-  GapView,
-  MyTitle,
-  ProfileAvatar,
-  ProfileSectionlist,
-  TextLabel,
-} from '../../components';
+import { AccountGear, Help, MasjidGear, ProfileDummy } from '../../assets';
+import { GapView, MyTitle, ProfileSectionlist } from '../../components';
 import { Wrapper } from '../../containers';
 import {
   AdhanSettings,
@@ -28,7 +13,6 @@ import {
   JummaTimings,
   ManageAccount,
   ManageMasjid,
-  // ModifyAccount,
   SalahTimings,
   IqamahHistory,
   JummaHistory,
@@ -41,12 +25,11 @@ import {
   ContactUsScreen,
 } from './Stack';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
-import { useHookstate } from '@hookstate/core';
 import { userStore } from '../../store/UserStore';
 import { UserResponse } from '../../types/userControllerApiResponse';
 import { jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
+import { WINDOW_WIDTH } from '../../constants';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,

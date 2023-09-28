@@ -1,14 +1,9 @@
-import { useHookstate } from '@hookstate/core';
 import React, { useEffect } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
-import { GetJummahHistory } from '../../../../../../api/masjidController';
+import { useHookstate } from '@hookstate/core';
 
-import {
-  GapView,
-  MyText,
-  TextLabel,
-  TimeSheet,
-} from '../../../../../../components';
+import { GetJummahHistory } from '../../../../../../api/masjidController';
+import { GapView, TextLabel, TimeSheet } from '../../../../../../components';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { userStore } from '../../../../../../store/UserStore';
 import { JummahTime } from '../../../../../../types/masjidControllerTypes';

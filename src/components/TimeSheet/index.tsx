@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, ScrollView, FlatList } from 'react-native';
 import React from 'react';
-import MyText from '../MyText';
+import { StyleSheet, View, FlatList } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+
+import MyText from '../MyText';
 
 interface Props {
   heading: string;

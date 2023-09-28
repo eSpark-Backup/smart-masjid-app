@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Animated, Platform } from 'react-native';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 
 import { GetMasjidAdhanSetting } from '../../../../api/masjidController';

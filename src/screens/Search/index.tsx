@@ -3,11 +3,11 @@ import { BackHandler } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
-import { getPreciseDistance, getDistance } from 'geolib';
+import { getDistance } from 'geolib';
 
 import { SubscribeMasjid } from '../../api/deviceController';
 import { LogoutModal, OverlayLoader } from '../../components';
-import { Card, Wrapper } from '../../containers';
+import { Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { DeviceListing, MasjidDetails, SearchListing } from './Stacks';

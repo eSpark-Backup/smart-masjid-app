@@ -1,31 +1,24 @@
 import React, { useMemo, useState } from 'react';
 import {
   View,
-  Image,
   StyleSheet,
   TouchableOpacity,
-  ImageRequireSource,
+  ImageSourcePropType,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { FastImageProps } from 'react-native-fast-image';
+
 import {
   LocationSvg,
   MasjidSample,
-  MuteSvg,
-  PeoplesSvg,
   Speaker,
   SujudSvg,
   TimeCircleSvg,
-  UnMuteSvg,
 } from '../../assets';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
+import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
-import { GradientColors } from '../../theme';
 import GapView from '../GapView';
 import MyText from '../MyText';
-import TextLabel from '../TextLabel';
-import { ImageSourcePropType } from 'react-native';
 import { CachedImage } from '../index';
-import { FastImageProps } from 'react-native-fast-image';
 
 interface MasjidHomeProps {
   masjidName: string;

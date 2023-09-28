@@ -8,15 +8,14 @@ import {
   Platform,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import moment from 'moment';
 
-import { InfoCircle, MuteSvg, VolumUpGreen } from '../../assets';
+import { MuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
-import TextLabel from '../TextLabel';
-import moment from 'moment';
 import Tooltip from '../Tooltip';
 
 interface DataProps {

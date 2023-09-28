@@ -1,16 +1,8 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
-import { Card } from '../../containers';
 import MyText from '../MyText';
-import { Close, InfoRed } from '../../assets';
-import GapView from '../GapView';
+import { InfoRed } from '../../assets';
 
 export default function DeviceErrorBox({
   show,

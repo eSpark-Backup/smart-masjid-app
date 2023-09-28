@@ -1,14 +1,12 @@
 import React from 'react';
-import { Theme, useNavigation, useTheme } from '@react-navigation/native';
+import { Theme, useTheme } from '@react-navigation/native';
 import { View, FlatList, Animated } from 'react-native';
 
 import { DeviceSvg, SyncSvg } from '../../../assets';
 import {
   DeviceListItem,
   GapView,
-  MyDivider,
   MyText,
-  Rounded,
   TextLabel,
 } from '../../../components';
 import { Card } from '../../../containers';

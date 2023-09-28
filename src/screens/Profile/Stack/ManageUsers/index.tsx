@@ -15,7 +15,7 @@ import {
   DeleteAdminFromMasjid,
   GetMasjidAdmins,
 } from '../../../../api/userController';
-import { AddIcon, Delete, PlusSvg, ProfileDummy } from '../../../../assets';
+import { AddIcon, Delete, ProfileDummy } from '../../../../assets';
 import {
   GapView,
   LogoutModal,

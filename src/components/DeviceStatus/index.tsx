@@ -1,5 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
+
 import { GapView, MyText } from '../index';
 
 const DeviceStatus = ({ online = false }: { online?: boolean }) => {

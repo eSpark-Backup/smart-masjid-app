@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import moment from 'moment';
 
 import { MuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
 import MyText from '../MyText';
-import moment from 'moment';
 import {
   JummahTime,
   SubscriptionList,
 } from '../../types/masjidControllerTypes';
 import {
   addSubscription,
-  getDeviceSubscriptions,
   removeSubscription,
 } from '../../api/deviceController';
 import { Device } from '../../types/deviceControllerTypes';

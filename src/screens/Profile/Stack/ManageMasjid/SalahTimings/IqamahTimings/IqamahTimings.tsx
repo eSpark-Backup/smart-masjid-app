@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Animated,
+  Platform,
+  FlatList,
+} from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
@@ -19,7 +26,6 @@ import {
 
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
-import { FlatList } from 'react-native-gesture-handler';
 import TimeTableCard from '../../../../../../components/TimeTableCard';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';

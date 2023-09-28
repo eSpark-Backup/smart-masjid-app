@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
@@ -13,15 +13,8 @@ import {
   PersonalInfoForm,
   AddPhoneForm,
 } from './UserForms';
-
 import { RootStackParamList } from '../../types';
-import {
-  GapView,
-  MyText,
-  MyToast,
-  OverlayLoader,
-  SLoader,
-} from '../../components';
+import { MyToast, OverlayLoader, SLoader } from '../../components';
 import { RegisterUserPhone, updateUserPhone } from '../../api/userController';
 import {
   CreateUserRequest,
@@ -29,7 +22,6 @@ import {
 } from '../../types/userControllerApiResponse';
 import { globalStore } from '../../store/GlobalStates';
 import { _getFCMToken } from '../../utils/functions';
-import { Check } from '../../assets';
 import {
   CheckUserExists,
   CreateUser,

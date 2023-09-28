@@ -11,11 +11,9 @@ import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
 import { useHookstate } from '@hookstate/core';
 import Toast from 'react-native-toast-message';
 
-import { SyncSvg } from '../../../assets';
 import {
   GapView,
   JumuahTable,
-  MyText,
   MyTextHeader,
   MyTextSubHeader,
   MyTitle,
@@ -23,11 +21,9 @@ import {
   OverlayLoader,
   SwipeableTimeTable,
   TextLabel,
-  TimeTable,
   Tooltip,
 } from '../../../components';
-import MyDatePicker from '../../../components/MyDatePicker';
-import { getCurrentMonthAdhanData } from '../../../utils/functions';
+
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
 import {

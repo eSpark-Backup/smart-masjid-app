@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import {
-  Caution,
-  CheckSvg,
-  Chevron_Right,
-  EditHeavy,
-  EditLight,
-} from '../../assets';
+import { Caution, CheckSvg, Chevron_Right, EditLight } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
 import GapView from '../GapView';

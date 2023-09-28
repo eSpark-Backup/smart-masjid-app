@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { WINDOW_WIDTH } from '../../constants';
-import MyText from '../MyText';
 import { Theme, useTheme } from '@react-navigation/native';
+
+import { WINDOW_WIDTH } from '../../constants';
 import MyTitle from '../MyTitle';
 
 const TabView = ({

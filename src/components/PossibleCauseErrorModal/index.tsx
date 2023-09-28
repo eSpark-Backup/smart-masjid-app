@@ -5,7 +5,7 @@ import { Theme, useTheme } from '@react-navigation/native';
 import MyText from '../MyText';
 import GapView from '../GapView';
 import MyTextSubHeader from '../MyTextSubHeader';
-import { Check, Close, CloseIcon } from '../../assets';
+import { Check, CloseIcon } from '../../assets';
 
 export default function PossibleCauseErrorModal({
   visible,

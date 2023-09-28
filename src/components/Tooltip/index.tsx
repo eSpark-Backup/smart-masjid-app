@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { InfoCircle } from '../../assets';
-
 import Tooltip from 'react-native-walkthrough-tooltip';
 import { Theme, useTheme } from '@react-navigation/native';
+
+import { InfoCircle } from '../../assets';
 
 interface CustomTooltipProps {
   content: string;

@@ -1,6 +1,7 @@
-import { Theme, useTheme } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
+
 import MyText from '../MyText';
 
 export default function OutlineDeviceContainer({
