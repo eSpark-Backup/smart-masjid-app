@@ -304,7 +304,7 @@ export default function SwipeableTimeTable({
           <View style={{ right: 10 }}>
             <Tooltip
               position="top"
-              content="Lorem ips amet, consectetur adipiscing elit  Lorem ipsum dolor sit"
+              content="You can subscribe to Adhan here. Adhan will play on your device when called at your masjid."
               iconColor={'#006870'}
             />
           </View>

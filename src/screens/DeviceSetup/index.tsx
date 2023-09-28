@@ -61,6 +61,7 @@ import {
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
 import { UserToken } from '../../types/userControllerApiResponse';
+import { View } from 'react-native-animatable';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Platform,
   BackHandler,
   Platform,
 } from 'react-native';
