@@ -15,7 +15,7 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ImmutableObject, useHookstate } from '@hookstate/core';
+import { useHookstate } from '@hookstate/core';
 import jwtDecode from 'jwt-decode';
 
 import { PlusSvg } from '../../assets';
@@ -26,7 +26,7 @@ import {
   TabView,
   MyTitle,
 } from '../../components';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
+import { WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { DeviceSetting } from './Stacks';

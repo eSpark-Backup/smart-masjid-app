@@ -1,12 +1,7 @@
+import React, { useCallback, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import moment from 'moment';
-import React, { useCallback, useRef, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  ViewToken,
-} from 'react-native';
+
 import { WINDOW_WIDTH } from '../../constants';
 import { IPrayerTimeForPeriod } from '../../types';
 import GapView from '../GapView';

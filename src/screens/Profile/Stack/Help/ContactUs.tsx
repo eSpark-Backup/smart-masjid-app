@@ -1,25 +1,19 @@
+import React, { useState } from 'react';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
 import Toast from 'react-native-toast-message';
-import { StyleSheet, View, Animated, Platform } from 'react-native';
 
 import { CreateSupportRequest } from '../../../../api/helpController';
-
-import { ContactUs } from '../../../../assets';
-
 import {
-  Accordian,
   GapView,
   MyDropDown,
   MyInput,
-  MyText,
   MyTitle,
   OverlayLoader,
   Rounded,
 } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
-import { Card } from '../../../../containers';
 import { helpStore } from '../../../../store/HelpStore';
 import { userStore } from '../../../../store/UserStore';
 import { supportRequestData } from '../../../../types';

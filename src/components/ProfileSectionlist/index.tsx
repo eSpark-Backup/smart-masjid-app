@@ -11,8 +11,7 @@ import {
 
 import GapView from '../GapView';
 import MyText from '../MyText';
-import TextLabel from '../TextLabel';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
+import { WINDOW_WIDTH } from '../../constants';
 
 interface DataItem {
   title?: string;

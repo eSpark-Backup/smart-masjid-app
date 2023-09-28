@@ -1,5 +1,6 @@
-import { View, FlatList } from 'react-native';
+import { View } from 'react-native';
 import React from 'react';
+
 import { Card } from '../../containers';
 import { Calendar, Delete, EditPencil } from '../../assets';
 import GapView from '../GapView';

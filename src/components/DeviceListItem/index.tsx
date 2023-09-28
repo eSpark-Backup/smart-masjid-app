@@ -1,8 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
+
 import { DeviceSvg } from '../../assets';
 import GapView from '../GapView';
-import MyText from '../MyText';
 import TextLabel from '../TextLabel';
 import DeviceStatus from '../DeviceStatus';
 

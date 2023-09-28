@@ -1,8 +1,8 @@
 import React from 'react';
+import { TextStyle } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 import MyText from '../MyText';
-import { TextStyle } from 'react-native';
 
 export default function TextLabel({
   label,

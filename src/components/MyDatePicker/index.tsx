@@ -1,15 +1,13 @@
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import moment from 'moment';
 import II from 'react-native-vector-icons/Ionicons';
-import { Calendar } from '../../assets';
-import GapView from '../GapView';
-import TextLabel from '../TextLabel';
+import { Theme, useTheme } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import { TouchableOpacity } from 'react-native';
+import { Calendar } from '../../assets';
+import GapView from '../GapView';
 import MyText from '../MyText';
-import { Theme, useTheme } from '@react-navigation/native';
 import MyTextSubHeader from '../MyTextSubHeader';
 
 export default function MyDatePicker({

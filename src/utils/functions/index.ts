@@ -9,7 +9,6 @@ import {
   PERMISSIONS,
   request,
   requestMultiple,
-  RESULTS,
 } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';

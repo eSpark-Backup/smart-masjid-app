@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Image, StyleSheet, Animated, Platform } from 'react-native';
+
 import { DeviceLoaderGif } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
-import TextLabel from '../TextLabel';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
 import { WINDOW_WIDTH } from '../../constants';

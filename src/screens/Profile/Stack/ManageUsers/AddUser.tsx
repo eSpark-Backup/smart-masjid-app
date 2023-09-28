@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { useState } from 'react';
-import { ScrollView, View, Animated, Platform } from 'react-native';
+import { View, Animated, Platform } from 'react-native';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { api } from '../../../../api';
@@ -13,7 +13,6 @@ import {
   MyTitle,
   OverlayLoader,
   Rounded,
-  TextLabel,
 } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { AddAdminForSchema } from '../../../../constants/validations/schema';
@@ -151,7 +150,6 @@ export default function AddUsers({
               <View
                 style={{
                   alignSelf: 'center',
-                  // marginTop: 80,
                   marginVertical: 20,
                 }}>
                 <Rounded onPress={handleSubmit} label="Save" />

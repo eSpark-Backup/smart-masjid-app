@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, Animated, Platform } from 'react-native';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
+
 import { SalahTimingsSVG } from '../../../../../assets';
 import {
   GapView,
   MyTitle,
   ProfileSectionlist,
-  TextLabel,
 } from '../../../../../components';
 import { WINDOW_WIDTH } from '../../../../../constants';
 

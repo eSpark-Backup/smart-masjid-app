@@ -1,6 +1,7 @@
-import React, { useMemo, useRef } from 'react';
-import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, View, Modal } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
+
 import { Joined } from '../Buttons';
 import MyText from '../MyText';
 import GapView from '../GapView';

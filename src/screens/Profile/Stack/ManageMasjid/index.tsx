@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useHookstate } from '@hookstate/core';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  ScrollView,
-  Platform,
-} from 'react-native';
-import { GetMasjid } from '../../../../api/masjidController';
+import { StyleSheet, View, Animated, ScrollView, Platform } from 'react-native';
 
 import {
   AdhanSettingSvg,
@@ -29,7 +21,6 @@ import {
   OverlayLoader,
   ProfileSectionlist,
 } from '../../../../components';
-import { masjidStore } from '../../../../store/MasjidStore';
 import { userStore } from '../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../constants';
 
@@ -41,20 +32,9 @@ export default function ManageMasjid({
   contentOpacity?: any;
 }) {
   const userData = useHookstate(userStore.userData).get();
-  // const masjidInfo = useHookstate(masjidStore.masjid).get();
   const masjidInfo = userData?.masjid;
 
   const [showLoader, setShowLoader] = useState(false);
-
-  // useEffect(() => {
-  //   if (!masjidInfo) {
-  //     GetMasjid(userData?.masjid.id.toString() as string).then(() =>
-  //       setShowLoader(false),
-  //     );
-  //   } else {
-  //     setShowLoader(false);
-  //   }
-  // }, []);
 
   return (
     <View style={{ flex: 1 }}>

@@ -1,8 +1,6 @@
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import { useTheme } from '@react-navigation/native';
-import AD from 'react-native-vector-icons/AntDesign';
-import { WINDOW_HEIGHT } from '../../constants';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import { ArrowLeft } from '../../assets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 

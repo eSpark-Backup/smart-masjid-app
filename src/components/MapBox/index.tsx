@@ -1,6 +1,7 @@
 import React from 'react';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet } from 'react-native';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+
 import { Card } from '../../containers';
 import { WINDOW_WIDTH } from '../../constants';
 

@@ -1,4 +1,3 @@
-import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -7,6 +6,7 @@ import {
   Platform,
   Animated,
 } from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
 import crashlytics from '@react-native-firebase/crashlytics';
 import systemSetting from 'react-native-system-setting';
 import Toast from 'react-native-toast-message';
@@ -20,7 +20,6 @@ import {
   MyInput,
   MyTitle,
   OverlayLoader,
-  TextLabel,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Card } from '../../../containers';

@@ -1,18 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  Animated,
-  Text,
-  Platform,
-} from 'react-native';
-import {
-  Theme,
-  useNavigation,
-  useRoute,
-  useTheme,
-} from '@react-navigation/native';
+import { ScrollView, StyleSheet, View, Animated, Platform } from 'react-native';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import crashlytics from '@react-native-firebase/crashlytics';
 import Toast from 'react-native-toast-message';
@@ -23,14 +11,12 @@ import {
   DeviceReset,
   DeviceSvg,
   Heart,
-  InfoRed,
   Version,
   Wifi,
 } from '../../../assets';
 import {
   GapView,
   MyText,
-  TextLabel,
   DeviceSettingSectionList,
   ErrorModal,
   DeviceStatus,

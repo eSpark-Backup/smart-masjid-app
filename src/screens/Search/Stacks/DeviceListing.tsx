@@ -2,14 +2,7 @@ import React from 'react';
 import { FlatList, View, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 
-import {
-  DeviceListItem,
-  GapView,
-  MyDivider,
-  MyText,
-  MyTitle,
-  TextLabel,
-} from '../../../components';
+import { DeviceListItem, GapView, MyText, MyTitle } from '../../../components';
 import { Card } from '../../../containers';
 import { deviceStore } from '../../../store/DeviceStore';
 import { Device } from '../../../types/deviceControllerTypes';

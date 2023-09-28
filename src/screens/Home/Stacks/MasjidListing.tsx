@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Animated, Platform } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { ListEmptyComponent } from '..';

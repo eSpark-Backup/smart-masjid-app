@@ -7,12 +7,11 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import moment from 'moment';
+import { useIsFocused } from '@react-navigation/native';
 
 import {
   GapView,
   JumuahTable,
-  MapBox,
   MyText,
   MyTextHeader,
   MyTextSubHeader,
@@ -21,27 +20,15 @@ import {
   Rounded,
   SalahTable,
   TextLabel,
-  TimeTable,
   Tooltip,
 } from '../../../components';
-import {
-  IqamahTime,
-  JummahTime,
-  Masjid,
-  PrayerTimes,
-  SalahTimings,
-  SubscriptionList,
-} from '../../../types/masjidControllerTypes';
+import { JummahTime, Masjid } from '../../../types/masjidControllerTypes';
 import {
   AdhanCalculation,
   AdhanJuristic,
   LocationSvg,
   NavigationSvg,
 } from '../../../assets';
-import {
-  GetMasidAdhanTimings,
-  GetMasidIqamaTimings,
-} from '../../../api/search.controller';
 import { _normalizedSubscriptions, openMap } from '../../../utils/functions';
 import { Card } from '../../../containers';
 import { useMasjid } from '../../../utils/hooks';
@@ -49,7 +36,6 @@ import {
   GetMasjidJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
-import { useIsFocused } from '@react-navigation/native';
 import { WINDOW_WIDTH } from '../../../constants';
 
 const MasjidDetails = ({

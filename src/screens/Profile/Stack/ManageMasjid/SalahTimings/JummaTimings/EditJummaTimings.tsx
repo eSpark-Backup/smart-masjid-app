@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
 import moment from 'moment';
+import { useHookstate } from '@hookstate/core';
 
 import {
   AddMasjidJummahTiming,
   GetMasjidCurrentJummahTiming,
-  GetMasjidJummahTiming,
   UpdatedMasjidJummahTiming,
 } from '../../../../../../api/masjidController';
 
@@ -23,7 +23,6 @@ import {
   JummahTime,
   jumuahsData,
 } from '../../../../../../types/masjidControllerTypes';
-import { useHookstate } from '@hookstate/core';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';

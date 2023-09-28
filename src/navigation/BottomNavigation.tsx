@@ -6,8 +6,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, Search, Device, Profile } from '../screens';
 import {
   DeviceActiveNew,
-  DeviceActiveSvg,
-  DeviceTabSvg,
   DeviceUnactiveNew,
   HomeActiveSvg,
   HomeSvg,

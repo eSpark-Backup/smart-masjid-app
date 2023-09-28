@@ -7,11 +7,11 @@ import {
   Platform,
 } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
+import * as Animatable from 'react-native-animatable';
 
 import { CautionDevice, Check, CheckSvg, CrossC } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
-import * as Animatable from 'react-native-animatable';
 import GapView from '../GapView';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';

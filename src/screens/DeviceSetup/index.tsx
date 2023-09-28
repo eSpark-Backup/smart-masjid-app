@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { BackHandler, ScrollView } from 'react-native';
+import {
+  BackHandler,
+  NativeModules,
+  NativeEventEmitter,
+  Platform,
+  View,
+} from 'react-native';
 import {
   useIsFocused,
   useNavigation,
@@ -17,17 +23,21 @@ import moment from 'moment';
 import { userStore } from '../../store/UserStore';
 import { Wrapper } from '../../containers';
 import {
-  DeviceSelectForm,
-  WifiSelectForm,
+  // WifiSelectForm,
   PasswordForm,
-  DeviceNicknameForm,
+  // DeviceNicknameForm,
 } from './DeviceForms';
+import WifiSelectForm from '../../forms/WifiSelectForm';
+import DeviceNicknameForm from '../../forms/DeviceNicknameForm';
+import DeviceSelectForm from '../../forms/DeviceSelectForm';
+// import PasswordForm from '../../forms/PasswordForm';
+
 import {
   BottomNavigationParamList,
   DeviceInfo,
   RootStackParamList,
 } from '../../types';
-import { DLoader, MyText, MyToast, SLoader } from '../../components';
+import { DLoader, MyToast, SLoader } from '../../components';
 import {
   _checkBleStatus,
   _checkLocationStatus,
@@ -52,12 +62,13 @@ import {
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
 import { UserToken } from '../../types/userControllerApiResponse';
-import { View } from 'react-native-animatable';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
   'DSetup'
 >;
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export default function DeviceSetupScreen() {
   // console.log('User ka bta id mili ha?', userStore.get());
@@ -77,6 +88,9 @@ export default function DeviceSetupScreen() {
   const [scannedDevices, setScannedDevices] = useState<
     Array<Peripheral | undefined>
   >([]);
+  const [iosScannedData, setIosScannedData] = useState(
+    new Map<Peripheral['id'], Peripheral>(),
+  );
   const [disable, setDisable] = useState(false);
   const [connFlag, setConnFlag] = useState(true);
   const [toastContent, setToastContent] = useState<{
@@ -110,6 +124,38 @@ export default function DeviceSetupScreen() {
     }
     return true;
   };
+
+  const addOrUpdatePeripheral = (peripheral: Peripheral) => {
+    // new Map() enables changing the reference & refreshing UI.
+    // TOFIX not efficient.
+    if (peripheral?.name) {
+      console.log('kia ha', peripheral);
+      setIosScannedData(map => new Map(map.set(peripheral.id, peripheral)));
+    }
+  };
+
+  useEffect(() => {
+    console.log('xxx', Array.from(iosScannedData.values()));
+  }, [iosScannedData.values()]);
+
+  useEffect(() => {
+    const listeners = [
+      bleManagerEmitter.addListener(
+        'BleManagerDiscoverPeripheral',
+        peripheral => addOrUpdatePeripheral(peripheral),
+      ),
+      bleManagerEmitter.addListener('BleManagerStopScan', () =>
+        console.log('scan stopped'),
+      ),
+    ];
+
+    return () => {
+      console.debug('[app] main component unmounting. Removing listeners...');
+      for (const listener of listeners) {
+        listener.remove();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -158,6 +204,8 @@ export default function DeviceSetupScreen() {
     }
     handleShowBack(step);
   }, [step]);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     checkStatus();
@@ -224,7 +272,7 @@ export default function DeviceSetupScreen() {
   }
 
   const checkStatus = async () => {
-    const ble = await _checkBleStatus();
+    const ble = Platform.OS == 'ios' ? true : await _checkBleStatus();
     const loc = await _checkLocationStatus();
     setBleStatus(ble);
     setlocationStatus(loc);
@@ -531,47 +579,50 @@ export default function DeviceSetupScreen() {
     }
     if (bleCheck && locationCheck && status) {
       await _startBluetooth();
-      const res = await _scanBleDevices();
-      console.log('devices found', res?.length);
-      const newArr = res?.filter(item => {
-        if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
-          return item;
+      setTimeout(async () => {
+        const res = await _scanBleDevices();
+        console.log('devices found', res?.length);
+        const newArr = res?.filter(item => {
+          if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
+            return item;
+          }
+        });
+        console.log('ESP devices found', JSON.stringify(newArr));
+        console.log(
+          '====>>>>>',
+          bleStatus,
+          'loc xxx',
+          locationStatus,
+          new Set(issues),
+        );
+        setScannedDevices(newArr!);
+        const macAdd = route?.params?.deviceData?.macAddress;
+        const isFound = !newArr?.some(item =>
+          macAdd ? item.id === macAdd : true,
+        );
+        if (issues.length === 0) {
+          if (newArr?.length === 0 || isFound) {
+            setStep(8);
+            setToastContent(state => ({
+              ...state,
+              title: 'Device not Found',
+              message: 'Please Check',
+              points: [
+                'Device is powered on',
+                'Phone is within range of the device',
+                'Device LED is yellow',
+                'WiFi is working',
+              ],
+              onPress: () => {
+                setRetry(true);
+              },
+            }));
+          } else {
+            console.log('====== step 2 jana chahta ha', iosScannedData);
+            setStep(2);
+          }
         }
-      });
-      console.log('ESP devices found', JSON.stringify(newArr));
-      console.log(
-        '====>>>>>',
-        bleStatus,
-        'loc xxx',
-        locationStatus,
-        new Set(issues),
-      );
-      setScannedDevices(newArr!);
-      const macAdd = route?.params?.deviceData?.macAddress;
-      const isFound = !newArr?.some(item =>
-        macAdd ? item.id === macAdd : true,
-      );
-      if (issues.length === 0) {
-        if (newArr?.length === 0 || isFound) {
-          setStep(8);
-          setToastContent(state => ({
-            ...state,
-            title: 'Device not Found',
-            message: 'Please Check',
-            points: [
-              'Device is powered on',
-              'Phone is within range of the device',
-              'Device LED is yellow',
-              'WiFi is working',
-            ],
-            onPress: () => {
-              setRetry(true);
-            },
-          }));
-        } else {
-          setStep(2);
-        }
-      }
+      }, 100);
     } else {
       console.log('location off ha? ', locationStatus);
       console.log('ble off ha? ', bleStatus);
@@ -631,7 +682,7 @@ export default function DeviceSetupScreen() {
                     ? userStore.get().currentRegisterUser?.userType.name
                     : userStore.get().userData?.userType.name
                 }
-                data={scannedDevices}
+                data={scannedDevices ?? []}
                 setStep={(value: number) => setStep(value)}
                 setDevMacId={(value?: string) =>
                   setDevInfo(state => ({ ...state, macId: value }))
@@ -639,6 +690,7 @@ export default function DeviceSetupScreen() {
                 selectedDeviceData={route?.params?.deviceData}
                 autoSelect={route?.params?.from == 'SelectedDevice'}
               />
+              // <View style={{ backgroundColor: 'pink', flex: 1 }} />
             )}
             {step == 3 && (
               <DeviceNicknameForm
