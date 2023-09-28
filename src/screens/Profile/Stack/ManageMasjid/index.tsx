@@ -144,21 +144,25 @@ export default function ManageMasjid({
                   title: 'Adhan settings',
                   icon: <AdhanSettingSvg width={25} height={25} />,
                   onPress: () => setFlag('aSet'),
+                  hidden: !userData?.userType?.permissions?.some(
+                    val => val?.name == 'MANAGE_MASJID_VIEW_ADHAN_SETTINGS',
+                  ),
                 },
                 {
                   title: 'Salah Timings',
                   icon: <SalahTimingsSVG />,
                   onPress: () => setFlag('sTime'),
+                  hidden: !userData?.userType?.permissions?.some(
+                    val => val?.name == 'MANAGE_MASJID_SALAH_TIMINGS',
+                  ),
                 },
                 {
                   title: 'Manage Users',
                   icon: <ManageUser />,
                   onPress: () => setFlag('mUsers'),
-                  hidden:
-                    userData?.userType.id == 1 ||
-                    userData?.userType?.permissions?.filter(
-                      val => val?.name == 'MANAGE_USERS',
-                    )?.length == 0,
+                  hidden: !userData?.userType?.permissions?.some(
+                    val => val?.name == 'MANAGE_MASJID_USERS',
+                  ),
                 },
               ],
             },

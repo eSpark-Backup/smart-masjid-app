@@ -154,11 +154,6 @@ const MasjidDetails = ({
               <GapView length={5} mode="horizontal" />
               <NavigationSvg
                 onPress={() => {
-                  // openMap(
-                  //   masjidDetails?.address1 ?? '',
-                  //   masjidDetails?.city ?? '',
-                  //   masjidDetails?.zip ?? '',
-                  // );
                   openMap(
                     masjidDetails?.location?.coordinates[0].toString() ?? '',
                     masjidDetails?.location?.coordinates[1].toString() ?? '',

@@ -141,20 +141,22 @@ export default function Device({ contentOpacity = 0 }: any) {
                 </View>
                 <GapView />
                 <View>
-                  {user?.userType?.name === 'Customer' ? (
+                  {user?.userType?.permissions.some(
+                    val => val.name === 'MANAGE_MASJID_DEVICES',
+                  ) ? (
+                    <TabView
+                      tab1Title="My Devices"
+                      onChange={setActiveTab}
+                      tab2Title="Masjid Devices"
+                      currTab={activeTab}
+                    />
+                  ) : (
                     <MyTitle
                       text="My Devices"
                       style={{
                         color: colors.primary,
                         alignSelf: 'center',
                       }}
-                    />
-                  ) : (
-                    <TabView
-                      tab1Title="My Devices"
-                      onChange={setActiveTab}
-                      tab2Title="Masjid Devices"
-                      currTab={activeTab}
                     />
                   )}
                   <View

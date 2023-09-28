@@ -72,7 +72,9 @@ export const AddMasjidIqamahTiming = async (
   data: IqamahTime,
 ) => {
   try {
+    console.log('start result');
     const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
+    console.log('result.data', result);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
     } else {
@@ -106,6 +108,7 @@ export const UpdateMasjidIqamahTiming = async (
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
     } else {
+      console.log('result.data', result.data?.message);
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
         type: 'error',
@@ -389,9 +392,13 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
  * @description Get Salah Timing of masjid
  * @returns return Salah Timing of masjid
  */
-export const getSalahTimingsOfMasjid = async (masjidId: string) => {
+export const getSalahTimingsOfMasjid = async (
+  masjidId: string,
+  date?: string,
+) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/salah`, {
+      date: date?.toString(),
       range: 'MONTH',
     });
     const timings = result?.data?.timings as SalahTimings[];

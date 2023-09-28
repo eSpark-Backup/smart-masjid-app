@@ -50,10 +50,10 @@ export default function EditIqamahTimings({
         dhuhr: '14:00:00',
         isha: '21:30:00',
         maghribDelay: '15',
-        fajrDelay: null,
-        dhuhrDelay: null,
-        asrDelay: null,
-        ishaDelay: null,
+        fajrDelay: '0',
+        dhuhrDelay: '0',
+        asrDelay: '0',
+        ishaDelay: '0',
       };
       setData(defaultData);
     }
@@ -62,29 +62,32 @@ export default function EditIqamahTimings({
   const onUpdate = async () => {
     var dataObj: IqamahTime = data;
     setLoading(true);
-    if (
-      (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
-      !Boolean(dataObj.dhuhrDelay) ||
-      !Boolean(dataObj.asrDelay) ||
-      !Boolean(dataObj.maghribDelay) ||
-      !Boolean(dataObj.ishaDelay)
-    ) {
-      if (iqamahType == 'Add') {
-        await AddMasjidIqamahTiming(
-          userData?.masjid.id.toString() as string,
-          dataObj,
-        );
-      } else {
-        await UpdateMasjidIqamahTiming(
-          userData?.masjid.id.toString() as string,
-          dataObj,
-        );
-      }
+    console.log('iqamah data', data);
+    if (iqamahType == 'Add') {
+      await AddMasjidIqamahTiming(
+        userData?.masjid.id.toString() as string,
+        dataObj,
+      );
+    } else {
+      await UpdateMasjidIqamahTiming(
+        userData?.masjid.id.toString() as string,
+        dataObj,
+      );
     }
+    // if (
+    //   (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
+    //   !Boolean(dataObj.dhuhrDelay) ||
+    //   !Boolean(dataObj.asrDelay) ||
+    //   !Boolean(dataObj.maghribDelay) ||
+    //   !Boolean(dataObj.ishaDelay)
+    // ) {
+    // }
     setLoading(false);
     setData(null);
     setFlag('iTime');
   };
+
+  console.log('data', data);
 
   const type = data?.type;
   return (
@@ -127,12 +130,52 @@ export default function EditIqamahTimings({
                       name: data?.type == 'F' ? 'Fixed' : 'Delay',
                     }}
                     width={WINDOW_WIDTH - 50}
-                    onChangeValue={e =>
-                      setData({
-                        ...data,
-                        type: e.name == 'Fixed' ? 'F' : 'D',
-                      })
-                    }
+                    onChangeValue={e => {
+                      if (
+                        iqamahType == 'Edit' &&
+                        e.name == 'Fixed' &&
+                        selectedIqamah?.type == 'D'
+                      ) {
+                        let defaultData = {
+                          ...selectedIqamah,
+                          effectiveDate: moment(new Date()).format(
+                            'YYYY-MM-DD',
+                          ),
+                          asr: '18:00:00',
+                          fajr: '06:00:00',
+                          dhuhr: '14:00:00',
+                          isha: '21:30:00',
+                        };
+                        setData({
+                          ...defaultData,
+                          type: e.name == 'Fixed' ? 'F' : 'D',
+                        });
+                      } else if (
+                        iqamahType == 'Edit' &&
+                        e.name == 'Delay' &&
+                        selectedIqamah?.type == 'F'
+                      ) {
+                        let defaultData = {
+                          ...selectedIqamah,
+                          effectiveDate: moment(new Date()).format(
+                            'YYYY-MM-DD',
+                          ),
+                          fajrDelay: '10',
+                          dhuhrDelay: '10',
+                          asrDelay: '10',
+                          ishaDelay: '10',
+                        };
+                        setData({
+                          ...defaultData,
+                          type: e.name == 'Delay' ? 'D' : 'F',
+                        });
+                      } else {
+                        setData({
+                          ...data,
+                          type: e.name == 'Fixed' ? 'F' : 'D',
+                        });
+                      }
+                    }}
                   />
                   <GapView length={20} />
                   <MyDatePicker
