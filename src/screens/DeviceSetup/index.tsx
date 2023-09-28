@@ -69,9 +69,6 @@ type DSetupNavigationProps = NativeStackScreenProps<
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-const BleManagerModule = NativeModules.BleManager;
-const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
-
 export default function DeviceSetupScreen() {
   // console.log('User ka bta id mili ha?', userStore.get());
 
