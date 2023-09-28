@@ -411,11 +411,9 @@ function UserInformation({
                   title: 'Manage Masjid',
                   icon: <MasjidGear />,
                   onPress: () => setFlag('mMas'),
-                  hidden:
-                    userData?.userType.id == 1 ||
-                    userData?.userType?.permissions?.filter(
-                      val => val?.name == 'MANAGE_MASJID',
-                    )?.length == 0,
+                  hidden: !userData?.userType?.permissions?.some(
+                    val => val?.name == 'MANAGE_MASJID',
+                  ),
                 },
               ],
             },

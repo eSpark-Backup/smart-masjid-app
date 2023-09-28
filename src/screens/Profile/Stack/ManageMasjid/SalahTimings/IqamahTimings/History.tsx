@@ -27,19 +27,40 @@ export default function History({
   const userData = useHookstate(userStore.userData).get();
   const [adhaTime, setAdhaTime] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     setLoading(true);
-    getSalahTimingsOfMasjid(userData?.masjid.id.toString() as string).then(
-      (timings: SalahTimings[] | undefined) => {
-        convertTimings(timings);
-        setLoading(false);
-      },
-    );
+    getSalahTimingsOfMasjid(
+      userData?.masjid.id.toString() as string,
+      moment().startOf('month').format('YYYY-MM-DD'),
+    ).then((timings: SalahTimings[] | undefined) => {
+      convertTimings(timings);
+      setLoading(false);
+    });
   }, []);
 
   const onDateChange = (e: Date) => {
-    console.log('e', e);
+    setCurrentDate(e);
+    setLoading(true);
+    getSalahTimingsOfMasjid(
+      userData?.masjid.id.toString() as string,
+      moment(e).startOf('month').format('YYYY-MM-DD') as string,
+    ).then((timings: SalahTimings[] | undefined) => {
+      convertTimings(timings);
+      setLoading(false);
+    });
+
+    // const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
+    //   return value.date == moment(e).format('YYYY-MM-DD');
+    // });
+
+    // if (currentIndex != -1) {
+    //   slider.current?.scrollToIndex({
+    //     index: currentIndex,
+    //     animated: true,
+    //   });
+    // }
   };
 
   const convertTimings = (timings: SalahTimings[] | undefined) => {
@@ -77,7 +98,7 @@ export default function History({
           minimumDate={moment().startOf('month').toDate()}
           maximumDate={moment().add(4, 'month').toDate()}
           type="standard"
-          currentDate={new Date()}
+          currentDate={currentDate}
           onDateChange={onDateChange}
           dateFormat={'Monthly'}
         />

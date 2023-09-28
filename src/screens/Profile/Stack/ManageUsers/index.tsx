@@ -7,7 +7,7 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { ImmutableObject, useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
 import crashlytics from '@react-native-firebase/crashlytics';
 
@@ -37,11 +37,13 @@ export default function ManageUsers({
   contentOpacity?: any;
 }) {
   const admins: any = useHookstate(userStore?.masjidAdmins).get();
+  const userData: ImmutableObject<ImmutableObject<UserResponse>> | null =
+    useHookstate(userStore?.userData).get();
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState('');
   useEffect(() => {
     setLoading(true);
-    GetMasjidAdmins('1')
+    GetMasjidAdmins(userData?.masjid?.id.toString()!)
       .then(() => {
         setLoading(false);
       })
@@ -89,7 +91,6 @@ export default function ManageUsers({
           contentContainerStyle={{
             flexGrow: 1,
             width: WINDOW_WIDTH,
-            paddingBottom: 120,
           }}
           data={admins ?? []}
           renderItem={({
@@ -165,11 +166,15 @@ const UserCard = ({
 const AddUserBtn = ({ onPress }: any) => {
   const { colors }: Theme = useTheme();
   return (
-    <View style={{ marginTop: 10 }}>
+    <View style={{ padding: 20 }}>
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={onPress}
-        style={{ ...styles.cardContainer, justifyContent: 'center' }}>
+        style={{
+          ...styles.cardContainer,
+          justifyContent: 'center',
+          height: undefined,
+        }}>
         <MyText
           text="Add User"
           textStyle={{ color: colors.primary, fontWeight: '500', fontSize: 16 }}
