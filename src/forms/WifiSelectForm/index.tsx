@@ -119,16 +119,21 @@ export default function WifiSelectForm({
         <>
           <OverlayLoader noBg={true} isShow={loading} />
           <View style={{ alignItems: 'center' }}>
-            <View style={{ alignSelf: 'center', top: 128 }}>
+            <View
+              style={{
+                alignSelf: 'center',
+                position: 'absolute',
+                top: -WINDOW_WIDTH / 1.9 / 3,
+              }}>
               <Animated.View style={[{ opacity: contentOpacity }]}>
                 <MyTitle
                   text={'Device Setup'}
                   style={{ alignSelf: 'center' }}
                 />
               </Animated.View>
-              <GapView length={50} />
             </View>
-            <View style={{ top: 130 }}>
+            <GapView />
+            <View>
               <MyTextSubHeader
                 style={{
                   alignItems: 'center',
@@ -136,7 +141,7 @@ export default function WifiSelectForm({
                 }}
                 text="Select Wi-Fi network"
               />
-              <GapView length={50} />
+              <GapView length={30} />
               <View style={{ height: '100%' }}>
                 <ButtonListing data={data} titleWidth={'60%'} lines={2} />
               </View>
@@ -147,33 +152,36 @@ export default function WifiSelectForm({
     } else {
       return (
         <>
-          <OverlayLoader noBg={true} isShow={loading} />
+          <OverlayLoader noBg={true} isShow={true} />
           <View
             style={{
               height: WINDOW_HEIGHT,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <View style={{ alignSelf: 'center', top: 128 }}>
+            <View
+              style={{
+                alignSelf: 'center',
+                position: 'absolute',
+                top: -WINDOW_WIDTH / 1.9 / 3,
+              }}>
               <Animated.View style={[{ opacity: contentOpacity }]}>
                 <MyTitle
                   text={'Device Setup'}
                   style={{ alignSelf: 'center' }}
                 />
               </Animated.View>
-              <GapView length={50} />
             </View>
             <View
               style={{
-                flex: 1,
                 justifyContent: 'center',
-                bottom: 10,
+                bottom: 60,
               }}>
               <MyText
                 textStyle={{
                   fontSize: 14,
                   fontWeight: '400',
-                  top: loading ? 60 : 0,
+                  top: 0,
                 }}
                 text={loading ? 'Checking Wifi List' : "No Wifi's Found"}
               />
