@@ -90,18 +90,25 @@ export default function App() {
 
   const getSubscribedJummas = () => {
     let jummas: subJummas;
-    userData
-      .get()
-      ?.masjid.subscriptionList.forEach((item: SubscriptionList) => {
-        if (item.subscriptionType.name == 'JUMUAH_1') {
-          jummas = { ...jummas, jumma1: true };
-        } else if (item.subscriptionType.name == 'JUMUAH_2') {
-          jummas = { ...jummas, jumma2: true };
-        } else if (item.subscriptionType.name == 'JUMUAH_3') {
-          jummas = { ...jummas, jumma3: true };
-        }
-        masjidStore.masjidsJummaSubs.set(jummas);
-      });
+    try {
+      if (userData.get()?.masjid?.subscriptionList) {
+        userData
+          .get()
+          ?.masjid?.subscriptionList?.forEach((item: SubscriptionList) => {
+            if (item?.subscriptionType?.name == 'JUMUAH_1') {
+              jummas = { ...jummas, jumma1: true };
+            } else if (item?.subscriptionType?.name == 'JUMUAH_2') {
+              jummas = { ...jummas, jumma2: true };
+            } else if (item?.subscriptionType?.name == 'JUMUAH_3') {
+              jummas = { ...jummas, jumma3: true };
+            }
+            masjidStore?.masjidsJummaSubs?.set(jummas);
+          });
+      }
+    } catch (e) {
+      console.error('At get subscriobed jummahs');
+      crashlytics().recordError(e as Error);
+    }
   };
 
   useEffect(() => {
