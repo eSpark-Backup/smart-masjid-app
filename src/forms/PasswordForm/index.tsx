@@ -61,19 +61,21 @@ export default function PasswordForm({
         setStep(6);
         clear();
       });
-      // await WifiManager.disconnect();
-      // RnWifi.connectToNetwork({ ssid, password })
-      //   .then(() => {
-      //     console.log('Connected Successfully', res);
-      //     setLoading(false);
-      //     setStep(6);
-      //     clear();
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //     crashlytics().recordError(error as Error);
-      //     setLoading(false);
-      //   });
+      if (Platform.OS == 'android') {
+        await WifiManager.disconnect();
+        RnWifi.connectToNetwork({ ssid, password })
+          .then(() => {
+            console.log('Connected Successfully', res);
+            setLoading(false);
+            setStep(6);
+            clear();
+          })
+          .catch(error => {
+            console.error(error);
+            crashlytics().recordError(error as Error);
+            setLoading(false);
+          });
+      }
     } catch (error) {
       crashlytics().recordError(error as Error);
       console.log('error in connecting wifi', error);
