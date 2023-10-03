@@ -195,7 +195,7 @@ const DeviceSetting = ({
                     onPress: () => setIsEditable(true),
                     onDoneEdit: text => {
                       console.log('avla', text);
-                      if (text?.length! < 0) {
+                      if (text?.length! > 0) {
                         updateDeviceName(text, device?.name);
                       }
                       setIsEditable(false);
@@ -310,8 +310,7 @@ const makeStyles = (theme: Theme) => {
     deviceSettingContainer: { flex: 1, alignItems: 'center' },
     subHeader: {
       flexDirection: 'row',
-      width: '100%',
-      paddingHorizontal: 4,
+      width: WINDOW_WIDTH - 28,
       justifyContent: 'space-between',
       alignItems: 'center',
     },
