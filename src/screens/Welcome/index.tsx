@@ -30,7 +30,7 @@ export default function App() {
               style={{
                 alignSelf: 'center',
                 flexDirection: 'row',
-                marginTop: 205,
+                marginTop: 10,
               }}>
               <MyTitle
                 text={`Welcome to `}
