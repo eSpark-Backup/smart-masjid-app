@@ -17,6 +17,13 @@ import {
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { Device } from '../../types/deviceControllerTypes';
 import { WINDOW_WIDTH } from '../../constants';
+import {
+  _connectBleDevice,
+  _disconnectBleDevice,
+  _readFromDevice,
+} from '../../screens/DeviceSetup/utils/functions';
+import { DeviceInfo } from '../../types';
+import { check } from 'react-native-permissions';
 
 export default function DeviceSelectForm({
   data = [],
@@ -37,10 +44,26 @@ export default function DeviceSelectForm({
 }) {
   const [loading, setLoading] = useState(false);
 
+  const getIOSMacAdd = async (macId: string) => {
+    await _connectBleDevice({ macId: macId });
+    const stringData = await _readFromDevice(
+      { macId: macId },
+      '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+      '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
+    );
+
+    let Ddata: DeviceInfo = JSON.parse(stringData);
+    _disconnectBleDevice({ macId: macId });
+    return Ddata.mac_address;
+  };
+
   async function handleDeviceCheck(macId: string) {
     setLoading(true);
     try {
-      const res = await _checkDeviceExists(macId);
+      const res = await _checkDeviceExists(
+        Platform.OS == 'ios' ? ((await getIOSMacAdd(macId)) as string) : macId,
+      );
+
       console.log('res', Boolean(res), macId);
       if (!Boolean(res)) {
         setStep(3);
@@ -99,6 +122,26 @@ export default function DeviceSelectForm({
   const finalArr = newArr.filter(item => item.title !== 'null');
   console.log('final Array', finalArr);
 
+  async function processArray(finalArr: any) {
+    for (const item of finalArr) {
+      await _connectBleDevice({ macId: item.id });
+      const stringData = await _readFromDevice(
+        { macId: item.id },
+        '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+        '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
+      );
+      let Ddata: DeviceInfo = JSON.parse(stringData);
+      if (Ddata.mac_address == selectedDeviceData?.macAddress) {
+        _disconnectBleDevice({ macId: item.id });
+        setStep(3);
+        setDevMacId?.(item.id);
+        break; // Break the loop when the condition is met
+      } else {
+        _disconnectBleDevice({ macId: item.id });
+      }
+    }
+  }
+
   useEffect(() => {
     if (finalArr.length <= 0) {
       setStep(8);
@@ -107,14 +150,19 @@ export default function DeviceSelectForm({
 
   useEffect(() => {
     if (autoSelect) {
-      finalArr.filter(item => {
-        if (
-          item.id?.slice(0, 14) == selectedDeviceData?.macAddress.slice(0, 14)
-        ) {
-          setStep(3);
-          setDevMacId?.(item.id);
-        }
-      });
+      if (Platform.OS == 'ios') {
+        setStep(1);
+        processArray(finalArr);
+      } else {
+        finalArr.filter(item => {
+          if (
+            item.id?.slice(0, 14) == selectedDeviceData?.macAddress.slice(0, 14)
+          ) {
+            setStep(3);
+            setDevMacId?.(item.id);
+          }
+        });
+      }
     }
   }, [autoSelect]);
 

@@ -80,6 +80,10 @@ export default function App() {
   const userData = useHookstate(userStore.userData);
 
   useEffect(() => {
+    _getFCMToken();
+  }, []);
+
+  useEffect(() => {
     handleDeviceIdCheck();
     getSubscribedJummas();
   }, [userData]);
@@ -102,7 +106,6 @@ export default function App() {
 
   useEffect(() => {
     GetCountryCodes();
-    _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);

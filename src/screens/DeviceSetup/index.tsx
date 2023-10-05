@@ -131,7 +131,7 @@ export default function DeviceSetupScreen() {
   };
 
   useEffect(() => {
-    console.log('xxx', Array.from(iosScannedData.values()));
+    Array.from(iosScannedData.values());
   }, [iosScannedData.values()]);
 
   useEffect(() => {
@@ -305,6 +305,10 @@ export default function DeviceSetupScreen() {
   };
 
   const handleBack = () => {
+    if (route.params.from === 'SelectedDevice') {
+      navigation.goBack();
+      return;
+    }
     switch (step) {
       case 2:
         return navigation.goBack();
@@ -593,9 +597,25 @@ export default function DeviceSetupScreen() {
         );
         setScannedDevices(newArr!);
         const macAdd = route?.params?.deviceData?.macAddress;
-        const isFound = !newArr?.some(item =>
-          macAdd ? item.id === macAdd : true,
-        );
+        const isFound = !newArr?.some(async item => {
+          if (Platform.OS == 'ios' && macAdd) {
+            await _connectBleDevice({ macId: item.id });
+            const stringData = await _readFromDevice(
+              { macId: item.id },
+              '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+              '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
+            );
+            let Ddata: DeviceInfo = JSON.parse(stringData);
+            if (macAdd && Ddata.mac_address === macAdd) {
+              _disconnectBleDevice({ macId: item.id });
+              return true;
+            } else {
+              _disconnectBleDevice({ macId: item.id });
+            }
+          } else {
+            macAdd ? item.id === macAdd : true;
+          }
+        });
         if (issues.length === 0) {
           if (newArr?.length === 0 || isFound) {
             setStep(8);

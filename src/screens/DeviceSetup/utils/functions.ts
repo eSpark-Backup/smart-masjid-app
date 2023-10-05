@@ -147,7 +147,7 @@ export async function _disconnectBleDevice(
     if (isOnline) {
       return;
     }
-    if (!devInfo.macId) {
+    if (!devInfo?.macId) {
       const peripheralsArray = await BleManager.getConnectedPeripherals([]);
       console.log('Connected peripherals: ' + JSON.stringify(peripheralsArray));
 
@@ -160,7 +160,7 @@ export async function _disconnectBleDevice(
         console.log('Disconnected from Connected');
       }
     } else {
-      await BleManager.disconnect(devInfo.macId);
+      await BleManager.disconnect(devInfo?.macId);
       console.log('Disconnected');
     }
   } catch (error) {
