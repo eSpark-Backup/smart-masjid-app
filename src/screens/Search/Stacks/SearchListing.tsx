@@ -27,6 +27,7 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
 import { _startLocationCheck, _stopLocationCheck } from '../utils/functions';
+import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 
 const SearchListing = ({
   onPress,
@@ -47,6 +48,20 @@ const SearchListing = ({
       if (Platform.OS == 'ios') {
         await _requestUserLocationPermission();
         onCurrentLocationPress();
+        await requestMultiple([
+          PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        ]).then(status => {
+          if (
+            status['ios.permission.LOCATION_ALWAYS'] == 'granted' ||
+            status['ios.permission.LOCATION_WHEN_IN_USE'] == 'granted'
+          ) {
+            console.log('chala2');
+            onCurrentLocationPress();
+          } else {
+            _requestUserLocationPermission();
+          }
+        });
       } else {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
