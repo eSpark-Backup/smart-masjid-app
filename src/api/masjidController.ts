@@ -1,20 +1,18 @@
 import crashlytics from '@react-native-firebase/crashlytics';
 import Toast from 'react-native-toast-message';
-import moment from 'moment';
 
 import { api } from '.';
 import { masjidStore } from '../store/MasjidStore';
 import {
   AddJummas,
   IqamahTime,
-  JummahTime,
   Masjid,
   SalahTimings,
 } from '../types/masjidControllerTypes';
 
 /**
  *
- * @description Get masjid info
+ * @param masjidId - The ID of the masjid to retrieve information for.
  * @returns get data of masjid and save to masjidStore
  */
 export const GetMasjid = async (masjidId: string) => {
@@ -29,8 +27,9 @@ export const GetMasjid = async (masjidId: string) => {
 };
 
 /**
+ * Get the Adhan configuration for a masjid.
  *
- * @description Get Adhan Configuration
+ * @param masjidId - The ID of the masjid for which to retrieve the Adhan configuration.
  * @returns get data of masjid adhan config and save to masjidStore
  */
 export const GetMasjidAdhanSetting = async (masjidId: string) => {
@@ -45,9 +44,10 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
 };
 
 /**
+ * Get the Iqamah timing for a masjid.
  *
- * @description Get Adhan Configuration
- * @returns get data of masjid adhan config and save to masjidStore
+ * @param masjidId - The ID of the masjid for which to retrieve the Iqamah timing.
+ * @returns A `Promise` that resolves to Iqamah timing data if successful, or handles errors if there was a problem.
  */
 export const GetMasjidIqamahTiming = async (masjidId: string) => {
   try {
@@ -63,8 +63,10 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
 };
 
 /**
+ * Add Iqamah timing for a masjid and save it to masjidStore.
  *
- * @description Get Adhan Configuration
+ * @param masjidId - The ID of the masjid to add Iqamah timing for.
+ * @param data - The data representing Iqamah timing to add.
  * @returns get data of masjid adhan config and save to masjidStore
  */
 export const AddMasjidIqamahTiming = async (
@@ -92,8 +94,10 @@ export const AddMasjidIqamahTiming = async (
 };
 
 /**
+ * Update Iqamah timing for a masjid and save it to masjidStore.
  *
- * @description Get Adhan Configuration
+ * @param masjidId - The ID of the masjid for which to update Iqamah timing.
+ * @param data - The updated data representing Iqamah timing.
  * @returns get data of masjid adhan config and save to masjidStore
  */
 export const UpdateMasjidIqamahTiming = async (
@@ -123,8 +127,10 @@ export const UpdateMasjidIqamahTiming = async (
 };
 
 /**
+ * Delete Iqamah timing for a masjid and update masjidStore.
  *
- * @description Get Adhan Configuration
+ * @param masjidId - The ID of the masjid from which to delete Iqamah timing.
+ * @param iqamaId - The ID of the Iqamah timing to delete.
  * @returns get data of masjid adhan config and save to masjidStore
  */
 export const DeleteMasjidIqamahTiming = async (
@@ -152,8 +158,9 @@ export const DeleteMasjidIqamahTiming = async (
 };
 
 /**
+ * Get the Iqama history for a masjid and save it to masjidStore.
  *
- * @description Get Iqama history
+ * @param masjidId - The ID of the masjid for which to retrieve the Iqama history.
  * @returns get Iqama history of masjid and save to masjidStore
  */
 export const GetIqamahHistory = async (masjidId: string) => {
@@ -168,8 +175,11 @@ export const GetIqamahHistory = async (masjidId: string) => {
 };
 
 /**
+ * Get the Adhan timings for a masjid by date and save them to masjidStore.
  *
- * @description Get Adhan Timings
+ * @param masjidId - The ID of the masjid for which to retrieve Adhan timings.
+ * @param date - The date for which to retrieve Adhan timings (optional).
+ * @param range - The range for retrieving Adhan timings (optional).
  * @returns get adhan timings of masjid by date and save to masjidStore
  */
 export const GetAdhanTimings = async (
@@ -193,9 +203,11 @@ export const GetAdhanTimings = async (
 };
 
 /**
+ * Get the Jummah configuration for a masjid and save it to masjidStore.
  *
- * @description Get Jummah Configuration
- * @returns get data of masjid Jummah and save to masjidStore
+ * @param masjidId - The ID of the masjid for which to retrieve the Jummah configuration.
+ * @param date - The date for which to retrieve the Jummah configuration (optional).
+ * @returns A `Promise` that resolves to Jummah configuration data if successful, or handles errors if there was a problem.
  */
 export const GetMasjidJummahTiming = async (
   masjidId: string,
@@ -217,9 +229,11 @@ export const GetMasjidJummahTiming = async (
 };
 
 /**
+ * Get the Jummah configuration for a masjid and save it to masjidStore.
  *
- * @description Get Current Jummah Timings
- * @returns get data of masjid Jummah and save to masjidStore
+ * @param masjidId - The ID of the masjid for which to retrieve the Jummah configuration.
+ * @param date - The date for which to retrieve the Jummah configuration (optional).
+ * @returns A `Promise` that resolves to Jummah configuration data if successful, or handles errors if there was a problem.
  */
 export const GetMasjidCurrentJummahTiming = async (
   masjidId: string,
@@ -241,8 +255,10 @@ export const GetMasjidCurrentJummahTiming = async (
 };
 
 /**
+ * Add Jumuah timing for a masjid and save it to masjidStore.
  *
- * @description Add Jumuah Timing
+ * @param masjidId - The ID of the masjid for which to add Jumuah timing.
+ * @param data - The data representing the Jumuah timing to add.
  * @returns get data of masjid jumuah and save to masjidStore
  */
 export const AddMasjidJummahTiming = async (
@@ -268,8 +284,10 @@ export const AddMasjidJummahTiming = async (
 };
 
 /**
+ * Update Jumuah timing for a masjid and save it to masjidStore.
  *
- * @description Update Jumuah Timing
+ * @param masjidId - The ID of the masjid for which to update Jumuah timing.
+ * @param data - The updated data representing the Jumuah timing.
  * @returns get data of masjid Jumuah and save to masjidStore
  */
 export const UpdatedMasjidJummahTiming = async (
@@ -299,8 +317,10 @@ export const UpdatedMasjidJummahTiming = async (
 };
 
 /**
+ * Delete Jumuah timing for a masjid and save the updated data to masjidStore.
  *
- * @description Delete Jummah Time
+ * @param masjidId - The ID of the masjid for which to delete Jumuah timing.
+ * @param jumuahId - The ID of the Jumuah timing to delete.
  * @returns get data of masjid Jummah and save to masjidStore
  */
 export const DeleteMasjidJummahTiming = async (
@@ -328,8 +348,9 @@ export const DeleteMasjidJummahTiming = async (
 };
 
 /**
+ * Get Jummah history for a masjid and save it to masjidStore.
  *
- * @description Get Jummah history
+ * @param masjidId - The ID of the masjid for which to get Jummah history.
  * @returns get Jummah history of masjid and save to masjidStore
  */
 export const GetJummahHistory = async (masjidId: string) => {
@@ -344,9 +365,12 @@ export const GetJummahHistory = async (masjidId: string) => {
 };
 
 /**
+ * Search for masjids by Zip Code and Location.
  *
- * @description Search Masjid by Zip Code and Location
- * @returns get masjid and and return masjid list
+ * @param [zipcode=''] - The Zip Code to use in the search.
+ * @param [lat=0] - The latitude coordinate for the location.
+ * @param [long=0] - The longitude coordinate for the location.
+ * @returns An array of masjids that match the search criteria.
  */
 export const SearchMasjidByLocation = async (
   zipcode: string | number = '',
@@ -369,9 +393,10 @@ export const SearchMasjidByLocation = async (
 };
 
 /**
+ * Get a list of masjids subscribed by a user.
  *
- * @description Get list of masjid subscribed by user
- * @returns get masjid and and return masjid list
+ * @param userId - The ID of the user.
+ * @returns An array of masjids subscribed by the user or null if no subscriptions exist.
  */
 export const getListMasjidSubscribedByUser = async (userId: string) => {
   try {
@@ -384,13 +409,16 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
     return result.data;
   } catch (error) {
     console.log('getListMasjidSubscribedByUser error: ', error);
+    crashlytics().recordError(error as Error);
   }
 };
 
 /**
+ * Get Salah timings of a masjid for a specific date or month.
  *
- * @description Get Salah Timing of masjid
- * @returns return Salah Timing of masjid
+ * @param masjidId - The ID of the masjid.
+ * @param [date] - The date for which Salah timings are requested. Optional.
+ * @returns An array of Salah timings for the masjid or undefined if there is an error.
  */
 export const getSalahTimingsOfMasjid = async (
   masjidId: string,
@@ -406,5 +434,6 @@ export const getSalahTimingsOfMasjid = async (
     return timings;
   } catch (error) {
     console.log('getSalahTimingsOfMasjid error: ', error);
+    crashlytics().recordError(error as Error);
   }
 };

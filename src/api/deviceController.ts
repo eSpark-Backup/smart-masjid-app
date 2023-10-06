@@ -9,10 +9,12 @@ import { Device } from '../types/deviceControllerTypes';
 import { masjidStore } from '../store/MasjidStore';
 
 /**
+ * Get devices associated with a user.
  *
- * @description Get User Devices
- * @returns get devices and save to deviceStore.devices
+ * @param userId - The ID of the user for whom to retrieve devices.
+ * @returns A promise of `void`
  */
+
 export const GetUserDevices = async (userId: string) => {
   try {
     const result: any = await api.get(`/devices/user/${userId}`);
@@ -25,10 +27,12 @@ export const GetUserDevices = async (userId: string) => {
 };
 
 /**
+ * Get devices associated with a masjid.
  *
- * @description Get Masjid Devices
- * @returns get devices and save to deviceStore.masjidDevices
+ * @param masjidId - The ID of the masjid for which to retrieve devices.
+ * @returns A promise of `void`
  */
+
 export const GetMasjidDevices = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/devices/masjid/${masjidId}`);
@@ -39,6 +43,14 @@ export const GetMasjidDevices = async (masjidId: string) => {
     crashlytics().recordError(error as Error);
   }
 };
+
+/**
+ * Subscribe a device to a masjid.
+ *
+ * @param deviceId - The ID of the device to subscribe.
+ * @param masjidId - The ID of the masjid to which the device will be subscribed.
+ * @returns A promise that resolves to `true` if the device was successfully subscribed to the masjid, or rejects if there was an error.
+ */
 
 export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
   try {
@@ -59,6 +71,14 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
   }
 };
 
+/**
+ * Unsubscribe a device from a masjid.
+ *
+ * @param deviceId - The ID of the device to unsubscribe.
+ * @param masjidId - The ID of the masjid from which to unsubscribe the device.
+ * @returns A promise that resolves to `true` if the device was successfully unsubscribed from the masjid, or rejects if there was an error.
+ */
+
 export const unSubscribeMasjid = async (deviceId: string, masjidId: string) => {
   try {
     const result: any = await api.delete(
@@ -73,8 +93,18 @@ export const unSubscribeMasjid = async (deviceId: string, masjidId: string) => {
       });
       return false;
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
+
+/**
+ * Get devices associated with a user and, optionally, a masjid.
+ *
+ * @param userId - The ID of the user for whom to retrieve devices.
+ * @param masjidId - Optional. The ID of the masjid for which to retrieve devices.
+ * @returns A promise that resolves if the retrieval is successful, or rejects if there was an error.
+ */
 
 export const GetMasjidDevicesForUser = async (
   userId: string,
@@ -94,14 +124,17 @@ export const GetMasjidDevicesForUser = async (
       });
       return false;
     }
-  } catch (error) {}
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
 };
 
 /**
+ * Checks device telemetry for a given device.
  *
- * @description Check's Device Telemetry on Device Id
- * @returns Promise<boolean>
- * @todo //todo: Delete This later
+ * @param deviceId - The ID of the device to check telemetry for.
+ * @param [checkTime] - Optional. If `true`, returns the telemetry data; if `false`, checks if the device status is 'Online'.
+ * @returns A `Promise` that resolves to `true` if the device is 'Online' (when `checkTime` is `false`) or the telemetry data (when `checkTime` is `true`), or rejects with an error if there was a problem.
  */
 
 export async function _checkDeviceTelemetry(
@@ -134,10 +167,10 @@ export async function _checkDeviceTelemetry(
 }
 
 /**
+ * Saves device information.
  *
- * @description Registers Device on the Server's DataBase
- * @returns Promise<DeviceResponse>
- * @todo //todo: Delete This later
+ * @param devInfo - The device information to save.
+ * @returns A promise that resolves if the device information was successfully saved, or rejects with an error if there was a problem.
  */
 
 export async function _saveDevice(devInfo: DeviceInfo) {
@@ -176,10 +209,10 @@ export async function _saveDevice(devInfo: DeviceInfo) {
 }
 
 /**
+ * Saves a device to a user.
  *
- * @description Assigns Device on the Server's DataBase to the Given User
- * @returns Promise<DeviceResponse>
- * @todo //todo: Delete This later
+ * @param devID - The ID of the device to save to the user.
+ * @returns A promise that resolves if the device was successfully assigned to the user, or rejects with an error if there was a problem.
  */
 
 export async function _saveDeviceToUser(devID: number) {
@@ -213,10 +246,11 @@ export async function _saveDeviceToUser(devID: number) {
 }
 
 /**
+ * Saves a device button to a masjid.
  *
- * @description Assigns Device on the Server's DataBase to the Given Masjid
- * @returns Promise<DeviceResponse>
- * @todo //todo: Delete This later
+ * @param devID - The ID of the device to save.
+ * @param masjidID - The ID of the masjid to which the device button will be saved.
+ * @returns A promise that resolves if the device button was successfully saved to the masjid, or rejects with an error if there was a problem.
  */
 
 export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
@@ -235,10 +269,10 @@ export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
 }
 
 /**
+ * Updates device information.
  *
- * @description Update Device on the Server's DataBase
- * @returns Promise<DeviceResponse>
- * @todo //todo: Delete This later
+ * @param devInfo - The device information to update, including an optional `wifiPassword`.
+ * @returns A promise that resolves if the device information was updated successfully, or rejects with an error if there was a problem.
  */
 
 export async function _updateDevice(
@@ -290,10 +324,10 @@ export async function _updateDevice(
 }
 
 /**
+ * Deletes a device and resets it.
  *
- * @description Check's Device Telemetry on Device Id
- * @returns Promise<boolean>
- * @todo //todo: Delete This later
+ * @param deviceId - The ID of the device to reset.
+ * @returns A promise that resolves if the device was deleted and reset successfully, or rejects with an error if there was a problem.
  */
 
 export async function _resetDevice(deviceId: string) {
@@ -315,9 +349,9 @@ export async function _resetDevice(deviceId: string) {
 }
 
 /**
- *
- * @description Get Device's Subscribe ADHANs
- * @returns subscribed adhans list
+ * Get device subscriptions.
+ * @param deviceId - The ID of the device.
+ * @returns A `Promise` that resolves to an array of subscriptions if successful, or `false` if there was an error.
  */
 
 export async function getDeviceSubscriptions(deviceId: string) {
@@ -325,11 +359,10 @@ export async function getDeviceSubscriptions(deviceId: string) {
   try {
     const res = await api.get<any>(`/devices/${deviceId}/subscriptions`);
     if (res?.ok) {
-      // console.log('Device Subscriptions', res.data);
       return res.data;
     } else {
       console.log('Problem status', res.status, res.data);
-      return null;
+      return false;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -339,9 +372,10 @@ export async function getDeviceSubscriptions(deviceId: string) {
 }
 
 /**
- *
- * @description  Subscribe, unsubscribed ADHAN Timing
- * @returns device info
+ * @description Subscribe, unsubscribed ADHAN Timing
+ * @param deviceId - The ID of the device.
+ * @param subscriptionId - The ID of the subscription to add.
+ * @returns A `Promise` that resolves to a `DeviceInfo` object if successful, `null` if there was an error, or `false` if there was a catch error.
  */
 
 export async function addSubscription(
@@ -353,11 +387,10 @@ export async function addSubscription(
       `/devices/${deviceId}/subscription/${subscriptionId}`,
     );
     if (res?.ok) {
-      // console.log('Device Subscriptions', res.data);
       return res.data;
     } else {
       console.log('Problem status', res.status, res.data);
-      return null;
+      return false;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -365,10 +398,12 @@ export async function addSubscription(
     return false;
   }
 }
+
 /**
- *
- * @description  Unsubscribe, subscribed ADHAN Timing
- * @returns device info
+ * @description Unsubscribe from a subscribed ADHAN Timing.
+ * @param deviceId - The ID of the device.
+ * @param subscriptionId - The ID of the subscription to remove.
+ * @returns A `Promise` that resolves to a `DeviceInfo` object if successful, or `false` if there was an error.
  */
 
 export async function removeSubscription(
@@ -380,11 +415,10 @@ export async function removeSubscription(
       `/devices/${deviceId}/subscription/${subscriptionId}`,
     );
     if (res?.ok) {
-      // console.log('Device Subscriptions', res.data);
       return res.data;
     } else {
       console.log('Problem status', res.status, res.data);
-      return null;
+      return false;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
