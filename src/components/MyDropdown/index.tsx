@@ -13,7 +13,7 @@ import MyDivider from '../MyDivider';
 import MyInput from '../MyInput';
 import MyText from '../MyText';
 import { ArrowDown, ArrowUp } from '../../assets';
-import { useLayoutAnimation } from '../../utils/hooks';
+import { useLayoutAnimation, useUpdateEffect } from '../../utils/hooks';
 
 interface Item {
   id: number;
@@ -86,7 +86,7 @@ export default function MyDropdown({
     if (defaultValue) setSelectedItem(defaultValue);
   }, [defaultValue]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     useLayoutAnimation();
   }, [show]);
 
@@ -108,7 +108,6 @@ export default function MyDropdown({
 
   const openDropDown = () => {
     if (disabled) return;
-    useLayoutAnimation(200);
     setShow(!show);
     Keyboard.dismiss();
   };
@@ -127,12 +126,10 @@ export default function MyDropdown({
           onChangeText={onSearch}
           onFocus={() => {
             if (disabled) return;
-            useLayoutAnimation(200);
             setShow(true);
           }}
           onBlur={() => {
             if (disabled) return;
-            useLayoutAnimation(200);
             setShow(false);
           }}
           placeholderColor={placeholderColor ?? '#9E9F9F'}
