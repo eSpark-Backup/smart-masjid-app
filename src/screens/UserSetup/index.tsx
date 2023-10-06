@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
@@ -113,7 +112,6 @@ export default function UserSetupScreen() {
 
     if (res?.id) {
       navigation.navigate('HomeBottomTab'); //TODO: Change it later
-      // navigation.navigate('DSetup');
     }
     setLoader(false);
   };
@@ -133,8 +131,6 @@ export default function UserSetupScreen() {
           visibilityTime: 10000,
         });
       } else {
-        // setData({ ...data, email: email ?? '', phone: phone ?? '' });
-        // setStep(3);
         const result = await SendOTP(email, phone);
         if (result) {
           setData({ ...data, email: email ?? '', phone: phone ?? '' });
@@ -169,12 +165,10 @@ export default function UserSetupScreen() {
         onBackPress={() => !disable && setStep(handleBack)}>
         {({ props }) => {
           return (
-            // <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <>
               {step == 1 && (
                 <LoginForm
                   contentOpacity={props.contentOpacity}
-                  type={route.params?.type}
                   onPhonePress={value => setStep(value)}
                   setStep={values => {
                     CheckIsUserExist(
@@ -190,7 +184,6 @@ export default function UserSetupScreen() {
                 <SignUpForm
                   contentOpacity={props.contentOpacity}
                   onEmailPress={value => setStep(value)}
-                  type={route.params?.type}
                   setStep={values => {
                     CheckIsUserExist(
                       values.email?.toLowerCase(),
@@ -205,7 +198,6 @@ export default function UserSetupScreen() {
                 <OtpForm
                   contentOpacity={props.contentOpacity}
                   title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
-                  type={route.params?.type}
                   userEmail={data.email}
                   setStep={async (value: string) => {
                     setLoader(true);
@@ -240,10 +232,8 @@ export default function UserSetupScreen() {
               {step == 4 && (
                 <AddPhoneForm
                   contentOpacity={props.contentOpacity}
-                  type={route.params?.type}
                   setStep={(value: number, values: any) => {
                     setStep(6);
-                    // setData({ ...data, phone: values?.phone ?? '' });
                   }}
                 />
               )}
@@ -251,7 +241,6 @@ export default function UserSetupScreen() {
                 <OtpForm
                   contentOpacity={props.contentOpacity}
                   title="Create Account"
-                  type={route.params?.type}
                   userPhone={data.phone}
                   goBack={() => setStep(4)}
                   setStep={(value: string) => setStep(6)}
@@ -307,12 +296,9 @@ export default function UserSetupScreen() {
                 />
               )}
             </>
-            // </ScrollView>
           );
         }}
       </Wrapper>
     </>
   );
 }
-
-const styles = StyleSheet.create({});

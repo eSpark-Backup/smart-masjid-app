@@ -65,8 +65,6 @@ const SearchListing = ({
             _requestUserLocationPermission();
           }
         });
-        // await _requestUserLocationPermission();
-        // onCurrentLocationPress();
       } else {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,

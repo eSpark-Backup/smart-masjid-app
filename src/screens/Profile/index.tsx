@@ -42,12 +42,62 @@ interface selectedJummmaData {
   date: string;
 }
 
+interface Titles {
+  [key: string]: string;
+}
+
+type ScreenActions = {
+  [key: string]: () => void; // Define an index signature for the object
+};
+
 export default function Profile() {
   const navigation = useNavigation<ProfileNavigationProp['navigation']>();
   const [flag, setFlag] = useState('uInfo');
   const [jummaData, setJummaData] = useState<object | null>(null);
   const [iqamaData, setIqamaData] = useState<object | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
+
+  const titles: Titles = {
+    mAcc: 'Manage Account',
+    modAcc: 'Manage Account',
+    mMas: 'Manage Masjid',
+    sTime: 'Salah Timings',
+    aSet: 'Adhan Settings',
+    iTime: 'Iqama Timings',
+    iEdit: 'Iqama Timings',
+    iAdd: 'Iqama Timings',
+    jTime: 'Jumuah Timings',
+    jEdit: 'Jumuah Timings',
+    jAdd: 'Jumuah Timings',
+    jHist: 'Jumuah Timings',
+    vUser: 'User Information',
+    addUser: 'Add User',
+    mUsers: 'Manage Users',
+    uInfo: user?.firstName ?? '',
+    help: 'Help',
+    cUs: 'Contact Us',
+  };
+
+  const screenActions: ScreenActions = {
+    mAcc: () => setFlag('uInfo'),
+    mMas: () => setFlag('uInfo'),
+    mAccOtp: () => setFlag('mAcc'),
+    sTime: () => setFlag('mMas'),
+    aSet: () => setFlag('mMas'),
+    iTime: () => setFlag('sTime'),
+    jTime: () => setFlag('sTime'),
+    iEdit: () => setFlag('iTime'),
+    iHist: () => setFlag('iTime'),
+    iAdd: () => setFlag('iTime'),
+    jEdit: () => setFlag('jTime'),
+    jAdd: () => setFlag('jTime'),
+    jHist: () => setFlag('jTime'),
+    vUser: () => setFlag('mUsers'),
+    addUser: () => setFlag('mUsers'),
+    mUsers: () => setFlag('mMas'),
+    cUs: () => setFlag('help'),
+    uInfo: () => navigation.navigate('Home'),
+  };
 
   const getFAQAndReason = async () => {
     await GetContactReasons();
@@ -56,55 +106,11 @@ export default function Profile() {
 
   const handleBack = (currScreen: string) => {
     console.log(currScreen);
-    if (currScreen == 'mAcc' || currScreen == 'mMas') {
-      setFlag('uInfo');
-      return;
-    }
-    if (currScreen == 'mAccOtp') {
-      setFlag('mAcc');
-      return;
-    }
-    if (currScreen == 'sTime' || currScreen == 'aSet') {
-      setFlag('mMas');
-      return;
-    }
-    if (currScreen == 'iTime' || currScreen == 'jTime') {
-      setFlag('sTime');
-      return;
-    }
-    if (
-      currScreen == 'iEdit' ||
-      currScreen == 'iHist' ||
-      currScreen == 'iAdd'
-    ) {
-      setFlag('iTime');
-      return;
-    }
-    if (
-      currScreen == 'jEdit' ||
-      currScreen == 'jAdd' ||
-      currScreen == 'jHist'
-    ) {
-      setFlag('jTime');
-      return;
-    }
-    if (currScreen == 'vUser' || currScreen == 'addUser') {
-      setFlag('mUsers');
-      return;
-    }
-    if (currScreen == 'mUsers') {
-      setFlag('mMas');
-      return;
-    }
-    if (currScreen == 'cUs') {
-      setFlag('help');
-      return;
-    }
-    if (currScreen == 'uInfo') {
-      navigation.navigate('Home');
+    const action = screenActions[currScreen];
+    if (action) {
+      action();
     } else {
       setFlag('uInfo');
-      return;
     }
   };
 
@@ -126,70 +132,7 @@ export default function Profile() {
     return () => backHandler.remove();
   }, [flag]);
 
-  const handleSpacing = (currScreen: string) => {
-    if (
-      currScreen == 'iEdit' ||
-      currScreen == 'iHist' ||
-      currScreen == 'iTime' ||
-      currScreen == 'jTime' ||
-      currScreen == 'jEdit' ||
-      currScreen == 'jHist' ||
-      currScreen == 'mUsers' ||
-      currScreen == 'vUser' ||
-      currScreen == 'addUser'
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const getTitle = () => {
-    if (flag == 'mAcc' || flag == 'modAcc') {
-      return 'Manage Account';
-    }
-    if (flag == 'mMas') {
-      return 'Manage Masjid';
-    }
-    if (flag == 'sTime') {
-      return 'Salah Timings';
-    }
-    if (flag == 'aSet') {
-      return 'Adhan Settings';
-    }
-    if (flag == 'iTime' || flag == 'iEdit' || flag == 'iAdd') {
-      return 'Iqama Timings';
-    }
-    if (
-      flag == 'jTime' ||
-      flag == 'jEdit' ||
-      flag == 'jAdd' ||
-      flag == 'jHist'
-    ) {
-      return 'Jumuah Timings';
-    }
-    if (flag == 'vUser' || flag == 'addUser') {
-      return 'User Information';
-    }
-    if (flag == 'iHist') {
-      return 'Monthly Schedule';
-    }
-    if (flag == 'addUser') {
-      return 'Add User';
-    }
-    if (flag == 'mUsers') {
-      return 'Manage Users';
-    }
-    if (flag == 'uInfo') {
-      return user?.firstName ?? '';
-    }
-    if (flag == 'help') {
-      return 'Help';
-    }
-    if (flag == 'cUs') {
-      return 'Contact Us';
-    }
-  };
+  const getTitle = () => titles[flag] ?? '';
 
   return (
     <Wrapper
@@ -219,12 +162,6 @@ export default function Profile() {
                 showVerification={true}
               />
             ) : null}
-            {/* {flag == 'modAcc' && (
-              <ModifyAccount
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )} */}
             {flag == 'mMas' && (
               <ManageMasjid
                 contentOpacity={props.contentOpacity}
@@ -348,15 +285,8 @@ function UserInformation({
   contentOpacity: any;
 }) {
   const userData = useHookstate(userStore.userData).get();
-
   console.log(userData?.userType.id);
   console.log(userData?.userType);
-  // console.log(
-  //   userData?.userType.id == 1 ||
-  //     userData?.userType?.permissions?.filter(
-  //       val => val?.name == 'MANAGE_MASJID',
-  //     )?.length,
-  // );
 
   return (
     <View style={{ flex: 1 }}>

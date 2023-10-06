@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Animated, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
+import moment from 'moment';
 
 import { ListEmptyComponent } from '..';
 import { GapView, MasjidListCard, MyTitle } from '../../../components';
 import { AllSalahTimings, Masjid } from '../../../types/masjidControllerTypes';
 import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
-import moment from 'moment';
 import { WINDOW_WIDTH } from '../../../constants';
 
 export default function MasjidListing({

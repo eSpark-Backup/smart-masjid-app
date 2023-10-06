@@ -23,7 +23,6 @@ import {
   TextLabel,
   Tooltip,
 } from '../../../components';
-
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
 import {
@@ -67,8 +66,7 @@ export default function MasjidDetails({
   const isFocused = useIsFocused();
 
   const {
-    getMasjidListSubscribedByUser,
-    store: { salahTimings, JummahTime },
+    store: { JummahTime },
   } = useMasjid();
 
   useEffect(() => {
@@ -217,9 +215,6 @@ export default function MasjidDetails({
                 );
                 console.log('res', res);
                 if (res) {
-                  // await getMasjidListSubscribedByUser(
-                  //   userData?.id?.toString() ?? '',
-                  // );
                   setStep(0);
                   setLoading(false);
                 }
