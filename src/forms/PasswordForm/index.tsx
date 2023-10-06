@@ -1,18 +1,17 @@
-import React, { useCallback, useState, useRef } from 'react';
-import {
-  Alert,
-  Button,
-  Linking,
-  StyleSheet,
-  View,
-  Animated,
-  Platform,
-} from 'react-native';
-import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
-import RnWifi from '@react-native-tethering/wifi';
+import React, { useState } from 'react';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
+import WifiManager from 'react-native-wifi-reborn';
 import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
 import crashlytics from '@react-native-firebase/crashlytics';
+
+let Wifi: any = null;
+
+if (Platform.OS == 'android') {
+  import('@react-native-tethering/wifi')
+    .then(module => (Wifi = module.default))
+    .catch(err => console.error('Error Importing library'));
+}
 
 import {
   GapView,
@@ -25,6 +24,7 @@ import {
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { DeviceSetupSchema } from '../../constants/validations/schema';
+import module from '@react-native-firebase/app';
 
 export default function PasswordForm({
   ssid,
@@ -51,30 +51,36 @@ export default function PasswordForm({
   ) => {
     setLoading(true);
     try {
-      const res = await WifiManager.connectToProtectedSSID(
-        ssid,
-        password,
-        false,
-      ).then(() => {
-        console.log('Connected Successfully', res);
-        setLoading(false);
-        setStep(6);
-        clear();
-      });
       if (Platform.OS == 'android') {
+        const res = await WifiManager.connectToProtectedSSID(
+          ssid,
+          password,
+          false,
+        );
         await WifiManager.disconnect();
-        RnWifi.connectToNetwork({ ssid, password })
+        Wifi.connectToNetwork({ ssid, password })
           .then(() => {
             console.log('Connected Successfully', res);
             setLoading(false);
             setStep(6);
             clear();
           })
-          .catch(error => {
+          .catch((error: any) => {
             console.error(error);
             crashlytics().recordError(error as Error);
             setLoading(false);
           });
+      } else {
+        const res = await WifiManager.connectToProtectedSSID(
+          ssid,
+          password,
+          false,
+        ).then(() => {
+          console.log('Connected Successfully', res);
+          setLoading(false);
+          setStep(6);
+          clear();
+        });
       }
     } catch (error) {
       crashlytics().recordError(error as Error);

@@ -62,9 +62,17 @@ export default function WifiSelectForm({
         }
       } else {
         const ssid = await WifiManager.getCurrentWifiSSID();
+        console.log('current ssid bta', currentWifiSSID);
         console.log('ios ke ssid bta', ssid);
-        setSSID(ssid);
-        setStep(5);
+        if (currentWifiSSID == ssid && autoSelect) {
+          setSSID(ssid);
+          setStep(5);
+        } else if (!autoSelect) {
+          setSSID(ssid);
+          setStep(5);
+        } else {
+          setIssues('Wifi SSID not found');
+        }
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
