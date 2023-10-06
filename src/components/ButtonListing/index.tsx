@@ -2,7 +2,6 @@ import { Theme, useTheme } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { View, TouchableOpacity, FlatList } from 'react-native';
-import { DeviceSvg, LockSvg, WifiSvg } from '../../assets';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
 import GapView from '../GapView';
