@@ -8,11 +8,9 @@ import { AdhanButton, DeviceSvg } from '../../assets';
 import {
   ButtonListing,
   GapView,
-  MyText,
   MyTextSubHeader,
   MyTitle,
   OverlayLoader,
-  TextLabel,
 } from '../../components';
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { Device } from '../../types/deviceControllerTypes';

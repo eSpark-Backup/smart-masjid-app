@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
-import { Formik, FormikFormProps, FormikProps } from 'formik';
+import { Formik } from 'formik';
 import { phone as isValidPhone } from 'phone';
 import Toast from 'react-native-toast-message';
 
@@ -19,12 +19,10 @@ import { useLayoutAnimation } from '../../utils';
 import { CountryCodes } from '../../types';
 
 const LoginForm = ({
-  type,
   setStep,
   onPhonePress = () => {},
   contentOpacity = 0,
 }: {
-  type?: 'login' | 'setup';
   setStep: (value: any) => void;
   onPhonePress?: (value: any) => void;
   contentOpacity?: any;
@@ -95,14 +93,7 @@ const LoginForm = ({
               setStep({ email: email, phone: '' });
             }
           }}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
+          {({ handleChange, handleSubmit, values, errors, touched }) => (
             <>
               {activeTab == '1' ? (
                 <>

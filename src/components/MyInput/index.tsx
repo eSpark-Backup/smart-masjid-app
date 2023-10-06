@@ -64,7 +64,6 @@ export default function MyInput(props: MyInputProps) {
   const {
     isPhoneCode,
     isDropDown = false,
-    dropStyle,
     phoneCodeValue,
     placeholder,
     containerStyle,
@@ -72,12 +71,10 @@ export default function MyInput(props: MyInputProps) {
     title,
     searchBar,
     helpSearch,
-    placeholderColor,
     onPhoneCodeChange,
     onSearch,
     onFocus,
     onBlur,
-    onDropPress,
     onCurrentLocationPress,
     value,
     error,
@@ -86,7 +83,6 @@ export default function MyInput(props: MyInputProps) {
     selectMode,
     phoneCodeContainerStyle,
     multiline,
-    numberOfLines,
     maxLength,
   } = props;
   const theme: Theme = useTheme();
@@ -98,14 +94,11 @@ export default function MyInput(props: MyInputProps) {
   const [locationPermission, setLocationPermission] = useState(false);
   const [getFocused, setGetFocused] = useState(false);
 
-  // console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
-
   useEffect(() => {
     if (isPhoneCode) {
       const data = countries?.find(country =>
         phoneCodeValue?.includes(country?.code),
       );
-      // console.log('🚀 ~ file: index.tsx:87 ~ useEffect ~ data:', selectMode);
       setCurrentCountry(data ?? countries[0]);
       onPhoneCodeChange?.(data ?? countries[0]);
     }
@@ -235,7 +228,6 @@ export default function MyInput(props: MyInputProps) {
                   ? 0
                   : 0,
               left: isPhoneCode ? 95 : 15,
-              // backgroundColor: theme.colors.background,
               backgroundColor: 'transparent',
               zIndex: value || getFocused ? 1 : 0,
               height: 50,
@@ -249,7 +241,6 @@ export default function MyInput(props: MyInputProps) {
                     : '#9E9F9F',
                 backgroundColor: theme.colors.background,
                 paddingHorizontal: 5,
-                // bottom: Platform.OS == 'android' ? 0.5 : 0,
               }}
               text={placeholder}
             />
@@ -341,7 +332,6 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
     },
     inputStyle: {
       fontFamily: 'roboto',
-      // paddingTop: 8,
       paddingHorizontal: 20,
       width:
         WINDOW_WIDTH -
@@ -350,7 +340,6 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
         (isPhoneCode ? 80 : 0) -
         (searchBar ? 44 : 0),
       color: colors.text,
-      // top: Platform.OS == 'ios' ? 17 : 0,
       borderWidth: helpSearch || searchBar ? 0 : 1,
       borderRadius: 10,
       borderTopRightRadius: searchBar ? 0 : 10,

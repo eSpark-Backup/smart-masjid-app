@@ -127,9 +127,7 @@ export default function JumuahTable({
             <MyText text={value} size={16} textStyle={{ fontWeight: '500' }} />
           </View>
         ))}
-        <View style={styles.headerIcon}>
-          {/* <Tooltip position="top" content="Any Content" iconColor={'#006870'} /> */}
-        </View>
+        <View style={styles.headerIcon}></View>
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />

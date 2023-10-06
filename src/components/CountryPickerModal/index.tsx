@@ -3,24 +3,20 @@ import {
   View,
   Modal,
   StyleSheet,
-  Dimensions,
   Text,
-  StatusBar,
   TouchableOpacity,
-  TextInput,
   Platform,
   TextStyle,
-  SafeAreaView,
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { CrossSvg } from '../../assets';
-import { CountryFlags, WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { useHookstate } from '@hookstate/core';
+import { Theme, useTheme } from '@react-navigation/native';
+
+import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import { externalStore } from '../../store/ExternalStore';
 import { CountryCodes } from '../../types';
 import MyText from '../MyText';
 import GapView from '../GapView';
-import { Theme, useTheme } from '@react-navigation/native';
 import { Card, Wrapper } from '../../containers';
 import MyInput from '../MyInput';
 
@@ -106,7 +102,6 @@ export default function CountryModal({
                       />
                     </Card>
                   </View>
-                  {/* <GapView /> */}
                   <View>
                     {data?.length !== 0 ? (
                       <FlatList
@@ -210,7 +205,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'white',
-    // alignItems: 'flex-start',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

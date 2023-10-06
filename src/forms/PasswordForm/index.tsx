@@ -1,14 +1,6 @@
-import React, { useCallback, useState, useRef } from 'react';
-import {
-  Alert,
-  Button,
-  Linking,
-  StyleSheet,
-  View,
-  Animated,
-  Platform,
-} from 'react-native';
-import WifiManager, { WifiEntry } from 'react-native-wifi-reborn';
+import React, { useState } from 'react';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
+import WifiManager from 'react-native-wifi-reborn';
 import RnWifi from '@react-native-tethering/wifi';
 import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
@@ -86,7 +78,6 @@ export default function PasswordForm({
         visibilityTime: 10000,
       });
       clear();
-      // setStep(4);
     }
   };
 
@@ -126,7 +117,6 @@ export default function PasswordForm({
           initialValues={{ password: '' }}
           validationSchema={DeviceSetupSchema.wifiPassword}
           onSubmit={({ password }, { resetForm }) => {
-            // setStep(6);
             setPass(password);
             connectToWifi({ ssid: ssid ?? '', password }, resetForm);
           }}>

@@ -122,8 +122,6 @@ const styles = StyleSheet.create({
   cartContainer: {
     flexDirection: 'row',
     padding: 10,
-    // paddingVertical: 8,
-    // height: 44,
     justifyContent: 'space-between',
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
@@ -133,6 +131,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    // backgroundColor: '#fff',
   },
 });

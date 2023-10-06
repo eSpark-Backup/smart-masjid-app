@@ -37,8 +37,6 @@ export default function Rounded({
           }}
           start={{ x: -0.002, y: 0.0 }}
           end={{ x: 0.998, y: 0.0 }}
-          // useAngle={true}
-          // angle={90}
           colors={
             !disabled
               ? outlined
