@@ -4,7 +4,7 @@ import { Theme, useTheme } from '@react-navigation/native';
 
 import MyText from '../MyText';
 import { ArrowDown } from '../../assets';
-import { useLayoutAnimation } from '../../utils';
+import { useLayoutAnimation, useUpdateEffect } from '../../utils';
 import { WINDOW_WIDTH } from '../../constants';
 
 export default function Accordian({
@@ -19,7 +19,7 @@ export default function Accordian({
   const rotationValue = useRef(new Animated.Value(0)).current;
   const backgroundOpacity = useRef(new Animated.Value(isShow ? 1 : 0)).current;
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     useLayoutAnimation(250);
   }, [isShow]);
 

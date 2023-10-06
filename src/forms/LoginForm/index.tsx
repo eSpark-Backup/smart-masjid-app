@@ -15,7 +15,7 @@ import {
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
-import { useLayoutAnimation } from '../../utils';
+import { useLayoutAnimation, useUpdateEffect } from '../../utils';
 import { CountryCodes } from '../../types';
 
 const LoginForm = ({
@@ -31,7 +31,7 @@ const LoginForm = ({
   const [activeTab, setActiveTab] = React.useState('1');
   const [currentCountry, setCurrentCountry] = React.useState<CountryCodes>();
 
-  React.useEffect(() => {
+  useUpdateEffect(() => {
     useLayoutAnimation(300);
   }, [activeTab]);
 

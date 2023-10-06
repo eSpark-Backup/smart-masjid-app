@@ -6,6 +6,14 @@ import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
 import crashlytics from '@react-native-firebase/crashlytics';
 
+let Wifi: any = null;
+
+if (Platform.OS == 'android') {
+  import('@react-native-tethering/wifi')
+    .then(module => (Wifi = module.default))
+    .catch(err => console.error('Error Importing library'));
+}
+
 import {
   GapView,
   MyInput,
@@ -43,17 +51,12 @@ export default function PasswordForm({
   ) => {
     setLoading(true);
     try {
-      const res = await WifiManager.connectToProtectedSSID(
-        ssid,
-        password,
-        false,
-      ).then(() => {
-        console.log('Connected Successfully', res);
-        setLoading(false);
-        setStep(6);
-        clear();
-      });
       if (Platform.OS == 'android') {
+        const res = await WifiManager.connectToProtectedSSID(
+          ssid,
+          password,
+          false,
+        );
         await WifiManager.disconnect();
         RnWifi.connectToNetwork({ ssid, password })
           .then(() => {
@@ -67,6 +70,17 @@ export default function PasswordForm({
             crashlytics().recordError(error as Error);
             setLoading(false);
           });
+      } else {
+        const res = await WifiManager.connectToProtectedSSID(
+          ssid,
+          password,
+          false,
+        ).then(() => {
+          console.log('Connected Successfully', res);
+          setLoading(false);
+          setStep(6);
+          clear();
+        });
       }
     } catch (error) {
       crashlytics().recordError(error as Error);

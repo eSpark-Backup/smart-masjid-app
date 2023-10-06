@@ -127,7 +127,7 @@ export default function MyInput(props: MyInputProps) {
           ) {
             setLocationPermission(true);
           } else {
-            _requestUserLocationPermission();
+            setLocationPermission(false);
           }
         });
       } else {
