@@ -45,14 +45,18 @@ export default function DeviceSelectForm({
     return strData;
   };
 
-  async function handleDeviceCheck(macId: string) {
+  async function handleDeviceCheck(item: Peripheral) {
     setLoading(true);
     try {
-      const res = await _checkDeviceExists(macId);
-      console.log('res', Boolean(res), macId);
+      const res = await _checkDeviceExists(
+        Platform.OS == 'ios'
+          ? ((await getIOSMacAdd(item as Peripheral)) as unknown as string)
+          : (item?.id as string),
+      );
+      console.log('res', Boolean(res), item.id);
       if (!Boolean(res)) {
         setStep(3);
-        setDevMacId?.(macId);
+        setDevMacId?.(item.id);
       } else {
         Toast.show({
           text2: 'Device Already Exists',
@@ -80,15 +84,9 @@ export default function DeviceSelectForm({
           ...item,
           leftIcon: <DeviceSvg />,
           title: 'Smart Adhan Speaker',
-          onPress: async () => {
+          onPress: () => {
             console.log('selected macId', item?.id);
-            handleDeviceCheck(
-              Platform.OS == 'ios'
-                ? ((await getIOSMacAdd(
-                    item as Peripheral,
-                  )) as unknown as string)
-                : (item?.id as string),
-            );
+            handleDeviceCheck(item as Peripheral);
           },
         };
       } else {
@@ -101,13 +99,9 @@ export default function DeviceSelectForm({
         ...item,
         leftIcon: isBtn ? <AdhanButton /> : <DeviceSvg />,
         title: isBtn ? 'Smart Adhan Button' : 'Smart Adhan Speaker',
-        onPress: async () => {
+        onPress: () => {
           console.log('selected macId', item?.id);
-          handleDeviceCheck(
-            Platform.OS == 'ios'
-              ? ((await getIOSMacAdd(item as Peripheral)) as unknown as string)
-              : (item?.id as string),
-          );
+          handleDeviceCheck(item as Peripheral);
         },
       };
     }
