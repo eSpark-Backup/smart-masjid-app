@@ -338,7 +338,7 @@ export default function DeviceSetupScreen() {
         '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
       );
       console.log('kia ha data >>>>>>>', stringData);
-      const jsonData = JSON.parse(stringData);
+      const jsonData = JSON.parse(stringData as string);
       setDevInfo(state => ({ ...state, ...jsonData }));
 
       await _writeToDevice(
