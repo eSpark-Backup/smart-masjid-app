@@ -4,6 +4,7 @@ import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import { phone as isValidPhone } from 'phone';
 import Toast from 'react-native-toast-message';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   GapView,
@@ -75,23 +76,29 @@ const LoginForm = ({
               'what is the phone value',
               currentCountry?.code + phone!,
             );
-            if (phone) {
-              const isValid = isValidPhone(phone, {
-                country: currentCountry?.iso_code,
-              }).isValid;
-              console.log('oh', isValid);
-              if (isValid) {
-                setStep({ phone: currentCountry?.code + phone, email: '' });
-              } else {
-                Toast.show({
-                  text2: 'Phone number is not valid',
-                  type: 'error',
-                  visibilityTime: 10000,
-                });
+            () => {
+              try {
+                if (phone) {
+                  const isValid = isValidPhone(phone, {
+                    country: currentCountry?.iso_code,
+                  }).isValid;
+                  console.log('oh', isValid);
+                  if (isValid) {
+                    setStep({ phone: currentCountry?.code + phone, email: '' });
+                  } else {
+                    Toast.show({
+                      text2: 'Phone number is not valid',
+                      type: 'error',
+                      visibilityTime: 10000,
+                    });
+                  }
+                } else {
+                  setStep({ email: email, phone: '' });
+                }
+              } catch (e) {
+                crashlytics().recordError(e as Error);
               }
-            } else {
-              setStep({ email: email, phone: '' });
-            }
+            };
           }}>
           {({ handleChange, handleSubmit, values, errors, touched }) => (
             <>

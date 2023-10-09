@@ -8,6 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   GapView,
@@ -56,10 +57,14 @@ const MasjidDetails = ({
   } = useMasjid();
 
   const getSalahTimes = async () => {
-    setLoading(true);
-    await getSalahTimingsOfMasjid(masjidDetails?.id.toString() ?? '');
-    await GetMasjidJummahTiming(masjidDetails?.id.toString() ?? '');
-    setLoading(false);
+    try {
+      setLoading(true);
+      await getSalahTimingsOfMasjid(masjidDetails?.id.toString() ?? '');
+      await GetMasjidJummahTiming(masjidDetails?.id.toString() ?? '');
+      setLoading(false);
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
   };
 
   const adhanCalculations = (): string => {

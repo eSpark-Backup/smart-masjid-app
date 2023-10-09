@@ -3,6 +3,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import { useHookstate } from '@hookstate/core';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { Wrapper } from '../../containers';
 import {
@@ -77,43 +78,53 @@ export default function UserSetupScreen() {
   };
 
   const onSubmit = async (dataObj: CreateUserRequest, otp: string) => {
-    setStep(7);
-    const res: UserResponse | undefined | any = await CreateUser(dataObj, otp);
-    console.log('res', res);
-
-    if (res?.id && phoneId) {
-      await RegisterUserPhone(
-        { deviceId: phoneId, fcmToken: fcmToken as string },
-        res?.id.toString(),
+    try {
+      setStep(7);
+      const res: UserResponse | undefined | any = await CreateUser(
+        dataObj,
+        otp,
       );
-      setStep(8);
-    } else {
-      setStep(6);
-      Toast.show({
-        text2: res?.message,
-        type: 'error',
-        autoHide: true,
-        visibilityTime: 10000,
-      });
+      console.log('res', res);
+      if (res?.id && phoneId) {
+        await RegisterUserPhone(
+          { deviceId: phoneId, fcmToken: fcmToken as string },
+          res?.id.toString(),
+        );
+        setStep(8);
+      } else {
+        setStep(6);
+        Toast.show({
+          text2: res?.message ?? 'Something went wrong',
+          type: 'error',
+          autoHide: true,
+          visibilityTime: 10000,
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
-    setLoader(true);
-    const res = await LoginUser(email, phone, OTPvalue);
-    if (res?.id && phoneId && !isDeviceRegistered) {
-      await RegisterUserPhone(
-        { deviceId: phoneId, fcmToken: fcmToken as string },
-        res?.id.toString(),
-      );
-    } else if (res?.id && phoneId && isDeviceRegistered) {
-      await updateUserPhone(fcmToken as string, res?.id.toString(), phoneId);
-    }
+    try {
+      setLoader(true);
+      const res = await LoginUser(email, phone, OTPvalue);
+      if (res?.id && phoneId && !isDeviceRegistered) {
+        await RegisterUserPhone(
+          { deviceId: phoneId, fcmToken: fcmToken as string },
+          res?.id.toString(),
+        );
+      } else if (res?.id && phoneId && isDeviceRegistered) {
+        await updateUserPhone(fcmToken as string, res?.id.toString(), phoneId);
+      }
 
-    if (res?.id) {
-      navigation.navigate('HomeBottomTab'); //TODO: Change it later
+      if (res?.id) {
+        navigation.navigate('HomeBottomTab'); //TODO: Change it later
+      }
+      setLoader(false);
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
-    setLoader(false);
   };
 
   const CheckIsUserExist = async (
@@ -121,39 +132,42 @@ export default function UserSetupScreen() {
     phone?: string,
     type?: string,
   ) => {
-    setLoader(true);
-    const res: any = await CheckUserExists(email ?? '', phone ?? '');
-    if (type == 'signup') {
-      if (res?.id) {
-        Toast.show({
-          text2: 'User Already Exist',
-          type: 'error',
-          visibilityTime: 10000,
-        });
-      } else {
-        const result = await SendOTP(email, phone);
-        if (result) {
-          setData({ ...data, email: email ?? '', phone: phone ?? '' });
-          setStep(3);
-        }
-      }
-    } else {
-      if (res?.id) {
-        const result = await SendOTP(email, phone);
-        if (result) {
-          setData({ ...data, email: email ?? '', phone: phone ?? '' });
-          setStep(3);
+    try {
+      setLoader(true);
+      const res: any = await CheckUserExists(email ?? '', phone ?? '');
+      if (type == 'signup') {
+        if (res?.id) {
+          Toast.show({
+            text2: 'User Already Exist',
+            type: 'error',
+            visibilityTime: 10000,
+          });
+        } else {
+          const result = await SendOTP(email, phone);
+          if (result) {
+            setData({ ...data, email: email ?? '', phone: phone ?? '' });
+            setStep(3);
+          }
         }
       } else {
-        Toast.show({
-          text2: 'User not found!',
-          type: 'error',
-          visibilityTime: 10000,
-        });
+        if (res?.id) {
+          const result = await SendOTP(email, phone);
+          if (result) {
+            setData({ ...data, email: email ?? '', phone: phone ?? '' });
+            setStep(3);
+          }
+        } else {
+          Toast.show({
+            text2: 'User not found!',
+            type: 'error',
+            visibilityTime: 10000,
+          });
+        }
       }
+      setLoader(false);
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
-
-    setLoader(false);
   };
 
   return (
