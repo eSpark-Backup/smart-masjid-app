@@ -38,12 +38,14 @@ export default function ProfileSectionlist({
   scroll,
   containerStyle,
   itemStyle,
+  cardWidth,
 }: {
   data: DataItem[];
   footerData?: FooterItem[];
   scroll?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   itemStyle?: StyleProp<ViewStyle>;
+  cardWidth?: number | string;
 }) {
   return (
     <SectionList
@@ -54,7 +56,12 @@ export default function ProfileSectionlist({
       renderItem={({ item, index }) => {
         if (!item.hidden) {
           return (
-            <SectionCard cardStyle={itemStyle} item={item} index={index} />
+            <SectionCard
+              cardStyle={itemStyle}
+              item={item}
+              index={index}
+              cardWidth={cardWidth}
+            />
           );
         } else return <View />;
       }}
@@ -86,10 +93,12 @@ const SectionCard = ({
   index,
   cardStyle,
   cardTextStyle,
+  cardWidth,
 }: {
   item: any;
   index: number;
   cardStyle?: StyleProp<ViewStyle>;
+  cardWidth?: number | string;
   cardTextStyle?: TextStyle;
 }) => {
   return (
@@ -98,7 +107,7 @@ const SectionCard = ({
         key={index + item.title}
         activeOpacity={0.8}
         style={{
-          width: '95%',
+          width: cardWidth ?? '95%',
           flexDirection: 'row',
           alignItems: 'center',
         }}

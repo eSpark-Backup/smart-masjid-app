@@ -27,7 +27,7 @@ import {
 import { BottomNavigationParamList, RootStackParamList } from '../../types';
 import { userStore } from '../../store/UserStore';
 import { UserResponse } from '../../types/userControllerApiResponse';
-import { jumuahsData } from '../../types/masjidControllerTypes';
+import { IqamahTime, jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
 import { WINDOW_WIDTH } from '../../constants';
 
@@ -42,6 +42,10 @@ interface selectedJummmaData {
   date: string;
 }
 
+interface ComponentMap {
+  [key: string]: React.ReactNode;
+}
+
 interface Titles {
   [key: string]: string;
 }
@@ -54,7 +58,7 @@ export default function Profile() {
   const navigation = useNavigation<ProfileNavigationProp['navigation']>();
   const [flag, setFlag] = useState('uInfo');
   const [jummaData, setJummaData] = useState<object | null>(null);
-  const [iqamaData, setIqamaData] = useState<object | null>(null);
+  const [iqamaData, setIqamaData] = useState<IqamahTime | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
 
   const titles: Titles = {
@@ -141,137 +145,136 @@ export default function Profile() {
       title={getTitle()}
       onBackPress={() => handleBack(flag)}>
       {({ props }) => {
-        return (
-          <>
-            {flag == 'uInfo' && (
-              <UserInformation
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'mAcc' ? (
-              <ManageAccount
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            ) : null}
-            {flag == 'mAccOtp' ? (
-              <ManageAccount
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-                showVerification={true}
-              />
-            ) : null}
-            {flag == 'mMas' && (
-              <ManageMasjid
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'sTime' && (
-              <SalahTimings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'aSet' && (
-              <AdhanSettings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'iTime' && (
-              <IqamahTimings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-                selectedIqamah={obj => setIqamaData(obj)}
-              />
-            )}
-            {flag == 'iHist' && (
-              <IqamahHistory
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'iEdit' && (
-              <EditIqamahTimings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-                iqamahType={'Edit'}
-                selectedIqamah={iqamaData}
-              />
-            )}
-            {flag == 'iAdd' && (
-              <EditIqamahTimings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-                iqamahType={'Add'}
-              />
-            )}
-            {flag == 'jTime' && (
-              <JummaTimings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-                selectedJumma={obj => setJummaData(obj)}
-              />
-            )}
-            {flag == 'jEdit' && (
-              <EditJummaTimings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-                jummaType={'Edit'}
-                selectedJumma={jummaData as selectedJummmaData}
-              />
-            )}
-            {flag == 'jAdd' && (
-              <EditJummaTimings
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-                jummaType={'Add'}
-              />
-            )}
-            {flag == 'jHist' && (
-              <JummaHistory
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'mUsers' && (
-              <ManageUsers
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string, user?: UserResponse) => {
-                  setFlag(value);
-                  user && setUser(user);
-                }}
-              />
-            )}
-            {flag == 'vUser' && (
-              <ViewUser
-                contentOpacity={props.contentOpacity}
-                user={user}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'addUser' && (
-              <AddUser
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'help' && (
-              <HelpScreen
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-            {flag == 'cUs' && (
-              <ContactUsScreen
-                contentOpacity={props.contentOpacity}
-                setFlag={(value: string) => setFlag(value)}
-              />
-            )}
-          </>
-        );
+        const componentMapping: ComponentMap = {
+          uInfo: (
+            <UserInformation
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          mAcc: (
+            <ManageAccount
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          mAccOtp: (
+            <ManageAccount
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              showVerification={true}
+            />
+          ),
+          mMas: (
+            <ManageMasjid
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          sTime: (
+            <SalahTimings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          aSet: (
+            <AdhanSettings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          iTime: (
+            <IqamahTimings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              selectedIqamah={obj => setIqamaData(obj)}
+            />
+          ),
+          iHist: (
+            <IqamahHistory
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          iEdit: (
+            <EditIqamahTimings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              iqamahType={'Edit'}
+              selectedIqamah={iqamaData}
+            />
+          ),
+          iAdd: (
+            <EditIqamahTimings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              iqamahType={'Add'}
+            />
+          ),
+          jTime: (
+            <JummaTimings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              selectedJumma={obj => setJummaData(obj)}
+            />
+          ),
+          jEdit: (
+            <EditJummaTimings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              jummaType={'Edit'}
+              selectedJumma={jummaData as selectedJummmaData}
+            />
+          ),
+          jAdd: (
+            <EditJummaTimings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              jummaType={'Add'}
+            />
+          ),
+          jHist: (
+            <JummaHistory
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          mUsers: (
+            <ManageUsers
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string, user?: UserResponse) => {
+                setFlag(value);
+                user && setUser(user);
+              }}
+            />
+          ),
+          vUser: (
+            <ViewUser
+              contentOpacity={props.contentOpacity}
+              user={user}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          addUser: (
+            <AddUser
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          help: (
+            <HelpScreen
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+          cUs: (
+            <ContactUsScreen
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
+        };
+        return <>{componentMapping[flag]}</>;
       }}
     </Wrapper>
   );

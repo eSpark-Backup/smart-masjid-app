@@ -31,7 +31,7 @@ export default function EditIqamahTimings({
   setFlag: (value: string) => void;
   contentOpacity?: any;
   iqamahType: 'Add' | 'Edit';
-  selectedIqamah?: object | null;
+  selectedIqamah?: IqamahTime | null;
 }) {
   const userData = useHookstate(userStore.userData).get();
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
