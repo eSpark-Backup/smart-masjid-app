@@ -10,6 +10,7 @@ import {
 import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
 import { useHookstate } from '@hookstate/core';
 import Toast from 'react-native-toast-message';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   GapView,
@@ -86,29 +87,39 @@ export default function MasjidDetails({
   }, [currentDevice]);
 
   const getSalahTimes = async () => {
-    setLoading(true);
-    await GetMasjidDevicesForUser(
-      userData?.id?.toString() ?? '',
-      selectedMasjid?.id.toString(),
-    ).then(res => {
-      setCurrentDevice(connectedDevices[0] as Device);
-    });
-    getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(data => {
-      setSalahTime(data as SalahTimings[]);
-      setLoading(false);
-    });
-    await GetMasjidJummahTiming(selectedMasjid?.id.toString() ?? '');
+    try {
+      setLoading(true);
+      await GetMasjidDevicesForUser(
+        userData?.id?.toString() ?? '',
+        selectedMasjid?.id.toString(),
+      ).then(res => {
+        setCurrentDevice(connectedDevices[0] as Device);
+      });
+      getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
+        data => {
+          setSalahTime(data as SalahTimings[]);
+          setLoading(false);
+        },
+      );
+      await GetMasjidJummahTiming(selectedMasjid?.id.toString() ?? '');
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
   };
 
   const getSubscriptions = (id: string) => {
-    getDeviceSubscriptions(id).then(data => {
-      setSubs(data);
-      setTimeout(() => {
-        if (loading) {
-          setLoading(false);
-        }
-      }, 2000);
-    });
+    try {
+      getDeviceSubscriptions(id).then(data => {
+        setSubs(data);
+        setTimeout(() => {
+          if (loading) {
+            setLoading(false);
+          }
+        }, 2000);
+      });
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
   };
 
   return (
@@ -207,22 +218,26 @@ export default function MasjidDetails({
               flexDirection: 'row',
             }}
             onPress={async () => {
-              if (currentDevice?.deviceTelemetry.status === 'Online') {
-                setLoading(true);
-                const res = await unSubscribeMasjid(
-                  currentDevice?.id?.toString()!,
-                  selectedMasjid?.id?.toString()!,
-                );
-                console.log('res', res);
-                if (res) {
-                  setStep(0);
-                  setLoading(false);
+              try {
+                if (currentDevice?.deviceTelemetry.status === 'Online') {
+                  setLoading(true);
+                  const res = await unSubscribeMasjid(
+                    currentDevice?.id?.toString()!,
+                    selectedMasjid?.id?.toString()!,
+                  );
+                  console.log('res', res);
+                  if (res) {
+                    setStep(0);
+                    setLoading(false);
+                  }
+                } else {
+                  Toast.show({
+                    text2: 'Selected Device is Offline',
+                    type: 'error',
+                  });
                 }
-              } else {
-                Toast.show({
-                  text2: 'Selected Device is Offline',
-                  type: 'error',
-                });
+              } catch (e) {
+                crashlytics().recordError(e as Error);
               }
             }}>
             <TextLabel
