@@ -58,14 +58,14 @@ export default function PasswordForm({
           false,
         );
         await WifiManager.disconnect();
-        RnWifi.connectToNetwork({ ssid, password })
+        Wifi.connectToNetwork({ ssid, password })
           .then(() => {
             console.log('Connected Successfully', res);
             setLoading(false);
             setStep(6);
             clear();
           })
-          .catch(error => {
+          .catch((error: any) => {
             console.error(error);
             crashlytics().recordError(error as Error);
             setLoading(false);
