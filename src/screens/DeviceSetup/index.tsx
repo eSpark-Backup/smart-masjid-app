@@ -613,7 +613,12 @@ export default function DeviceSetupScreen() {
           setScannedDevices(newArr!);
           const macAdd = route?.params?.deviceData?.macAddress;
           const isFound = !newArr?.some(item =>
-            macAdd ? item.id === macAdd : true,
+            macAdd
+              ? Platform.OS == 'ios'
+                ? bytesToString(item.advertising?.manufacturerData?.bytes) ===
+                  macAdd
+                : item.id === macAdd
+              : true,
           );
           if (issues.length === 0) {
             if (newArr?.length === 0 || isFound) {
