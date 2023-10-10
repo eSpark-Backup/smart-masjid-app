@@ -18,6 +18,8 @@ import crashlytics from '@react-native-firebase/crashlytics';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
+//@ts-ignore
+import { bytesToString } from 'convert-string';
 import moment from 'moment';
 
 import { userStore } from '../../store/UserStore';
@@ -131,7 +133,7 @@ export default function DeviceSetupScreen() {
   };
 
   useEffect(() => {
-    console.log('xxx', Array.from(iosScannedData.values()));
+    // console.log('xxx', JSON.stringify(Array.from(iosScannedData.values())));
   }, [iosScannedData.values()]);
 
   useEffect(() => {
@@ -309,6 +311,10 @@ export default function DeviceSetupScreen() {
   };
 
   const handleBack = () => {
+    if (route.params.from === 'SelectedDevice') {
+      navigation.goBack();
+      return;
+    }
     switch (step) {
       case 2:
         return navigation.goBack();
@@ -607,7 +613,12 @@ export default function DeviceSetupScreen() {
           setScannedDevices(newArr!);
           const macAdd = route?.params?.deviceData?.macAddress;
           const isFound = !newArr?.some(item =>
-            macAdd ? item.id === macAdd : true,
+            macAdd
+              ? Platform.OS == 'ios'
+                ? bytesToString(item.advertising?.manufacturerData?.bytes) ===
+                  macAdd
+                : item.id === macAdd
+              : true,
           );
           if (issues.length === 0) {
             if (newArr?.length === 0 || isFound) {

@@ -15,6 +15,8 @@ import {
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { Device } from '../../types/deviceControllerTypes';
 import { WINDOW_WIDTH } from '../../constants';
+//@ts-ignore
+import { bytesToString } from 'convert-string';
 
 export default function DeviceSelectForm({
   data = [],
@@ -35,14 +37,24 @@ export default function DeviceSelectForm({
 }) {
   const [loading, setLoading] = useState(false);
 
-  async function handleDeviceCheck(macId: string) {
+  const getIOSMacAdd = async (devData: Peripheral) => {
+    const devBytes = devData.advertising.manufacturerData?.bytes;
+    const strData: string = bytesToString(devBytes);
+    return strData;
+  };
+
+  async function handleDeviceCheck(item: Peripheral) {
     setLoading(true);
     try {
-      const res = await _checkDeviceExists(macId);
-      console.log('res', Boolean(res), macId);
+      const res = await _checkDeviceExists(
+        Platform.OS == 'ios'
+          ? ((await getIOSMacAdd(item as Peripheral)) as unknown as string)
+          : (item?.id as string),
+      );
+      console.log('res', Boolean(res), item.id);
       if (!Boolean(res)) {
         setStep(3);
-        setDevMacId?.(macId);
+        setDevMacId?.(item.id);
       } else {
         Toast.show({
           text2: 'Device Already Exists',
@@ -72,7 +84,7 @@ export default function DeviceSelectForm({
           title: 'Smart Adhan Speaker',
           onPress: () => {
             console.log('selected macId', item?.id);
-            handleDeviceCheck(item?.id!);
+            handleDeviceCheck(item as Peripheral);
           },
         };
       } else {
@@ -87,7 +99,7 @@ export default function DeviceSelectForm({
         title: isBtn ? 'Smart Adhan Button' : 'Smart Adhan Speaker',
         onPress: () => {
           console.log('selected macId', item?.id);
-          handleDeviceCheck(item?.id!);
+          handleDeviceCheck(item as Peripheral);
         },
       };
     }
@@ -106,8 +118,17 @@ export default function DeviceSelectForm({
   useEffect(() => {
     if (autoSelect) {
       finalArr.filter(item => {
+        const strData = bytesToString(
+          item.advertising?.manufacturerData?.bytes,
+        );
+        console.log('finalstrData', strData);
+        console.log('match', strData == selectedDeviceData?.macAddress);
+
         if (
-          item.id?.slice(0, 14) == selectedDeviceData?.macAddress.slice(0, 14)
+          Platform.OS == 'ios'
+            ? bytesToString(item.advertising?.manufacturerData?.bytes) ==
+              selectedDeviceData?.macAddress
+            : item.id == selectedDeviceData?.macAddress
         ) {
           setStep(3);
           setDevMacId?.(item.id);

@@ -108,8 +108,11 @@ export default function App() {
   };
 
   useEffect(() => {
-    GetCountryCodes();
     _getFCMToken();
+  }, []);
+
+  useEffect(() => {
+    GetCountryCodes();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);
