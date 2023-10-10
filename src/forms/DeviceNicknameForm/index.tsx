@@ -9,11 +9,9 @@ import {
   MyTextSubHeader,
   MyTitle,
   Rounded,
-  TextLabel,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { DeviceSetupSchema } from '../../constants/validations/schema';
-import { Card } from '../../containers';
 
 export default function DeviceNicknameForm({
   setNickName,
@@ -64,14 +62,7 @@ export default function DeviceNicknameForm({
             setStep(4);
             setNickName(nickName);
           }}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
+          {({ handleChange, handleSubmit, values, errors, touched }) => (
             <View style={{ alignItems: 'center' }}>
               <MyInput
                 placeholder="Device Name"

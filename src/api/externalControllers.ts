@@ -5,17 +5,17 @@ import { api, xApi } from '.';
 import { externalStore } from '../store/ExternalStore';
 import { userStore } from '../store/UserStore';
 import { setDataInLocalStorage } from '../utils';
-import { globalStore } from '../store/GlobalStates';
 import {
   CreateUserRequest,
   FailCheckPhoneId,
   SuccessCheckPhoneId,
   UserResponse,
 } from '../types/userControllerApiResponse';
+import { PhoneIdResponse } from '../types';
 
 /**
  *
- * @description Get Available Country Codes
+ * Fetches country codes from an external source.
  * @returns get Available Country Codes and save to deviceStore
  */
 export const GetCountryCodes = async () => {
@@ -28,10 +28,13 @@ export const GetCountryCodes = async () => {
     crashlytics().recordError(error as Error);
   }
 };
+
 /**
+ * Sends an OTP (One-Time Password) to the specified email or phone number.
  *
- * @description Send OTP to User
- * @returns returns boolean status whether success or error
+ * @param [email] - Optional. The email address to which the OTP will be sent.
+ * @param [phone] - Optional. The phone number to which the OTP will be sent.
+ * @returns A `Promise` that resolves to `true` if the OTP was successfully sent, or `false` if there was an error.
  */
 export const SendOTP = async (email?: string, phone?: string) => {
   try {
@@ -40,10 +43,6 @@ export const SendOTP = async (email?: string, phone?: string) => {
       phone: phone ?? '',
     });
     if (result.status === 200) {
-      // Toast.show({
-      //   text2: 'OTP sent successfully',
-      //   type: 'success',
-      // });
       return true;
     } else {
       Toast.show({
@@ -61,9 +60,12 @@ export const SendOTP = async (email?: string, phone?: string) => {
 };
 
 /**
+ * Validates an OTP (One-Time Password) sent to the specified email or phone number.
  *
- * @description Validate OTP
- * @returns returns boolean status whether success or error
+ * @param otp - The OTP to validate.
+ * @param [email] - Optional. The email address to which the OTP was sent.
+ * @param [phone] - Optional. The phone number to which the OTP was sent.
+ * @returns A `Promise` that resolves to `true` if the OTP was successfully validated, or `false` if there was an error.
  */
 export const ValidateOTP = async (
   otp: string,
@@ -76,13 +78,7 @@ export const ValidateOTP = async (
       phone: phone ?? '',
       otp: otp ?? '',
     });
-    console.log('🚀 ~ file: userController.ts:322 ~ phone:', phone);
-    console.log('🚀 ~ file: userController.ts:319 ~ result:', result);
     if (result.status === 200 && result.data) {
-      // Toast.show({
-      //   text2: 'OTP verification successfully',
-      //   type: 'success',
-      // });
       return true;
     } else {
       Toast.show({
@@ -101,7 +97,7 @@ export const ValidateOTP = async (
 
 /**
  *
- * @description Refresh User Token
+ * Refreshes the authentication token.
  * @returns Set Updated Token to Store
  */
 export const RefreshToken = async () => {
@@ -122,9 +118,12 @@ export const RefreshToken = async () => {
 };
 
 /**
+ * Logs in a user with the provided email, phone number, and OTP (One-Time Password).
  *
- * @description Checking User exists with given Email/Phone
- * @returns get data of user and save to userStore
+ * @param email - The user's email address.
+ * @param phone - The user's phone number.
+ * @param otp - The OTP (One-Time Password) for authentication.
+ * @returns A `Promise` that resolves to user data if login is successful, or handles errors if there was a problem.
  */
 export const LoginUser = async (email: string, phone: string, otp: string) => {
   try {
@@ -140,7 +139,6 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         userId: result.data.id,
         lastOTPVerified: otp,
       });
-
       userStore.token.set(token?.data?.token);
       api.setHeaders({
         Authorization: `Bearer ${token?.data?.token}`,
@@ -152,7 +150,6 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         phone: result.data?.phone,
         token: token?.data?.token,
       });
-
       setDataInLocalStorage('user', JSON.stringify(result.data));
       setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
       console.log('token', JSON.stringify(token?.data?.token));
@@ -171,9 +168,11 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
 };
 
 /**
+ * Checks if a user with the provided email and phone number exists.
  *
- * @description Checks if the user is exist or not
- * @returns if the user is exist so return user information
+ * @param email - The user's email address.
+ * @param phone - The user's phone number.
+ * @returns A `Promise` that resolves to user data if the user exists, or `null` if the user does not exist or there was an error.
  */
 export const CheckUserExists = async (email: string, phone: string) => {
   try {
@@ -196,14 +195,11 @@ export const CheckUserExists = async (email: string, phone: string) => {
 };
 
 /**
+ * Checks if a phone ID exists.
  *
- * @description Check if the user phone id is already registered in the Server
- * @returns Promise<PhoneIdResponse>
- * @todo //todo: Delete This later
+ * @param phoneId - The phone ID to check.
+ * @returns A `Promise` that resolves to a `PhoneIdResponse` if the phone ID exists, or rejects with an error if there was an issue.
  */
-
-type PhoneIdResponse = SuccessCheckPhoneId | FailCheckPhoneId | undefined;
-
 export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
   try {
     const res = await xApi.get<SuccessCheckPhoneId, FailCheckPhoneId>(
@@ -217,11 +213,12 @@ export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
 }
 
 /**
+ * Creates a user account with the provided data and OTP (One-Time Password).
  *
- * @description Get information from user and registered in the Server
- * @returns get data of user and save to userStore
+ * @param data - The data for creating the user account.
+ * @param otp - The OTP (One-Time Password) for authentication.
+ * @returns A `Promise` that resolves to a `UserResponse` if the user account is created successfully, or `undefined` if there was an error.
  */
-
 export const CreateUser = async (
   data: CreateUserRequest,
   otp: string,
@@ -254,17 +251,15 @@ export const CreateUser = async (
 };
 
 /**
+ * Checks if a device with the provided MAC address exists.
  *
- * @description Check's Device Based on Device MacAddress
- * @returns Promise<boolean>
- * @todo //todo: Delete This later
+ * @param mac_address - The MAC address of the device to check.
+ * @returns A `Promise` that resolves to `true` if the device exists, `false` if it does not, or `undefined` if there was an error.
  */
-
 export async function _checkDeviceExists(mac_address: string) {
   console.log('Device info in api???', mac_address);
   const uriEncodedString = encodeURIComponent(mac_address!);
   console.log('kiaaaaa', uriEncodedString);
-
   try {
     const res = await xApi.get(
       'external/device/exists?macAddress=' + uriEncodedString,

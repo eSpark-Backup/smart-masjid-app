@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Animated, Platform } from 'react-native';
+import { View, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
@@ -102,5 +102,3 @@ export default function ContactUsScreen({
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

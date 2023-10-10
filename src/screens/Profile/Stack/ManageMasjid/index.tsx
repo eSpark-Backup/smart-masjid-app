@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useHookstate } from '@hookstate/core';
 import { StyleSheet, View, Animated, ScrollView, Platform } from 'react-native';
+import { useHookstate } from '@hookstate/core';
 
 import {
   AdhanSettingSvg,
@@ -12,7 +12,6 @@ import {
   SalahTimingsSVG,
   Web,
 } from '../../../../assets';
-
 import {
   GapView,
   MyTextHeader,

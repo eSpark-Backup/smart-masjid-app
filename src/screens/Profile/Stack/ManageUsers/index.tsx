@@ -22,7 +22,6 @@ import {
   MyText,
   MyTitle,
   OverlayLoader,
-  TextLabel,
 } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';

@@ -9,11 +9,9 @@ import {
   MyTextSubHeader,
   MyTitle,
   Rounded,
-  TextLabel,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
-import { Card } from '../../containers';
 
 export default function PersonalInfoForm({
   setStep,
@@ -46,14 +44,7 @@ export default function PersonalInfoForm({
           onSubmit={values => {
             setStep(values);
           }}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
+          {({ handleChange, handleSubmit, values, errors, touched }) => (
             <>
               <MyInput
                 placeholder="First Name"

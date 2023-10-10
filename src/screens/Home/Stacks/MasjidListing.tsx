@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, Animated, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
+import moment from 'moment';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { ListEmptyComponent } from '..';
 import { GapView, MasjidListCard, MyTitle } from '../../../components';
 import { AllSalahTimings, Masjid } from '../../../types/masjidControllerTypes';
 import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
-import moment from 'moment';
 import { WINDOW_WIDTH } from '../../../constants';
 
 export default function MasjidListing({
@@ -27,16 +28,24 @@ export default function MasjidListing({
 
   useEffect(() => {
     setLoading(false);
-    data.map(
-      item =>
-        getSalahTimingsOfMasjid(item?.id.toString() ?? '').then(data => {
-          let dat = [...allTimes];
-          dat.push({ id: item?.id.toString(), salahs: data! });
-          setAllTimes(dat);
-        }),
-      setLoading(false),
-    );
+    getSalahTimings(data);
   }, [data]);
+
+  const getSalahTimings = (data: Masjid[]) => {
+    try {
+      data.map(
+        item =>
+          getSalahTimingsOfMasjid(item?.id.toString() ?? '').then(data => {
+            let dat = [...allTimes];
+            dat.push({ id: item?.id.toString(), salahs: data! });
+            setAllTimes(dat);
+          }),
+        setLoading(false),
+      );
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
 
   const getAzanNameTime = (id: string, type?: string) => {
     let masjidInd = allTimes?.findIndex(item => item?.id == id);

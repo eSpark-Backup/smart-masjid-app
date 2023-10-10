@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import { useHookstate } from '@hookstate/core';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { Wrapper } from '../../containers';
 import {
@@ -78,44 +78,53 @@ export default function UserSetupScreen() {
   };
 
   const onSubmit = async (dataObj: CreateUserRequest, otp: string) => {
-    setStep(7);
-    const res: UserResponse | undefined | any = await CreateUser(dataObj, otp);
-    console.log('res', res);
-
-    if (res?.id && phoneId) {
-      await RegisterUserPhone(
-        { deviceId: phoneId, fcmToken: fcmToken as string },
-        res?.id.toString(),
+    try {
+      setStep(7);
+      const res: UserResponse | undefined | any = await CreateUser(
+        dataObj,
+        otp,
       );
-      setStep(8);
-    } else {
-      setStep(6);
-      Toast.show({
-        text2: res?.message,
-        type: 'error',
-        autoHide: true,
-        visibilityTime: 10000,
-      });
+      console.log('res', res);
+      if (res?.id && phoneId) {
+        await RegisterUserPhone(
+          { deviceId: phoneId, fcmToken: fcmToken as string },
+          res?.id.toString(),
+        );
+        setStep(8);
+      } else {
+        setStep(6);
+        Toast.show({
+          text2: res?.message ?? 'Something went wrong',
+          type: 'error',
+          autoHide: true,
+          visibilityTime: 10000,
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
-    setLoader(true);
-    const res = await LoginUser(email, phone, OTPvalue);
-    if (res?.id && phoneId && !isDeviceRegistered) {
-      await RegisterUserPhone(
-        { deviceId: phoneId, fcmToken: fcmToken as string },
-        res?.id.toString(),
-      );
-    } else if (res?.id && phoneId && isDeviceRegistered) {
-      await updateUserPhone(fcmToken as string, res?.id.toString(), phoneId);
-    }
+    try {
+      setLoader(true);
+      const res = await LoginUser(email, phone, OTPvalue);
+      if (res?.id && phoneId && !isDeviceRegistered) {
+        await RegisterUserPhone(
+          { deviceId: phoneId, fcmToken: fcmToken as string },
+          res?.id.toString(),
+        );
+      } else if (res?.id && phoneId && isDeviceRegistered) {
+        await updateUserPhone(fcmToken as string, res?.id.toString(), phoneId);
+      }
 
-    if (res?.id) {
-      navigation.navigate('HomeBottomTab'); //TODO: Change it later
-      // navigation.navigate('DSetup');
+      if (res?.id) {
+        navigation.navigate('HomeBottomTab'); //TODO: Change it later
+      }
+      setLoader(false);
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
-    setLoader(false);
   };
 
   const CheckIsUserExist = async (
@@ -123,41 +132,42 @@ export default function UserSetupScreen() {
     phone?: string,
     type?: string,
   ) => {
-    setLoader(true);
-    const res: any = await CheckUserExists(email ?? '', phone ?? '');
-    if (type == 'signup') {
-      if (res?.id) {
-        Toast.show({
-          text2: 'User Already Exist',
-          type: 'error',
-          visibilityTime: 10000,
-        });
-      } else {
-        // setData({ ...data, email: email ?? '', phone: phone ?? '' });
-        // setStep(3);
-        const result = await SendOTP(email, phone);
-        if (result) {
-          setData({ ...data, email: email ?? '', phone: phone ?? '' });
-          setStep(3);
-        }
-      }
-    } else {
-      if (res?.id) {
-        const result = await SendOTP(email, phone);
-        if (result) {
-          setData({ ...data, email: email ?? '', phone: phone ?? '' });
-          setStep(3);
+    try {
+      setLoader(true);
+      const res: any = await CheckUserExists(email ?? '', phone ?? '');
+      if (type == 'signup') {
+        if (res?.id) {
+          Toast.show({
+            text2: 'User Already Exist',
+            type: 'error',
+            visibilityTime: 10000,
+          });
+        } else {
+          const result = await SendOTP(email, phone);
+          if (result) {
+            setData({ ...data, email: email ?? '', phone: phone ?? '' });
+            setStep(3);
+          }
         }
       } else {
-        Toast.show({
-          text2: 'User not found!',
-          type: 'error',
-          visibilityTime: 10000,
-        });
+        if (res?.id) {
+          const result = await SendOTP(email, phone);
+          if (result) {
+            setData({ ...data, email: email ?? '', phone: phone ?? '' });
+            setStep(3);
+          }
+        } else {
+          Toast.show({
+            text2: 'User not found!',
+            type: 'error',
+            visibilityTime: 10000,
+          });
+        }
       }
+      setLoader(false);
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
-
-    setLoader(false);
   };
 
   return (
@@ -169,12 +179,10 @@ export default function UserSetupScreen() {
         onBackPress={() => !disable && setStep(handleBack)}>
         {({ props }) => {
           return (
-            // <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <>
               {step == 1 && (
                 <LoginForm
                   contentOpacity={props.contentOpacity}
-                  type={route.params?.type}
                   onPhonePress={value => setStep(value)}
                   setStep={values => {
                     CheckIsUserExist(
@@ -190,7 +198,6 @@ export default function UserSetupScreen() {
                 <SignUpForm
                   contentOpacity={props.contentOpacity}
                   onEmailPress={value => setStep(value)}
-                  type={route.params?.type}
                   setStep={values => {
                     CheckIsUserExist(
                       values.email?.toLowerCase(),
@@ -205,7 +212,6 @@ export default function UserSetupScreen() {
                 <OtpForm
                   contentOpacity={props.contentOpacity}
                   title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
-                  type={route.params?.type}
                   userEmail={data.email}
                   setStep={async (value: string) => {
                     setLoader(true);
@@ -240,10 +246,8 @@ export default function UserSetupScreen() {
               {step == 4 && (
                 <AddPhoneForm
                   contentOpacity={props.contentOpacity}
-                  type={route.params?.type}
                   setStep={(value: number, values: any) => {
                     setStep(6);
-                    // setData({ ...data, phone: values?.phone ?? '' });
                   }}
                 />
               )}
@@ -251,7 +255,6 @@ export default function UserSetupScreen() {
                 <OtpForm
                   contentOpacity={props.contentOpacity}
                   title="Create Account"
-                  type={route.params?.type}
                   userPhone={data.phone}
                   goBack={() => setStep(4)}
                   setStep={(value: string) => setStep(6)}
@@ -307,12 +310,9 @@ export default function UserSetupScreen() {
                 />
               )}
             </>
-            // </ScrollView>
           );
         }}
       </Wrapper>
     </>
   );
 }
-
-const styles = StyleSheet.create({});

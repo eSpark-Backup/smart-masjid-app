@@ -76,13 +76,11 @@ const RowItem = ({
                           fontSize: 16,
                           color: colors.text,
                           height: 40,
-                          // width: 155,
                           textAlign: 'center',
                           fontWeight: '400',
                           fontFamily: 'roboto',
                         }}
                       />
-                      {/* <GapView mode="horizontal" /> */}
                       <View
                         style={{
                           justifyContent: 'center',
@@ -99,32 +97,6 @@ const RowItem = ({
                       </View>
                     </View>
                   )}
-                  {/* {type == 'F' && item[key]?.search(':') != -1 ? (
-                    <MyTimePicker
-                      onTimeChanged={item?.onChange}
-                      initialValue={item[key]}
-                    />
-                  ) : (
-                    <View style={[styles.contentCol, { flexDirection: 'row' }]}>
-                      <TextInput
-                        defaultValue={item[key]}
-                        onChangeText={item?.onChange}
-                        maxLength={2}
-                        keyboardType={'decimal-pad'}
-                        style={{
-                          borderWidth: 0.5,
-                          color: colors.text,
-                          borderColor: '#3E3E3E',
-                          borderRadius: 3,
-                          height: 40,
-                          width: 40,
-                          textAlign: 'center',
-                        }}
-                      />
-                      <GapView mode="horizontal" />
-                      <MyText text="Mins" />
-                    </View>
-                  )} */}
                 </>
               ) : (
                 <View key={key} style={styles.contentCol}>
@@ -264,7 +236,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // paddingHorizontal: 10,
   },
   headerCol: { width: '30%', alignItems: 'flex-start' },
   headerIcon: {
@@ -276,13 +247,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // paddingHorizontal: 10,
     paddingVertical: 5,
   },
   editContentRow: {
     marginVertical: 5,
     borderRadius: 12,
-    // paddingHorizontal: 10,
   },
   contentCol: { width: '30%', alignItems: 'flex-start' },
   contentIcon: {

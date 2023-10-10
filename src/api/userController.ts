@@ -14,8 +14,11 @@ import {
 import { globalStore } from '../store/GlobalStates';
 
 /**
+ * Register a user's phone device on the server.
  *
- * @description Registering User Phone Device in Server
+ * @param data - The data to be sent for phone device registration.
+ * @param userId - The user's ID.
+ * @returns A promise that resolves when the registration is successful or rejects if there is an error.
  */
 export const RegisterUserPhone = async (
   data: RequestRegisterPhone,
@@ -30,8 +33,12 @@ export const RegisterUserPhone = async (
 };
 
 /**
+ * Update or add a registered user's phone device on the server.
  *
- * @description Update/Add Registered User Phone Device in Server
+ * @param fcmToken - The FCM token associated with the phone device.
+ * @param userId - The user's ID.
+ * @param phoneDeviceId - The ID of the phone device to update/add.
+ * @returns A promise that resolves when the update/add operation is successful or rejects if there is an error.
  */
 export const updateUserPhone = async (
   fcmToken: string,
@@ -62,13 +69,14 @@ export const updateUserPhone = async (
 };
 
 /**
+ * Log out a user and perform necessary cleanup.
  *
- * @description Login User
- * @returns get data of user and save to userStore
+ * @param userId - The ID of the user to log out.
+ * @returns A promise that resolves when the user is successfully logged out or rejects if there is an error.
  */
 export const LogoutUser = async (userId: string) => {
   try {
-    const res = await api.put(`/users/${userId}/logout`, {
+    await api.put(`/users/${userId}/logout`, {
       phoneDeviceId: globalStore.phoneId?.get(),
     });
     await removeDatafromLocalStorage('user');
@@ -80,13 +88,15 @@ export const LogoutUser = async (userId: string) => {
 };
 
 /**
+ * Delete a user's account and associated data from the database.
  *
- * @description Delete User
- * @returns delete your user from database
+ * @param userId - The ID of the user to be deleted.
+ * @returns A promise that resolves when the user's account and data are successfully deleted or rejects if there is an error.
  */
+
 export const DeleteUser = async (userId: string) => {
   try {
-    const res = await api.delete(`/users/${userId}`);
+    await api.delete(`/users/${userId}`);
     await removeDatafromLocalStorage('user');
     userStore.userData.set(null);
   } catch (error) {
@@ -96,10 +106,17 @@ export const DeleteUser = async (userId: string) => {
 };
 
 /**
+ * Update user data from the profile screen.
  *
- * @description Update the user data from profile screen
- * @returns get data of user and save to userStore
+ * @param id - The ID of the user whose data is to be updated.
+ * @param data - An object containing the user data to update. Fields that can be updated include: firstName, lastName, email, and phone.
+ * @param [data.firstName] - The user's updated first name.
+ * @param [data.lastName] - The user's updated last name.
+ * @param [data.email] - The user's updated email address.
+ * @param [data.phone] - The user's updated phone number.
+ * @returns A promise that resolves with the updated user data if the update is successful, or undefined if there is an error.
  */
+
 export const UpdateUser = async (
   id: string,
   data: {
@@ -133,9 +150,10 @@ export const UpdateUser = async (
 };
 
 /**
+ * Get Masjid Admins by masjid ID and save the data to the userStore.
  *
- * @description Get Masjid Admins by masjid is
- * @returns get data of Masjid Admins and save to userStore
+ * @param {string} id - The ID of the masjid for which to retrieve the administrators.
+ * @returns A promise that resolves when the data is successfully retrieved and saved to the userStore.
  */
 export const GetMasjidAdmins = async (id: string) => {
   try {
@@ -150,10 +168,13 @@ export const GetMasjidAdmins = async (id: string) => {
 };
 
 /**
+ * Delete an Admin from a Masjid and display a success or error message.
  *
- * @description Delete Admin from Masjid
- * @returns returns message whether success or error
+ * @param userId - The ID of the user to be removed as an admin.
+ * @param masjidId - The ID of the masjid from which the admin will be removed.
+ * @returns A promise that resolves when the admin is successfully removed or displays an error message.
  */
+
 export const DeleteAdminFromMasjid = async (
   userId: string,
   masjidId: string,
@@ -180,9 +201,11 @@ export const DeleteAdminFromMasjid = async (
 };
 
 /**
+ * Add an Admin to a Masjid and display a success or error message.
  *
- * @description Add Admin into Masjid
- * @returns returns message whether success or error
+ * @param userId - The ID of the user to be added as an admin.
+ * @param masjidId - The ID of the masjid to which the admin will be added.
+ * @returns A promise that resolves to `true` when the admin is successfully added or `false` if there's an error.
  */
 export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
   try {

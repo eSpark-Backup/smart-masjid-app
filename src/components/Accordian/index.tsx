@@ -1,6 +1,7 @@
-import { Theme, useTheme } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import { View, TouchableOpacity, Animated } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
+
 import MyText from '../MyText';
 import { ArrowDown } from '../../assets';
 import { useLayoutAnimation, useUpdateEffect } from '../../utils';

@@ -8,7 +8,11 @@ import {
   SalahTimings,
   subJummas,
 } from './masjidControllerTypes';
-import { UserResponse } from './userControllerApiResponse';
+import {
+  FailCheckPhoneId,
+  SuccessCheckPhoneId,
+  UserResponse,
+} from './userControllerApiResponse';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -79,6 +83,11 @@ export type CountryCodes = {
   enabled: boolean;
   iso_code: string;
 };
+
+export type PhoneIdResponse =
+  | SuccessCheckPhoneId
+  | FailCheckPhoneId
+  | undefined;
 
 export type DeviceInfo = {
   macId?: string;

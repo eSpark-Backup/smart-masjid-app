@@ -27,11 +27,7 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
 import { _startLocationCheck, _stopLocationCheck } from '../utils/functions';
-import {
-  PERMISSIONS,
-  request,
-  requestMultiple,
-} from 'react-native-permissions';
+import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 
 const SearchListing = ({
   onPress,
@@ -65,8 +61,6 @@ const SearchListing = ({
             _requestUserLocationPermission();
           }
         });
-        // await _requestUserLocationPermission();
-        // onCurrentLocationPress();
       } else {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -85,15 +79,19 @@ const SearchListing = ({
   };
 
   const checkLocationAdapter = async () => {
-    const enable = await systemSetting.isLocationEnabled();
-    if (enable || locationStatus) {
-      checkLocation();
-    } else {
-      Toast.show({
-        text2: 'Enable Location Adapter',
-        type: 'warning',
-        visibilityTime: 10000,
-      });
+    try {
+      const enable = await systemSetting.isLocationEnabled();
+      if (enable || locationStatus) {
+        checkLocation();
+      } else {
+        Toast.show({
+          text2: 'Enable Location Adapter',
+          type: 'warning',
+          visibilityTime: 10000,
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 

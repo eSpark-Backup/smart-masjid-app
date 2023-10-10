@@ -75,7 +75,6 @@ import {
   TR,
   UA,
   US,
-  USFlag,
   VA,
   YE,
 } from '../assets';
