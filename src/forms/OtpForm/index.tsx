@@ -18,12 +18,9 @@ import {
   OverlayLoader,
   Rounded,
 } from '../../components';
-import { MyLightTheme } from '../../theme';
-import { CreateUserRequest } from '../../types/userControllerApiResponse';
 import { WINDOW_WIDTH } from '../../constants';
 
 export default function OtpForm({
-  type,
   setStep,
   title = 'OTP Form',
   onResend,
@@ -32,7 +29,6 @@ export default function OtpForm({
   userPhone,
   goBack,
 }: {
-  type?: 'login' | 'setup';
   setStep: (value: string) => void;
   title?: string;
   onResend?: () => Promise<void>;
@@ -53,7 +49,7 @@ export default function OtpForm({
 
   const onResendOtp = async () => {
     setLoader(true);
-    const res = await onResend?.();
+    await onResend?.();
     setTime((prevVal: number) => 300);
     setCountdownId(new Date().getTime().toString());
     setExpTime(false);
@@ -134,8 +130,6 @@ export default function OtpForm({
           pinCount={6}
           editable
           autoFocusOnLoad={false}
-          // secureTextEntry
-          // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
           onCodeChanged={code => setOtp(code)}
           codeInputFieldStyle={{
             ...styles.underlineStyleBase,

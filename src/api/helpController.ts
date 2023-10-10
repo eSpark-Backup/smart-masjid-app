@@ -2,15 +2,15 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import Toast from 'react-native-toast-message';
 
 import { api } from '.';
-import { SalahTimings } from '../types/masjidControllerTypes';
 import { helpStore } from '../store/HelpStore';
 import { supportRequestData } from '../types';
 
 /**
+ * Fetches frequently asked questions (FAQs) from the help endpoint.
  *
- * @description Get help FAQs
- * @returns list of FAQs
+ * @returns A `Promise` that resolves to an array of FAQs if successful, or rejects with an error if there was a problem.
  */
+
 export const GetHelpFAQs = async () => {
   try {
     const result: any = await api.get(`/help`);
@@ -26,9 +26,11 @@ export const GetHelpFAQs = async () => {
 };
 
 /**
- * @description Get ContactUs Reasons
- * @returns - list of Reasons
+ * Fetches contact reasons from the help endpoint.
+ *
+ * @returns A `Promise` that resolves to an array of contact reasons if successful, or rejects with an error if there was a problem.
  */
+
 export const GetContactReasons = async () => {
   try {
     const result: any = await api.get(`/help/contact/reasons`);
@@ -44,10 +46,11 @@ export const GetContactReasons = async () => {
 };
 
 /**
- * @description Create Contact Us request to support team
- * @param {requestData} requestData - Data for Contact Us request
- * @returns - list of iqamah timings from API response
+ * Creates a support request using the provided data.
+ *
+ * @param requestData - The data for the support request.
  */
+
 export const CreateSupportRequest = async (requestData: supportRequestData) => {
   try {
     const result: any = await api.post(`help/contact`, requestData);

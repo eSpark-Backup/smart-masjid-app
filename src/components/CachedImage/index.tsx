@@ -1,6 +1,6 @@
-import { useTheme } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { ActivityIndicator, ImageStyle, ImageSourcePropType } from 'react-native';
+import { ActivityIndicator, ImageSourcePropType } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { View } from 'react-native-animatable';
 import FastImage, { FastImageProps } from 'react-native-fast-image';
 
@@ -33,7 +33,10 @@ export default function CachedImage({
       />
       {loading && (
         <View
-          style={[{ flex: 1, justifyContent: 'center', alignItems: 'center'}, style]}>
+          style={[
+            { flex: 1, justifyContent: 'center', alignItems: 'center' },
+            style,
+          ]}>
           <ActivityIndicator color={colors.primary} />
         </View>
       )}

@@ -1,12 +1,14 @@
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { api } from '.';
-import { SalahTimings } from '../types/masjidControllerTypes';
 
 /**
+ * Search for masjids by zip code and location coordinates.
  *
- * @description Search Masjid by Zip Code and Location
- * @returns get masjid and and return masjid list
+ * @param [zipcode=''] - The zip code to use for the search. Optional.
+ * @param [lat=0] - The latitude coordinate for the search location. Optional.
+ * @param [long=0] - The longitude coordinate for the search location. Optional.
+ * @returns - An array of masjids found in the specified area or undefined if there is an error.
  */
 export const SearchMasjidByLocation = async (
   zipcode: string | number = '',
@@ -30,7 +32,7 @@ export const SearchMasjidByLocation = async (
 
 /**
  * @description Get adhan timings of specific masjid
- * @param {masjidId} masjidId- Masjid id to get adhan
+ * @param masjidId - Masjid id to get adhan
  * @returns - list of adhan timings from API response
  */
 export const GetMasidAdhanTimings = async (masjidId: string) => {
@@ -47,7 +49,7 @@ export const GetMasidAdhanTimings = async (masjidId: string) => {
 
 /**
  * @description Get iqamah timings of specific masjid
- * @param {masjidId} masjidId - Masjid id to get iqamah
+ * @param masjidId - Masjid id to get iqamah
  * @returns - list of iqamah timings from API response
  */
 export const GetMasidIqamaTimings = async (masjidId: string) => {
@@ -61,12 +63,3 @@ export const GetMasidIqamaTimings = async (masjidId: string) => {
     console.log('error GetMasidIqamaTimings', error);
   }
 };
-
-/**
- * @description Get Salah Timings of specific masjid
- * @param {masjidId} masjidId - Masjid Id to retrieve timings
- * @returns {SalahTimings} SalahTimings - list of Salah timings from API response
- */
-// export const getSalahTimings = (masjidId: string): SalahTimings => {
-
-// }

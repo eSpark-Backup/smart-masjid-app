@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import moment from 'moment';
 
@@ -14,7 +14,6 @@ const RowItem = ({
 }: {
   item: { name: string; adhan: string; Iqama: string };
 }) => {
-  const [toggleMute, setToggleMute] = useState(true);
   return (
     <TouchableOpacity activeOpacity={0.9}>
       <View style={[styles.contentRow, { height: 40 }]}>

@@ -50,13 +50,11 @@ export default function MasjidListCard(
     namazTime,
     azanTime,
     location,
-    subscribers,
     onPress,
     masjidLogo = undefined,
   } = props;
 
   const styles = useMemo(() => makeStyles(props), []);
-  const [mute, setMute] = useState(false);
   return (
     <Card width={WINDOW_WIDTH - 28} height={90}>
       <TouchableOpacity

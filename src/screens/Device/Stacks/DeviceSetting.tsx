@@ -108,7 +108,6 @@ const DeviceSetting = ({
           {
             label: 'Update Password',
             onPress: () => {
-              // goBack?.();
               console.log('error', device);
               navigation.navigate('DSetup', {
                 from: 'SelectedDevice',
@@ -121,7 +120,6 @@ const DeviceSetting = ({
           {
             label: 'Connect new Wi-Fi',
             onPress: () => {
-              // goBack?.();
               navigation.navigate('DSetup', {
                 from: 'SelectedDevice',
                 deviceData: device,

@@ -1,1 +1,1 @@
-export { default as DeviceSetting} from './DeviceSetting'
+export { default as DeviceSetting } from './DeviceSetting';

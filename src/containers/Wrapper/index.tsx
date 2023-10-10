@@ -1,24 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   ImageBackground,
-  StatusBar,
   StyleSheet,
   Animated,
   ScrollView,
-  SafeAreaView,
   Platform,
 } from 'react-native';
 
 import { HeaderBackgroundImage, HeaderIOSBackgroundImage } from '../../assets';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
+import { WINDOW_WIDTH } from '../../constants';
 import Header from '../../components/Header';
 import MyText from '../../components/MyText';
 import { GapView, TextLabel } from '../../components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// Wrap you screen code in Wrapper Component
-// Like This <Wrapper><YOUR_COMPONENT><YOUR_COMPONENT/></Wrapper>
 export default function Wrapper({
   children,
   showFooter = false,

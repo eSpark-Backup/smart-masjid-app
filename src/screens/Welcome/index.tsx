@@ -15,6 +15,7 @@ type WelcomeNavigationProps = NativeStackScreenProps<
 export default function App() {
   const navigation = useNavigation<WelcomeNavigationProps['navigation']>();
   const { colors }: Theme = useTheme();
+
   const goBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();

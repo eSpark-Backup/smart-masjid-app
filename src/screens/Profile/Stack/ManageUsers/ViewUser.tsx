@@ -34,6 +34,7 @@ export default function ViewUsers({
       <View>
         <ProfileSectionlist
           scroll={false}
+          cardWidth={'40%'}
           data={[
             {
               title: 'User Information',

@@ -81,7 +81,6 @@ const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     container: {
       flexDirection: 'row',
-      // backgroundColor: 'red'
     },
     text: {
       fontSize: 18,

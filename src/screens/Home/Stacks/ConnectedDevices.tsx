@@ -2,7 +2,7 @@ import React from 'react';
 import { Theme, useTheme } from '@react-navigation/native';
 import { View, FlatList, Animated } from 'react-native';
 
-import { DeviceSvg, SyncSvg } from '../../../assets';
+import { SyncSvg } from '../../../assets';
 import {
   DeviceListItem,
   GapView,
