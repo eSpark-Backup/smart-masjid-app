@@ -144,8 +144,6 @@ export default function MyDatePicker({
             name="md-chevron-back"
             size={24}
           />
-          {/* <GapView length={10} mode="horizontal" />
-          <Calendar /> */}
           <GapView length={10} mode="horizontal" />
           <MyTextSubHeader
             text={

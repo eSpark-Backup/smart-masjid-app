@@ -46,12 +46,11 @@ const SearchListing = ({
   const checkLocation = async () => {
     try {
       if (Platform.OS == 'ios') {
-        await _requestUserLocationPermission();
-        onCurrentLocationPress();
         await requestMultiple([
           PERMISSIONS.IOS.LOCATION_ALWAYS,
           PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
         ]).then(status => {
+          console.log('status', status);
           if (
             status['ios.permission.LOCATION_ALWAYS'] == 'granted' ||
             status['ios.permission.LOCATION_WHEN_IN_USE'] == 'granted'
@@ -80,15 +79,19 @@ const SearchListing = ({
   };
 
   const checkLocationAdapter = async () => {
-    const enable = await systemSetting.isLocationEnabled();
-    if (enable || locationStatus) {
-      checkLocation();
-    } else {
-      Toast.show({
-        text2: 'Enable Location Adapter',
-        type: 'warning',
-        visibilityTime: 10000,
-      });
+    try {
+      const enable = await systemSetting.isLocationEnabled();
+      if (enable || locationStatus) {
+        checkLocation();
+      } else {
+        Toast.show({
+          text2: 'Enable Location Adapter',
+          type: 'warning',
+          visibilityTime: 10000,
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 

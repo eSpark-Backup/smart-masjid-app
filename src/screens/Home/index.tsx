@@ -76,11 +76,6 @@ export default function Home() {
   const [uniqueObjects, setUniqueObjects] = useState<Masjid[]>([]);
   const [selectedMasjid, setSelectedMasjid] =
     useState<Immutable<Masjid> | null>(null);
-  const {
-    // getMasjidListSubscribedByUser,
-    store: { userMasjidList },
-    isLoading,
-  } = useMasjid();
 
   useEffect(() => {
     if (isFocused && step == 0) {

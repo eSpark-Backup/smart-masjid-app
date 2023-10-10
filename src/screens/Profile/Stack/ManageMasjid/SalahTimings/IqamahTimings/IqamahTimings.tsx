@@ -37,7 +37,7 @@ export default function IqamahTimings({
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
-  selectedIqamah: (value: object) => void;
+  selectedIqamah: (value: IqamahTime) => void;
 }) {
   const userData = useHookstate(userStore.userData).get();
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();

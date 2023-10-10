@@ -24,7 +24,6 @@ import {
 import { Device } from '../../types/deviceControllerTypes';
 import {
   addSubscription,
-  getDeviceSubscriptions,
   removeSubscription,
   _checkDeviceTelemetry,
 } from '../../api/deviceController';
@@ -83,15 +82,6 @@ const RowItem = ({
     </TouchableOpacity>
   );
 };
-
-interface ViewabilityConfigCallbackPair {
-  viewabilityConfig: unknown;
-  onViewableItemsChanged: ({
-    viewableItems,
-  }: {
-    viewableItems: ViewToken[];
-  }) => void;
-}
 
 export default function SwipeableTimeTable({
   data,
@@ -340,12 +330,6 @@ export default function SwipeableTimeTable({
           />
         }
       />
-      {/* {footer && (
-        <>
-          <GapView />
-          {footer}
-        </>
-      )} */}
     </View>
   );
 }

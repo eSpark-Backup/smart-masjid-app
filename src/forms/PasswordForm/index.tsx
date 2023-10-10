@@ -92,7 +92,6 @@ export default function PasswordForm({
         visibilityTime: 10000,
       });
       clear();
-      // setStep(4);
     }
   };
 
@@ -132,7 +131,6 @@ export default function PasswordForm({
           initialValues={{ password: '' }}
           validationSchema={DeviceSetupSchema.wifiPassword}
           onSubmit={({ password }, { resetForm }) => {
-            // setStep(6);
             setPass(password);
             connectToWifi({ ssid: ssid ?? '', password }, resetForm);
           }}>

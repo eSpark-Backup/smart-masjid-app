@@ -1,12 +1,12 @@
-import { Theme, useTheme } from '@react-navigation/native';
-import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
+import { Theme, useTheme } from '@react-navigation/native';
+import { Formik } from 'formik';
+
 import {
   GapView,
   MyInput,
   MyText,
-  MyTextHeader,
   MyTextSubHeader,
   MyTitle,
   Rounded,
@@ -16,11 +16,9 @@ import { UserSetupSchema } from '../../constants/validations/schema';
 
 export default function SignUpForm({
   setStep,
-  type,
   onEmailPress = (value: number) => {},
   contentOpacity = 0,
 }: {
-  type?: 'login' | 'setup';
   setStep: (value: any) => void;
   onEmailPress: (value: number) => void;
   contentOpacity?: any;
@@ -50,14 +48,7 @@ export default function SignUpForm({
           onSubmit={values => {
             setStep(values);
           }}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
+          {({ handleChange, handleSubmit, values, errors, touched }) => (
             <>
               <MyInput
                 placeholder="Email"

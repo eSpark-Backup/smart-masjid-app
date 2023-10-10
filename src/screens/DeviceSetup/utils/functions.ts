@@ -50,29 +50,37 @@ export function _startCheckBle(callback: (e: Event) => void) {
 }
 
 export function _checkBleStatus() {
-  return new Promise((resolve: (value: boolean) => any, reject) => {
-    BleManager.checkState().then(state => {
-      console.log(`current BLE state = '${state}'.`);
-      if (state == 'on') {
-        resolve(true);
-      }
-      if (state == 'off') {
-        resolve(false);
-      }
+  try {
+    return new Promise((resolve: (value: boolean) => any, reject) => {
+      BleManager.checkState().then(state => {
+        console.log(`current BLE state = '${state}'.`);
+        if (state == 'on') {
+          resolve(true);
+        }
+        if (state == 'off') {
+          resolve(false);
+        }
+      });
     });
-  });
+  } catch (e) {
+    crashlytics().recordError(e as Error);
+  }
 }
 
 export function _checkLocationStatus() {
-  return new Promise((resolve: (value: boolean) => any, reject) => {
-    RNSettings.getSetting(RNSettings.LOCATION_SETTING).then((result: any) => {
-      if (result == RNSettings.ENABLED) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
+  try {
+    return new Promise((resolve: (value: boolean) => any, reject) => {
+      RNSettings.getSetting(RNSettings.LOCATION_SETTING).then((result: any) => {
+        if (result == RNSettings.ENABLED) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
     });
-  });
+  } catch (e) {
+    crashlytics().recordError(e as Error);
+  }
 }
 
 export async function _scanBleDevices(time?: number) {
@@ -110,32 +118,36 @@ export async function _scanBleDevices(time?: number) {
 }
 
 export async function _connectBleDevice(devInfo: DeviceInfo) {
-  if (!devInfo.macId) {
-    return;
+  try {
+    if (!devInfo.macId) {
+      return;
+    }
+    return new Promise((resolve: (value: PeripheralInfo) => any, reject) => {
+      BleManager.connect(devInfo?.macId!!)
+        .then(() => {
+          // Success code
+          console.log('Connected');
+          BleManager.retrieveServices(devInfo?.macId!!)
+            .then(peripheralInfo => {
+              // Success code
+              resolve(peripheralInfo);
+            })
+            .catch(error => {
+              reject(error);
+              crashlytics().recordError(error as Error);
+              console.log('error while retrieve services', error);
+            });
+        })
+        .catch(error => {
+          // Failure code
+          reject(error);
+          crashlytics().recordError(error as Error);
+          console.log('error while connecting', error);
+        });
+    });
+  } catch (e) {
+    crashlytics().recordError(e as Error);
   }
-  return new Promise((resolve: (value: PeripheralInfo) => any, reject) => {
-    BleManager.connect(devInfo?.macId!!)
-      .then(() => {
-        // Success code
-        console.log('Connected');
-        BleManager.retrieveServices(devInfo?.macId!!)
-          .then(peripheralInfo => {
-            // Success code
-            resolve(peripheralInfo);
-          })
-          .catch(error => {
-            reject(error);
-            crashlytics().recordError(error as Error);
-            console.log('error while retrieve services', error);
-          });
-      })
-      .catch(error => {
-        // Failure code
-        reject(error);
-        crashlytics().recordError(error as Error);
-        console.log('error while connecting', error);
-      });
-  });
 }
 
 export async function _disconnectBleDevice(
@@ -175,19 +187,23 @@ export async function _readFromDevice(
   serviceUUID: string,
   charUUID: string,
 ) {
-  return new Promise((resolve: (value: string) => any, reject) => {
-    BleManager.read(devInfo?.macId!!, serviceUUID, charUUID)
-      .then(readData => {
-        // Success code
-        const strData = bytesToString(readData);
-        resolve(strData);
-      })
-      .catch(error => {
-        // Failure code
-        crashlytics().recordError(error as Error);
-        console.log(error);
-      });
-  });
+  try {
+    return new Promise((resolve: (value: string) => any, reject) => {
+      BleManager.read(devInfo?.macId!!, serviceUUID, charUUID)
+        .then(readData => {
+          // Success code
+          const strData = bytesToString(readData);
+          resolve(strData);
+        })
+        .catch(error => {
+          // Failure code
+          crashlytics().recordError(error as Error);
+          console.log(error);
+        });
+    });
+  } catch (e) {
+    crashlytics().recordError(e as Error);
+  }
 }
 
 export async function _writeToDevice(
@@ -195,23 +211,27 @@ export async function _writeToDevice(
   serviceUUID: string,
   charUUID: string,
 ) {
-  // return new Promise((resolve, reject) => {
-  const string = JSON.stringify({
-    ssid: devInfo?.ssid,
-    pass: devInfo?.password,
-  });
-  const data = stringToBytes(string);
-  console.log('device info1', string);
-  BleManager.write(devInfo?.macId!!, serviceUUID, charUUID, data, 64)
-    .then(async () => {
-      // Success code
-      console.log('Write Successfully');
-    })
-    .catch(error => {
-      // Failure code
-      // reject(error)
-      crashlytics().recordError(error as Error);
-      console.log(error);
+  try {
+    // return new Promise((resolve, reject) => {
+    const string = JSON.stringify({
+      ssid: devInfo?.ssid,
+      pass: devInfo?.password,
     });
-  // });
+    const data = stringToBytes(string);
+    console.log('device info1', string);
+    BleManager.write(devInfo?.macId!!, serviceUUID, charUUID, data, 64)
+      .then(async () => {
+        // Success code
+        console.log('Write Successfully');
+      })
+      .catch(error => {
+        // Failure code
+        // reject(error)
+        crashlytics().recordError(error as Error);
+        console.log(error);
+      });
+    // });
+  } catch (e) {
+    crashlytics().recordError(e as Error);
+  }
 }

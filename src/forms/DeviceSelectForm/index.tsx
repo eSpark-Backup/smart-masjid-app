@@ -8,11 +8,9 @@ import { AdhanButton, DeviceSvg } from '../../assets';
 import {
   ButtonListing,
   GapView,
-  MyText,
   MyTextSubHeader,
   MyTitle,
   OverlayLoader,
-  TextLabel,
 } from '../../components';
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { Device } from '../../types/deviceControllerTypes';
@@ -24,6 +22,8 @@ import {
 } from '../../screens/DeviceSetup/utils/functions';
 import { DeviceInfo } from '../../types';
 import { check } from 'react-native-permissions';
+//@ts-ignore
+import { bytesToString } from 'convert-string';
 
 export default function DeviceSelectForm({
   data = [],
@@ -52,7 +52,7 @@ export default function DeviceSelectForm({
       '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
     );
 
-    let Ddata: DeviceInfo = JSON.parse(stringData);
+    let Ddata: DeviceInfo = JSON.parse(stringData as string);
     _disconnectBleDevice({ macId: macId });
     return Ddata.mac_address;
   };
@@ -97,7 +97,7 @@ export default function DeviceSelectForm({
           title: 'Smart Adhan Speaker',
           onPress: () => {
             console.log('selected macId', item?.id);
-            handleDeviceCheck(item?.id!);
+            handleDeviceCheck(item?.id as string);
           },
         };
       } else {
@@ -112,7 +112,7 @@ export default function DeviceSelectForm({
         title: isBtn ? 'Smart Adhan Button' : 'Smart Adhan Speaker',
         onPress: () => {
           console.log('selected macId', item?.id);
-          handleDeviceCheck(item?.id!);
+          handleDeviceCheck(item?.id as string);
         },
       };
     }
@@ -130,7 +130,7 @@ export default function DeviceSelectForm({
         '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
         '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
       );
-      let Ddata: DeviceInfo = JSON.parse(stringData);
+      let Ddata: DeviceInfo = JSON.parse(stringData as string);
       if (Ddata.mac_address == selectedDeviceData?.macAddress) {
         _disconnectBleDevice({ macId: item.id });
         setStep(3);

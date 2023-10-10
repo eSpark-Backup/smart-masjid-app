@@ -12,7 +12,6 @@ import {
   MyTextSubHeader,
   MyTitle,
   OverlayLoader,
-  TextLabel,
 } from '../../components';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { _requestUserLocationPermission } from '../../utils/functions';
@@ -58,7 +57,6 @@ export default function WifiSelectForm({
           getWifiList();
         } else {
           setIssues('Location permission denied');
-          // _requestUserLocationPermission();
         }
       } else {
         const ssid = await WifiManager.getCurrentWifiSSID();

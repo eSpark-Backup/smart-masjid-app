@@ -18,6 +18,8 @@ import crashlytics from '@react-native-firebase/crashlytics';
 
 //@ts-ignore
 import RNSettings from 'react-native-settings';
+//@ts-ignore
+import { bytesToString } from 'convert-string';
 import moment from 'moment';
 
 import { userStore } from '../../store/UserStore';
@@ -131,7 +133,7 @@ export default function DeviceSetupScreen() {
   };
 
   useEffect(() => {
-    Array.from(iosScannedData.values());
+    console.log('xxx', Array.from(iosScannedData.values()));
   }, [iosScannedData.values()]);
 
   useEffect(() => {
@@ -268,19 +270,23 @@ export default function DeviceSetupScreen() {
   }
 
   const checkStatus = async () => {
-    const ble = Platform.OS == 'ios' ? true : await _checkBleStatus();
-    const loc = await _checkLocationStatus();
-    setBleStatus(ble);
-    setlocationStatus(loc);
-    if (
-      route?.params?.from === 'SelectedDevice' &&
-      route?.params?.deviceData?.deviceTelemetry?.status == 'Online'
-    ) {
-      setStep(4);
-    } else {
-      setStep(1); //todo: first 6 then 1
-      setConnFlag(true);
-      await handlePermissions(ble, loc);
+    try {
+      const ble = Platform.OS == 'ios' ? true : await _checkBleStatus();
+      const loc = await _checkLocationStatus();
+      setBleStatus(ble);
+      setlocationStatus(loc);
+      if (
+        route?.params?.from === 'SelectedDevice' &&
+        route?.params?.deviceData?.deviceTelemetry?.status == 'Online'
+      ) {
+        setStep(4);
+      } else {
+        setStep(1); //todo: first 6 then 1
+        setConnFlag(true);
+        await handlePermissions(ble, loc);
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 
@@ -342,7 +348,7 @@ export default function DeviceSetupScreen() {
         '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
       );
       console.log('kia ha data >>>>>>>', stringData);
-      const jsonData = JSON.parse(stringData);
+      const jsonData = JSON.parse(stringData as string);
       setDevInfo(state => ({ ...state, ...jsonData }));
 
       await _writeToDevice(
@@ -385,78 +391,86 @@ export default function DeviceSetupScreen() {
   };
 
   const updateDevice = async () => {
-    console.log('devInfoxxxxxxxxx', devInfo);
-    const devRes: any = await _updateDevice({
-      ...route?.params?.deviceData,
-      wifiSsid: devInfo.ssid,
-      wifiPassword: devInfo.password,
-    });
-    if (devRes) {
-      telemetryInterval = setInterval(() => {
-        checkTelemetry(route?.params?.deviceData?.id.toString(), true); // check Telemetery for userDevice
-      }, 10000);
-    } else {
-      setStep(8);
-      setToastContent({
-        title: undefined,
-        message: undefined,
-        btnText: undefined,
-        onPress: () => {
-          console.log('kia ha');
-          navigation.navigate('HomeBottomTab', {
-            screen: 'Device',
-          });
-        },
+    try {
+      console.log('devInfoxxxxxxxxx', devInfo);
+      const devRes: any = await _updateDevice({
+        ...route?.params?.deviceData,
+        wifiSsid: devInfo.ssid,
+        wifiPassword: devInfo.password,
       });
+      if (devRes) {
+        telemetryInterval = setInterval(() => {
+          checkTelemetry(route?.params?.deviceData?.id.toString(), true); // check Telemetery for userDevice
+        }, 10000);
+      } else {
+        setStep(8);
+        setToastContent({
+          title: undefined,
+          message: undefined,
+          btnText: undefined,
+          onPress: () => {
+            console.log('kia ha');
+            navigation.navigate('HomeBottomTab', {
+              screen: 'Device',
+            });
+          },
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 
   const registerDevice = async (deviceInfo: DeviceInfo) => {
-    const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
-    const isBtn = dev?.name?.includes('SMBTN');
-    const USER_TOKEN: any = userStore.get().token;
-    const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
-    if (jwtDecodedObj?.masjidId === 0 && jwtDecodedObj?.userType?.id == 2) {
-      setStep(8); // gotten a falty masjid id
-      console.log('gotten a faulty masjid id (0)');
-    } else {
-      if (route?.params?.from != 'SelectedDevice') {
-        const devRes: any = await _saveDevice(deviceInfo);
-        if (isBtn) {
-          console.log('-> Detected Smart Button');
-          console.log(
-            'kia ha decoded string========??????',
-            JSON.stringify(jwtDecodedObj),
-          );
-          const masjidDevRes: any = await _saveDeviceBtnToMasjid(
-            devRes?.id,
-            jwtDecodedObj.masjidId,
-          );
-          console.log('kia res???', masjidDevRes);
-          if (masjidDevRes) {
-            telemetryInterval = setInterval(() => {
-              checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
-            }, 10000);
+    try {
+      const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
+      const isBtn = dev?.name?.includes('SMBTN');
+      const USER_TOKEN: any = userStore.get().token;
+      const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+      if (jwtDecodedObj?.masjidId === 0 && jwtDecodedObj?.userType?.id == 2) {
+        setStep(8); // gotten a falty masjid id
+        console.log('gotten a faulty masjid id (0)');
+      } else {
+        if (route?.params?.from != 'SelectedDevice') {
+          const devRes: any = await _saveDevice(deviceInfo);
+          if (isBtn) {
+            console.log('-> Detected Smart Button');
+            console.log(
+              'kia ha decoded string========??????',
+              JSON.stringify(jwtDecodedObj),
+            );
+            const masjidDevRes: any = await _saveDeviceBtnToMasjid(
+              devRes?.id,
+              jwtDecodedObj.masjidId,
+            );
+            console.log('kia res???', masjidDevRes);
+            if (masjidDevRes) {
+              telemetryInterval = setInterval(() => {
+                checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
+              }, 10000);
+            } else {
+              setStep(8); // failed saving device (show error screen)
+            }
           } else {
-            setStep(8); // failed saving device (show error screen)
+            console.log('-> Detected Smart Speaker');
+            const userDevRes: any = await _saveDeviceToUser(devRes?.id);
+            console.log('kia res???', userDevRes);
+            if (userDevRes) {
+              telemetryInterval = setInterval(() => {
+                checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+              }, 10000);
+            } else {
+              setStep(8); // failed saving device (show error screen)
+            }
           }
         } else {
-          console.log('-> Detected Smart Speaker');
-          const userDevRes: any = await _saveDeviceToUser(devRes?.id);
-          console.log('kia res???', userDevRes);
-          if (userDevRes) {
-            telemetryInterval = setInterval(() => {
-              checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
-            }, 10000);
-          } else {
-            setStep(8); // failed saving device (show error screen)
-          }
+          setTimeout(() => {
+            updateDevice();
+          }, 5000);
         }
-      } else {
-        setTimeout(() => {
-          updateDevice();
-        }, 5000);
       }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 
@@ -597,25 +611,9 @@ export default function DeviceSetupScreen() {
         );
         setScannedDevices(newArr!);
         const macAdd = route?.params?.deviceData?.macAddress;
-        const isFound = !newArr?.some(async item => {
-          if (Platform.OS == 'ios' && macAdd) {
-            await _connectBleDevice({ macId: item.id });
-            const stringData = await _readFromDevice(
-              { macId: item.id },
-              '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-              '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
-            );
-            let Ddata: DeviceInfo = JSON.parse(stringData);
-            if (macAdd && Ddata.mac_address === macAdd) {
-              _disconnectBleDevice({ macId: item.id });
-              return true;
-            } else {
-              _disconnectBleDevice({ macId: item.id });
-            }
-          } else {
-            macAdd ? item.id === macAdd : true;
-          }
-        });
+        const isFound = !newArr?.some(item =>
+          macAdd ? item.id === macAdd : true,
+        );
         if (issues.length === 0) {
           if (newArr?.length === 0 || isFound) {
             setStep(8);

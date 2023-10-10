@@ -17,6 +17,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHookstate } from '@hookstate/core';
 import jwtDecode from 'jwt-decode';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { PlusSvg } from '../../assets';
 import {
@@ -86,13 +87,21 @@ export default function Device({ contentOpacity = 0 }: any) {
 
   useEffect(() => {
     if (step == 0) {
+      handleGetDevices();
+    }
+  }, [isFocused, step]);
+
+  const handleGetDevices = async () => {
+    try {
       const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
       console.log('what is the user info', user?.userType?.name);
       console.log('what is the user info++++', JSON.stringify(jwtDecodedObj));
-      GetUserDevices(user?.id.toString() ?? '');
-      GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
+      await GetUserDevices(user?.id.toString() ?? '');
+      await GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
-  }, [isFocused, step]);
+  };
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(

@@ -145,6 +145,9 @@ async function _requestUserLocationPermission() {
  */
 async function _openSettingIsBlocked(permission: Permission) {
   check(permission).then(statuses => {
+    console.log('statuses', statuses);
+    console.log('denied', PermissionsAndroid.RESULTS.DENIED);
+
     if (
       Platform.OS == 'android' &&
       statuses == PermissionsAndroid.RESULTS.DENIED

@@ -1,5 +1,3 @@
-import { number } from 'yup';
-
 type AdhanCalcConfig = {
   id: number;
   name: string;

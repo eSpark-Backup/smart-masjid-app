@@ -1,6 +1,4 @@
 import React from 'react';
-import { Theme, useTheme } from '@react-navigation/native';
-import { Formik } from 'formik';
 import {
   StyleSheet,
   View,
@@ -8,6 +6,9 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
+import { Formik } from 'formik';
+import { Theme, useTheme } from '@react-navigation/native';
+
 import {
   GapView,
   MyInput,
@@ -15,7 +16,6 @@ import {
   MyTextSubHeader,
   MyTitle,
   Rounded,
-  TextLabel,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
@@ -23,10 +23,8 @@ import { Card } from '../../containers';
 
 export default function AddPhoneForm({
   setStep,
-  type,
   contentOpacity = 0,
 }: {
-  type?: 'login' | 'setup';
   setStep: (value: any, any?: any) => void;
   contentOpacity?: any;
 }) {
@@ -55,14 +53,7 @@ export default function AddPhoneForm({
           onSubmit={values => {
             setStep(5, values);
           }}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
+          {({ handleChange, handleSubmit, values, errors, touched }) => (
             <>
               <Card backgroundColor="#fff" width={WINDOW_WIDTH - 50}>
                 <MyInput

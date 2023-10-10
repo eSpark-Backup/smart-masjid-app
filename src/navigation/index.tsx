@@ -112,6 +112,10 @@ export default function App() {
   };
 
   useEffect(() => {
+    _getFCMToken();
+  }, []);
+
+  useEffect(() => {
     GetCountryCodes();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {

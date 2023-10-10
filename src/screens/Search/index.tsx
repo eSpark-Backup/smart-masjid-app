@@ -4,6 +4,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import { getDistance } from 'geolib';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { SubscribeMasjid } from '../../api/deviceController';
 import { LogoutModal, OverlayLoader } from '../../components';
@@ -50,17 +51,21 @@ export default function Search() {
   };
 
   const onSubscribe = async (deviceId: string, masjidId: string) => {
-    console.log('deviceId', deviceId, 'masjidId', masjidId);
-    setLoading(true);
-    const result = await SubscribeMasjid(deviceId, masjidId);
-    if (result) {
-      Toast.show({
-        text2: 'Masjid Subscribed',
-        type: 'success',
-      });
-      navigation.navigate('Home');
+    try {
+      console.log('deviceId', deviceId, 'masjidId', masjidId);
+      setLoading(true);
+      const result = await SubscribeMasjid(deviceId, masjidId);
+      if (result) {
+        Toast.show({
+          text2: 'Masjid Subscribed',
+          type: 'success',
+        });
+        navigation.navigate('Home');
+      }
+      setLoading(false);
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
-    setLoading(false);
   };
 
   const getTitle = () => {

@@ -15,6 +15,7 @@ type WelcomeNavigationProps = NativeStackScreenProps<
 export default function App() {
   const navigation = useNavigation<WelcomeNavigationProps['navigation']>();
   const { colors }: Theme = useTheme();
+
   const goBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -30,7 +31,7 @@ export default function App() {
               style={{
                 alignSelf: 'center',
                 flexDirection: 'row',
-                marginTop: 205,
+                marginTop: 10,
               }}>
               <MyTitle
                 text={`Welcome to `}
