@@ -129,7 +129,7 @@ const MasjidDetails = ({
               }}>
               <LocationSvg />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '87%' }}>
+              <View style={{ maxWidth: '70%' }}>
                 <MyText
                   text={
                     (masjidDetails?.address1 ?? '') +
@@ -156,7 +156,7 @@ const MasjidDetails = ({
             <View style={styles.infoCardRowContainer}>
               <AdhanCalculation />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '87%' }}>
+              <View style={{ maxWidth: '70%' }}>
                 <MyText
                   text={
                     masjidDetails?.masjidAdhanConfig.adhanCalcConfig.name ?? ''
@@ -173,7 +173,7 @@ const MasjidDetails = ({
             <View style={styles.infoCardRowContainer}>
               <AdhanJuristic />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '87%' }}>
+              <View style={{ maxWidth: '70%' }}>
                 <MyText
                   text={
                     masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig

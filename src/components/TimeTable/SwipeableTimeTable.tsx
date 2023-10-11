@@ -326,7 +326,7 @@ export default function SwipeableTimeTable({
               marginVertical: 10,
               width: WINDOW_WIDTH - 50,
             }}
-            text="Nothing to show"
+            text="No Salah timings to show"
           />
         }
       />

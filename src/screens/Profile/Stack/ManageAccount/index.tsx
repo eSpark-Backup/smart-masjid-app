@@ -365,26 +365,23 @@ export default function ManageAccount({
             }}
           />
           <LogoutModal
-            message="Do you wish to delete your account?"
-            visible={isDVisible && devices.length < 1}
+            message="Are you sure you want to delete your account permanently?"
+            visible={isDVisible}
+            title1={'No'}
+            title2={'Yes'}
             onAllowed={async () => {
-              await DeleteUser(userData?.id?.toString() ?? '');
-              setIsDVisible(false);
-              console.log('Delete User');
-            }}
-            onClose={() => {
-              setIsDVisible(false);
-              console.log('Cancelled');
-            }}
-          />
-          <LogoutModal
-            message="Reset connected devices to delete your account?"
-            visible={isDVisible && devices.length > 0}
-            title1={'Cancel'}
-            title2={'Reset'}
-            onAllowed={async () => {
-              navigation.navigate('Device');
-              setIsDVisible(false);
+              if (devices.length > 0) {
+                navigation.navigate('Device');
+                Toast.show({
+                  text1: 'Warning!',
+                  text2: 'Delete your devices before account deletion!',
+                  type: 'success',
+                });
+                setIsDVisible(false);
+              } else {
+                await DeleteUser(userData?.id?.toString() ?? '');
+                setIsDVisible(false);
+              }
             }}
             onClose={() => {
               setIsDVisible(false);

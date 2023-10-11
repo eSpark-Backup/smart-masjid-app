@@ -44,7 +44,7 @@ export default function EditIqamahTimings({
     } else {
       let defaultData = {
         effectiveDate: moment(new Date()).format('YYYY-MM-DD'),
-        type: 'D',
+        type: 'F',
         asr: '18:00:00',
         fajr: '06:00:00',
         dhuhr: '14:00:00',

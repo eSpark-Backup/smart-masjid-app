@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import React from 'react';
 
 import { Card } from '../../containers';
@@ -38,9 +38,15 @@ const TimeTableCard = ({
               <MyText text={date} size={12} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {deleteBtn ? <Delete onPress={onDelete} /> : null}
+              {deleteBtn ? (
+                <TouchableOpacity activeOpacity={0.5} onPress={onDelete}>
+                  <Delete />
+                </TouchableOpacity>
+              ) : null}
               <GapView length={5} mode="horizontal" />
-              <EditPencil onPress={onEdit} />
+              <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
+                <EditPencil />
+              </TouchableOpacity>
             </View>
           </View>
           <GapView />

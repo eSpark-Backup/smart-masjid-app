@@ -92,7 +92,7 @@ export default function SalahTable({
         ListEmptyComponent={
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}
-            text="Nothing to show"
+            text="No Salah timings to show"
           />
         }
       />

@@ -106,7 +106,7 @@ export default function History({
         {adhaTime.length < 1 && !loading ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}
-            text="Nothing to show yet!"
+            text="No schedule of current month to show!"
           />
         ) : (
           <TimeSheet data={convertResponseToData(adhaTime) ?? []} />

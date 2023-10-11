@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
 import moment from 'moment';
 import { useHookstate } from '@hookstate/core';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   AddMasjidJummahTiming,
@@ -63,12 +64,13 @@ export default function EditJummaTimings({
       GetMasjidCurrentJummahTiming(
         userData?.masjid.id.toString() as string,
         moment(selectedJumma?.date).format('YYYY-MM-DD'),
-      ).then((jumuahTime: JummahTime | AddJummas) => {
-        console.log('jumuahTimes', jumuahTime);
-
-        setData(jumuahTime as AddJummas);
-        setLoading(false);
-      });
+      )
+        .then((jumuahTime: JummahTime | AddJummas) => {
+          console.log('jumuahTimes', jumuahTime);
+          setData(jumuahTime as AddJummas);
+          setLoading(false);
+        })
+        .catch(error => crashlytics().recordError(error));
     } else {
       let defaultData: AddJummas = {
         effectiveDate: moment().format('YYYY-MM-DD'),

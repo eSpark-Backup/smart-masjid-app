@@ -224,6 +224,7 @@ const DeviceSetting = ({
                                 text2: 'Subscribe to a Masjid First',
                                 type: 'warning',
                               });
+                              navigation.navigate('Search');
                               return;
                             }
                             goBack?.();

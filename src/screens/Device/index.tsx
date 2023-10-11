@@ -42,7 +42,7 @@ type DeviceNavigationProps = NativeStackScreenProps<
   'HomeBottomTab'
 >;
 
-const AddDevice = () => {
+const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
   const theme: Theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
@@ -52,7 +52,9 @@ const AddDevice = () => {
       <Card height={161} width={172} backgroundColor="#ffffff">
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => navigation.navigate('DSetup', { from: 'Device' })}
+          onPress={() =>
+            navigation.navigate('DSetup', { from: 'Device', isBtn: isBtn })
+          }
           style={styles.AddDeviceContainer}>
           <View style={{ alignItems: 'center' }}>
             <PlusSvg style={{ color: theme.colors.primary }} />
@@ -190,7 +192,7 @@ export default function Device({ contentOpacity = 0 }: any) {
                       }) => {
                         if (index != finalData?.length) {
                           return (
-                            <View style={{ marginHorizontal: 5 }}>
+                            <View style={{ marginHorizontal: 10 }}>
                               <DeviceCard
                                 deviceData={item}
                                 onPress={() => {
@@ -209,7 +211,9 @@ export default function Device({ contentOpacity = 0 }: any) {
                                 marginHorizontal:
                                   finalData?.length < 1 ? 25 : 5,
                               }}>
-                              <AddDevice />
+                              <AddDevice
+                                isBtn={activeTab == '1' ? false : true}
+                              />
                             </View>
                           );
                         }

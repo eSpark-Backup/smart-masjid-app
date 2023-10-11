@@ -135,7 +135,7 @@ export default function JumuahTable({
         {!data?.jumuah1 && !data?.jumuah2 && !data?.jumuah3 ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}
-            text="Nothing to show"
+            text="No Jumuah timings to show"
           />
         ) : null}
         {data?.jumuah1 ? (
