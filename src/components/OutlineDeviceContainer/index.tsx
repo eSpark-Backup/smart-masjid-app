@@ -21,7 +21,7 @@ export default function OutlineDeviceContainer({
       onPress={onPress}
       activeOpacity={0.9}
       style={{
-        backgroundColor: isActive ? colors.primary : 'transparent',
+        backgroundColor: isActive ? '#006870D9' : 'transparent',
         borderWidth: 0.8,
         borderColor: colors.primary,
         height: 32,

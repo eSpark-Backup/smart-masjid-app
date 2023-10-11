@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { LegacyRef, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,6 +17,8 @@ import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import MyTimePicker from '../MyTimePicker';
 import Tooltip from '../Tooltip';
+import { TextInputProps } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native';
 
 interface DataProps {
   name?: string;
@@ -36,6 +38,7 @@ const RowItem = ({
   type,
 }: any) => {
   const { colors } = useTheme();
+  const MyInput = useRef<TextInput>(null);
   const [toggleMute, setToggleMute] = useState(true);
   return (
     <TouchableOpacity
@@ -56,7 +59,9 @@ const RowItem = ({
                       initialValue={item[key]}
                     />
                   ) : (
-                    <View
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => MyInput.current?.focus()}
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -68,6 +73,7 @@ const RowItem = ({
                         height: 40,
                       }}>
                       <TextInput
+                        ref={MyInput}
                         defaultValue={item[key]}
                         onChangeText={item?.onChange}
                         maxLength={2}
@@ -95,7 +101,7 @@ const RowItem = ({
                           text="Mins"
                         />
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   )}
                 </>
               ) : (

@@ -6,6 +6,7 @@ import {
   Animated,
   Platform,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
@@ -137,7 +138,7 @@ export default function IqamahTimings({
     ) : loading ? null : (
       <MyText
         textStyle={{ textAlign: 'center', marginVertical: 10 }}
-        text="Nothing to show yet!"
+        text="No current Iqama to show yet!"
       />
     );
   };
@@ -181,9 +182,17 @@ export default function IqamahTimings({
             }}>
             <MyTextSubHeader text="Current" />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <PlusCircle onPress={() => setFlag('iAdd')} />
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => setFlag('iAdd')}>
+                <PlusCircle />
+              </TouchableOpacity>
               <GapView mode="horizontal" />
-              <HistoryBox onPress={() => setFlag('iHist')} />
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => setFlag('iHist')}>
+                <HistoryBox />
+              </TouchableOpacity>
             </View>
           </View>
           {contentToRender()}
@@ -214,7 +223,7 @@ export default function IqamahTimings({
               ListEmptyComponent={
                 <MyText
                   textStyle={{ textAlign: 'center', marginVertical: 10 }}
-                  text="Nothing to show yet!"
+                  text="No upcoming Iqama to show yet!"
                 />
               }
             />
