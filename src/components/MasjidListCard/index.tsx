@@ -70,7 +70,10 @@ export default function MasjidListCard(
           <MyText
             text={masjidName ?? 'Masjid Ar - Rahman'}
             size={14}
-            textStyle={{ fontWeight: '500' }}
+            textStyle={{
+              //  fontWeight: '500',
+              fontFamily: 'Roboto-Medium',
+            }}
             lines={2}
           />
           <GapView length={5} />

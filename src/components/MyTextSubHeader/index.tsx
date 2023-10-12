@@ -28,6 +28,7 @@ export default function MyTextSubHeader({
 
 const styles = StyleSheet.create({
   title: {
-    fontWeight: '500',
+    // fontWeight: '500',
+    fontFamily: 'Roboto-Medium',
   },
 });

@@ -83,8 +83,8 @@ const RowItem = ({
                           color: colors.text,
                           height: 40,
                           textAlign: 'center',
-                          fontWeight: '400',
-                          fontFamily: 'roboto',
+                          // fontWeight: '400',
+                          fontFamily: 'Roboto-Regular',
                         }}
                       />
                       <View
@@ -188,7 +188,14 @@ export default function TimeTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <MyText text={value} size={16} textStyle={{ fontWeight: '700' }} />
+            <MyText
+              text={value}
+              size={16}
+              textStyle={{
+                // fontWeight: '700',
+                fontFamily: 'Roboto-Bold',
+              }}
+            />
           </View>
         ))}
         {isMute && !isInfo && <View style={styles.headerIcon} />}

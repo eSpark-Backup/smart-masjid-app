@@ -64,7 +64,8 @@ const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
               textStyle={{
                 color: theme.colors.primary,
                 fontSize: 16,
-                fontWeight: '500',
+                // fontWeight: '500',
+                fontFamily: 'Roboto-Medium',
               }}
             />
           </View>
@@ -255,7 +256,8 @@ const makeStyles = (theme: Theme) => {
     deviceName: {
       color: colors.primary,
       fontSize: 16,
-      fontWeight: '500',
+      // fontWeight: '500',
+      fontFamily: 'Roboto-Medium',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     activeStatus: {

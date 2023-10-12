@@ -49,7 +49,11 @@ export default function DeviceSettingSectionList({
             <MyText
               text={title ?? ''}
               size={16}
-              textStyle={{ fontWeight: '500', color: '#3E3E3E' }}
+              textStyle={{
+                //  fontWeight: '500',
+                fontFamily: 'Roboto-Medium',
+                color: '#3E3E3E',
+              }}
             />
             <GapView length={10} />
           </>

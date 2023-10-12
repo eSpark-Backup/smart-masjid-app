@@ -68,13 +68,15 @@ const makeStyles = (theme: Theme) => {
       paddingHorizontal: 27.5,
       paddingBottom: 20,
       color: '#000000',
-      fontWeight: 'bold',
+      // fontWeight: 'bold',
+      fontFamily: 'Roboto-Bold',
     },
     bodyText: {
       paddingHorizontal: 27.5,
       paddingBottom: 20,
       color: '#3E3E3E',
-      fontWeight: '400',
+      // fontWeight: '400',
+      fontFamily: 'Roboto-Regular',
       textAlign: 'center',
     },
   });

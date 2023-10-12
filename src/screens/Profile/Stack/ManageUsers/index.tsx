@@ -143,13 +143,21 @@ const UserCard = ({
             <View>
               <MyText
                 text={item.firstName + ' ' + item.lastName}
-                textStyle={{ color: '#0E0E0E', fontWeight: '500' }}
+                textStyle={{
+                  color: '#0E0E0E',
+                  //  fontWeight: '500',
+                  fontFamily: 'Roboto-Medium',
+                }}
               />
               <GapView length={5} />
               <MyText
                 text={item.userType.name}
                 size={12}
-                textStyle={{ color: '#3E3E3E', fontWeight: '400' }}
+                textStyle={{
+                  color: '#3E3E3E',
+                  // fontWeight: '400',
+                  fontFamily: 'Roboto-Regular',
+                }}
               />
             </View>
           </View>
@@ -176,7 +184,12 @@ const AddUserBtn = ({ onPress }: any) => {
         }}>
         <MyText
           text="Add User"
-          textStyle={{ color: colors.primary, fontWeight: '500', fontSize: 16 }}
+          textStyle={{
+            color: colors.primary,
+            //  fontWeight: '500',
+            fontFamily: 'Roboto-Medium',
+            fontSize: 16,
+          }}
         />
         <GapView mode="horizontal" />
         <AddIcon />

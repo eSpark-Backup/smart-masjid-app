@@ -64,7 +64,8 @@ export default function AdhanSettings({
             paddingHorizontal: 37.5,
             textAlign: 'center',
             fontSize: 16,
-            fontWeight: '400',
+            // fontWeight: '400',
+            fontFamily: 'Roboto-Regular',
             color: '#000000',
           }}
         />
@@ -85,5 +86,9 @@ const styles = StyleSheet.create({
     width: WINDOW_WIDTH - 50,
     alignSelf: 'center',
   },
-  settingText: { color: '#9E9F9F', fontWeight: '400' },
+  settingText: {
+    color: '#9E9F9F',
+    //  fontWeight: '400',
+    fontFamily: 'Roboto-Regular',
+  },
 });

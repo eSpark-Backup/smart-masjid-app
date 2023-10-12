@@ -242,7 +242,11 @@ export default function MasjidDetails({
             }}>
             <TextLabel
               label="Unsubscribe"
-              textStyle={{ color: '#ffffff', fontWeight: '400' }}
+              textStyle={{
+                color: '#ffffff',
+                // fontWeight: '400',
+                fontFamily: 'Roboto-Regular',
+              }}
             />
           </TouchableOpacity>
         </View>

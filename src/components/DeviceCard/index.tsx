@@ -45,7 +45,8 @@ export default function DeviceCard({
                   alignItems: 'center',
                   fontSize: 14,
                   textAlign: 'center',
-                  fontWeight: '500',
+                  // fontWeight: '500',
+                  fontFamily: 'Roboto-Medium',
                 }}
               />
               {deviceData?.deviceType?.modelNumber.includes('SBB') ? (

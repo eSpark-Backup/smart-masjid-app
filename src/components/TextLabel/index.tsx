@@ -20,7 +20,8 @@ export default function TextLabel({
       lines={lines}
       textStyle={{
         color: colors.text,
-        fontWeight: '700',
+        // fontWeight: '700',
+        fontFamily: 'Roboto-Bold',
         fontSize: 18,
         ...textStyle,
       }}

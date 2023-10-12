@@ -45,7 +45,8 @@ const DeviceListItem = ({
                 label={title}
                 textStyle={{
                   color: '#0E0E0E',
-                  fontWeight: '400',
+                  // fontWeight: '500',
+                  fontFamily: 'Roboto-Medium',
                   fontSize: 16,
                 }}
               />
@@ -56,7 +57,8 @@ const DeviceListItem = ({
                   textStyle={{
                     width: 180,
                     color: '#3E3E3E',
-                    fontWeight: '400',
+                    // fontWeight: '500',
+                    fontFamily: 'Roboto-Medium',
                     fontSize: 14,
                   }}
                 />

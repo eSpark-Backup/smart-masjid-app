@@ -124,7 +124,14 @@ export default function JumuahTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <MyText text={value} size={16} textStyle={{ fontWeight: '500' }} />
+            <MyText
+              text={value}
+              size={16}
+              textStyle={{
+                // fontWeight: '500',
+                fontFamily: 'Roboto-Medium',
+              }}
+            />
           </View>
         ))}
         <View style={styles.headerIcon}></View>
