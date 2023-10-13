@@ -71,7 +71,14 @@ export default function SalahTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <MyText text={value} size={16} textStyle={{ fontWeight: '500' }} />
+            <MyText
+              text={value}
+              size={16}
+              textStyle={{
+                // fontWeight: '500',
+                fontFamily: 'Roboto-Medium',
+              }}
+            />
           </View>
         ))}
       </View>
@@ -92,7 +99,7 @@ export default function SalahTable({
         ListEmptyComponent={
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}
-            text="Nothing to show"
+            text="No Salah timings to show"
           />
         }
       />

@@ -45,7 +45,12 @@ export const ListEmptyComponent = ({
       <View style={{ alignItems: 'center' }}>
         <MyText
           text={message1}
-          textStyle={{ textAlign: 'center', fontSize: 16, fontWeight: '500' }}
+          textStyle={{
+            textAlign: 'center',
+            fontSize: 16,
+            // fontWeight: '500',
+            fontFamily: 'Roboto-Medium',
+          }}
         />
         <GapView length={30} />
         <SearchMasjidSvg />

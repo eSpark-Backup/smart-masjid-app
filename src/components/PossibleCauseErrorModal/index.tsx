@@ -84,7 +84,8 @@ const makeStyles = (theme: Theme) => {
     label: {
       paddingHorizontal: 27.5,
       color: '#000000',
-      fontWeight: 'bold',
+      // fontWeight: 'bold',
+      fontFamily: 'Roboto-Bold',
     },
     content: {
       paddingHorizontal: 8,

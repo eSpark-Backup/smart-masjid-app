@@ -102,7 +102,8 @@ const makeStyles = (theme: Theme) => {
       color: colors.primary,
       fontSize: 14,
       bottom: Platform.OS == 'android' ? 18 : 0,
-      fontWeight: 'bold',
+      // fontWeight: 'bold',
+      fontFamily: 'Roboto-Bold',
     },
   });
 };

@@ -59,12 +59,13 @@ export default function AdhanSettings({
         </View>
         <GapView length={30} />
         <MyText
-          text="Contact support@smartmasjid.net to update the adhan settings"
+          text="Contact support@smartmasjid.app to update the adhan settings"
           textStyle={{
             paddingHorizontal: 37.5,
             textAlign: 'center',
             fontSize: 16,
-            fontWeight: '400',
+            // fontWeight: '400',
+            fontFamily: 'Roboto-Regular',
             color: '#000000',
           }}
         />
@@ -82,8 +83,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     height: 44,
     justifyContent: 'center',
-    width: WINDOW_WIDTH - 28,
+    width: WINDOW_WIDTH - 50,
     alignSelf: 'center',
   },
-  settingText: { color: '#9E9F9F', fontWeight: '400' },
+  settingText: {
+    color: '#9E9F9F',
+    //  fontWeight: '400',
+    fontFamily: 'Roboto-Regular',
+  },
 });

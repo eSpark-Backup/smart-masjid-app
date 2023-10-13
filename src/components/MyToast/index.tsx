@@ -104,7 +104,8 @@ export default function MyToast({
               text={message}
               textStyle={{
                 color: isSuccess ? '#3E3E3E' : '#000000',
-                fontWeight: isSuccess ? '400' : '500',
+                // fontWeight: isSuccess ? '400' : '500',
+                fontFamily: isSuccess ? 'Roboto-Regular' : 'Roboto-Medium',
                 fontSize: 16,
               }}
             />

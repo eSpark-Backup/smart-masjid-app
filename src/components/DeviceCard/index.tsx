@@ -23,7 +23,7 @@ export default function DeviceCard({
   );
   return (
     <View>
-      <Card height={161} width={172}>
+      <Card height={160} width={160}>
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.9}
@@ -45,7 +45,8 @@ export default function DeviceCard({
                   alignItems: 'center',
                   fontSize: 14,
                   textAlign: 'center',
-                  fontWeight: '500',
+                  // fontWeight: '500',
+                  fontFamily: 'Roboto-Medium',
                 }}
               />
               {deviceData?.deviceType?.modelNumber.includes('SBB') ? (

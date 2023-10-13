@@ -17,7 +17,12 @@ import {
 export type RootStackParamList = {
   Welcome: undefined;
   USetup?: { type?: 'login' | 'setup' };
-  DSetup?: { from?: string; deviceData?: Device; onlyPassword?: boolean };
+  DSetup?: {
+    from?: string;
+    deviceData?: Device;
+    onlyPassword?: boolean;
+    isBtn?: boolean;
+  };
   HomeBottomTab: undefined;
 };
 

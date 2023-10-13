@@ -134,7 +134,10 @@ export default function CountryModal({
                                 <View>
                                   <MyText
                                     text={item.country}
-                                    textStyle={{ fontWeight: '700' }}
+                                    textStyle={{
+                                      //  fontWeight: '700',
+                                      fontFamily: 'Roboto-Bold',
+                                    }}
                                   />
                                   <MyText text={`(${item.code})`} size={10} />
                                 </View>

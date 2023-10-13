@@ -139,7 +139,13 @@ const DeviceSetting = ({
               : -WINDOW_WIDTH / 1.9 / 3,
         }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Devices" style={{ fontWeight: '400' }} />
+          <MyTitle
+            text="Devices"
+            style={{
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
+            }}
+          />
         </Animated.View>
       </View>
       <ScrollView>
@@ -224,6 +230,7 @@ const DeviceSetting = ({
                                 text2: 'Subscribe to a Masjid First',
                                 type: 'warning',
                               });
+                              navigation.navigate('Search');
                               return;
                             }
                             goBack?.();
@@ -314,7 +321,8 @@ const makeStyles = (theme: Theme) => {
     },
     deviceName: {
       fontSize: 20,
-      fontWeight: '700',
+      // fontWeight: '700',
+      fontFamily: 'Roboto-Bold',
     },
     row: { flexDirection: 'row', alignItems: 'center' },
     activeStatus: {

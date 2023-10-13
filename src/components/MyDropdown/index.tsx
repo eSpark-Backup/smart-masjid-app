@@ -108,7 +108,7 @@ export default function MyDropdown({
             marginTop: 8,
             width: width,
             height: Platform.OS == 'ios' ? 40 : undefined,
-            fontFamily: 'roboto',
+            fontFamily: 'Roboto-Regular',
           }}
         />
         {show ? (

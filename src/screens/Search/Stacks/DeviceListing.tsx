@@ -41,11 +41,18 @@ const DeviceListing = ({
       <View style={{ paddingVertical: 10 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <MyText
-            textStyle={{ fontWeight: '400' }}
+            textStyle={{
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
+            }}
             text="You’re subscribing to: "
           />
           <MyText
-            textStyle={{ fontWeight: '400', color: '#3e3e3e' }}
+            textStyle={{
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
+              color: '#3e3e3e',
+            }}
             text={masjidDetails?.name ?? ''}
           />
         </View>

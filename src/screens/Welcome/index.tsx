@@ -39,7 +39,8 @@ export default function App() {
                   alignSelf: 'center',
                   textAlign: 'center',
                   fontSize: 24,
-                  fontWeight: '400',
+                  // fontWeight: '400',
+                  fontFamily: 'Roboto-Regular',
                 }}
               />
               <MyTitle
@@ -47,7 +48,8 @@ export default function App() {
                   alignSelf: 'center',
                   textAlign: 'center',
                   fontSize: 24,
-                  fontWeight: '700',
+                  // fontWeight: '700',
+                  fontFamily: 'Roboto-Bold',
                 }}
                 text={`Smart Masjid`}
               />

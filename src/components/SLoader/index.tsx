@@ -43,7 +43,12 @@ export default function SLoader({
           <MyText
             text="Please wait"
             pressable={false}
-            textStyle={{ fontWeight: '400', fontSize: 16, color: '#3e3e3e' }}
+            textStyle={{
+              //  fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
+              fontSize: 16,
+              color: '#3e3e3e',
+            }}
           />
           <GapView length={60} />
           <View>
@@ -72,7 +77,12 @@ export default function SLoader({
         <GapView length={20} />
         <MyText
           text={message}
-          textStyle={{ fontWeight: '400', fontSize: 16, color: '#3e3e3e' }}
+          textStyle={{
+            // fontWeight: '400',
+            fontFamily: 'Roboto-Regular',
+            fontSize: 16,
+            color: '#3e3e3e',
+          }}
         />
       </View>
     </View>

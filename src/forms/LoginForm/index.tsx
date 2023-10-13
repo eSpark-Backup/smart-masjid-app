@@ -158,7 +158,8 @@ const LoginForm = ({
             pressable
             size={16}
             textStyle={{
-              fontWeight: '400',
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
               color: colors.primary,
             }}
             onPress={() => onPhonePress(2)}
