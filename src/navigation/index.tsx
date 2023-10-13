@@ -217,7 +217,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  successStyle: { width: '90%', borderLeftColor: '#98c379' },
+  successStyle: { width: '90%', borderLeftColor: '#0097A3' },
   errorStyle: { width: '90%', borderLeftColor: '#FF6464' },
   warningStyle: { width: '90%', borderLeftColor: '#f2be09' },
   text1Style: {

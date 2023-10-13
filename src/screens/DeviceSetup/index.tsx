@@ -758,14 +758,22 @@ export default function DeviceSetupScreen() {
                 isSuccess={true}
                 onSkip={handleSkip}
                 btnText={
-                  route.params?.from == 'Device' ? 'Done' : 'Search Masjid'
+                  route.params?.from == 'Device'
+                    ? !route.params?.isBtn
+                      ? 'Search Masjid'
+                      : 'Done'
+                    : 'Search Masjid'
                 }
                 onPress={() => {
                   if (userStore.currentRegisterUser.get()) {
                     userStore.userData.set(userStore.currentRegisterUser.get());
                   }
                   navigation.navigate('HomeBottomTab', {
-                    screen: route.params?.from ? 'Device' : 'Home',
+                    screen: route.params?.from
+                      ? !route.params?.isBtn
+                        ? 'Search'
+                        : 'Device'
+                      : 'Home',
                   });
                 }}
                 title="Device connected successfully"

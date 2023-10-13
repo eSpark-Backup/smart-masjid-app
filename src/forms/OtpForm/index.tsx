@@ -78,14 +78,22 @@ export default function OtpForm({
         <MyText
           text={userPhone ?? userEmail ?? ''}
           size={14}
-          textStyle={{ fontWeight: '400', color: '#6E6E6E' }}
+          textStyle={{
+            // fontWeight: '400',
+            fontFamily: 'Roboto-Regular',
+            color: '#6E6E6E',
+          }}
         />
         <GapView length={10} />
         <TouchableOpacity onPress={goBack}>
           <MyText
             text={`Use a different ${userEmail ? 'email?' : 'number?'}`}
             size={16}
-            textStyle={{ fontWeight: '400', color: colors.primary }}
+            textStyle={{
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
+              color: colors.primary,
+            }}
           />
         </TouchableOpacity>
         <GapView length={30} />
@@ -93,7 +101,10 @@ export default function OtpForm({
           <MyText
             text="Resend code in"
             size={16}
-            textStyle={{ fontWeight: '400' }}
+            textStyle={{
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
+            }}
           />
           <CountDown
             id={countdownId}
@@ -114,7 +125,8 @@ export default function OtpForm({
             digitStyle={{ marginHorizontal: 1 }}
             digitTxtStyle={{
               fontSize: 16,
-              fontWeight: '400',
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
               color: '#000',
             }}
           />
@@ -148,7 +160,8 @@ export default function OtpForm({
             text="Resend Code"
             textStyle={{
               fontSize: 16,
-              fontWeight: '400',
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
               color: expTime ? colors.primary : '#6e6e6e',
               opacity: !expTime ? 0.6 : 1,
             }}

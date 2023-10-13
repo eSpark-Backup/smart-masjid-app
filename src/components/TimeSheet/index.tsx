@@ -26,7 +26,8 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
             text={item.heading}
             textStyle={{
               color: '#ffffff',
-              fontWeight: '400',
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
               textAlign: 'center',
             }}
           />
@@ -44,7 +45,8 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
               text={val ?? ''}
               textStyle={{
                 color: '#3E3E3E',
-                fontWeight: '400',
+                // fontWeight: '400',
+                fontFamily: 'Roboto-Regular',
                 textAlign: 'center',
               }}
             />

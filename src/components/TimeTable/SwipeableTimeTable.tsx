@@ -285,7 +285,14 @@ export default function SwipeableTimeTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <MyText text={value} size={16} textStyle={{ fontWeight: '500' }} />
+            <MyText
+              text={value}
+              size={16}
+              textStyle={{
+                // fontWeight: '500',
+                fontFamily: 'Roboto-Medium',
+              }}
+            />
           </View>
         ))}
         {isMute && !isInfo && <View style={styles.headerIcon} />}
@@ -326,7 +333,7 @@ export default function SwipeableTimeTable({
               marginVertical: 10,
               width: WINDOW_WIDTH - 50,
             }}
-            text="Nothing to show"
+            text="No Salah timings to show"
           />
         }
       />

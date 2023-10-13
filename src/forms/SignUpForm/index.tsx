@@ -80,7 +80,8 @@ export default function SignUpForm({
             pressable
             size={16}
             textStyle={{
-              fontWeight: '400',
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
               color: colors.primary,
             }}
             onPress={() => onEmailPress(1)}

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Animated, FlatList, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Animated,
+  FlatList,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import moment from 'moment';
 import { useHookstate } from '@hookstate/core';
 
@@ -150,7 +157,7 @@ export default function JummaTimings({
       ) : (
         <MyText
           textStyle={{ textAlign: 'center', marginVertical: 10 }}
-          text="Nothing to show yet!"
+          text="No current Jumuah to show yet!"
         />
       )
     ) : null;
@@ -185,9 +192,11 @@ export default function JummaTimings({
               paddingBottom: 5,
             }}>
             <MyTextSubHeader text="Current" />
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <PlusCircle onPress={() => setFlag('jAdd')} />
-            </View>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => setFlag('jAdd')}>
+              <PlusCircle />
+            </TouchableOpacity>
           </View>
           {contentToRender()}
           <View
@@ -216,7 +225,7 @@ export default function JummaTimings({
               loading ? null : (
                 <MyText
                   textStyle={{ textAlign: 'center', marginVertical: 10 }}
-                  text="Nothing to show yet!"
+                  text="No upcoming Jumuah to show yet!"
                 />
               )
             }

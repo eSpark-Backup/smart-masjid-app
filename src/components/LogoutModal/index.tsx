@@ -68,12 +68,14 @@ const makeStyles = (theme: Theme) => {
     label: {
       paddingHorizontal: 27.5,
       color: '#000000',
-      fontWeight: 'bold',
+      // fontWeight: 'bold',
+      fontFamily: 'Roboto-Medium',
     },
     bodyText: {
       paddingHorizontal: 27.5,
       color: '#3E3E3E',
-      fontWeight: '400',
+      // fontWeight: '400',
+      fontFamily: 'Roboto-Regular',
       textAlign: 'center',
     },
   });

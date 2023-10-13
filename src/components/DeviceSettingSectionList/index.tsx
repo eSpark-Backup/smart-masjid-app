@@ -49,7 +49,11 @@ export default function DeviceSettingSectionList({
             <MyText
               text={title ?? ''}
               size={16}
-              textStyle={{ fontWeight: '500', color: '#3E3E3E' }}
+              textStyle={{
+                //  fontWeight: '500',
+                fontFamily: 'Roboto-Medium',
+                color: '#3E3E3E',
+              }}
             />
             <GapView length={10} />
           </>
@@ -128,8 +132,10 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                 />
               </View>
             </Card>
-            <TouchableOpacity onPress={() => item.onDoneEdit?.(dName)}>
-              <CheckSvg width={50} height={50} />
+            <TouchableOpacity
+              style={{ marginHorizontal: 5 }}
+              onPress={() => item.onDoneEdit?.(dName)}>
+              <CheckSvg width={35} height={35} />
             </TouchableOpacity>
           </View>
         </>

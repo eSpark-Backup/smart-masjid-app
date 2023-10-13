@@ -28,6 +28,7 @@ export default function MyTextHeader({
 
 const styles = StyleSheet.create({
   title: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily: 'Roboto-Bold',
   },
 });

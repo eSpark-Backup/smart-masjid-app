@@ -124,7 +124,14 @@ export default function JumuahTable({
       <View style={styles.headerRow}>
         {headings?.map(value => (
           <View key={value} style={styles.headerCol}>
-            <MyText text={value} size={16} textStyle={{ fontWeight: '500' }} />
+            <MyText
+              text={value}
+              size={16}
+              textStyle={{
+                // fontWeight: '500',
+                fontFamily: 'Roboto-Medium',
+              }}
+            />
           </View>
         ))}
         <View style={styles.headerIcon}></View>
@@ -135,7 +142,7 @@ export default function JumuahTable({
         {!data?.jumuah1 && !data?.jumuah2 && !data?.jumuah3 ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}
-            text="Nothing to show"
+            text="No Jumuah timings to show"
           />
         ) : null}
         {data?.jumuah1 ? (

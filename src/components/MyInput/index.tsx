@@ -190,7 +190,11 @@ export default function MyInput(props: MyInputProps) {
         <MyText
           text={title ?? ''}
           size={16}
-          textStyle={{ fontWeight: '400', color: '#3E3E3E' }}
+          textStyle={{
+            // fontWeight: '400',
+            fontFamily: 'Roboto-Regular',
+            color: '#3E3E3E',
+          }}
         />
       )}
       <View
@@ -331,7 +335,7 @@ const getStyles = (theme: Theme, props: MyInputProps) => {
       borderBottomWidth: isDivider ? dividerWidth : 0,
     },
     inputStyle: {
-      fontFamily: 'roboto',
+      fontFamily: 'Roboto-Regular',
       paddingHorizontal: 20,
       width:
         WINDOW_WIDTH -

@@ -76,29 +76,27 @@ const LoginForm = ({
               'what is the phone value',
               currentCountry?.code + phone!,
             );
-            () => {
-              try {
-                if (phone) {
-                  const isValid = isValidPhone(phone, {
-                    country: currentCountry?.iso_code,
-                  }).isValid;
-                  console.log('oh', isValid);
-                  if (isValid) {
-                    setStep({ phone: currentCountry?.code + phone, email: '' });
-                  } else {
-                    Toast.show({
-                      text2: 'Phone number is not valid',
-                      type: 'error',
-                      visibilityTime: 10000,
-                    });
-                  }
+            try {
+              if (phone) {
+                const isValid = isValidPhone(phone, {
+                  country: currentCountry?.iso_code,
+                }).isValid;
+                console.log('oh', isValid);
+                if (isValid) {
+                  setStep({ phone: currentCountry?.code + phone, email: '' });
                 } else {
-                  setStep({ email: email, phone: '' });
+                  Toast.show({
+                    text2: 'Phone number is not valid',
+                    type: 'error',
+                    visibilityTime: 10000,
+                  });
                 }
-              } catch (e) {
-                crashlytics().recordError(e as Error);
+              } else {
+                setStep({ email: email, phone: '' });
               }
-            };
+            } catch (e) {
+              crashlytics().recordError(e as Error);
+            }
           }}>
           {({ handleChange, handleSubmit, values, errors, touched }) => (
             <>
@@ -160,7 +158,8 @@ const LoginForm = ({
             pressable
             size={16}
             textStyle={{
-              fontWeight: '400',
+              // fontWeight: '400',
+              fontFamily: 'Roboto-Regular',
               color: colors.primary,
             }}
             onPress={() => onPhonePress(2)}

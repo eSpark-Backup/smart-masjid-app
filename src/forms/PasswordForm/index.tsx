@@ -173,7 +173,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    fontWeight: '400',
+    // fontWeight: '400',
+    fontFamily: 'Roboto-Regular',
     textAlign: 'center',
     color: '#3e3e3e',
   },

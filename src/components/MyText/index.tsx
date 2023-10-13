@@ -25,8 +25,8 @@ export default function MyText({
       <Text
         numberOfLines={lines}
         style={{
-          fontWeight: '400',
-          fontFamily: 'roboto',
+          // fontWeight: '400',
+          fontFamily: 'Roboto-Regular',
           color: '#0E0E0E',
           fontSize: size ?? 14,
           ...textStyle,
