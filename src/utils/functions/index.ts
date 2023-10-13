@@ -418,20 +418,24 @@ function convertResponseToData(
 
 async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
   // return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
-  if (Boolean(phoneNum) != false) {
-    const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
-    if (!isPhoneValid.isValid) {
-      Toast.show({
-        text2: 'Phone number is not valid',
-        type: 'error',
-        visibilityTime: 10000,
-      });
-      return false;
+  try {
+    if (Boolean(phoneNum) != false) {
+      const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
+      if (!isPhoneValid.isValid) {
+        Toast.show({
+          text2: 'Phone number is not valid',
+          type: 'error',
+          visibilityTime: 10000,
+        });
+        return false;
+      } else {
+        return true;
+      }
     } else {
       return true;
     }
-  } else {
-    return true;
+  } catch (e) {
+    crashlytics().recordError(e as Error);
   }
 }
 

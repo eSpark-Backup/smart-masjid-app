@@ -36,7 +36,6 @@ export default function Wrapper({
   showBack?: boolean;
   title?: string;
 }) {
-  const [toggle, setToggle] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const handleScroll = Animated.event(

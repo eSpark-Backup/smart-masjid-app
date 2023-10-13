@@ -48,9 +48,6 @@ export default function PersonalInfoForm({
             <>
               <MyInput
                 placeholder="First Name"
-                isDivider
-                dividerWidth={0.25}
-                dividerColor="rgba(158, 159, 159, 1)"
                 onChangeText={handleChange('firstName')}
                 value={values.firstName}
                 containerStyle={{ alignSelf: 'center' }}
