@@ -150,8 +150,10 @@ export async function _checkDeviceTelemetry(
         return res?.data;
       } else {
         if (res.data?.status == 'Online') {
+          console.log('Online');
           return true;
         } else {
+          console.log('Offline');
           return false;
         }
       }

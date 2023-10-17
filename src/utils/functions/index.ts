@@ -1,4 +1,9 @@
-import { Platform, Linking, PermissionsAndroid } from 'react-native';
+import {
+  Platform,
+  Linking,
+  PermissionsAndroid,
+  ToastAndroid,
+} from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
 import {
@@ -118,6 +123,9 @@ async function _requestUserLocationPermission() {
     PERMISSIONS.IOS.LOCATION_ALWAYS,
     PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
   ]).then(statuses => {
+    if (Platform.OS == 'android') {
+      ToastAndroid.show('Enable Location Permission', 8000);
+    }
     _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
     _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
     _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_ALWAYS);

@@ -380,7 +380,7 @@ export default function DeviceSetupScreen() {
         points: [
           'Device is powered on',
           'Phone is within range of the device',
-          'Device LED is yellow',
+          'Device Light is yellow',
           'WiFi is working',
         ],
         onPress: () => {
@@ -551,7 +551,7 @@ export default function DeviceSetupScreen() {
         points: [
           'Device is powered on',
           'Phone is within range of the device',
-          'Device LED is yellow',
+          'Device Light is yellow',
           'WiFi is working',
         ],
         onPress: () => {
@@ -625,12 +625,12 @@ export default function DeviceSetupScreen() {
               setStep(8);
               setToastContent(state => ({
                 ...state,
-                title: 'Device not Found',
+                title: 'Device not found',
                 message: 'Please Check',
                 points: [
                   'Device is powered on',
                   'Phone is within range of the device',
-                  'Device LED is yellow',
+                  'Device Light is yellow',
                   'WiFi is working',
                 ],
                 onPress: () => {
@@ -772,7 +772,7 @@ export default function DeviceSetupScreen() {
                   route.params?.from == 'Device'
                     ? !route.params?.isBtn
                       ? 'Search Masjid'
-                      : 'Done'
+                      : 'View Device'
                     : 'Search Masjid'
                 }
                 onPress={() => {

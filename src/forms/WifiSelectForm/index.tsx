@@ -56,6 +56,7 @@ export default function WifiSelectForm({
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           getWifiList();
         } else {
+          _requestUserLocationPermission();
           setIssues('Location permission denied');
         }
       } else {

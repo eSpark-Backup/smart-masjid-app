@@ -104,7 +104,6 @@ export default function MyToast({
               text={message}
               textStyle={{
                 color: isSuccess ? '#3E3E3E' : '#000000',
-                // fontWeight: isSuccess ? '400' : '500',
                 fontFamily: isSuccess ? 'Roboto-Regular' : 'Roboto-Medium',
                 fontSize: 16,
               }}
@@ -113,7 +112,11 @@ export default function MyToast({
           {points?.length!! > 0 && (
             <>
               <GapView length={20} />
-              <Points data={points} success={isSuccess} />
+              <Points
+                data={points}
+                success={isSuccess}
+                notFound={title == 'Device not found'}
+              />
             </>
           )}
           <GapView length={40} />
@@ -136,13 +139,21 @@ export default function MyToast({
   );
 }
 
-const Points = ({ data, success }: { data?: string[]; success: boolean }) => {
+const Points = ({
+  data,
+  success,
+  notFound,
+}: {
+  data?: string[];
+  success: boolean;
+  notFound: boolean;
+}) => {
   return (
     <>
       {data?.map((item: string, index: number) => (
         <View key={index + item}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {success ? <Check /> : <CrossC />}
+            {success ? <Check /> : notFound ? <Check /> : <CrossC />}
             <GapView length={10} mode="horizontal" />
             <MyText
               text={item}
