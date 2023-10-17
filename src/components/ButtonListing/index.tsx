@@ -20,11 +20,13 @@ export default function ButtonListing({
   radius = 0,
   titleWidth,
   lines,
+  trademark,
 }: {
   data: ListItem[];
   radius?: number;
   titleWidth?: string | number;
   lines?: number;
+  trademark?: boolean;
 }) {
   return (
     <Card radius={radius} width={WINDOW_WIDTH - 28}>
@@ -39,6 +41,7 @@ export default function ButtonListing({
               item={item}
               index={index}
               lines={lines}
+              trademark={trademark}
             />
           );
         }}
@@ -55,11 +58,13 @@ const ListCard = ({
   index,
   titleWidth,
   lines,
+  trademark,
 }: {
   item: ListItem;
   index: number;
   titleWidth?: string | number;
   lines?: number;
+  trademark?: boolean;
 }) => {
   const theme: Theme = useTheme();
   const styles = makeStyles(theme, item, titleWidth);
@@ -73,7 +78,12 @@ const ListCard = ({
       {item.leftIcon && item?.leftIcon}
       {item.leftIcon && <GapView mode="horizontal" length={15} />}
       <View style={styles.titleWidth}>
-        <MyText text={item?.title} size={16} lines={lines} />
+        <MyText
+          text={item?.title}
+          size={16}
+          lines={lines}
+          trademark={trademark}
+        />
       </View>
       <GapView
         mode="horizontal"

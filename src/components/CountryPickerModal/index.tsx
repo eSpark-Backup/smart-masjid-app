@@ -77,7 +77,7 @@ export default function CountryModal({
     <Modal
       animationType="fade"
       transparent={true}
-      statusBarTranslucent={true}
+      // statusBarTranslucent={true}
       visible={visibleState}
       onRequestClose={onCross}>
       <View style={styles.centeredView}>
@@ -88,14 +88,9 @@ export default function CountryModal({
             onBackPress={onCross}>
             {() => {
               return (
-                <View
-                  style={{
-                    top: 112,
-                    width: WINDOW_WIDTH - 40,
-                    alignSelf: 'center',
-                  }}>
+                <View>
                   <View style={styles.crossView}>
-                    <Card backgroundColor="#fff" width={WINDOW_WIDTH - 80}>
+                    <Card backgroundColor="#fff" width={WINDOW_WIDTH - 50}>
                       <MyInput
                         placeholder={searchPlaceholder}
                         onChangeText={onSearch}
@@ -180,11 +175,12 @@ const styles = StyleSheet.create({
   },
 
   crossView: {
-    marginLeft: 20,
-    marginTop: 50,
+    // marginLeft: 20,
+    // marginTop: 50,
     paddingBottom: 10,
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
+    justifyContent: 'center',
   },
   ImageStyle: {
     height: 22,

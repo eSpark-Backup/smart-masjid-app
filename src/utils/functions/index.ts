@@ -1,4 +1,9 @@
-import { Platform, Linking, PermissionsAndroid } from 'react-native';
+import {
+  Platform,
+  Linking,
+  PermissionsAndroid,
+  ToastAndroid,
+} from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
 import {
@@ -118,6 +123,9 @@ async function _requestUserLocationPermission() {
     PERMISSIONS.IOS.LOCATION_ALWAYS,
     PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
   ]).then(statuses => {
+    if (Platform.OS == 'android') {
+      ToastAndroid.show('Enable Location Permission', 8000);
+    }
     _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
     _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
     _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_ALWAYS);
@@ -418,20 +426,24 @@ function convertResponseToData(
 
 async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
   // return /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(number);
-  if (Boolean(phoneNum) != false) {
-    const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
-    if (!isPhoneValid.isValid) {
-      Toast.show({
-        text2: 'Phone number is not valid',
-        type: 'error',
-        visibilityTime: 10000,
-      });
-      return false;
+  try {
+    if (Boolean(phoneNum) != false) {
+      const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
+      if (!isPhoneValid.isValid) {
+        Toast.show({
+          text2: 'Phone number is not valid',
+          type: 'error',
+          visibilityTime: 10000,
+        });
+        return false;
+      } else {
+        return true;
+      }
     } else {
       return true;
     }
-  } else {
-    return true;
+  } catch (e) {
+    crashlytics().recordError(e as Error);
   }
 }
 

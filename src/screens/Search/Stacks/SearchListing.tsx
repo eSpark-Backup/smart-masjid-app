@@ -42,6 +42,7 @@ const SearchListing = ({
   const [zipCode, setZipCode] = useState('');
   const [loader, setLoader] = useState(false);
   const [locationStatus, setlocationStatus] = useState(false);
+  const [message, setMessage] = useState('');
 
   const checkLocation = async () => {
     try {
@@ -89,6 +90,7 @@ const SearchListing = ({
           type: 'warning',
           visibilityTime: 10000,
         });
+        setMasjidList([]);
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -100,6 +102,7 @@ const SearchListing = ({
       setlocationStatus(false);
     } else {
       setlocationStatus(true);
+      console.log('check');
     }
   }
 
@@ -109,7 +112,7 @@ const SearchListing = ({
     return () => {
       _stopLocationCheck();
     };
-  }, []);
+  }, [locationStatus]);
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
     setLoader(true);
@@ -117,8 +120,12 @@ const SearchListing = ({
     const res: any = await SearchMasjidByLocation(zipCode, lat, long);
     if (res?.length > 0) {
       setMasjidList(res);
+      setMessage('');
     } else {
       setMasjidList([]);
+      if (Boolean(zipCode)) {
+        setMessage('No Masjid found for the Zip Code');
+      }
     }
     setLoader(false);
   };
@@ -132,6 +139,7 @@ const SearchListing = ({
         info.coords.longitude.toString(),
       );
       setZipCode('Your Location');
+      setMessage('');
       // Search by geo-location (reverse geo-code)
     });
   };
@@ -209,9 +217,15 @@ const SearchListing = ({
           ItemSeparatorComponent={GapView}
           ListEmptyComponent={
             <ListEmptyComponent
-              message1="There is no masjid near you"
+              message1={''}
               isShowBtn={false}
-              message2="Search for different zip codes"
+              message2={
+                locationStatus
+                  ? 'No Masjid found near you'
+                  : message.length > 0
+                  ? message
+                  : 'Enter Zip Code to search masjid near you'
+              }
             />
           }
         />

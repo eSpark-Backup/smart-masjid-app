@@ -170,12 +170,10 @@ const DeviceSetting = ({
         <View style={styles.deviceSettingContainer}>
           <View style={styles.subHeader}>
             <MyText
-              text={`Masjid Adhan ${
-                device?.deviceType?.modelNumber?.includes('SBB')
-                  ? 'Button'
-                  : 'Speaker'
-              }`}
+              text={device?.deviceType?.name!}
               textStyle={styles.deviceName}
+              size={20}
+              trademark
             />
             <DeviceStatus
               online={
@@ -217,8 +215,13 @@ const DeviceSetting = ({
                         : false,
                   },
                   {
-                    title: 'Subscription',
-                    subtitle: device?.masjid?.name ?? 'No Subscription',
+                    title:
+                      device?.deviceType?.id == 1 ? 'Subscription' : 'Masjid',
+                    subtitle: device?.masjid?.name
+                      ? device?.masjid?.name
+                      : device?.deviceType?.id == 1
+                      ? 'No Subscription'
+                      : 'No Masjid',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
                     rightArrow: device?.deviceType.id == 1 ? true : false,
                     onPress:

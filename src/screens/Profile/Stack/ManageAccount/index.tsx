@@ -117,12 +117,11 @@ export default function ManageAccount({
 
   const onSave = async () => {
     setLoading(true);
-
     const isValidPhone = await isValidPhoneNumber(data.phone, country);
     if (!isValidPhone) {
       return;
     }
-    console.log('kia bhej raha hu me??', data);
+    console.log('kia bhej raha hu me??', userData?.id?.toString()!, data);
     await UpdateUser(userData?.id?.toString()!, {
       ...data,
       phone: data.phone ? `${data.phone}` : '',

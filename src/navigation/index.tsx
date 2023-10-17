@@ -69,7 +69,7 @@ const toastConfig = {
       style={styles.warningStyle}
       text1Style={styles.text1Style}
       text2Style={styles.text2Style}
-      text1={props.text1 ?? 'Hold Up!'}
+      text1={props.text1 ?? 'Warning!'}
     />
   ),
 };

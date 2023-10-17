@@ -10,6 +10,7 @@ export default function MyText({
   pressable = false,
   lines,
   icon,
+  trademark,
 }: {
   text: string;
   size?: number;
@@ -18,6 +19,7 @@ export default function MyText({
   onPress?: () => void;
   lines?: number;
   icon?: JSX.Element;
+  trademark?: boolean;
 }) {
   const { colors } = useTheme();
   return (
@@ -32,6 +34,14 @@ export default function MyText({
           ...textStyle,
         }}>
         {text}
+        {trademark && (
+          <Text
+            style={{
+              fontSize: size! + 2 || 16,
+            }}>
+            &#8482;
+          </Text>
+        )}
         {icon}
       </Text>
     </TouchableOpacity>
