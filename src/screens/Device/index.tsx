@@ -193,7 +193,7 @@ export default function Device({ contentOpacity = 0 }: any) {
                       }) => {
                         if (index != finalData?.length) {
                           return (
-                            <View style={{ marginHorizontal: 10 }}>
+                            <View style={{ marginHorizontal: 12 }}>
                               <DeviceCard
                                 deviceData={item}
                                 onPress={() => {

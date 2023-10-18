@@ -113,14 +113,19 @@ const SearchListing = ({
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
     setLoader(true);
-    if (zipCode) setZipCode(zipCode);
-    const res: any = await SearchMasjidByLocation(zipCode, lat, long);
-    if (res?.length > 0) {
-      setMasjidList(res);
+    if (zipCode != 'Your Location') {
+      setZipCode(zipCode);
+      const res: any = await SearchMasjidByLocation(zipCode, lat, long);
+      if (res?.length > 0) {
+        setMasjidList(res);
+      } else {
+        setMasjidList([]);
+      }
+      setLoader(false);
     } else {
-      setMasjidList([]);
+      onCurrentLocationPress();
+      setLoader(false);
     }
-    setLoader(false);
   };
 
   const onCurrentLocationPress = () => {

@@ -377,6 +377,8 @@ export const SearchMasjidByLocation = async (
   lat: string | number = 0,
   long: string | number = 0,
 ) => {
+  console.log('lat long', lat, long);
+
   try {
     const result = await api.get(
       `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&distance=100`,

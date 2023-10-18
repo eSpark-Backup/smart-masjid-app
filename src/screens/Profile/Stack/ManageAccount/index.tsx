@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useNavigation } from '@react-navigation/native';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -51,6 +51,7 @@ export default function ManageAccount({
   contentOpacity?: any;
 }) {
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
+  const { colors }: Theme = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [isDVisible, setIsDVisible] = useState(false);
   const [country, setCountry] = useState<CountryCodes>();
@@ -122,11 +123,19 @@ export default function ManageAccount({
     if (!isValidPhone) {
       return;
     }
-    console.log('kia bhej raha hu me??', data);
-    await UpdateUser(userData?.id?.toString()!, {
-      ...data,
-      phone: data.phone ? `${data.phone}` : '',
-    });
+    const oldData: any = userData;
+    const gotUpdated =
+      data[displayData.find(val => val.editable)?.key!] !=
+      oldData[displayData.find(val => val.editable)?.key!];
+
+    const dataToUpdate = {
+      [displayData.find(val => val.editable)?.key!]:
+        data[displayData.find(val => val.editable)?.key!],
+    };
+    console.log('kia bhej raha hu me??', dataToUpdate);
+    if (gotUpdated) {
+      await UpdateUser(userData?.id?.toString()!, dataToUpdate);
+    }
     onEditPress('');
     setLoading(false);
   };
@@ -331,7 +340,14 @@ export default function ManageAccount({
                   <TextLabel label="Logout" textStyle={{ color: '#ffffff' }} />
                 </TouchableOpacity>
                 <GapView length={20} />
-                <TouchableOpacity
+                <TouchableOpacity onPress={() => setIsDVisible(true)}>
+                  <MyText
+                    size={18}
+                    text={'Delete Account'}
+                    textStyle={{ color: '#FF6464', textAlign: 'center' }}
+                  />
+                </TouchableOpacity>
+                {/* <TouchableOpacity
                   activeOpacity={0.9}
                   style={{
                     height: 41,
@@ -347,7 +363,7 @@ export default function ManageAccount({
                     label="Delete Account"
                     textStyle={{ color: '#ffffff' }}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </>
             )}
           </View>
@@ -365,17 +381,18 @@ export default function ManageAccount({
             }}
           />
           <LogoutModal
-            message="Are you sure you want to delete your account permanently?"
+            message="Once you delete your account it cannot be undone, do you wish to proceed?"
             visible={isDVisible}
             title1={'No'}
             title2={'Yes'}
             onAllowed={async () => {
-              if (devices.length > 0) {
+              console.log('userData', userData);
+              if (devices?.length > 0) {
                 navigation.navigate('Device');
                 Toast.show({
                   text1: 'Warning!',
                   text2: 'Delete your devices before account deletion!',
-                  type: 'success',
+                  type: 'warning',
                 });
                 setIsDVisible(false);
               } else {

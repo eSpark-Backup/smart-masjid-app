@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   ImageBackground,
@@ -6,13 +6,22 @@ import {
   Animated,
   ScrollView,
   Platform,
+  Image,
+  StatusBar,
+  Easing,
 } from 'react-native';
 
-import { HeaderBackgroundImage, HeaderIOSBackgroundImage } from '../../assets';
+import {
+  HeaderAndroidBackgroundImage,
+  HeaderAndroidBackgroundImageUp,
+  HeaderBackgroundImage,
+  HeaderIOSBackgroundImage,
+  HeaderIOSBackgroundImageUp,
+} from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import Header from '../../components/Header';
 import MyText from '../../components/MyText';
-import { GapView, TextLabel } from '../../components';
+import { GapView, MyTitle, TextLabel } from '../../components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Wrapper({
@@ -45,24 +54,34 @@ export default function Wrapper({
   );
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [1, 50],
+    inputRange: [0, 120],
     outputRange: [0, 1],
     extrapolate: 'clamp',
   });
 
   const contentOpacity = scrollY.interpolate({
-    inputRange: [0, 50],
+    inputRange: [0, 120],
+    outputRange: [0, -WINDOW_WIDTH / 1.7],
+    extrapolate: 'clamp',
+  });
+
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, 120],
     outputRange: [1, 0],
     extrapolate: 'clamp',
   });
 
   return (
     <>
+      <StatusBar translucent backgroundColor={'transparent'} />
       <Animated.View
         style={[
           {
             position: 'absolute',
-            top: Platform.OS == 'ios' ? useSafeAreaInsets().top : 10,
+            top:
+              Platform.OS == 'ios'
+                ? useSafeAreaInsets().top
+                : useSafeAreaInsets().top + 5,
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 1,
@@ -71,19 +90,60 @@ export default function Wrapper({
           },
           { opacity: headerOpacity },
         ]}>
-        <TextLabel label={title} textStyle={{ color: '#fff' }} />
+        <MyTitle text={title} style={{ color: '#fff' }} />
       </Animated.View>
 
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
-          <ImageBackground
-            style={styles.imageBackgroundStyle}
-            imageStyle={styles.imageStyle}
-            source={
-              Platform.OS == 'ios'
-                ? HeaderIOSBackgroundImage
-                : HeaderBackgroundImage
-            }>
+          <View style={styles.imageBackgroundStyle}>
+            <Animated.View
+              style={[
+                {
+                  position: 'absolute',
+                  alignSelf: 'center',
+                },
+                { transform: [{ translateY: contentOpacity }] },
+              ]}>
+              <Image
+                style={styles.imageStyle}
+                source={
+                  Platform.OS == 'ios'
+                    ? HeaderIOSBackgroundImage
+                    : HeaderAndroidBackgroundImage
+                }
+              />
+            </Animated.View>
+            <Animated.View
+              style={[
+                {
+                  position: 'absolute',
+                  alignSelf: 'center',
+                },
+                { opacity: headerOpacity },
+              ]}>
+              <Image
+                style={{
+                  height:
+                    Platform.OS == 'ios'
+                      ? WINDOW_WIDTH / 4.6
+                      : WINDOW_WIDTH / 5.5,
+                  width: WINDOW_WIDTH,
+                }}
+                source={
+                  Platform.OS == 'ios'
+                    ? HeaderIOSBackgroundImageUp
+                    : HeaderAndroidBackgroundImageUp
+                }
+              />
+            </Animated.View>
+            {/* <ImageBackground
+              style={styles.imageBackgroundStyle}
+              imageStyle={styles.imageStyle}
+              source={
+                Platform.OS == 'ios'
+                  ? HeaderIOSBackgroundImage
+                  : HeaderBackgroundImage
+              }> */}
             <Header onBackPress={onBackPress} showBack={showBack} />
             <ScrollView
               onScroll={handleScroll}
@@ -96,13 +156,15 @@ export default function Wrapper({
                   length={
                     Platform.OS == 'ios'
                       ? WINDOW_WIDTH / 1.6
-                      : WINDOW_WIDTH / 1.9
+                      : WINDOW_WIDTH / 1.7
                   }
                 />
-                {children({ props: { contentOpacity: contentOpacity } })}
+                {children({ props: { contentOpacity: titleOpacity } })}
               </>
             </ScrollView>
-          </ImageBackground>
+            {/* </ImageBackground> */}
+          </View>
+
           {showFooter && (
             <MyText
               text="Powered by Futurik Labs"
@@ -119,7 +181,7 @@ export default function Wrapper({
 const styles = StyleSheet.create({
   imageBackgroundStyle: { minHeight: WINDOW_WIDTH / 1.8, flex: 1 },
   imageStyle: {
-    height: Platform.OS == 'ios' ? WINDOW_WIDTH / 1.6 : WINDOW_WIDTH / 1.9,
+    height: Platform.OS == 'ios' ? WINDOW_WIDTH / 1.6 : WINDOW_WIDTH / 1.7,
     width: WINDOW_WIDTH,
   },
 });

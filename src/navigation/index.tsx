@@ -108,11 +108,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    _getFCMToken();
-  }, []);
-
-  useEffect(() => {
     GetCountryCodes();
+    _getFCMToken();
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);
@@ -168,6 +165,7 @@ export default function App() {
   }, []);
 
   console.log('checkid', checkedId);
+  console.log('userData.get()?.id', userData.get()?.id);
 
   if (checkedId !== null) {
     return (

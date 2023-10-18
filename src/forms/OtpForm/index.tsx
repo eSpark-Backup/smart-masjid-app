@@ -73,10 +73,12 @@ export default function OtpForm({
       <GapView />
       <View style={{ alignItems: 'center' }}>
         <OverlayLoader isShow={loader} />
-        <MyTextSubHeader text="One-time passcode sent to email" />
+        <MyTextSubHeader
+          text={`One-time passcode sent to ${userEmail ? 'email' : 'number'}`}
+        />
         <GapView length={10} />
         <MyText
-          text={userPhone ?? userEmail ?? ''}
+          text={userPhone?.length! > 0 ? userPhone ?? '' : userEmail ?? ''}
           size={14}
           textStyle={{
             // fontWeight: '400',

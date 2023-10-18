@@ -69,6 +69,7 @@ export default function Profile() {
     aSet: 'Adhan Settings',
     iTime: 'Iqama Timings',
     iEdit: 'Iqama Timings',
+    iHist: 'Monthly Schedule',
     iAdd: 'Iqama Timings',
     jTime: 'Jumuah Timings',
     jEdit: 'Jumuah Timings',

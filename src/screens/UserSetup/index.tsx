@@ -21,7 +21,7 @@ import {
   UserResponse,
 } from '../../types/userControllerApiResponse';
 import { globalStore } from '../../store/GlobalStates';
-import { _getFCMToken } from '../../utils/functions';
+import { _getFCMToken, setDataInLocalStorage } from '../../utils/functions';
 import {
   CheckUserExists,
   CreateUser,
@@ -78,6 +78,8 @@ export default function UserSetupScreen() {
   };
 
   const onSubmit = async (dataObj: CreateUserRequest, otp: string) => {
+    console.log('onsubmit otp', otp);
+
     try {
       setStep(7);
       const res: UserResponse | undefined | any = await CreateUser(
@@ -145,8 +147,12 @@ export default function UserSetupScreen() {
         } else {
           const result = await SendOTP(email, phone);
           if (result) {
-            setData({ ...data, email: email ?? '', phone: phone ?? '' });
-            setStep(3);
+            if (phone) {
+              setData({ ...data, phone: phone ?? '' });
+            } else {
+              setData({ ...data, email: email ?? '', phone: phone ?? '' });
+            }
+            setStep(phone ? 5 : 3);
           }
         }
       } else {
@@ -213,6 +219,7 @@ export default function UserSetupScreen() {
                   contentOpacity={props.contentOpacity}
                   title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
                   userEmail={data.email}
+                  userPhone={data.phone}
                   setStep={async (value: string) => {
                     setLoader(true);
                     const isVerified = await ValidateOTP(
@@ -247,7 +254,12 @@ export default function UserSetupScreen() {
                 <AddPhoneForm
                   contentOpacity={props.contentOpacity}
                   setStep={(value: number, values: any) => {
-                    setStep(6);
+                    if (value == 5) {
+                      console.log('phoneNumber', values);
+                      CheckIsUserExist(undefined, values.phone, 'signup');
+                    } else {
+                      setStep(value);
+                    }
                   }}
                 />
               )}
@@ -257,7 +269,20 @@ export default function UserSetupScreen() {
                   title="Create Account"
                   userPhone={data.phone}
                   goBack={() => setStep(4)}
-                  setStep={(value: string) => setStep(6)}
+                  setStep={async (value: string) => {
+                    setLoader(true);
+                    const isVerified = await ValidateOTP(
+                      value,
+                      data.email ?? '',
+                      data.phone ?? '',
+                    );
+                    console.log('isVerified', isVerified);
+                    if (isVerified) {
+                      setStep(6);
+                      setLoader(false);
+                    }
+                    setLoader(false);
+                  }}
                 />
               )}
               {step == 6 && (
@@ -297,7 +322,11 @@ export default function UserSetupScreen() {
                         JSON.stringify(userStore.currentRegisterUser.get()),
                       ),
                     );
-                    navigation.navigate('HomeBottomTab');
+                    setDataInLocalStorage(
+                      'user',
+                      JSON.stringify(userStore.currentRegisterUser.get()),
+                    );
+                    // navigation.navigate('HomeBottomTab');
                   }}
                   btnText={'Connect Device'}
                   title="Account setup complete"

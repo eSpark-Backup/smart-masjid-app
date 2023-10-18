@@ -18,6 +18,8 @@ import { masjidStore } from '../store/MasjidStore';
 export const GetUserDevices = async (userId: string) => {
   try {
     const result: any = await api.get(`/devices/user/${userId}`);
+    console.log('user devices', result);
+
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
     }

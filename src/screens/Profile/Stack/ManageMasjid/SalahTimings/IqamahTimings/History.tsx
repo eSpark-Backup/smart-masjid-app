@@ -16,6 +16,7 @@ import { SalahTimings } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
+import { Email, Envelope } from '../../../../../../assets';
 
 export default function History({
   setFlag,
@@ -94,15 +95,24 @@ export default function History({
         </Animated.View>
       </View>
       <View>
-        <MyDatePicker
-          minimumDate={moment().startOf('month').toDate()}
-          maximumDate={moment().add(4, 'month').toDate()}
-          type="standard"
-          currentDate={currentDate}
-          onDateChange={onDateChange}
-          dateFormat={'Monthly'}
-        />
-        <GapView length={10} />
+        <GapView />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: WINDOW_WIDTH,
+          }}>
+          <MyDatePicker
+            minimumDate={moment().startOf('month').toDate()}
+            maximumDate={moment().add(4, 'month').toDate()}
+            type="standard"
+            currentDate={currentDate}
+            onDateChange={onDateChange}
+            dateFormat={'Monthly'}
+          />
+          <Envelope style={{ position: 'absolute', right: 22 }} />
+        </View>
         {adhaTime.length < 1 && !loading ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}

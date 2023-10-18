@@ -234,9 +234,9 @@ export const CreateUser = async (
         userId: result.data.id,
         lastOTPVerified: otp,
       });
+      console.log('Kha tk chala', token);
       userStore.token.set(token?.data?.token);
       userStore.currentRegisterUser.set(result.data);
-      console.log('Kha tk chala');
 
       api.setHeaders({
         Authorization: `Bearer ${token?.data?.token}`,

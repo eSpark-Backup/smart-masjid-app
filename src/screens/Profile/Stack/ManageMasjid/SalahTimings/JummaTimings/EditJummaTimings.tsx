@@ -87,12 +87,12 @@ export default function EditJummaTimings({
     setLoading(true);
     if (jummaType == 'Add') {
       await AddMasjidJummahTiming(
-        userData?.masjid.id.toString() as string,
+        userData?.masjid?.id.toString() as string,
         data as AddJummas,
       );
     } else {
       await UpdatedMasjidJummahTiming(
-        userData?.masjid.id.toString() as string,
+        userData?.masjid?.id.toString() as string,
         data as AddJummas,
       );
     }
@@ -150,7 +150,7 @@ export default function EditJummaTimings({
               </>
             }
             data={[
-              jummas!.jumma1 && {
+              jummas!?.jumma1 && {
                 name: 'Jumuah 1',
                 khutbahTiming:
                   data?.jumuah1 != null
@@ -163,7 +163,7 @@ export default function EditJummaTimings({
                   });
                 },
               },
-              jummas!.jumma2 && {
+              jummas!?.jumma2 && {
                 name: 'Jumuah 2',
                 khutbahTiming:
                   data?.jumuah2 != null
@@ -176,7 +176,7 @@ export default function EditJummaTimings({
                   });
                 },
               },
-              jummas!.jumma3 && {
+              jummas!?.jumma3 && {
                 name: 'Jumuah 3',
                 khutbahTiming:
                   data?.jumuah3 != null
