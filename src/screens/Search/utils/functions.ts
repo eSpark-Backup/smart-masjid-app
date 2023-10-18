@@ -8,4 +8,5 @@ export function _startLocationCheck(callback: (e: Event) => void) {
 
 export function _stopLocationCheck() {
   DeviceEventEmitter.removeAllListeners(RNSettings.GPS_PROVIDER_EVENT);
+  console.log('stopped checking location!');
 }

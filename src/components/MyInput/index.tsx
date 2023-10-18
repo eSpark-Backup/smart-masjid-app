@@ -191,7 +191,6 @@ export default function MyInput(props: MyInputProps) {
           text={title ?? ''}
           size={16}
           textStyle={{
-            // fontWeight: '400',
             fontFamily: 'Roboto-Regular',
             color: '#3E3E3E',
           }}

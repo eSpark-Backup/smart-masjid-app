@@ -124,7 +124,10 @@ export default function SwipeableTimeTable({
   const slider = useRef<FlatList>(null);
 
   const updateSubscriptions = async (id: string, adhanName: string) => {
-    const isValid = await validateUpdatedTime();
+    const isValid = await _checkDeviceTelemetry(
+      deviceInfo.id.toString(),
+      false,
+    );
     if (!isValid) {
       Toast.show({
         type: 'error',
@@ -240,7 +243,7 @@ export default function SwipeableTimeTable({
     }
   };
 
-  const validateUpdatedTime = async (): Promise<boolean> => {
+  const validateUpdatedTime = async (mins?: number): Promise<boolean> => {
     const res = await _checkDeviceTelemetry(deviceInfo.id.toString(), true);
     if (res) {
       const utcDateString = res.updatedTime; // get a date/time
@@ -259,7 +262,7 @@ export default function SwipeableTimeTable({
         'Difference in Time:',
         differenceInMinutes,
       );
-      return differenceInMinutes < 2 ? true : false;
+      return differenceInMinutes < mins! ?? 2 ? true : false; //* The time should be lesser then the value
     } else return false;
   };
 

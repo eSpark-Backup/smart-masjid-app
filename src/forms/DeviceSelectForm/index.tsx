@@ -159,7 +159,7 @@ export default function DeviceSelectForm({
         {loading ? (
           <OverlayLoader isShow={loading} noBg={true} />
         ) : (
-          <ButtonListing radius={12} data={finalArr} />
+          <ButtonListing trademark radius={12} data={finalArr} />
         )}
       </View>
     </View>

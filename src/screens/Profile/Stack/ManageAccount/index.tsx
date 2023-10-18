@@ -118,7 +118,6 @@ export default function ManageAccount({
 
   const onSave = async () => {
     setLoading(true);
-
     const isValidPhone = await isValidPhoneNumber(data.phone, country);
     if (!isValidPhone) {
       return;
