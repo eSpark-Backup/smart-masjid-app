@@ -279,7 +279,7 @@ export default function DeviceSetupScreen() {
         route?.params?.from === 'SelectedDevice' &&
         route?.params?.deviceData?.deviceTelemetry?.status == 'Online'
       ) {
-        setStep(4);
+        setStep(7);
       } else {
         setStep(1); //todo: first 6 then 1
         setConnFlag(true);
@@ -767,12 +767,10 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                onSkip={handleSkip}
+                // onSkip={handleSkip}
                 btnText={
-                  route.params?.from == 'Device'
-                    ? !route.params?.isBtn
-                      ? 'Search Masjid'
-                      : 'View Device'
+                  route.params?.isBtn || route.params?.from === 'SelectedDevice'
+                    ? 'View Device'
                     : 'Search Masjid'
                 }
                 onPress={() => {
@@ -780,15 +778,19 @@ export default function DeviceSetupScreen() {
                     userStore.userData.set(userStore.currentRegisterUser.get());
                   }
                   navigation.navigate('HomeBottomTab', {
-                    screen: route.params?.from
-                      ? !route.params?.isBtn
-                        ? 'Search'
-                        : 'Device'
-                      : 'Home',
+                    screen:
+                      route.params?.isBtn ||
+                      route.params?.from === 'SelectedDevice'
+                        ? 'Device'
+                        : 'Search',
                   });
                 }}
                 title="Device connected successfully"
-                message={'Let’s subscribe to a masjid now.' + masjidSetupText}
+                message={
+                  route.params?.isBtn || route.params?.from === 'SelectedDevice'
+                    ? undefined
+                    : 'Let’s subscribe to a masjid now.' + masjidSetupText
+                }
                 center
               />
             )}
