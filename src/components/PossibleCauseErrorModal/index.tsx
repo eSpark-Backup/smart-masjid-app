@@ -54,7 +54,7 @@ export default function PossibleCauseErrorModal({
                   justifyContent: 'center',
                   paddingVertical: 5,
                 }}>
-                <Check style={{ marginTop: 1 }} width={14} height={14} />
+                <Check style={{ marginTop: 2 }} width={14} height={14} />
                 <MyText text={item} textStyle={styles.content} size={12} />
               </View>
             ))}

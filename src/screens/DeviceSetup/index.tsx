@@ -279,7 +279,7 @@ export default function DeviceSetupScreen() {
         route?.params?.from === 'SelectedDevice' &&
         route?.params?.deviceData?.deviceTelemetry?.status == 'Online'
       ) {
-        setStep(7);
+        setStep(4);
       } else {
         setStep(1); //todo: first 6 then 1
         setConnFlag(true);

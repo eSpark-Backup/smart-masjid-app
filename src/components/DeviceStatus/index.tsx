@@ -2,8 +2,9 @@ import React from 'react';
 import { View } from 'react-native';
 
 import { GapView, MyText } from '../index';
+import { DStatus } from '../../types';
 
-const DeviceStatus = ({ online = false }: { online?: boolean }) => {
+const DeviceStatus = ({ status = 'Offline' }: { status?: DStatus }) => {
   return (
     <View
       style={{
@@ -18,14 +19,11 @@ const DeviceStatus = ({ online = false }: { online?: boolean }) => {
           height: 10,
           width: 10,
           borderRadius: 100,
-          backgroundColor: online ? '#1DF126' : '#FF6464',
+          backgroundColor: status == 'Online' ? '#1DF126' : '#FF6464',
         }}
       />
       <GapView length={5} mode="horizontal" />
-      <MyText
-        text={online ? 'Online' : 'Offline'}
-        textStyle={{ color: '#6E6E6E', fontSize: 16 }}
-      />
+      <MyText text={status} textStyle={{ color: '#6E6E6E', fontSize: 16 }} />
     </View>
   );
 };
