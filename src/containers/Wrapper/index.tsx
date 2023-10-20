@@ -155,7 +155,7 @@ export default function Wrapper({
                   length={
                     Platform.OS == 'ios'
                       ? WINDOW_WIDTH / 1.6
-                      : WINDOW_WIDTH / 1.7
+                      : WINDOW_WIDTH / 1.74
                   }
                 />
                 {children({ props: { contentOpacity: titleOpacity } })}
@@ -180,7 +180,7 @@ export default function Wrapper({
 const styles = StyleSheet.create({
   imageBackgroundStyle: { minHeight: WINDOW_WIDTH / 1.8, flex: 1 },
   imageStyle: {
-    height: Platform.OS == 'ios' ? WINDOW_WIDTH / 1.6 : WINDOW_WIDTH / 1.7,
+    height: Platform.OS == 'ios' ? WINDOW_WIDTH / 1.6 : WINDOW_WIDTH / 1.74,
     width: WINDOW_WIDTH,
   },
 });

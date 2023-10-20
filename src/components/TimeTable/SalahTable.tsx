@@ -66,6 +66,13 @@ export default function SalahTable({
     [],
   );
 
+  const currentDateSalahExist = () => {
+    return data.some(
+      item =>
+        moment(item.date).format('YYYY-MM-DD') == moment().format('YYYY-MM-DD'),
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
@@ -85,7 +92,7 @@ export default function SalahTable({
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
       <FlatList
-        data={data}
+        data={currentDateSalahExist() ? data : []}
         snapToInterval={WINDOW_WIDTH - 50}
         decelerationRate={0}
         pinchGestureEnabled={true}

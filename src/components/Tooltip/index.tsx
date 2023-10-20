@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StatusBar,
+  Platform,
+} from 'react-native';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import { Theme, useTheme } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { InfoCircle } from '../../assets';
 
@@ -24,7 +31,6 @@ export default function MyTooltip({
 }: CustomTooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
   const { colors }: Theme = useTheme();
-  useEffect(() => {}, [isVisible]);
   return (
     <View>
       <Tooltip
@@ -36,9 +42,22 @@ export default function MyTooltip({
           borderColor: colors.primary,
           borderWidth: 0.5,
         }}
+        tooltipStyle={{
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.18,
+          shadowRadius: 1.0,
+          elevation: 1,
+        }}
+        childrenWrapperStyle={{ display: 'none' }}
         arrowStyle={{ borderTopColor: colors.primary }}
         content={<Text style={{ color: '#3E3E3E' }}>{content}</Text>}
         placement={position}
+        backgroundStyle={{ backgroundColor: 'blue' }}
+        topAdjustment={Platform.OS == 'android' ? -useSafeAreaInsets().top : 0}
         onClose={() => setIsVisible(false)}>
         <TouchableOpacity onPress={() => setIsVisible(true)}>
           <InfoCircle

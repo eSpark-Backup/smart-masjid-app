@@ -2,6 +2,7 @@ import { object, string } from 'yup';
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
 
 export const UserSetupSchema = {
   emailForm: object({
@@ -14,11 +15,17 @@ export const UserSetupSchema = {
     firstName: string()
       .min(2, 'First Name Too Short!')
       .max(50, 'First Name Too Long!')
-      .required('First Name is Required'),
+      .required('First Name is Required')
+      .matches(NAME_REGEX, {
+        message: 'First Name cannot contain special characters',
+      }),
     lastName: string()
       .min(2, 'Last Name is Too Short!')
       .max(50, 'Last Name is Too Long!')
-      .required('Last Name is Required'),
+      .required('Last Name is Required')
+      .matches(NAME_REGEX, {
+        message: 'Last Name cannot contain special characters',
+      }),
   }),
   phoneForm: object({
     phone: string()

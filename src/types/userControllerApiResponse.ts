@@ -49,7 +49,7 @@ type UserType = {
   permissions: Permission[];
 };
 
-type UserPhone = {
+export type UserPhone = {
   deviceId: string;
   fcmToken: string;
   isNotificationsAllowed: string;

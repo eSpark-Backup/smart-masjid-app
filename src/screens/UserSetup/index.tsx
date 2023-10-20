@@ -15,9 +15,14 @@ import {
 } from './UserForms';
 import { RootStackParamList } from '../../types';
 import { MyToast, OverlayLoader, SLoader } from '../../components';
-import { RegisterUserPhone, updateUserPhone } from '../../api/userController';
+import {
+  RegisterUserPhone,
+  UpdateUserLogin,
+  updateUserPhone,
+} from '../../api/userController';
 import {
   CreateUserRequest,
+  UserPhone,
   UserResponse,
 } from '../../types/userControllerApiResponse';
 import { globalStore } from '../../store/GlobalStates';
@@ -107,23 +112,79 @@ export default function UserSetupScreen() {
     }
   };
 
+  const checkUserDeviceExist = (
+    userPhone: UserPhone[],
+    type: 'dev' | 'devAndFcm',
+  ) => {
+    if (type == 'dev') {
+      return userPhone.some(
+        ({ deviceId }: { deviceId: string }) => deviceId == phoneId,
+      );
+    } else if (type == 'devAndFcm') {
+      return userPhone.some(
+        (info: any) => info.deviceId == phoneId && info.fcmToken == fcmToken,
+      );
+    }
+  };
+
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     try {
       setLoader(true);
-      const res = await LoginUser(email, phone, OTPvalue);
-      if (res?.id && phoneId && !isDeviceRegistered) {
-        await RegisterUserPhone(
+      const res: UserResponse = await LoginUser(email, phone, OTPvalue);
+      if (
+        res?.id &&
+        phoneId &&
+        checkUserDeviceExist(res?.userPhone, 'devAndFcm')
+      ) {
+        const login: any = await UpdateUserLogin(phoneId, res?.id);
+        if (login?.ok) {
+          navigation.navigate('HomeBottomTab'); //TODO: Change it later
+          setLoader(false);
+        } else {
+          setLoader(false);
+        }
+      } else if (
+        res?.id &&
+        phoneId &&
+        !checkUserDeviceExist(res?.userPhone, 'dev')
+      ) {
+        const registerPhoneRes = await RegisterUserPhone(
           { deviceId: phoneId, fcmToken: fcmToken as string },
           res?.id.toString(),
         );
-      } else if (res?.id && phoneId && isDeviceRegistered) {
-        await updateUserPhone(fcmToken as string, res?.id.toString(), phoneId);
+        if (registerPhoneRes?.ok) {
+          const login: any = await UpdateUserLogin(phoneId, res?.id);
+          if (login?.ok) {
+            navigation.navigate('HomeBottomTab'); //TODO: Change it later
+          } else {
+            setLoader(false);
+          }
+        } else {
+          setLoader(false);
+        }
+      } else if (
+        res?.id &&
+        phoneId &&
+        !checkUserDeviceExist(res?.userPhone, 'devAndFcm')
+      ) {
+        const updatePhoneRes = await updateUserPhone(
+          fcmToken as string,
+          res?.id.toString(),
+          phoneId,
+        );
+        if (updatePhoneRes?.ok) {
+          const login: any = await UpdateUserLogin(phoneId, res?.id);
+          if (login?.ok) {
+            navigation.navigate('HomeBottomTab'); //TODO: Change it later
+          } else {
+            setLoader(false);
+          }
+        } else {
+          setLoader(false);
+        }
+      } else {
+        setLoader(false);
       }
-
-      if (res?.id) {
-        navigation.navigate('HomeBottomTab'); //TODO: Change it later
-      }
-      setLoader(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }

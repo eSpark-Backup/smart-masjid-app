@@ -28,7 +28,11 @@ import {
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
-import { _resetDevice, _updateDevice } from '../../../api/deviceController';
+import {
+  _checkDeviceTelemetry,
+  _resetDevice,
+  _updateDevice,
+} from '../../../api/deviceController';
 import { BottomNavigationParamList, RootStackParamList } from '../../../types';
 
 type DeviceNavigationProps = NativeStackScreenProps<
@@ -107,24 +111,58 @@ const DeviceSetting = ({
         options={[
           {
             label: 'Update Password',
-            onPress: () => {
+            onPress: async () => {
               console.log('error', device);
-              navigation.navigate('DSetup', {
-                from: 'SelectedDevice',
-                deviceData: device,
-                onlyPassword: true,
-              });
-              setErrorShow(false);
+              setLoader(true);
+              const isValid = await _checkDeviceTelemetry(
+                device?.id.toString() as string,
+                false,
+              );
+              if (isValid) {
+                setErrorShow(false);
+                setLoader(false);
+                goBack?.();
+                Toast.show({
+                  text1: 'Success!',
+                  text2: 'Your device is online',
+                  type: 'success',
+                });
+              } else {
+                navigation.navigate('DSetup', {
+                  from: 'SelectedDevice',
+                  deviceData: device,
+                  onlyPassword: true,
+                });
+                setErrorShow(false);
+                setLoader(false);
+              }
             },
           },
           {
             label: 'Connect new Wi-Fi',
-            onPress: () => {
-              navigation.navigate('DSetup', {
-                from: 'SelectedDevice',
-                deviceData: device,
-              });
-              setErrorShow(false);
+            onPress: async () => {
+              setLoader(true);
+              const isValid = await _checkDeviceTelemetry(
+                device?.id.toString() as string,
+                false,
+              );
+              if (isValid) {
+                setErrorShow(false);
+                setLoader(false);
+                goBack?.();
+                Toast.show({
+                  text1: 'Success!',
+                  text2: 'Your device is online',
+                  type: 'success',
+                });
+              } else {
+                navigation.navigate('DSetup', {
+                  from: 'SelectedDevice',
+                  deviceData: device,
+                });
+                setErrorShow(false);
+                setLoader(false);
+              }
             },
           },
         ]}
@@ -197,10 +235,24 @@ const DeviceSetting = ({
                     onPress: () => setIsEditable(true),
                     onDoneEdit: text => {
                       console.log('avla', text);
-                      if (text?.length! > 0) {
+                      const pattern = /^[a-zA-Z0-9 ]*$/;
+
+                      if (text?.length! > 0 && pattern.test(text as string)) {
                         updateDeviceName(text, device?.name);
+                        setIsEditable(false);
+                      } else if (
+                        text?.length! > 0 &&
+                        !pattern.test(text as string)
+                      ) {
+                        Toast.show({
+                          text1: 'Error!',
+                          text2:
+                            'Device name cannot contain special characters',
+                          type: 'error',
+                        });
+                      } else {
+                        setIsEditable(false);
                       }
-                      setIsEditable(false);
                     },
                   },
                   {

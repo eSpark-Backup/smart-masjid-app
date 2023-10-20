@@ -14,6 +14,43 @@ import {
 import { globalStore } from '../store/GlobalStates';
 
 /**
+ * Update user's login status on the server.
+ *
+ * @param phoneDeviceId - The data to be sent for phone device registration.
+ * @param userId - The user's ID.
+ * @returns A promise that resolves when the registration is successful or rejects if there is an error.
+ */
+export const UpdateUserLogin = async (
+  phoneDeviceId: string,
+  userId: string | number,
+) => {
+  try {
+    // const res: any = await api.post(`/users/${userId}/phones`, data);
+    const login: any = await api.put(`/users/${userId}/login`, {
+      phoneDeviceId: phoneDeviceId,
+    });
+    if (login.ok) {
+      return login;
+    } else {
+      Toast.show({
+        text2: login.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log(
+      'error UpdateUserLogin',
+      error,
+      'Request',
+      phoneDeviceId,
+      userId,
+    );
+  }
+};
+
+/**
  * Register a user's phone device on the server.
  *
  * @param data - The data to be sent for phone device registration.
@@ -23,9 +60,18 @@ import { globalStore } from '../store/GlobalStates';
 export const RegisterUserPhone = async (
   data: RequestRegisterPhone,
   userId: string,
-): Promise<void> => {
+) => {
   try {
-    await api.post(`/users/${userId}/phones`, data);
+    const res: any = await api.post(`/users/${userId}/phones`, data);
+    if (res.ok) {
+      return res;
+    } else {
+      Toast.show({
+        text2: res.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
+      });
+    }
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('error RegisterUserPhone', error, 'Request', data, userId);
@@ -44,18 +90,20 @@ export const updateUserPhone = async (
   fcmToken: string,
   userId: string,
   phoneDeviceId: string,
-): Promise<void> => {
+) => {
   try {
-    const res = await api.put(`/users/${userId}/phones/${phoneDeviceId}`, {
+    const res: any = await api.put(`/users/${userId}/phones/${phoneDeviceId}`, {
       fcmToken: fcmToken,
     });
     if (res.ok) {
-      const login = await api.put(`/users/${userId}/login`, {
-        phoneDeviceId: phoneDeviceId,
+      return res;
+    } else {
+      Toast.show({
+        text2: res.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
       });
-      console.log('login', login);
     }
-    console.log('update phone res', res);
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log(

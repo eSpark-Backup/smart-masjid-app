@@ -291,7 +291,6 @@ export default function MyInput(props: MyInputProps) {
         {searchBar && (
           <>
             <MI
-              disabled={!locationPermission}
               name="my-location"
               style={{
                 alignSelf: 'center',

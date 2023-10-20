@@ -105,9 +105,14 @@ export default function History({
           }}>
           <MyDatePicker
             minimumDate={moment().startOf('month').toDate()}
-            maximumDate={moment().add(4, 'month').toDate()}
+            maximumDate={moment().add(4, 'month').date(1).toDate()}
+            disablePicker
             type="standard"
-            currentDate={currentDate}
+            // currentDate={currentDate.getMonth}
+            currentDate={moment()
+              .month(currentDate.getMonth())
+              .date(1)
+              .toDate()}
             onDateChange={onDateChange}
             dateFormat={'Monthly'}
           />

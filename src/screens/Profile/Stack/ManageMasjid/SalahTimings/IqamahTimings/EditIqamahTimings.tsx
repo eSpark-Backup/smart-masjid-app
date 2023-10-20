@@ -49,11 +49,11 @@ export default function EditIqamahTimings({
         fajr: '06:00:00',
         dhuhr: '14:00:00',
         isha: '21:30:00',
-        maghribDelay: '15',
-        fajrDelay: '0',
-        dhuhrDelay: '0',
-        asrDelay: '0',
-        ishaDelay: '0',
+        maghribDelay: '5',
+        fajrDelay: '15',
+        dhuhrDelay: '30',
+        asrDelay: '15',
+        ishaDelay: '30',
       };
       setData(defaultData);
     }
@@ -138,9 +138,7 @@ export default function EditIqamahTimings({
                       ) {
                         let defaultData = {
                           ...selectedIqamah,
-                          effectiveDate: moment(new Date()).format(
-                            'YYYY-MM-DD',
-                          ),
+                          effectiveDate: data.effectiveDate,
                           asr: '18:00:00',
                           fajr: '06:00:00',
                           dhuhr: '14:00:00',
@@ -157,9 +155,7 @@ export default function EditIqamahTimings({
                       ) {
                         let defaultData = {
                           ...selectedIqamah,
-                          effectiveDate: moment(new Date()).format(
-                            'YYYY-MM-DD',
-                          ),
+                          effectiveDate: data.effectiveDate,
                           fajrDelay: '10',
                           dhuhrDelay: '10',
                           asrDelay: '10',

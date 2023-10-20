@@ -85,6 +85,7 @@ const RowItem = ({
                           textAlign: 'center',
                           // fontWeight: '400',
                           fontFamily: 'Roboto-Regular',
+                          paddingVertical: 10,
                         }}
                       />
                       <View
@@ -95,7 +96,7 @@ const RowItem = ({
                         }}>
                         <MyText
                           textStyle={{
-                            bottom: Platform.OS == 'android' ? 2.5 : 0,
+                            bottom: Platform.OS == 'android' ? 2 : 0,
                           }}
                           size={16}
                           text="Mins"
