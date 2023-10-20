@@ -108,7 +108,7 @@ const SearchListing = ({
 
   useEffect(() => {
     _startLocationCheck(_handleGPSProviderEvent);
-    // checkLocationAdapter();
+    checkLocationAdapter();
     return () => {
       _stopLocationCheck();
     };

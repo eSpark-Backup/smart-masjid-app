@@ -1,9 +1,9 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
-export { default as HeaderIOSBackgroundImage } from './images/Header2.png';
-export { default as HeaderIOSBackgroundImageUp } from './images/Header3.png';
-export { default as HeaderAndroidBackgroundImage } from './images/Header4.png';
-export { default as HeaderAndroidBackgroundImageUp } from './images/Header5.png';
+export { default as HeaderIOSBackgroundImage } from './images/iOSHeader.png';
+export { default as HeaderIOSBackgroundImageUp } from './images/iOSUpHeader.png';
+export { default as HeaderAndroidBackgroundImage } from './images/AndroidHeader.png';
+export { default as HeaderAndroidBackgroundImageUp } from './images/AndroidUpHeader.png';
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
 export { default as SL } from './animations/simpleLoader.gif';
