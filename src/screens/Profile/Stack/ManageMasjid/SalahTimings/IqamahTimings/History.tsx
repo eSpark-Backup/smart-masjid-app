@@ -41,6 +41,8 @@ export default function History({
     });
   }, []);
 
+  console.log('moment start', moment().startOf('month').format('YYYY-MM-DD'));
+
   const onDateChange = (e: Date) => {
     setCurrentDate(e);
     setLoading(true);
@@ -71,7 +73,7 @@ export default function History({
       };
       item.salah.forEach(sItem => {
         time[sItem.name + ' Adhan'] = sItem.adhanTime;
-        time[sItem.name + ' Iqamah'] = sItem.iqamaTime;
+        time[sItem.name + ' Iqama'] = sItem.iqamaTime;
       });
       return time;
     });
@@ -104,7 +106,7 @@ export default function History({
             width: WINDOW_WIDTH,
           }}>
           <MyDatePicker
-            minimumDate={moment().startOf('month').toDate()}
+            minimumDate={moment().startOf('month').date(2).toDate()}
             maximumDate={moment().add(4, 'month').date(1).toDate()}
             disablePicker
             type="standard"

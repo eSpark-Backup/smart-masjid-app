@@ -116,6 +116,24 @@ export default function ManageAccount({
     setDisplayingData([...newData]);
   };
 
+  const clearSelection = () => {
+    const newData = displayData.map(data => {
+      return {
+        ...data,
+        editable: false,
+      };
+    });
+    setData({
+      ...{
+        firstName: userData?.firstName,
+        lastName: userData?.lastName,
+        email: userData?.email,
+        phone: userData?.phone,
+      },
+    });
+    setDisplayingData([...newData]);
+  };
+
   const onSave = async () => {
     setLoading(true);
     const isValidPhone = await isValidPhoneNumber(data.phone, country);
@@ -182,7 +200,13 @@ export default function ManageAccount({
                     <View>
                       <MyText
                         text={data[val?.key] ?? 'Tap to add'}
-                        textStyle={{ fontSize: 14, color: '#6E6E6E' }}
+                        textStyle={{
+                          fontSize: 14,
+                          color: '#6E6E6E',
+                          width: WINDOW_WIDTH * 0.55,
+                          textAlign: 'right',
+                        }}
+                        lines={1}
                       />
                     </View>
                   </TouchableOpacity>
@@ -346,23 +370,6 @@ export default function ManageAccount({
                     textStyle={{ color: '#FF6464', textAlign: 'center' }}
                   />
                 </TouchableOpacity>
-                {/* <TouchableOpacity
-                  activeOpacity={0.9}
-                  style={{
-                    height: 41,
-                    width: '100%',
-                    backgroundColor: '#FF6464',
-                    borderRadius: 50,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                  }}
-                  onPress={() => setIsDVisible(true)}>
-                  <TextLabel
-                    label="Delete Account"
-                    textStyle={{ color: '#ffffff' }}
-                  />
-                </TouchableOpacity> */}
               </>
             )}
           </View>
@@ -370,8 +377,10 @@ export default function ManageAccount({
             message="Do you wish to logout?"
             visible={isVisible}
             onAllowed={async () => {
-              await LogoutUser(userData?.id?.toString() ?? '');
+              setLoading(true);
               setIsVisible(!isVisible);
+              await LogoutUser(userData?.id?.toString() ?? '');
+              setLoading(false);
               console.log('Logged Out');
             }}
             onClose={() => {
@@ -409,6 +418,12 @@ export default function ManageAccount({
         <>
           <OtpForm
             title="Verification"
+            userEmail={data.email}
+            userPhone={data.phone}
+            goBack={() => {
+              setFlag('mAcc');
+              clearSelection();
+            }}
             setStep={async (value: string) => {
               setLoading(true);
               const activeKey = displayData.find(val => val.editable)?.key;
@@ -419,10 +434,12 @@ export default function ManageAccount({
               );
               console.log('isVerified', isVerified);
               if (isVerified) {
+                clearSelection();
                 onSave();
-                setFlag('mAccOtp');
+                setFlag('mAcc');
+              } else {
+                setLoading(false);
               }
-              setLoading(false);
             }}
             onResend={async () => {
               const activeKey = displayData.find(val => val.editable)?.key;

@@ -17,14 +17,14 @@ export const UserSetupSchema = {
       .max(50, 'First Name Too Long!')
       .required('First Name is Required')
       .matches(NAME_REGEX, {
-        message: 'First Name cannot contain special characters',
+        message: 'Please enter a valid first name',
       }),
     lastName: string()
       .min(2, 'Last Name is Too Short!')
       .max(50, 'Last Name is Too Long!')
       .required('Last Name is Required')
       .matches(NAME_REGEX, {
-        message: 'Last Name cannot contain special characters',
+        message: 'Please enter a valid last name',
       }),
   }),
   phoneForm: object({
@@ -66,11 +66,5 @@ export const AddAdminForSchema = {
       .max(50, 'Last Name is Too Long!')
       .required('Last Name is Required'),
     email: string().email('Invalid email').required('Email is required'),
-    phone: string()
-      .matches(
-        /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/,
-        'Phone number is not valid',
-      )
-      .required('Phone No is Required'),
   }),
 };

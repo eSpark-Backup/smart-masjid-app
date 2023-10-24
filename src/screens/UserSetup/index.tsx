@@ -129,20 +129,14 @@ export default function UserSetupScreen() {
 
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     try {
-      setLoader(true);
       const res: UserResponse = await LoginUser(email, phone, OTPvalue);
       if (
         res?.id &&
         phoneId &&
         checkUserDeviceExist(res?.userPhone, 'devAndFcm')
       ) {
-        const login: any = await UpdateUserLogin(phoneId, res?.id);
-        if (login?.ok) {
-          navigation.navigate('HomeBottomTab'); //TODO: Change it later
-          setLoader(false);
-        } else {
-          setLoader(false);
-        }
+        navigation.navigate('HomeBottomTab'); //TODO: Change it later
+        setLoader(false);
       } else if (
         res?.id &&
         phoneId &&
@@ -302,10 +296,13 @@ export default function UserSetupScreen() {
                           value,
                         );
                       }
+                    } else {
+                      setLoader(false);
                     }
-                    setLoader(false);
                   }}
-                  goBack={() => setStep(2)}
+                  goBack={() =>
+                    activeFlow == 'signup' ? setStep(2) : setStep(1)
+                  }
                   onResend={async () => {
                     await SendOTP(data.email ?? '', data.phone ?? '');
                   }}

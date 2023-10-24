@@ -144,9 +144,19 @@ export const LogoutUser = async (userId: string) => {
 
 export const DeleteUser = async (userId: string) => {
   try {
-    await api.delete(`/users/${userId}`);
-    await removeDatafromLocalStorage('user');
-    userStore.userData.set(null);
+    const res: any = await api.delete(`/users/${userId}`);
+    console.log('res=>>>>', res);
+
+    if (res.ok) {
+      await removeDatafromLocalStorage('user');
+      userStore.userData.set(null);
+    } else {
+      Toast.show({
+        text2: res.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
+      });
+    }
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('error DeleteUser', error);

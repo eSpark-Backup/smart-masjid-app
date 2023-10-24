@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import {
+  Theme,
   useIsFocused,
   useNavigation,
   useRoute,
+  useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Immutable, useHookstate } from '@hookstate/core';
@@ -34,40 +36,55 @@ export const ListEmptyComponent = ({
   message1 = `You have not subscribed to a\nmasjid yet`,
   message2 = `Search for a masjid near you`,
   isShowBtn = true,
+  link,
+  onLinkPressed,
 }: {
   navigation?: any;
   message1?: string;
   message2?: string;
   isShowBtn?: boolean;
+  link?: string;
+  onLinkPressed?: () => void;
 }) => {
+  const { colors }: Theme = useTheme();
   return (
-    <ScrollView>
-      <View style={{ alignItems: 'center' }}>
-        <MyText
-          text={message1}
-          textStyle={{
-            textAlign: 'center',
-            fontSize: 16,
-            // fontWeight: '500',
-            fontFamily: 'Roboto-Medium',
-          }}
-        />
-        <GapView length={30} />
-        <SearchMasjidSvg />
-        <GapView length={30} />
+    <View style={{ alignItems: 'center' }}>
+      <MyText
+        text={message1}
+        textStyle={{
+          textAlign: 'center',
+          fontSize: 16,
+          // fontWeight: '500',
+          fontFamily: 'Roboto-Medium',
+        }}
+      />
+      <GapView length={30} />
+      <SearchMasjidSvg />
+      <GapView length={30} />
+      {link ? (
+        <TouchableOpacity onPress={onLinkPressed}>
+          <MyText
+            text={link}
+            size={16}
+            textStyle={{
+              textAlign: 'center',
+              color: colors.primary,
+              fontFamily: 'Roboto-Medium',
+            }}
+          />
+        </TouchableOpacity>
+      ) : (
         <MyText
           text={message2}
           textStyle={{ textAlign: 'center', fontSize: 16 }}
         />
-        <GapView length={40} />
-        {isShowBtn && (
-          <Rounded
-            onPress={() => navigation.navigate('Search')}
-            label="Search"
-          />
-        )}
-      </View>
-    </ScrollView>
+      )}
+
+      <GapView length={40} />
+      {isShowBtn && (
+        <Rounded onPress={() => navigation.navigate('Search')} label="Search" />
+      )}
+    </View>
   );
 };
 

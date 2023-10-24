@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { StatusBar, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, {
@@ -109,7 +109,9 @@ export default function App() {
 
   useEffect(() => {
     GetCountryCodes();
-    _getFCMToken();
+    if (Platform.OS == 'android') {
+      _getFCMToken();
+    }
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);

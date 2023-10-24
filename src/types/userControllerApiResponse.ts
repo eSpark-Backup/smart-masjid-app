@@ -18,7 +18,8 @@ export type CreateUserRequest = {
   lastName: string;
   email?: string;
   phone?: string;
-  userType: 'Customer' | 'Masjid Admin';
+  userType?: 'Customer' | 'Masjid Admin';
+  userTypeId?: number;
   masjidId?: string;
 };
 

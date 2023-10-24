@@ -55,7 +55,7 @@ export default function ManageUsers({
   const onDelete = async () => {
     setIsVisible('');
     setLoading(true);
-    await DeleteAdminFromMasjid(isVisible, '1');
+    await DeleteAdminFromMasjid(isVisible, userData?.masjid?.id.toString()!);
     setLoading(false);
   };
 
@@ -161,9 +161,9 @@ const UserCard = ({
               />
             </View>
           </View>
-          <View>
-            <Delete onPress={() => onDeletePress?.(item.id.toString())} />
-          </View>
+          <TouchableOpacity onPress={() => onDeletePress?.(item.id.toString())}>
+            <Delete />
+          </TouchableOpacity>
         </TouchableOpacity>
       </Card>
     </View>

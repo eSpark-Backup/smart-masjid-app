@@ -132,17 +132,15 @@ export default function EditJummaTimings({
                     currentDate={
                       loading
                         ? new Date()
-                        : new Date(data?.effectiveDate as string)
+                        : moment(data?.effectiveDate, 'YYYY-MM-DD').toDate()
                     }
                     minimumDate={new Date()}
                     onDateChange={date => {
-                      if (new Date(date).getDay() == 5) {
-                        console.log('done');
-                        setData({
-                          ...data,
-                          effectiveDate: moment(date).format('YYYY-MM-DD'),
-                        });
-                      }
+                      console.log('done');
+                      setData({
+                        ...data,
+                        effectiveDate: moment(date).format('YYYY-MM-DD'),
+                      });
                     }}
                   />
                   <GapView length={20} />

@@ -41,7 +41,7 @@ import { masjidStore } from '../../../store/MasjidStore';
 import { Device } from '../../../types/deviceControllerTypes';
 import { useMasjid } from '../../../utils/hooks';
 import {
-  GetMasjidJummahTiming,
+  GetMasjidCurrentJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
 
@@ -101,7 +101,7 @@ export default function MasjidDetails({
           setLoading(false);
         },
       );
-      await GetMasjidJummahTiming(selectedMasjid?.id.toString() ?? '');
+      await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
     } catch (e) {
       crashlytics().recordError(e as Error);
     }

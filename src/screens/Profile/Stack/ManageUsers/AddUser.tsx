@@ -17,7 +17,13 @@ import {
 import { WINDOW_WIDTH } from '../../../../constants';
 import { AddAdminForSchema } from '../../../../constants/validations/schema';
 import { Card } from '../../../../containers';
-import { CreateUserRequest } from '../../../../types/userControllerApiResponse';
+import {
+  CreateUserRequest,
+  UserResponse,
+} from '../../../../types/userControllerApiResponse';
+import { ImmutableObject, useHookstate } from '@hookstate/core';
+import { userStore } from '../../../../store/UserStore';
+import Toast from 'react-native-toast-message';
 
 export default function AddUsers({
   setFlag,
@@ -27,22 +33,22 @@ export default function AddUsers({
   contentOpacity?: any;
 }) {
   const [loading, setLoading] = useState(false);
+  const userData: ImmutableObject<ImmutableObject<UserResponse>> | null =
+    useHookstate(userStore?.userData).get();
   const onSubmit = async (values: {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
   }) => {
     try {
       setLoading(true);
       // Check if user already exists
-      const data: any = await CheckUserExists(values.email, values.phone);
+      const data: any = await CheckUserExists(values.email, '');
       const obj: CreateUserRequest = {
         ...values,
         email: values.email?.toLowerCase(),
-        phone: '+1' + values.phone,
-        userType: 'Masjid Admin',
-        masjidId: '1',
+        userTypeId: 2,
+        masjidId: userData?.masjid?.id.toString(),
       };
       // If user already exists so direct add to masjid
       if (data) {
@@ -52,9 +58,16 @@ export default function AddUsers({
       } else {
         // Else Create User with current masjid
         const createUserResp: any = await api.post('/users', obj);
-        if (createUserResp.data) {
+        console.log('createUserResp', createUserResp);
+
+        if (createUserResp.ok) {
           setLoading(false);
           setFlag('mUsers');
+        } else {
+          Toast.show({
+            text2: createUserResp?.data.message ?? 'Something went wrong',
+            type: 'error',
+          });
         }
         setLoading(false);
       }
@@ -85,7 +98,6 @@ export default function AddUsers({
             firstName: '',
             lastName: '',
             email: '',
-            phone: '',
           }}
           validationSchema={AddAdminForSchema.AddAdminForSchema}
           onSubmit={onSubmit}>
@@ -125,14 +137,14 @@ export default function AddUsers({
                     value={values.email}
                     containerStyle={{ marginVertical: 10 }}
                   />
-                  <MyInput
+                  {/* <MyInput
                     placeholder="Phone Number"
                     placeholderColor="#CFCFCF"
                     isPhoneCode
                     onChangeText={handleChange('phone')}
                     value={values.phone}
                     containerStyle={{ marginVertical: 10 }}
-                  />
+                  /> */}
                 </Card>
                 {Object.entries(errors).map(([key, value]) => {
                   // @ts-ignore

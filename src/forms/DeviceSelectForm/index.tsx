@@ -81,7 +81,7 @@ export default function DeviceSelectForm({
         return {
           ...item,
           leftIcon: <DeviceSvg />,
-          title: 'Smart Adhan Speaker',
+          title: 'Bilal Smart Speaker',
           onPress: () => {
             console.log('selected macId', item?.id);
             handleDeviceCheck(item as Peripheral);
@@ -96,7 +96,7 @@ export default function DeviceSelectForm({
       return {
         ...item,
         leftIcon: isBtn ? <AdhanButton /> : <DeviceSvg />,
-        title: isBtn ? 'Smart Adhan Button' : 'Smart Adhan Speaker',
+        title: isBtn ? 'Smart Masjid Adhan Button' : 'Bilal Smart Speaker',
         onPress: () => {
           console.log('selected macId', item?.id);
           handleDeviceCheck(item as Peripheral);

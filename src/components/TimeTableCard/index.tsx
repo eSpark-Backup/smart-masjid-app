@@ -58,8 +58,6 @@ const TimeTableCard = ({
               justifyContent: data.length > 3 ? 'space-between' : 'flex-start',
             }}>
             {data.map(v => {
-              console.log('v me kia hai', v);
-
               return (
                 <View
                   key={v.name}

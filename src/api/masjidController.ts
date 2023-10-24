@@ -219,7 +219,6 @@ export const GetMasjidJummahTiming = async (
     });
 
     if (result.status == 200) {
-      masjidStore.JummahTime.set(result.data);
       return result.data;
     }
   } catch (error) {
