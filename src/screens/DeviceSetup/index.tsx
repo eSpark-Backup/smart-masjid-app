@@ -767,7 +767,7 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                onSkip={handleSkip}
+                onSkip={!route.params?.isBtn ? handleSkip : undefined}
                 btnText={
                   route.params?.from == 'Device'
                     ? !route.params?.isBtn
@@ -788,7 +788,13 @@ export default function DeviceSetupScreen() {
                   });
                 }}
                 title="Device connected successfully"
-                message={'Let’s subscribe to a masjid now.' + masjidSetupText}
+                message={
+                  route.params?.isBtn
+                    ? ''
+                    : route.params?.from == 'SelectedDevice'
+                    ? ''
+                    : 'Let’s subscribe to a masjid now.' + masjidSetupText
+                }
                 center
               />
             )}

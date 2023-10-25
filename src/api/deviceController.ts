@@ -25,12 +25,11 @@ export const GetUserDevices = async (userId: string) => {
       deviceStore.devices.set(result.data);
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
-      return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
-      return false;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -51,12 +50,11 @@ export const GetMasjidDevices = async (masjidId: string) => {
       deviceStore.masjidDevices.set(result.data);
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
-      return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
-      return false;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -84,7 +82,8 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
       return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
       return false;
     }
@@ -114,7 +113,8 @@ export const unSubscribeMasjid = async (deviceId: string, masjidId: string) => {
       return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
       return false;
     }
@@ -148,7 +148,8 @@ export const GetMasjidDevicesForUser = async (
       return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
       return false;
     }

@@ -35,6 +35,19 @@ export default function ErrorModal({
           <GapView length={20} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
           <GapView length={20} />
+          <View style={{ flexDirection: 'row', ...styles.bodyText }}>
+            <MyText
+              text={'Note: Device must be '}
+              textStyle={styles.text}
+              size={16}
+            />
+            <MyText
+              size={16}
+              text="powered on"
+              textStyle={{ fontFamily: 'Roboto-Bold' }}
+            />
+          </View>
+          <GapView length={20} />
           {options?.map(item => (
             <View key={item.label}>
               <Rounded label={item?.label} onPress={item?.onPress} />
@@ -78,6 +91,11 @@ const makeStyles = (theme: Theme) => {
       // fontWeight: '400',
       fontFamily: 'Roboto-Regular',
       textAlign: 'center',
+    },
+    text: {
+      color: '#3E3E3E',
+      // fontWeight: '400',
+      fontFamily: 'Roboto-Regular',
     },
   });
 };

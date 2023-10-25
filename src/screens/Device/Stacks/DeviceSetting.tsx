@@ -32,6 +32,7 @@ import {
   _checkDeviceTelemetry,
   _resetDevice,
   _updateDevice,
+  unSubscribeMasjid,
 } from '../../../api/deviceController';
 import { BottomNavigationParamList, RootStackParamList } from '../../../types';
 
@@ -96,6 +97,29 @@ const DeviceSetting = ({
         setLoader(false);
         console.error(error);
       }
+    }
+  };
+
+  const cancelSubscription = async () => {
+    try {
+      if (device?.deviceTelemetry.status === 'Online') {
+        setLoader(true);
+        const res = await unSubscribeMasjid(
+          device?.id?.toString()!,
+          device?.masjid.id.toString()!,
+        );
+        console.log('res', res);
+        if (res) {
+          setLoader(false);
+        }
+      } else {
+        Toast.show({
+          text2: 'Selected Device is Offline',
+          type: 'error',
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
     }
   };
 
@@ -231,8 +255,8 @@ const DeviceSetting = ({
                     icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
                     isEditable: true,
                     isEdit: isEditable,
+                    onEditPress: () => setIsEditable(true),
                     charLength: 25,
-                    onPress: () => setIsEditable(true),
                     onDoneEdit: text => {
                       console.log('avla', text);
                       const pattern = /^[a-zA-Z0-9 ]*$/;
@@ -275,16 +299,12 @@ const DeviceSetting = ({
                       ? 'No Subscription'
                       : 'No Masjid',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    rightArrow: device?.deviceType.id == 1 ? true : false,
+                    isDelete: device?.masjid?.name ? true : false,
+                    onDelete: cancelSubscription,
                     onPress:
                       device?.deviceType.id == 1
                         ? () => {
                             if (!device?.masjid?.id.toString()) {
-                              Toast.show({
-                                text1: 'Warning!',
-                                text2: 'Subscribe to a Masjid First',
-                                type: 'warning',
-                              });
                               navigation.navigate('Search');
                               return;
                             }
@@ -312,13 +332,12 @@ const DeviceSetting = ({
                       device?.deviceTelemetry?.status !== 'Offline'
                         ? false
                         : true,
-                    onPress: () =>
-                      device?.deviceTelemetry?.status === 'Online'
-                        ? navigation.navigate('DSetup', {
-                            from: 'SelectedDevice',
-                            deviceData: device,
-                          })
-                        : setErrorShow(true),
+                    onEditPress: () =>
+                      navigation.navigate('DSetup', {
+                        from: 'SelectedDevice',
+                        deviceData: device,
+                      }),
+                    onDangerPress: () => setErrorShow(true),
                   },
                   {
                     title: 'Firmware Version',
@@ -333,8 +352,10 @@ const DeviceSetting = ({
                   {
                     title: 'Factory Reset',
                     subtitle: 'Reseting will erase all data',
-                    onPress: () => setIsVisible(true),
+                    // onPress: () => setIsVisible(true),
                     icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
+                    isReset: true,
+                    onReset: () => setIsVisible(true),
                   },
                 ],
               },

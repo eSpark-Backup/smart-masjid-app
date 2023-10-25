@@ -207,7 +207,7 @@ export default function UserSetupScreen() {
             } else {
               setData({ ...data, email: email ?? '', phone: phone ?? '' });
             }
-            setStep(phone ? 5 : 3);
+            setStep(3);
           }
         }
       } else {
@@ -312,12 +312,7 @@ export default function UserSetupScreen() {
                 <AddPhoneForm
                   contentOpacity={props.contentOpacity}
                   setStep={(value: number, values: any) => {
-                    if (value == 5) {
-                      console.log('phoneNumber', values);
-                      CheckIsUserExist(undefined, values.phone, 'signup');
-                    } else {
-                      setStep(value);
-                    }
+                    setStep(value);
                   }}
                 />
               )}

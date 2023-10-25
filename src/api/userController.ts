@@ -25,12 +25,13 @@ export const UpdateUserLogin = async (
   userId: string | number,
 ) => {
   try {
-    // const res: any = await api.post(`/users/${userId}/phones`, data);
     const login: any = await api.put(`/users/${userId}/login`, {
       phoneDeviceId: phoneDeviceId,
     });
     if (login.ok) {
       return login;
+    } else if (login.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: login.data?.message,
@@ -65,6 +66,8 @@ export const RegisterUserPhone = async (
     const res: any = await api.post(`/users/${userId}/phones`, data);
     if (res.ok) {
       return res;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: res.data?.message,
@@ -97,6 +100,8 @@ export const updateUserPhone = async (
     });
     if (res.ok) {
       return res;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: res.data?.message,
@@ -150,6 +155,8 @@ export const DeleteUser = async (userId: string) => {
     if (res.ok) {
       await removeDatafromLocalStorage('user');
       userStore.userData.set(null);
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: res.data?.message,
@@ -193,6 +200,8 @@ export const UpdateUser = async (
         text2: 'User Updated Successfully',
         type: 'success',
       });
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message,
@@ -218,6 +227,13 @@ export const GetMasjidAdmins = async (id: string) => {
     const result: any = await api.get(`/users/masjid/${id}`);
     if (result.data && result.status === 200) {
       userStore.masjidAdmins.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -245,6 +261,8 @@ export const DeleteAdminFromMasjid = async (
         type: 'success',
       });
       GetMasjidAdmins(masjidId);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message,
@@ -275,6 +293,8 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
       });
       GetMasjidAdmins(masjidId);
       return true;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message,
