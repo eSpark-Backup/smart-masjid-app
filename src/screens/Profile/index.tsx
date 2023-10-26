@@ -30,6 +30,7 @@ import { UserResponse } from '../../types/userControllerApiResponse';
 import { IqamahTime, jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
 import { WINDOW_WIDTH } from '../../constants';
+import { GetUserTypes } from '../../api/userController';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -107,6 +108,7 @@ export default function Profile() {
   const getFAQAndReason = async () => {
     await GetContactReasons();
     await GetHelpFAQs();
+    await GetUserTypes();
   };
 
   const handleBack = (currScreen: string) => {

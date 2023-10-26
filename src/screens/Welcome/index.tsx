@@ -27,11 +27,11 @@ export default function App() {
       {() => {
         return (
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <GapView />
             <View
               style={{
                 alignSelf: 'center',
                 flexDirection: 'row',
-                marginTop: 10,
               }}>
               <MyTitle
                 text={`Welcome to `}
@@ -54,19 +54,20 @@ export default function App() {
                 text={`Smart Masjid`}
               />
             </View>
-            <GapView length={85} />
+            <GapView length={50} />
             <MyText
               size={16}
               textStyle={{ textAlign: 'center' }}
               text="Have you purchased the device ?"
             />
-            <GapView length={80} />
+            Œ
+            <GapView length={50} />
             <Joined
               containerStyle={{ alignSelf: 'center' }}
               onPress1={() => {}}
               onPress2={() => navigation.navigate('USetup', { type: 'setup' })}
             />
-            <GapView length={80} />
+            <GapView length={50} />
             <MyText
               text="I already have an account."
               onPress={() => navigation.navigate('USetup', { type: 'login' })}

@@ -1,13 +1,17 @@
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Animated, Platform } from 'react-native';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { api } from '../../../../api';
 import { CheckUserExists } from '../../../../api/externalControllers';
-import { AddAdminIntoMasjid } from '../../../../api/userController';
+import {
+  AddAdminIntoMasjid,
+  GetUserTypes,
+} from '../../../../api/userController';
 import {
   GapView,
+  MyDropDown,
   MyInput,
   MyText,
   MyTitle,
@@ -20,6 +24,7 @@ import { Card } from '../../../../containers';
 import {
   CreateUserRequest,
   UserResponse,
+  UserType,
 } from '../../../../types/userControllerApiResponse';
 import { ImmutableObject, useHookstate } from '@hookstate/core';
 import { userStore } from '../../../../store/UserStore';
@@ -33,21 +38,34 @@ export default function AddUsers({
   contentOpacity?: any;
 }) {
   const [loading, setLoading] = useState(false);
+  const [roleId, setRoleId] = useState<number | null>(null);
+  const [roleError, setRoleError] = useState(false);
   const userData: ImmutableObject<ImmutableObject<UserResponse>> | null =
     useHookstate(userStore?.userData).get();
+  const userRoles: ImmutableObject<ImmutableObject<UserType[]>> | null =
+    useHookstate(userStore?.userRoles).get();
+
+  useEffect(() => {
+    if (roleId! > 0) setRoleError(false);
+  }, [roleId]);
+
   const onSubmit = async (values: {
     firstName: string;
     lastName: string;
     email: string;
   }) => {
     try {
+      if (roleId! < 1) {
+        setRoleError(true);
+        return;
+      }
       setLoading(true);
       // Check if user already exists
       const data: any = await CheckUserExists(values.email, '');
       const obj: CreateUserRequest = {
         ...values,
         email: values.email?.toLowerCase(),
-        userTypeId: 2,
+        userTypeId: roleId ?? undefined,
         masjidId: userData?.masjid?.id.toString(),
       };
       // If user already exists so direct add to masjid
@@ -145,12 +163,25 @@ export default function AddUsers({
                     value={values.phone}
                     containerStyle={{ marginVertical: 10 }}
                   /> */}
+                  <MyDropDown
+                    title={''}
+                    searchDisabled
+                    placeholder="Role"
+                    items={(userRoles as []) ?? []}
+                    onChangeValue={e => setRoleId(e.id)}
+                    width={WINDOW_WIDTH - 50}
+                    containerPadding={0}
+                  />
                 </Card>
                 {Object.entries(errors).map(([key, value]) => {
                   // @ts-ignore
                   if (touched[key]) {
+                    if (roleId! < 1) {
+                      setRoleError(true);
+                    }
                     return (
                       <MyText
+                        key={value}
                         text={value}
                         textStyle={{
                           color: 'red',
@@ -161,6 +192,16 @@ export default function AddUsers({
                     );
                   }
                 })}
+                {roleError && (
+                  <MyText
+                    text={'Role is required'}
+                    textStyle={{
+                      color: 'red',
+                      width: WINDOW_WIDTH - 110,
+                      marginTop: 4,
+                    }}
+                  />
+                )}
               </View>
               <View
                 style={{

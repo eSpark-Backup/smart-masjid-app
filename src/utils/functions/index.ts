@@ -99,12 +99,6 @@ async function _requestUserNotificationPermission() {
 
     if (enabled) {
       console.log('Authorization status:', authStatus);
-      Toast.show({
-        text1: 'Authorization status',
-        text2: authStatus?.toString(),
-        type: 'success',
-        visibilityTime: 19000,
-      });
       _getFCMToken();
     }
   } else {

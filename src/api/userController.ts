@@ -308,3 +308,28 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
     crashlytics().recordError(error as Error);
   }
 };
+
+/**
+ * Get Users of category masjid and display a success or error message.
+ *
+ * @returns A promise that resolves to `true` when the admin is successfully added or `false` if there's an error.
+ */
+export const GetUserTypes = async () => {
+  try {
+    const result: any = await api.get(`/users/type?category=masjid`);
+    if (result.status === 200) {
+      userStore.userRoles.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};

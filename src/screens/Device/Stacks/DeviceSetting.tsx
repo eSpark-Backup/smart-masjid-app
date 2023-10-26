@@ -56,6 +56,7 @@ const DeviceSetting = ({
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isResetVisible, setIsResetVisible] = useState<boolean>(false);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [offlineErrors, setOfflineErrors] = useState<boolean>(false);
   console.log('deive selectedx ??', device);
@@ -114,7 +115,7 @@ const DeviceSetting = ({
         }
       } else {
         Toast.show({
-          text2: 'Selected Device is Offline',
+          text2: 'Device is Offline',
           type: 'error',
         });
       }
@@ -300,7 +301,7 @@ const DeviceSetting = ({
                       : 'No Masjid',
                     icon: <Heart style={{ padding: 10, bottom: 2 }} />,
                     isDelete: device?.masjid?.name ? true : false,
-                    onDelete: cancelSubscription,
+                    onDelete: () => setIsResetVisible(true),
                     onPress:
                       device?.deviceType.id == 1
                         ? () => {
@@ -373,6 +374,19 @@ const DeviceSetting = ({
         }}
         onClose={() => {
           setIsVisible(!isVisible);
+          console.log('Cancelled');
+        }}
+      />
+      <LogoutModal
+        message="Are you sure you want to cancel subscription?"
+        visible={isResetVisible}
+        onAllowed={async () => {
+          await cancelSubscription();
+          setIsResetVisible(!isResetVisible);
+          console.log('Logged Out');
+        }}
+        onClose={() => {
+          setIsResetVisible(!isResetVisible);
           console.log('Cancelled');
         }}
       />

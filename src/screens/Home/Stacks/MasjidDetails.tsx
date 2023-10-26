@@ -80,12 +80,6 @@ export default function MasjidDetails({
     }
   }, [isFocused]);
 
-  useEffect(() => {
-    if (currentDevice) {
-      getSubscriptions(currentDevice?.id.toString()!);
-    }
-  }, [currentDevice]);
-
   const getSalahTimes = async () => {
     try {
       setLoading(true);
@@ -94,14 +88,17 @@ export default function MasjidDetails({
         selectedMasjid?.id.toString(),
       ).then(res => {
         setCurrentDevice(connectedDevices[0] as Device);
+        if (connectedDevices[0]) {
+          getSubscriptions(connectedDevices[0]?.id.toString()!);
+        }
       });
-      getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
+      await getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
         data => {
           setSalahTime(data as SalahTimings[]);
-          setLoading(false);
         },
       );
       await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
+      setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -111,11 +108,6 @@ export default function MasjidDetails({
     try {
       getDeviceSubscriptions(id).then(data => {
         setSubs(data);
-        setTimeout(() => {
-          if (loading) {
-            setLoading(false);
-          }
-        }, 2000);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
