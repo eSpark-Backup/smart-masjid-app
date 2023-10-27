@@ -60,7 +60,6 @@ export default function App() {
               textStyle={{ textAlign: 'center' }}
               text="Have you purchased the device ?"
             />
-            Œ
             <GapView length={50} />
             <Joined
               containerStyle={{ alignSelf: 'center' }}

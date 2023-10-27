@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View, Animated, Platform } from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -45,10 +45,14 @@ const DeviceSetting = ({
   device,
   contentOpacity = 0,
   goBack,
+  clearSelections,
+  clearDone,
 }: {
   device?: Device;
   contentOpacity: any;
   goBack?: () => void;
+  clearSelections?: boolean;
+  clearDone?: () => void;
 }) => {
   const theme: Theme = useTheme();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
@@ -62,6 +66,13 @@ const DeviceSetting = ({
   console.log('deive selectedx ??', device);
 
   const styles = useMemo(() => makeStyles(theme), []);
+
+  useEffect(() => {
+    if (clearSelections) {
+      setIsEditable(false);
+      clearDone!();
+    }
+  }, [clearSelections]);
 
   const removeDevice = async () => {
     setLoader(true);

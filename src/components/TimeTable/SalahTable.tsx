@@ -22,13 +22,13 @@ const RowItem = ({
         </View>
         <View style={styles.contentCol}>
           <MyText
-            text={moment(item.adhan, 'HH:mm:ss').format('h:mm A')}
+            text={moment(item.adhan, 'HH:mm:ss').format('hh:mm')}
             size={16}
           />
         </View>
         <View style={styles.contentCol}>
           <MyText
-            text={moment(item.Iqama, 'HH:mm:ss').format('h:mm A')}
+            text={moment(item.Iqama, 'HH:mm:ss').format('hh:mm')}
             size={16}
           />
         </View>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'center' },
+  headerCol: { width: '30%', alignItems: 'flex-start' },
   headerIcon: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingLeft: 10,
     paddingVertical: 5,
   },
   editContentRow: {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30%', alignItems: 'center' },
+  contentCol: { width: '30.5%', alignItems: 'flex-start' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

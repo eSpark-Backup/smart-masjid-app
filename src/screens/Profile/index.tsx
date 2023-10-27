@@ -61,6 +61,7 @@ export default function Profile() {
   const [jummaData, setJummaData] = useState<object | null>(null);
   const [iqamaData, setIqamaData] = useState<IqamahTime | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
+  const [clear, setClear] = useState(false);
 
   const titles: Titles = {
     mAcc: 'Manage Account',
@@ -141,12 +142,17 @@ export default function Profile() {
 
   const getTitle = () => titles[flag] ?? '';
 
+  const clearSelections = () => {
+    flag == 'mAcc' && setClear(!clear);
+  };
+
   return (
     <Wrapper
       bgImageSpacer={false}
       showFooter={false}
       title={getTitle()}
-      onBackPress={() => handleBack(flag)}>
+      onBackPress={() => handleBack(flag)}
+      onBackDropPress={clearSelections}>
       {({ props }) => {
         const componentMapping: ComponentMap = {
           uInfo: (
@@ -157,7 +163,9 @@ export default function Profile() {
           ),
           mAcc: (
             <ManageAccount
+              clearSelections={clear}
               contentOpacity={props.contentOpacity}
+              clearDone={clearSelections}
               setFlag={(value: string) => setFlag(value)}
             />
           ),

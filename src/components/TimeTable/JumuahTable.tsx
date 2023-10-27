@@ -43,14 +43,17 @@ const RowItem = ({
   return (
     <TouchableOpacity activeOpacity={0.9}>
       <View style={[styles.contentRow, { height: 40 }]}>
-        <View style={styles.contentCol}>
+        <View
+          style={{
+            width: '35%',
+          }}>
           <MyText text={item.name} size={16} />
         </View>
         <View style={styles.contentCol}>
           <MyText
             text={
               item.khutba
-                ? moment(item.khutba, 'HH:mm:ss').format('h:mm A')
+                ? moment(item.khutba, 'HH:mm:ss').format('hh:mm')
                 : 'unknown'
             }
             size={16}

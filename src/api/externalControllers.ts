@@ -139,21 +139,28 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         userId: result.data.id,
         lastOTPVerified: otp,
       });
-      userStore.token.set(token?.data?.token);
-      api.setHeaders({
-        Authorization: `Bearer ${token?.data?.token}`,
-      });
-      userStore.userData.set(result.data);
-      crashlytics().setAttributes({
-        id: result.data?.id.toString(),
-        email: result.data?.email,
-        phone: result.data?.phone,
-        token: token?.data?.token,
-      });
-      setDataInLocalStorage('user', JSON.stringify(result.data));
-      setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
-      console.log('token', JSON.stringify(token?.data?.token));
-      return result.data;
+      if (token?.data?.token == null || token?.data?.token == '') {
+        Toast.show({
+          text2:
+            'Some error occurred during account setup, please try logging in again',
+          type: 'error',
+        });
+      } else {
+        userStore.token.set(token?.data?.token);
+        api.setHeaders({
+          Authorization: `Bearer ${token?.data?.token}`,
+        });
+        userStore.userData.set(result.data);
+        crashlytics().setAttributes({
+          id: result.data?.id.toString(),
+          email: result.data?.email,
+          phone: result.data?.phone,
+        });
+        setDataInLocalStorage('user', JSON.stringify(result.data));
+        setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
+        console.log('token', JSON.stringify(token?.data?.token));
+        return result.data;
+      }
     } else {
       Toast.show({
         text2: 'User not found',
@@ -200,12 +207,14 @@ export const CheckUserExists = async (email: string, phone: string) => {
  * @param phoneId - The phone ID to check.
  * @returns A `Promise` that resolves to a `PhoneIdResponse` if the phone ID exists, or rejects with an error if there was an issue.
  */
-export async function _checkPhoneId(phoneId: string): Promise<PhoneIdResponse> {
+export async function _checkPhoneId(
+  phoneId: string,
+): Promise<boolean | undefined> {
   try {
-    const res = await xApi.get<SuccessCheckPhoneId, FailCheckPhoneId>(
+    const res = await xApi.get<boolean>(
       '/external/phone/exists?deviceId=' + phoneId,
     );
-    if (res.data) return res.data;
+    return res.data;
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log(error);
@@ -235,14 +244,24 @@ export const CreateUser = async (
         lastOTPVerified: otp,
       });
       console.log('Kha tk chala', token);
-      userStore.token.set(token?.data?.token);
-      userStore.currentRegisterUser.set(result.data);
+      if (token?.data?.token == null || token?.data?.token == '') {
+        Toast.show({
+          text2: 'Some error occurred during account setup, please try again',
+          type: 'error',
+        });
+      } else {
+        userStore.token.set(token?.data?.token);
+        userStore.currentRegisterUser.set(result.data);
 
-      api.setHeaders({
-        Authorization: `Bearer ${token?.data?.token}`,
-      });
-      await setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
-      return result.data;
+        api.setHeaders({
+          Authorization: `Bearer ${token?.data?.token}`,
+        });
+        await setDataInLocalStorage(
+          'token',
+          JSON.stringify(token?.data?.token),
+        );
+        return result.data;
+      }
     }
   } catch (error) {
     crashlytics().recordError(error as Error);

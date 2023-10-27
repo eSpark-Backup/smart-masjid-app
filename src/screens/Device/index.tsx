@@ -79,6 +79,7 @@ export default function Device({ contentOpacity = 0 }: any) {
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('1');
   const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
+  const [clear, setClear] = useState(false);
   const user = useHookstate(userStore?.userData)?.get();
   const USER_TOKEN: any = useHookstate(userStore?.token)?.get();
   const devices: any = useHookstate(deviceStore?.devices)?.get();
@@ -123,6 +124,10 @@ export default function Device({ contentOpacity = 0 }: any) {
     return true;
   };
 
+  const clearSelections = () => {
+    step == 1 && setClear(!clear);
+  };
+
   const finalData = activeTab == '1' ? devices : masjidDevices;
 
   console.log('devices', activeTab == '1' ? devices : masjidDevices);
@@ -132,7 +137,8 @@ export default function Device({ contentOpacity = 0 }: any) {
       onBackPress={onBackPress}
       showFooter={false}
       bgImageSpacer={false}
-      title="Devices">
+      title="Devices"
+      onBackDropPress={clearSelections}>
       {({ props }) => {
         return (
           <>
@@ -227,6 +233,8 @@ export default function Device({ contentOpacity = 0 }: any) {
             )}
             {step == 1 && (
               <DeviceSetting
+                clearSelections={clear}
+                clearDone={clearSelections}
                 contentOpacity={props.contentOpacity}
                 device={selectedDevice}
                 goBack={() => setStep(0)}

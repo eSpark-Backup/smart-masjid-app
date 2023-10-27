@@ -316,7 +316,10 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
  */
 export const GetUserTypes = async () => {
   try {
+    console.log('usertypes result');
     const result: any = await api.get(`/users/type?category=masjid`);
+    console.log('usertypes results', result);
+
     if (result.status === 200) {
       userStore.userRoles.set(result.data);
     } else if (result.status == 401) {

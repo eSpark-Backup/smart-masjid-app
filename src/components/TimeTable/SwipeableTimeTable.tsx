@@ -53,13 +53,13 @@ const RowItem = ({
         </View>
         <View style={styles.contentCol}>
           <MyText
-            text={moment(item.adhan, 'HH:mm:ss').format('h:mm A')}
+            text={moment(item.adhan, 'HH:mm:ss').format('hh:mm')}
             size={16}
           />
         </View>
-        <View style={styles.contentCol}>
+        <View style={{ ...styles.contentCol, width: '26%' }}>
           <MyText
-            text={moment(item.Iqama, 'HH:mm:ss').format('h:mm A')}
+            text={moment(item.Iqama, 'HH:mm:ss').format('hh:mm')}
             size={16}
           />
         </View>
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30%', alignItems: 'flex-start' },
+  contentCol: { width: '32%', alignItems: 'flex-start' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

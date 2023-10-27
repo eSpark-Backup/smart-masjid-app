@@ -1,5 +1,5 @@
 import { useHookstate } from '@hookstate/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -45,10 +45,14 @@ export default function ManageAccount({
   setFlag,
   showVerification = false,
   contentOpacity = 0,
+  clearSelections,
+  clearDone,
 }: {
   setFlag: (value: string) => void;
   showVerification?: boolean;
   contentOpacity?: any;
+  clearSelections?: boolean;
+  clearDone?: () => void;
 }) {
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const { colors }: Theme = useTheme();
@@ -91,6 +95,14 @@ export default function ManageAccount({
       editable: false,
     },
   ]);
+
+  useEffect(() => {
+    if (clearSelections) {
+      clearSelection();
+      clearDone!();
+    }
+  }, [clearSelections]);
+
   const onEditPress = (key: string) => {
     const newData = displayData.map(data => {
       if (data.key == key) {
