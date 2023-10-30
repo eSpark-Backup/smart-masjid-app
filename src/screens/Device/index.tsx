@@ -124,10 +124,6 @@ export default function Device({ contentOpacity = 0 }: any) {
     return true;
   };
 
-  const clearSelections = () => {
-    step == 1 && setClear(!clear);
-  };
-
   const finalData = activeTab == '1' ? devices : masjidDevices;
 
   console.log('devices', activeTab == '1' ? devices : masjidDevices);
@@ -137,8 +133,7 @@ export default function Device({ contentOpacity = 0 }: any) {
       onBackPress={onBackPress}
       showFooter={false}
       bgImageSpacer={false}
-      title="Devices"
-      onBackDropPress={clearSelections}>
+      title="Devices">
       {({ props }) => {
         return (
           <>
@@ -233,8 +228,6 @@ export default function Device({ contentOpacity = 0 }: any) {
             )}
             {step == 1 && (
               <DeviceSetting
-                clearSelections={clear}
-                clearDone={clearSelections}
                 contentOpacity={props.contentOpacity}
                 device={selectedDevice}
                 goBack={() => setStep(0)}

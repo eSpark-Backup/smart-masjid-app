@@ -33,7 +33,6 @@ export default function Wrapper({
   bgImageSpacer = true,
   showBack = true,
   title = '',
-  onBackDropPress,
 }: {
   children: ({
     props,
@@ -47,7 +46,6 @@ export default function Wrapper({
   bgImageSpacer?: boolean;
   showBack?: boolean;
   title?: string;
-  onBackDropPress?: () => void;
 }) {
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -96,9 +94,10 @@ export default function Wrapper({
         <MyTitle text={title} style={{ color: '#fff' }} />
       </Animated.View>
 
-      <TouchableWithoutFeedback
-        style={{ flex: 1, backgroundColor: 'red' }}
-        onPress={onBackDropPress}>
+      <View
+        style={{ flex: 1 }}
+        // onPress={onBackDropPress}
+      >
         <View style={{ flex: 1 }}>
           <View style={styles.imageBackgroundStyle}>
             <Animated.View
@@ -178,7 +177,7 @@ export default function Wrapper({
             />
           )}
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </>
   );
 }

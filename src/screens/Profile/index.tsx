@@ -142,17 +142,12 @@ export default function Profile() {
 
   const getTitle = () => titles[flag] ?? '';
 
-  const clearSelections = () => {
-    flag == 'mAcc' && setClear(!clear);
-  };
-
   return (
     <Wrapper
       bgImageSpacer={false}
       showFooter={false}
       title={getTitle()}
-      onBackPress={() => handleBack(flag)}
-      onBackDropPress={clearSelections}>
+      onBackPress={() => handleBack(flag)}>
       {({ props }) => {
         const componentMapping: ComponentMap = {
           uInfo: (
@@ -163,9 +158,7 @@ export default function Profile() {
           ),
           mAcc: (
             <ManageAccount
-              clearSelections={clear}
               contentOpacity={props.contentOpacity}
-              clearDone={clearSelections}
               setFlag={(value: string) => setFlag(value)}
             />
           ),
