@@ -180,6 +180,7 @@ export default function MasjidDetails({
           subscriptions={subs}
           setSubscriptions={setSubs}
           setLoading={val => setLoading(val)}
+          deviceGetsOnline={getSalahTimes}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />

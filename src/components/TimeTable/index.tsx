@@ -94,12 +94,18 @@ const RowItem = ({
                           height: 40,
                           marginLeft: Platform.OS == 'ios' ? 5 : 0,
                         }}>
-                        <MyText
-                          textStyle={{
-                            bottom: Platform.OS == 'android' ? 2 : 0,
+                        <TextInput
+                          editable={false}
+                          defaultValue={'Mins'}
+                          style={{
+                            fontSize: 16,
+                            color: colors.text,
+                            height: 40,
+                            textAlign: 'center',
+                            // fontWeight: '400',
+                            fontFamily: 'Roboto-Regular',
+                            paddingVertical: 10,
                           }}
-                          size={16}
-                          text="Mins"
                         />
                       </View>
                     </TouchableOpacity>

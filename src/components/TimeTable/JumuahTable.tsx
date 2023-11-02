@@ -12,10 +12,12 @@ import {
   SubscriptionList,
 } from '../../types/masjidControllerTypes';
 import {
+  _checkDeviceTelemetry,
   addSubscription,
   removeSubscription,
 } from '../../api/deviceController';
 import { Device } from '../../types/deviceControllerTypes';
+import Toast from 'react-native-toast-message';
 
 const RowItem = ({
   item,
@@ -62,13 +64,13 @@ const RowItem = ({
         {isMute ? (
           <View style={styles.contentIcon}>
             {subscribed ? (
-              <VolumUpGreen
-                onPress={toggleSubscription}
-                height={16}
-                width={16}
-              />
+              <TouchableOpacity onPress={toggleSubscription}>
+                <VolumUpGreen height={16} width={16} />
+              </TouchableOpacity>
             ) : (
-              <MuteSvg onPress={toggleSubscription} height={16} width={16} />
+              <TouchableOpacity onPress={toggleSubscription}>
+                <MuteSvg height={16} width={16} />
+              </TouchableOpacity>
             )}
           </View>
         ) : (
@@ -100,7 +102,18 @@ export default function JumuahTable({
   deviceInfo?: Device;
   setLoading?: (val: boolean) => void;
 }) {
-  const updateSubscriptions = (id: string, adhanName: string) => {
+  const updateSubscriptions = async (id: string, adhanName: string) => {
+    const isValid = await _checkDeviceTelemetry(
+      deviceInfo?.id?.toString()!,
+      false,
+    );
+    if (!isValid) {
+      Toast.show({
+        type: 'error',
+        text2: 'Device is currently offline',
+      });
+      return;
+    }
     if (id) {
       setLoading!(true);
       removeSubscription(deviceInfo?.id.toString() as string, id).then(data => {

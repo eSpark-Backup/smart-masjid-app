@@ -27,7 +27,6 @@ import {
   MyTitle,
   OverlayLoader,
   Rounded,
-  TestInput,
   TextLabel,
 } from '../../../../components';
 import { userStore } from '../../../../store/UserStore';
@@ -390,7 +389,7 @@ export default function ManageAccount({
               onAllowed={async () => {
                 setLoading(true);
                 setIsVisible(!isVisible);
-                await LogoutUser(userData?.id?.toString() ?? '');
+                await LogoutUser(userData?.id?.toString() ?? '', true);
                 setLoading(false);
                 console.log('Logged Out');
               }}

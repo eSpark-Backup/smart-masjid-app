@@ -272,13 +272,9 @@ const SearchListing = ({
             />
           </Card>
         </View>
-        <GapView />
+        <GapView length={20} />
         <FlatList
           data={masjidList}
-          contentContainerStyle={{
-            paddingBottom: 240,
-            paddingTop: 10,
-          }}
           renderItem={({ item, index }) => (
             <MasjidListCard
               onPress={() => onPress?.(item)}

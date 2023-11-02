@@ -264,8 +264,8 @@ export default function MyInput(props: MyInputProps) {
           <TextInput
             maxLength={maxLength}
             editable={selectMode && !disabled}
-            autoComplete="off"
-            autoCorrect={false}
+            // autoComplete="off"
+            // autoCorrect={false}
             keyboardType={isPhoneCode ? 'number-pad' : 'default'}
             style={[
               styles.inputStyle,

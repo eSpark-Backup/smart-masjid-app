@@ -39,7 +39,7 @@ export type UserToken = {
   exp: Date;
 };
 
-type Permission = {
+export type UserPermissions = {
   id: number;
   name: string;
 };
@@ -47,7 +47,7 @@ type Permission = {
 export type UserType = {
   id: number;
   name: string;
-  permissions: Permission[];
+  permissions: UserPermissions[];
 };
 
 export type UserPhone = {

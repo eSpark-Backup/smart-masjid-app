@@ -11,6 +11,7 @@ import { Theme, useTheme } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { InfoCircle } from '../../assets';
+import MyText from '../MyText';
 
 interface CustomTooltipProps {
   content: string;
@@ -54,7 +55,7 @@ export default function MyTooltip({
         }}
         childrenWrapperStyle={{ display: 'none' }}
         arrowStyle={{ borderTopColor: colors.primary }}
-        content={<Text style={{ color: '#3E3E3E' }}>{content}</Text>}
+        content={<MyText textStyle={{ color: '#3E3E3E' }} text={content} />}
         placement={position}
         backgroundStyle={{ backgroundColor: 'blue' }}
         topAdjustment={Platform.OS == 'android' ? -useSafeAreaInsets().top : 0}

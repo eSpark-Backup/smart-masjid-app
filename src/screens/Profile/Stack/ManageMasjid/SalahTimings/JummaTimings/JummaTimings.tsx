@@ -55,48 +55,50 @@ export default function JummaTimings({
   }, []);
 
   const getAllJumuahTimings = () => {
-    GetMasjidJummahTiming(
-      userData?.masjid.id.toString() as string,
-      moment(new Date()).format('YYYY-MM-DD'),
-    ).then((jumuahTime: JummahTime[]) => {
-      if (jumuahTime.length > 0) {
-        jumuahTime.map((item, index) => {
-          let jumuahData = [];
-          let jumuahs: jumuahsData[] = [];
-          let jumuah = Object.keys(item).filter(val =>
-            val.includes('jumuah'),
-          ) as Array<'jumuah1' | 'jumuah2' | 'jumuah3'>;
-          jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
-            let data: jumuahsData;
-            data = {
-              name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
-              value: moment(jumuahTime[index][`${jumuah}`], 'HH:mm:ss').format(
-                'LT',
-              ),
+    GetMasjidJummahTiming(userData?.masjid.id.toString() as string).then(
+      (jumuahTime: JummahTime[]) => {
+        if (jumuahTime.length > 0) {
+          let jumuahData: any = [];
+          jumuahTime.map((item, index) => {
+            let jumuahs: jumuahsData[] = [];
+            let jumuah = Object.keys(item).filter(val =>
+              val.includes('jumuah'),
+            ) as Array<'jumuah1' | 'jumuah2' | 'jumuah3'>;
+            jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
+              let data: jumuahsData;
+              data = {
+                name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
+                value: moment(
+                  jumuahTime[index][`${jumuah}`],
+                  'HH:mm:ss',
+                ).format('LT'),
+              };
+              jumuahTime[index][`${jumuah}`] != null
+                ? jumuahs.push(data)
+                : null;
+            });
+            const namazData = {
+              id: jumuahTime[index].id,
+              date: jumuahTime[index].effectiveDate,
+              data: jumuahs,
             };
-            jumuahTime[index][`${jumuah}`] != null ? jumuahs.push(data) : null;
+            if (
+              moment(namazData?.date).format('YYYY-MM-DD') <=
+              moment().format('YYYY-MM-DD')
+            ) {
+              setCurrentData(namazData);
+            } else if (
+              moment(namazData?.date).format('YYYY-MM-DD') >
+              moment().format('YYYY-MM-DD')
+            ) {
+              jumuahData.push(namazData);
+            }
           });
-          const namazData = {
-            id: jumuahTime[index].id,
-            date: jumuahTime[index].effectiveDate,
-            data: jumuahs,
-          };
-          if (
-            moment(namazData?.date).format('YYYY-MM-DD') <=
-            moment(new Date()).format('YYYY-MM-DD')
-          ) {
-            setCurrentData(namazData);
-          } else if (
-            moment(namazData?.date).format('YYYY-MM-DD') >
-            moment(new Date()).format('YYYY-MM-DD')
-          ) {
-            jumuahData.push(namazData);
-          }
           setData(jumuahData);
-        });
-        setLoading(false);
-      } else setLoading(false);
-    });
+          setLoading(false);
+        } else setLoading(false);
+      },
+    );
   };
 
   const deleteJumuahTime = () => {

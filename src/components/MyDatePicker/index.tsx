@@ -118,10 +118,7 @@ export default function MyDatePicker({
   } else {
     return (
       <>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          disabled={disablePicker}
-          onPress={() => setShow(true)}
+        <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -139,10 +136,10 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          <TouchableOpacity onPress={nextDate}>
+          <TouchableOpacity
+            disabled={!moment(date).isAfter(minimumDate)}
+            onPress={prevDate}>
             <II
-              disabled={!moment(date).isAfter(minimumDate)}
-              onPress={prevDate}
               color={
                 moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
               }
@@ -151,17 +148,23 @@ export default function MyDatePicker({
             />
           </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          <MyTextSubHeader
-            text={
-              dateFormat == 'Monthly'
-                ? moment(date)?.format('MMM, YYYY')
-                : moment(date)?.format('MMM-DD, YYYY')
-            }
-          />
+          <TouchableOpacity
+            activeOpacity={0.9}
+            disabled={disablePicker}
+            onPress={() => setShow(true)}>
+            <MyTextSubHeader
+              text={
+                dateFormat == 'Monthly'
+                  ? moment(date)?.format('MMM, YYYY')
+                  : moment(date)?.format('MMM-DD, YYYY')
+              }
+            />
+          </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          <TouchableOpacity onPress={nextDate}>
+          <TouchableOpacity
+            disabled={!moment(date).isBefore(maximumDate)}
+            onPress={nextDate}>
             <II
-              disabled={!moment(date).isBefore(maximumDate)}
               color={
                 moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
               }
@@ -169,7 +172,7 @@ export default function MyDatePicker({
               size={24}
             />
           </TouchableOpacity>
-        </TouchableOpacity>
+        </View>
       </>
     );
   }

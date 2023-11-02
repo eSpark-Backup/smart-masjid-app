@@ -14,6 +14,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import {
   DeleteAdminFromMasjid,
   GetMasjidAdmins,
+  LogoutUser,
 } from '../../../../api/userController';
 import { AddIcon, Delete, ProfileDummy } from '../../../../assets';
 import {
@@ -55,6 +56,11 @@ export default function ManageUsers({
   const onDelete = async () => {
     setIsVisible('');
     setLoading(true);
+    if (isVisible == userData?.id.toString()) {
+      await LogoutUser(userData?.id?.toString() ?? '', true);
+      setLoading(false);
+      return;
+    }
     await DeleteAdminFromMasjid(isVisible, userData?.masjid?.id.toString()!);
     setLoading(false);
   };

@@ -123,9 +123,6 @@ export default function ManageMasjid({
                   title: 'Adhan settings',
                   icon: <AdhanSettingSvg width={25} height={25} />,
                   onPress: () => setFlag('aSet'),
-                  hidden: !userData?.userType?.permissions?.some(
-                    val => val?.name == 'MANAGE_MASJID_VIEW_ADHAN_SETTINGS',
-                  ),
                 },
                 {
                   title: 'Salah Timings',

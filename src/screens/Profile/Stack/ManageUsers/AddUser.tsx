@@ -7,6 +7,7 @@ import { api } from '../../../../api';
 import { CheckUserExists } from '../../../../api/externalControllers';
 import {
   AddAdminIntoMasjid,
+  GetUser,
   GetUserTypes,
 } from '../../../../api/userController';
 import {
@@ -61,16 +62,31 @@ export default function AddUsers({
       }
       setLoading(true);
       // Check if user already exists
-      const data: any = await CheckUserExists(values.email, '');
+      const data: UserResponse = await GetUser(values.email);
       const obj: CreateUserRequest = {
         ...values,
         email: values.email?.toLowerCase(),
         userTypeId: roleId ?? undefined,
         masjidId: userData?.masjid?.id.toString(),
       };
+      console.log('data kitna', data);
+
+      console.log('data check', data.userType.name);
+
+      setLoading(false);
+
       // If user already exists so direct add to masjid
-      if (data) {
-        const res = await AddAdminIntoMasjid(data?.id?.toString(), '1');
+      if (data && data.userType.name != 'Customer') {
+        Toast.show({
+          text2: 'User already exists with the given email',
+          type: 'error',
+        });
+      } else if (data && data.userType.name == 'Customer') {
+        const res = await AddAdminIntoMasjid(
+          data?.id?.toString(),
+          userData?.masjid?.id.toString()!,
+          roleId ?? 0,
+        );
         setLoading(false);
         if (res) setFlag('mUsers');
       } else {

@@ -252,14 +252,9 @@ export const GetAdhanTimings = async (
  * @param date - The date for which to retrieve the Jummah configuration (optional).
  * @returns A `Promise` that resolves to Jummah configuration data if successful, or handles errors if there was a problem.
  */
-export const GetMasjidJummahTiming = async (
-  masjidId: string,
-  date?: string,
-) => {
+export const GetMasjidJummahTiming = async (masjidId: string) => {
   try {
-    const result: any = await api.get(`/masjid/${masjidId}/jumuah`, {
-      date: date,
-    });
+    const result: any = await api.get(`/masjid/${masjidId}/jumuah`);
 
     if (result.status == 200) {
       return result.data;
