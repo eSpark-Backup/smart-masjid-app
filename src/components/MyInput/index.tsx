@@ -25,6 +25,7 @@ import { externalStore } from '../../store/ExternalStore';
 import { CountryCodes } from '../../types';
 import { _requestUserLocationPermission } from '../../utils/functions';
 import { useLayoutAnimation } from '../../utils';
+import systemSetting from 'react-native-system-setting';
 
 interface MyInputProps {
   isDivider?: boolean;
@@ -119,13 +120,18 @@ export default function MyInput(props: MyInputProps) {
         checkMultiple([
           PERMISSIONS.IOS.LOCATION_ALWAYS,
           PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-        ]).then(statuses => {
+        ]).then(async statuses => {
           console.log(statuses[PERMISSIONS.IOS.LOCATION_ALWAYS]);
           if (
             statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] == 'granted' ||
             statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
           ) {
-            setLocationPermission(true);
+            const enable = await systemSetting.isLocationEnabled();
+            if (enable) {
+              setLocationPermission(true);
+            } else {
+              setLocationPermission(false);
+            }
           } else {
             setLocationPermission(false);
           }
@@ -135,7 +141,12 @@ export default function MyInput(props: MyInputProps) {
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
         if (granted) {
-          setLocationPermission(true);
+          const enable = await systemSetting.isLocationEnabled();
+          if (enable) {
+            setLocationPermission(true);
+          } else {
+            setLocationPermission(false);
+          }
         } else {
           setLocationPermission(false);
         }
@@ -253,8 +264,8 @@ export default function MyInput(props: MyInputProps) {
           <TextInput
             maxLength={maxLength}
             editable={selectMode && !disabled}
-            autoComplete="off"
-            autoCorrect={false}
+            // autoComplete="off"
+            // autoCorrect={false}
             keyboardType={isPhoneCode ? 'number-pad' : 'default'}
             style={[
               styles.inputStyle,
@@ -291,7 +302,6 @@ export default function MyInput(props: MyInputProps) {
         {searchBar && (
           <>
             <MI
-              disabled={!locationPermission}
               name="my-location"
               style={{
                 alignSelf: 'center',

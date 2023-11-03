@@ -9,6 +9,8 @@ import {
   Masjid,
   SalahTimings,
 } from '../types/masjidControllerTypes';
+import { LogoutUser } from './userController';
+import { userStore } from '../store/UserStore';
 
 /**
  *
@@ -20,6 +22,13 @@ export const GetMasjid = async (masjidId: string) => {
     const result: any = await api.get(`/masjid/${masjidId}`);
     if (result.status == 200) {
       masjidStore.masjid.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -37,6 +46,13 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
     const result: any = await api.get(`/masjid/${masjidId}/adhan/config`);
     if (result.status == 200) {
       masjidStore.adhanConfig.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -55,6 +71,13 @@ export const GetMasjidIqamahTiming = async (masjidId: string) => {
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
       return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -79,6 +102,8 @@ export const AddMasjidIqamahTiming = async (
     console.log('result.data', result);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -111,6 +136,8 @@ export const UpdateMasjidIqamahTiming = async (
     );
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       console.log('result.data', result.data?.message);
       Toast.show({
@@ -143,6 +170,8 @@ export const DeleteMasjidIqamahTiming = async (
     );
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -168,6 +197,13 @@ export const GetIqamahHistory = async (masjidId: string) => {
     const result: any = await api.get(`/masjid/${masjidId}/iqama/history`);
     if (result.status == 200) {
       masjidStore.iqamahHistory.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -196,6 +232,13 @@ export const GetAdhanTimings = async (
     });
     if (result.status == 200) {
       masjidStore.adhanTimings.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -209,18 +252,19 @@ export const GetAdhanTimings = async (
  * @param date - The date for which to retrieve the Jummah configuration (optional).
  * @returns A `Promise` that resolves to Jummah configuration data if successful, or handles errors if there was a problem.
  */
-export const GetMasjidJummahTiming = async (
-  masjidId: string,
-  date?: string,
-) => {
+export const GetMasjidJummahTiming = async (masjidId: string) => {
   try {
-    const result: any = await api.get(`/masjid/${masjidId}/jumuah`, {
-      date: date,
-    });
+    const result: any = await api.get(`/masjid/${masjidId}/jumuah`);
 
     if (result.status == 200) {
-      masjidStore.JummahTime.set(result.data);
       return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -247,6 +291,13 @@ export const GetMasjidCurrentJummahTiming = async (
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
       return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -269,6 +320,8 @@ export const AddMasjidJummahTiming = async (
     const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -302,6 +355,8 @@ export const UpdatedMasjidJummahTiming = async (
     console.log(result);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -333,6 +388,8 @@ export const DeleteMasjidJummahTiming = async (
     );
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -358,6 +415,13 @@ export const GetJummahHistory = async (masjidId: string) => {
     const result: any = await api.get(`/masjid/${masjidId}/jumuah/history`);
     if (result.status == 200) {
       masjidStore.JummahHistory.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -377,14 +441,23 @@ export const SearchMasjidByLocation = async (
   lat: string | number = 0,
   long: string | number = 0,
 ) => {
+  console.log('lat long', lat, long);
+
   try {
-    const result = await api.get(
+    const result: any = await api.get(
       `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&distance=100`,
     );
     console.log('result', result);
 
     if (result.status == 200 && result.data) {
       return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -400,13 +473,22 @@ export const SearchMasjidByLocation = async (
  */
 export const getListMasjidSubscribedByUser = async (userId: string) => {
   try {
-    const result = await api.get(`/masjid/subscriptions/user/${userId}`);
-    const masjidList = result.data as Masjid[];
-    // console.log("masjidList", masjidList);
-    masjidStore?.userMasjidList?.set(
-      masjidList?.length > 0 ? masjidList : null,
-    );
-    return result.data;
+    const result: any = await api.get(`/masjid/subscriptions/user/${userId}`);
+    if (result.status == 200 && result.data) {
+      const masjidList = result.data as Masjid[];
+      // console.log("masjidList", masjidList);
+      masjidStore?.userMasjidList?.set(
+        masjidList?.length > 0 ? masjidList : null,
+      );
+      return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
+    }
   } catch (error) {
     console.log('getListMasjidSubscribedByUser error: ', error);
     crashlytics().recordError(error as Error);
@@ -429,9 +511,18 @@ export const getSalahTimingsOfMasjid = async (
       date: date?.toString(),
       range: 'MONTH',
     });
-    const timings = result?.data?.timings as SalahTimings[];
-    masjidStore?.salahTimings?.set(timings ?? []);
-    return timings;
+    if (result.status == 200 && result.data) {
+      const timings = result?.data?.timings as SalahTimings[];
+      masjidStore?.salahTimings?.set(timings ?? []);
+      return timings;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
+    }
   } catch (error) {
     console.log('getSalahTimingsOfMasjid error: ', error);
     crashlytics().recordError(error as Error);

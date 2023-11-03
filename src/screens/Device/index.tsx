@@ -79,6 +79,7 @@ export default function Device({ contentOpacity = 0 }: any) {
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('1');
   const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
+  const [clear, setClear] = useState(false);
   const user = useHookstate(userStore?.userData)?.get();
   const USER_TOKEN: any = useHookstate(userStore?.token)?.get();
   const devices: any = useHookstate(deviceStore?.devices)?.get();
@@ -193,7 +194,7 @@ export default function Device({ contentOpacity = 0 }: any) {
                       }) => {
                         if (index != finalData?.length) {
                           return (
-                            <View style={{ marginHorizontal: 10 }}>
+                            <View style={{ marginHorizontal: 12 }}>
                               <DeviceCard
                                 deviceData={item}
                                 onPress={() => {

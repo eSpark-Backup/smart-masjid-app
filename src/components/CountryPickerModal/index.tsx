@@ -77,7 +77,7 @@ export default function CountryModal({
     <Modal
       animationType="fade"
       transparent={true}
-      // statusBarTranslucent={true}
+      statusBarTranslucent={true}
       visible={visibleState}
       onRequestClose={onCross}>
       <View style={styles.centeredView}>
@@ -105,7 +105,6 @@ export default function CountryModal({
                             flexGrow: 1,
                             width: WINDOW_WIDTH - 80,
                             alignSelf: 'center',
-                            paddingBottom: 400,
                             marginTop: 10,
                           },
                         ]}
@@ -143,9 +142,10 @@ export default function CountryModal({
                         showsVerticalScrollIndicator={false}
                       />
                     ) : (
-                      <Text style={[styles.defaultTextStyleEmpty]}>
-                        {EmptyMessage}
-                      </Text>
+                      <MyText
+                        textStyle={styles.defaultTextStyleEmpty}
+                        text={EmptyMessage}
+                      />
                     )}
                   </View>
                 </View>

@@ -7,6 +7,7 @@ import { DeviceInfo } from '../types';
 import { userStore } from '../store/UserStore';
 import { Device } from '../types/deviceControllerTypes';
 import { masjidStore } from '../store/MasjidStore';
+import { LogoutUser } from './userController';
 
 /**
  * Get devices associated with a user.
@@ -20,6 +21,13 @@ export const GetUserDevices = async (userId: string) => {
     const result: any = await api.get(`/devices/user/${userId}`);
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -38,6 +46,13 @@ export const GetMasjidDevices = async (masjidId: string) => {
     const result: any = await api.get(`/devices/masjid/${masjidId}`);
     if (result.status == 200) {
       deviceStore.masjidDevices.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -60,9 +75,13 @@ export const SubscribeMasjid = async (deviceId: string, masjidId: string) => {
     console.log('result', result);
     if (result.status == 200 && result.data) {
       return true;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
       return false;
     }
@@ -87,9 +106,13 @@ export const unSubscribeMasjid = async (deviceId: string, masjidId: string) => {
     console.log('result', result);
     if (result.status == 200 && result.data) {
       return true;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
       return false;
     }
@@ -118,9 +141,13 @@ export const GetMasjidDevicesForUser = async (
     if (result.status == 200 && result.data) {
       masjidStore.connectedDevices.set(result.data);
       return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       Toast.show({
-        text1: result?.data?.message ?? 'Something went wrong',
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
       return false;
     }
@@ -157,6 +184,9 @@ export async function _checkDeviceTelemetry(
           return false;
         }
       }
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       console.log('Problem status', res.status, res.data);
       return false;
@@ -189,6 +219,8 @@ export async function _saveDevice(devInfo: DeviceInfo) {
     if (res?.ok) {
       console.log('Success', res.data);
       if (res.data) return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: res?.data?.message ?? 'Something went wrong',
@@ -226,6 +258,8 @@ export async function _saveDeviceToUser(devID: number) {
       if (res?.ok) {
         console.log('Success device assigned to user');
         if (res.data) return res.data;
+      } else if (res.status == 401) {
+        await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
       } else {
         console.log(
           'Problem status when device save to user',
@@ -261,6 +295,8 @@ export async function _saveDeviceBtnToMasjid(devID: number, masjidID: number) {
     if (res?.ok) {
       console.log('Success device assigned to masjid');
       if (res.data) return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       console.log('Problem status', res.status, res.data);
     }
@@ -304,6 +340,8 @@ export async function _updateDevice(
         type: 'success',
       });
       if (res.data) return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: res?.data?.message ?? 'Something went wrong',
@@ -339,6 +377,9 @@ export async function _resetDevice(deviceId: string) {
     if (res?.ok) {
       console.log('Deleted Success', Boolean(res.data));
       return true;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       console.log('Problem status', res.status, res.data);
       return false;
@@ -362,6 +403,9 @@ export async function getDeviceSubscriptions(deviceId: string) {
     const res = await api.get<any>(`/devices/${deviceId}/subscriptions`);
     if (res?.ok) {
       return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       console.log('Problem status', res.status, res.data);
       return false;
@@ -390,6 +434,9 @@ export async function addSubscription(
     );
     if (res?.ok) {
       return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       console.log('Problem status', res.status, res.data);
       return false;
@@ -418,6 +465,9 @@ export async function removeSubscription(
     );
     if (res?.ok) {
       return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
     } else {
       console.log('Problem status', res.status, res.data);
       return false;

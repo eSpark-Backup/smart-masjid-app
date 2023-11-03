@@ -53,13 +53,13 @@ const RowItem = ({
         </View>
         <View style={styles.contentCol}>
           <MyText
-            text={moment(item.adhan, 'HH:mm:ss').format('h:mm A')}
+            text={moment(item.adhan, 'HH:mm:ss').format('hh:mm')}
             size={16}
           />
         </View>
-        <View style={styles.contentCol}>
+        <View style={{ ...styles.contentCol, width: '26%' }}>
           <MyText
-            text={moment(item.Iqama, 'HH:mm:ss').format('h:mm A')}
+            text={moment(item.Iqama, 'HH:mm:ss').format('hh:mm')}
             size={16}
           />
         </View>
@@ -100,6 +100,7 @@ export default function SwipeableTimeTable({
   footer = <></>,
   deviceInfo,
   setLoading,
+  deviceGetsOnline,
 }: {
   data: SalahTimings[];
   subscriptions: SubscriptionList[];
@@ -117,13 +118,16 @@ export default function SwipeableTimeTable({
   footer?: React.ReactNode;
   deviceInfo: Device;
   setLoading: (val: boolean) => void;
+  deviceGetsOnline?: () => void;
 }) {
   const [currentItem, setCurrentItem] = useState<IPrayerTimeForPeriod | null>(
     data?.length > 0 ? data[0] : null,
   );
+  const [currInd, setCurrInd] = useState(0);
   const slider = useRef<FlatList>(null);
 
   const updateSubscriptions = async (id: string, adhanName: string) => {
+    setLoading(true);
     const isValid = await _checkDeviceTelemetry(
       deviceInfo.id.toString(),
       false,
@@ -133,11 +137,17 @@ export default function SwipeableTimeTable({
         type: 'error',
         text2: 'Device is currently offline',
       });
+      setLoading(false);
       return;
+    } else if (isValid && deviceInfo.deviceTelemetry.status == 'Offline') {
+      deviceGetsOnline!();
+      Toast.show({
+        type: 'success',
+        text2: 'Device gets back online',
+      });
     }
     if (id) {
       console.log('id', id);
-      setLoading(true);
       removeSubscription(deviceInfo?.id.toString(), id).then(data => {
         console.log('data', data);
         setSubscriptions(data.subscriptions);
@@ -231,15 +241,36 @@ export default function SwipeableTimeTable({
   };
 
   const onDateChange = (e: Date) => {
-    const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
-      return value.date == moment(e).format('YYYY-MM-DD');
-    });
-
-    if (currentIndex != -1) {
+    if (
+      currInd < data.length - 1 &&
+      currInd > -1 &&
+      data[currInd].date == moment(e).subtract(1, 'd').format('YYYY-MM-DD')
+    ) {
+      setCurrInd(currInd + 1);
       slider.current?.scrollToIndex({
-        index: currentIndex,
+        index: currInd + 1,
         animated: true,
       });
+    } else if (
+      currInd < data.length &&
+      currInd > -1 &&
+      data[currInd].date == moment(e).add(1, 'd').format('YYYY-MM-DD')
+    ) {
+      setCurrInd(currInd - 1);
+      slider.current?.scrollToIndex({
+        index: currInd - 1,
+        animated: true,
+      });
+    } else {
+      const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
+        return value.date == moment(e).format('YYYY-MM-DD');
+      });
+      if (currInd > -1 && currInd < data.length - 1) {
+        slider.current?.scrollToIndex({
+          index: currentIndex,
+          animated: true,
+        });
+      }
     }
   };
 
@@ -277,9 +308,13 @@ export default function SwipeableTimeTable({
           }}>
           <MyDatePicker
             minimumDate={moment().toDate()}
-            maximumDate={moment().add(1, 'month').toDate()}
+            maximumDate={moment()
+              .add(moment().daysInMonth() - 2, 'd')
+              .toDate()}
             type="standard"
-            currentDate={currentItem ? new Date(currentItem.date) : new Date()}
+            // currentDate={
+            //   currentItem ? moment(currentItem.date).toDate() : new Date()
+            // }
             onDateChange={onDateChange}
           />
         </View>
@@ -322,7 +357,7 @@ export default function SwipeableTimeTable({
         pinchGestureEnabled={true}
         scrollEventThrottle={0}
         showsHorizontalScrollIndicator={false}
-        onViewableItemsChanged={onViewRef.current}
+        // onViewableItemsChanged={onViewRef.current}
         renderItem={renderItem}
         keyExtractor={(_, index) => `list_item${index}`}
         viewabilityConfig={{
@@ -376,7 +411,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30%', alignItems: 'flex-start' },
+  contentCol: { width: '32%', alignItems: 'flex-start' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

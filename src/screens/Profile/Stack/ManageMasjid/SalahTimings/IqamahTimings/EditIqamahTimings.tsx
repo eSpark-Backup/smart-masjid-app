@@ -43,17 +43,17 @@ export default function EditIqamahTimings({
       setData(selectedIqamah);
     } else {
       let defaultData = {
-        effectiveDate: moment(new Date()).format('YYYY-MM-DD'),
+        effectiveDate: moment().format('YYYY-MM-DD'),
         type: 'F',
         asr: '18:00:00',
         fajr: '06:00:00',
         dhuhr: '14:00:00',
         isha: '21:30:00',
-        maghribDelay: '15',
-        fajrDelay: '0',
-        dhuhrDelay: '0',
-        asrDelay: '0',
-        ishaDelay: '0',
+        maghribDelay: '5',
+        fajrDelay: '15',
+        dhuhrDelay: '30',
+        asrDelay: '15',
+        ishaDelay: '30',
       };
       setData(defaultData);
     }
@@ -62,7 +62,6 @@ export default function EditIqamahTimings({
   const onUpdate = async () => {
     var dataObj: IqamahTime = data;
     setLoading(true);
-    console.log('iqamah data', data);
     if (iqamahType == 'Add') {
       await AddMasjidIqamahTiming(
         userData?.masjid.id.toString() as string,
@@ -86,8 +85,6 @@ export default function EditIqamahTimings({
     setData(null);
     setFlag('iTime');
   };
-
-  console.log('data', data);
 
   const type = data?.type;
   return (
@@ -138,9 +135,7 @@ export default function EditIqamahTimings({
                       ) {
                         let defaultData = {
                           ...selectedIqamah,
-                          effectiveDate: moment(new Date()).format(
-                            'YYYY-MM-DD',
-                          ),
+                          effectiveDate: data.effectiveDate,
                           asr: '18:00:00',
                           fajr: '06:00:00',
                           dhuhr: '14:00:00',
@@ -157,9 +152,7 @@ export default function EditIqamahTimings({
                       ) {
                         let defaultData = {
                           ...selectedIqamah,
-                          effectiveDate: moment(new Date()).format(
-                            'YYYY-MM-DD',
-                          ),
+                          effectiveDate: data.effectiveDate,
                           fajrDelay: '10',
                           dhuhrDelay: '10',
                           asrDelay: '10',
@@ -179,7 +172,10 @@ export default function EditIqamahTimings({
                   />
                   <GapView length={20} />
                   <MyDatePicker
-                    currentDate={new Date(data?.effectiveDate ?? new Date())}
+                    currentDate={
+                      moment(data?.effectiveDate, 'YYYY-MM-DD').toDate() ??
+                      new Date()
+                    }
                     minimumDate={new Date()}
                     onDateChange={date => {
                       setData({

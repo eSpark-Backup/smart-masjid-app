@@ -30,6 +30,7 @@ import { UserResponse } from '../../types/userControllerApiResponse';
 import { IqamahTime, jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
 import { WINDOW_WIDTH } from '../../constants';
+import { GetUserTypes } from '../../api/userController';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -60,6 +61,7 @@ export default function Profile() {
   const [jummaData, setJummaData] = useState<object | null>(null);
   const [iqamaData, setIqamaData] = useState<IqamahTime | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
+  const [clear, setClear] = useState(false);
 
   const titles: Titles = {
     mAcc: 'Manage Account',
@@ -69,6 +71,7 @@ export default function Profile() {
     aSet: 'Adhan Settings',
     iTime: 'Iqama Timings',
     iEdit: 'Iqama Timings',
+    iHist: 'Monthly Schedule',
     iAdd: 'Iqama Timings',
     jTime: 'Jumuah Timings',
     jEdit: 'Jumuah Timings',
@@ -106,6 +109,7 @@ export default function Profile() {
   const getFAQAndReason = async () => {
     await GetContactReasons();
     await GetHelpFAQs();
+    await GetUserTypes();
   };
 
   const handleBack = (currScreen: string) => {

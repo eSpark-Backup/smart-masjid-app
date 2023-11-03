@@ -59,7 +59,10 @@ import {
 } from '../../api/deviceController';
 import { _checkDeviceExists } from '../../api/externalControllers';
 import { useUpdateEffect, _requestBlePermissions } from '../../utils';
-import { UserToken } from '../../types/userControllerApiResponse';
+import {
+  UserPermissions,
+  UserToken,
+} from '../../types/userControllerApiResponse';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -702,10 +705,12 @@ export default function DeviceSetupScreen() {
             {step == 2 && (
               <DeviceSelectForm
                 contentOpacity={props.contentOpacity}
-                userInfo={
+                userPermissions={
                   userStore.get().currentRegisterUser
-                    ? userStore.get().currentRegisterUser?.userType.name
-                    : userStore.get().userData?.userType.name
+                    ? (userStore.get().currentRegisterUser?.userType
+                        .permissions as UserPermissions[])
+                    : (userStore.get().userData?.userType
+                        .permissions as UserPermissions[])
                 }
                 data={scannedDevices ?? []}
                 setStep={(value: number) => setStep(value)}
@@ -767,7 +772,7 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                onSkip={handleSkip}
+                onSkip={!route.params?.isBtn ? handleSkip : undefined}
                 btnText={
                   route.params?.from == 'Device'
                     ? !route.params?.isBtn
@@ -788,7 +793,13 @@ export default function DeviceSetupScreen() {
                   });
                 }}
                 title="Device connected successfully"
-                message={'Let’s subscribe to a masjid now.' + masjidSetupText}
+                message={
+                  route.params?.isBtn
+                    ? ''
+                    : route.params?.from == 'SelectedDevice'
+                    ? ''
+                    : 'Let’s subscribe to a masjid now.' + masjidSetupText
+                }
                 center
               />
             )}

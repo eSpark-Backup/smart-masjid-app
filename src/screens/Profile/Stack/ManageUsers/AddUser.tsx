@@ -1,13 +1,18 @@
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Animated, Platform } from 'react-native';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { api } from '../../../../api';
 import { CheckUserExists } from '../../../../api/externalControllers';
-import { AddAdminIntoMasjid } from '../../../../api/userController';
+import {
+  AddAdminIntoMasjid,
+  GetUser,
+  GetUserTypes,
+} from '../../../../api/userController';
 import {
   GapView,
+  MyDropDown,
   MyInput,
   MyText,
   MyTitle,
@@ -17,7 +22,14 @@ import {
 import { WINDOW_WIDTH } from '../../../../constants';
 import { AddAdminForSchema } from '../../../../constants/validations/schema';
 import { Card } from '../../../../containers';
-import { CreateUserRequest } from '../../../../types/userControllerApiResponse';
+import {
+  CreateUserRequest,
+  UserResponse,
+  UserType,
+} from '../../../../types/userControllerApiResponse';
+import { ImmutableObject, useHookstate } from '@hookstate/core';
+import { userStore } from '../../../../store/UserStore';
+import Toast from 'react-native-toast-message';
 
 export default function AddUsers({
   setFlag,
@@ -27,34 +39,69 @@ export default function AddUsers({
   contentOpacity?: any;
 }) {
   const [loading, setLoading] = useState(false);
+  const [roleId, setRoleId] = useState<number | null>(null);
+  const [roleError, setRoleError] = useState(false);
+  const userData: ImmutableObject<ImmutableObject<UserResponse>> | null =
+    useHookstate(userStore?.userData).get();
+  const userRoles: ImmutableObject<ImmutableObject<UserType[]>> | null =
+    useHookstate(userStore?.userRoles).get();
+
+  useEffect(() => {
+    if (roleId! > 0) setRoleError(false);
+  }, [roleId]);
+
   const onSubmit = async (values: {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
   }) => {
     try {
+      if (roleId! < 1) {
+        setRoleError(true);
+        return;
+      }
       setLoading(true);
       // Check if user already exists
-      const data: any = await CheckUserExists(values.email, values.phone);
+      const data: UserResponse = await GetUser(values.email);
       const obj: CreateUserRequest = {
         ...values,
         email: values.email?.toLowerCase(),
-        phone: '+1' + values.phone,
-        userType: 'Masjid Admin',
-        masjidId: '1',
+        userTypeId: roleId ?? undefined,
+        masjidId: userData?.masjid?.id.toString(),
       };
+      console.log('data kitna', data);
+
+      console.log('data check', data.userType.name);
+
+      setLoading(false);
+
       // If user already exists so direct add to masjid
-      if (data) {
-        const res = await AddAdminIntoMasjid(data?.id?.toString(), '1');
+      if (data && data.userType.name != 'Customer') {
+        Toast.show({
+          text2: 'User already exists with the given email',
+          type: 'error',
+        });
+      } else if (data && data.userType.name == 'Customer') {
+        const res = await AddAdminIntoMasjid(
+          data?.id?.toString(),
+          userData?.masjid?.id.toString()!,
+          roleId ?? 0,
+        );
         setLoading(false);
         if (res) setFlag('mUsers');
       } else {
         // Else Create User with current masjid
         const createUserResp: any = await api.post('/users', obj);
-        if (createUserResp.data) {
+        console.log('createUserResp', createUserResp);
+
+        if (createUserResp.ok) {
           setLoading(false);
           setFlag('mUsers');
+        } else {
+          Toast.show({
+            text2: createUserResp?.data.message ?? 'Something went wrong',
+            type: 'error',
+          });
         }
         setLoading(false);
       }
@@ -85,7 +132,6 @@ export default function AddUsers({
             firstName: '',
             lastName: '',
             email: '',
-            phone: '',
           }}
           validationSchema={AddAdminForSchema.AddAdminForSchema}
           onSubmit={onSubmit}>
@@ -125,20 +171,33 @@ export default function AddUsers({
                     value={values.email}
                     containerStyle={{ marginVertical: 10 }}
                   />
-                  <MyInput
+                  {/* <MyInput
                     placeholder="Phone Number"
                     placeholderColor="#CFCFCF"
                     isPhoneCode
                     onChangeText={handleChange('phone')}
                     value={values.phone}
                     containerStyle={{ marginVertical: 10 }}
+                  /> */}
+                  <MyDropDown
+                    title={''}
+                    searchDisabled
+                    placeholder="Role"
+                    items={(userRoles as []) ?? []}
+                    onChangeValue={e => setRoleId(e.id)}
+                    width={WINDOW_WIDTH - 50}
+                    containerPadding={0}
                   />
                 </Card>
                 {Object.entries(errors).map(([key, value]) => {
                   // @ts-ignore
                   if (touched[key]) {
+                    if (roleId! < 1) {
+                      setRoleError(true);
+                    }
                     return (
                       <MyText
+                        key={value}
                         text={value}
                         textStyle={{
                           color: 'red',
@@ -149,6 +208,16 @@ export default function AddUsers({
                     );
                   }
                 })}
+                {roleError && (
+                  <MyText
+                    text={'Role is required'}
+                    textStyle={{
+                      color: 'red',
+                      width: WINDOW_WIDTH - 110,
+                      marginTop: 4,
+                    }}
+                  />
+                )}
               </View>
               <View
                 style={{

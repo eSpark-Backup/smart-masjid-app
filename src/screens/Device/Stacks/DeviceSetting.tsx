@@ -1,5 +1,12 @@
-import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View, Animated, Platform } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -28,7 +35,12 @@ import {
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
-import { _resetDevice, _updateDevice } from '../../../api/deviceController';
+import {
+  _checkDeviceTelemetry,
+  _resetDevice,
+  _updateDevice,
+  unSubscribeMasjid,
+} from '../../../api/deviceController';
 import { BottomNavigationParamList, RootStackParamList } from '../../../types';
 
 type DeviceNavigationProps = NativeStackScreenProps<
@@ -51,6 +63,7 @@ const DeviceSetting = ({
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isResetVisible, setIsResetVisible] = useState<boolean>(false);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [offlineErrors, setOfflineErrors] = useState<boolean>(false);
   console.log('deive selectedx ??', device);
@@ -95,6 +108,29 @@ const DeviceSetting = ({
     }
   };
 
+  const cancelSubscription = async () => {
+    try {
+      if (device?.deviceTelemetry.status === 'Online') {
+        setLoader(true);
+        const res = await unSubscribeMasjid(
+          device?.id?.toString()!,
+          device?.masjid.id.toString()!,
+        );
+        console.log('res', res);
+        if (res) {
+          setLoader(false);
+        }
+      } else {
+        Toast.show({
+          text2: 'Device is Offline',
+          type: 'error',
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
+
   return (
     <View>
       <OverlayLoader isShow={loader} />
@@ -107,24 +143,58 @@ const DeviceSetting = ({
         options={[
           {
             label: 'Update Password',
-            onPress: () => {
+            onPress: async () => {
               console.log('error', device);
-              navigation.navigate('DSetup', {
-                from: 'SelectedDevice',
-                deviceData: device,
-                onlyPassword: true,
-              });
-              setErrorShow(false);
+              setLoader(true);
+              const isValid = await _checkDeviceTelemetry(
+                device?.id.toString() as string,
+                false,
+              );
+              if (isValid) {
+                setErrorShow(false);
+                setLoader(false);
+                goBack?.();
+                Toast.show({
+                  text1: 'Success!',
+                  text2: 'Your device is online',
+                  type: 'success',
+                });
+              } else {
+                navigation.navigate('DSetup', {
+                  from: 'SelectedDevice',
+                  deviceData: device,
+                  onlyPassword: true,
+                });
+                setErrorShow(false);
+                setLoader(false);
+              }
             },
           },
           {
             label: 'Connect new Wi-Fi',
-            onPress: () => {
-              navigation.navigate('DSetup', {
-                from: 'SelectedDevice',
-                deviceData: device,
-              });
-              setErrorShow(false);
+            onPress: async () => {
+              setLoader(true);
+              const isValid = await _checkDeviceTelemetry(
+                device?.id.toString() as string,
+                false,
+              );
+              if (isValid) {
+                setErrorShow(false);
+                setLoader(false);
+                goBack?.();
+                Toast.show({
+                  text1: 'Success!',
+                  text2: 'Your device is online',
+                  type: 'success',
+                });
+              } else {
+                navigation.navigate('DSetup', {
+                  from: 'SelectedDevice',
+                  deviceData: device,
+                });
+                setErrorShow(false);
+                setLoader(false);
+              }
             },
           },
         ]}
@@ -148,148 +218,161 @@ const DeviceSetting = ({
           />
         </Animated.View>
       </View>
-      <ScrollView>
-        <DeviceErrorBox
-          show={Boolean(
-            device?.deviceTelemetry?.status == 'Offline' ||
-              device?.deviceTelemetry?.status == 'Low battery',
-          )}
-          onClose={() => console.log('on Close Box', device)}
-          message={
-            device?.deviceTelemetry?.status == 'Low battery'
-              ? 'Device battery low. Please power on your device.'
-              : 'Looks like your device is offline. Tap here to see causes.'
-          }
-          onIconPress={() => setOfflineErrors(true)}
-        />
-        <PossibleCauseErrorModal
-          visible={offlineErrors}
-          onClose={() => setOfflineErrors(false)}
-        />
-        <GapView />
-        <View style={styles.deviceSettingContainer}>
-          <View style={styles.subHeader}>
-            <MyText
-              text={device?.deviceType?.name!}
-              textStyle={styles.deviceName}
-              size={20}
-              trademark
-            />
-            <DeviceStatus
-              online={
-                device?.deviceTelemetry?.status !== 'Offline' ? true : false
-              }
+      <TouchableWithoutFeedback onPress={() => setIsEditable(false)}>
+        <View>
+          <DeviceErrorBox
+            show={Boolean(
+              device?.deviceTelemetry?.status == 'Offline' ||
+                device?.deviceTelemetry?.status == 'Low battery',
+            )}
+            onClose={() => console.log('on Close Box', device)}
+            message={
+              device?.deviceTelemetry?.status == 'Low battery'
+                ? 'Device battery low. Please power on your device.'
+                : 'Looks like your device is offline. Tap here to see causes.'
+            }
+            onIconPress={() => setOfflineErrors(true)}
+          />
+          <PossibleCauseErrorModal
+            visible={offlineErrors}
+            onClose={() => setOfflineErrors(false)}
+          />
+          <GapView />
+          <View style={styles.deviceSettingContainer}>
+            <View style={styles.subHeader}>
+              <MyText
+                text={device?.deviceType?.name!}
+                textStyle={styles.deviceName}
+                size={20}
+                trademark
+              />
+              <DeviceStatus
+                online={
+                  device?.deviceTelemetry?.status !== 'Offline' ? true : false
+                }
+              />
+            </View>
+            <GapView length={10} />
+            <DeviceSettingSectionList
+              data={[
+                {
+                  title: 'General',
+                  data: [
+                    {
+                      title: 'Name',
+                      subtitle: device?.name,
+                      icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
+                      isEditable: true,
+                      isEdit: isEditable,
+                      onEditPress: () => setIsEditable(true),
+                      charLength: 25,
+                      onDoneEdit: text => {
+                        console.log('avla', text);
+                        const pattern = /^[a-zA-Z0-9 ]*$/;
+
+                        if (text?.length! > 0 && pattern.test(text as string)) {
+                          updateDeviceName(text, device?.name);
+                          setIsEditable(false);
+                        } else if (
+                          text?.length! > 0 &&
+                          !pattern.test(text as string)
+                        ) {
+                          Toast.show({
+                            text1: 'Error!',
+                            text2:
+                              'Device name cannot contain special characters',
+                            type: 'error',
+                          });
+                        } else {
+                          setIsEditable(false);
+                        }
+                      },
+                    },
+                    {
+                      title: 'Battery',
+                      subtitle: device?.deviceTelemetry?.batteryLife.toString()
+                        ? device?.deviceTelemetry?.batteryLife.toString() + '%'
+                        : 'NaN',
+                      icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
+                      danger:
+                        device?.deviceTelemetry?.batteryLife! <= 15
+                          ? true
+                          : false,
+                    },
+                    {
+                      title:
+                        device?.deviceType?.id == 1 ? 'Subscription' : 'Masjid',
+                      subtitle: device?.masjid?.name
+                        ? device?.masjid?.name
+                        : device?.deviceType?.id == 1
+                        ? 'No Subscription'
+                        : 'No Masjid',
+                      icon: <Heart style={{ padding: 10, bottom: 2 }} />,
+                      isDelete: device?.masjid?.name ? true : false,
+                      onDelete: () => setIsResetVisible(true),
+                      onPress:
+                        device?.deviceType.id == 1
+                          ? () => {
+                              if (!device?.masjid?.id.toString()) {
+                                navigation.navigate('Search');
+                                return;
+                              }
+                              goBack?.();
+                              navigation.navigate('Home', {
+                                masjidId: device?.masjid?.id.toString(),
+                              });
+                            }
+                          : undefined,
+                    },
+                  ],
+                },
+                {
+                  title: 'Advanced',
+                  data: [
+                    {
+                      title: 'Wifi',
+                      subtitle: device?.wifiSsid,
+                      icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
+                      isEditable:
+                        device?.deviceTelemetry?.status !== 'Offline'
+                          ? true
+                          : false,
+                      danger:
+                        device?.deviceTelemetry?.status !== 'Offline'
+                          ? false
+                          : true,
+                      onEditPress: () =>
+                        navigation.navigate('DSetup', {
+                          from: 'SelectedDevice',
+                          deviceData: device,
+                        }),
+                      onDangerPress: () => setErrorShow(true),
+                    },
+                    {
+                      title: 'Firmware Version',
+                      subtitle: 'Version ' + device?.firmwareVersion,
+                      icon: <Version style={{ padding: 10, bottom: 2 }} />,
+                    },
+                    {
+                      title: 'MAC Address',
+                      subtitle: device?.macAddress,
+                      icon: <DeviceObject style={{ padding: 10, bottom: 2 }} />,
+                    },
+                    {
+                      title: 'Factory Reset',
+                      subtitle: 'Reseting will erase all data',
+                      // onPress: () => setIsVisible(true),
+                      icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
+                      isReset: true,
+                      onReset: () => setIsVisible(true),
+                    },
+                  ],
+                },
+              ]}
             />
           </View>
-          <GapView length={10} />
-          <DeviceSettingSectionList
-            data={[
-              {
-                title: 'General',
-                data: [
-                  {
-                    title: 'Name',
-                    subtitle: device?.name,
-                    icon: <DeviceSvg style={{ padding: 10, bottom: 2 }} />,
-                    isEditable: true,
-                    isEdit: isEditable,
-                    charLength: 25,
-                    onPress: () => setIsEditable(true),
-                    onDoneEdit: text => {
-                      console.log('avla', text);
-                      if (text?.length! > 0) {
-                        updateDeviceName(text, device?.name);
-                      }
-                      setIsEditable(false);
-                    },
-                  },
-                  {
-                    title: 'Battery',
-                    subtitle: device?.deviceTelemetry?.batteryLife.toString()
-                      ? device?.deviceTelemetry?.batteryLife.toString() + '%'
-                      : 'NaN',
-                    icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
-                    danger:
-                      device?.deviceTelemetry?.batteryLife! <= 15
-                        ? true
-                        : false,
-                  },
-                  {
-                    title:
-                      device?.deviceType?.id == 1 ? 'Subscription' : 'Masjid',
-                    subtitle: device?.masjid?.name
-                      ? device?.masjid?.name
-                      : device?.deviceType?.id == 1
-                      ? 'No Subscription'
-                      : 'No Masjid',
-                    icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                    rightArrow: device?.deviceType.id == 1 ? true : false,
-                    onPress:
-                      device?.deviceType.id == 1
-                        ? () => {
-                            if (!device?.masjid?.id.toString()) {
-                              Toast.show({
-                                text1: 'Warning!',
-                                text2: 'Subscribe to a Masjid First',
-                                type: 'warning',
-                              });
-                              navigation.navigate('Search');
-                              return;
-                            }
-                            goBack?.();
-                            navigation.navigate('Home', {
-                              masjidId: device?.masjid?.id.toString(),
-                            });
-                          }
-                        : undefined,
-                  },
-                ],
-              },
-              {
-                title: 'Advanced',
-                data: [
-                  {
-                    title: 'Wifi',
-                    subtitle: device?.wifiSsid,
-                    icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
-                    isEditable:
-                      device?.deviceTelemetry?.status !== 'Offline'
-                        ? true
-                        : false,
-                    danger:
-                      device?.deviceTelemetry?.status !== 'Offline'
-                        ? false
-                        : true,
-                    onPress: () =>
-                      device?.deviceTelemetry?.status === 'Online'
-                        ? navigation.navigate('DSetup', {
-                            from: 'SelectedDevice',
-                            deviceData: device,
-                          })
-                        : setErrorShow(true),
-                  },
-                  {
-                    title: 'Firmware Version',
-                    subtitle: 'Version ' + device?.firmwareVersion,
-                    icon: <Version style={{ padding: 10, bottom: 2 }} />,
-                  },
-                  {
-                    title: 'MAC Address',
-                    subtitle: device?.macAddress,
-                    icon: <DeviceObject style={{ padding: 10, bottom: 2 }} />,
-                  },
-                  {
-                    title: 'Factory Reset',
-                    subtitle: 'Reseting will erase all data',
-                    onPress: () => setIsVisible(true),
-                    icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
-                  },
-                ],
-              },
-            ]}
-          />
         </View>
-      </ScrollView>
+      </TouchableWithoutFeedback>
       <LogoutModal
         message="The device will remove permanently. Do you still want to reset?"
         visible={isVisible}
@@ -300,6 +383,19 @@ const DeviceSetting = ({
         }}
         onClose={() => {
           setIsVisible(!isVisible);
+          console.log('Cancelled');
+        }}
+      />
+      <LogoutModal
+        message="Are you sure you want to cancel subscription?"
+        visible={isResetVisible}
+        onAllowed={async () => {
+          await cancelSubscription();
+          setIsResetVisible(!isResetVisible);
+          console.log('Logged Out');
+        }}
+        onClose={() => {
+          setIsResetVisible(!isResetVisible);
           console.log('Cancelled');
         }}
       />

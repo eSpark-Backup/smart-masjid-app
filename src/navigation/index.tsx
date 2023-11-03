@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { StatusBar, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, {
@@ -108,11 +108,10 @@ export default function App() {
   };
 
   useEffect(() => {
-    _getFCMToken();
-  }, []);
-
-  useEffect(() => {
     GetCountryCodes();
+    if (Platform.OS == 'android') {
+      _getFCMToken();
+    }
     getDataFromLocalStorage('user').then((res: any) => {
       if (res != null) {
         const data: UserResponse = JSON.parse(res);
@@ -153,7 +152,7 @@ export default function App() {
     state.phoneId.set(res.toString());
     try {
       const check: any = await _checkPhoneId(res);
-      if (check?.deviceId) {
+      if (check) {
         console.log('phone device is registered already!', check.deviceId);
         state.isDeviceRegistered.set(true);
         setCheckedId(true);
@@ -168,6 +167,7 @@ export default function App() {
   }, []);
 
   console.log('checkid', checkedId);
+  console.log('userData.get()?.id', userData.get()?.id);
 
   if (checkedId !== null) {
     return (

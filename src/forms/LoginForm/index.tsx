@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
@@ -16,7 +16,11 @@ import {
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
-import { useLayoutAnimation, useUpdateEffect } from '../../utils';
+import {
+  getDataFromLocalStorage,
+  useLayoutAnimation,
+  useUpdateEffect,
+} from '../../utils';
 import { CountryCodes } from '../../types';
 
 const LoginForm = ({
@@ -30,11 +34,19 @@ const LoginForm = ({
 }) => {
   const { colors }: Theme = useTheme();
   const [activeTab, setActiveTab] = React.useState('1');
+  const [email, setEmail] = React.useState('');
   const [currentCountry, setCurrentCountry] = React.useState<CountryCodes>();
 
   useUpdateEffect(() => {
     useLayoutAnimation(300);
   }, [activeTab]);
+
+  useEffect(() => {
+    getDataFromLocalStorage('lastLoggedInEmail').then(email => {
+      console.log('email exist', email);
+      if (email) setEmail(email as string);
+    });
+  }, []);
 
   const formRef = useRef<any>();
 
@@ -64,8 +76,9 @@ const LoginForm = ({
         />
         <GapView length={40} />
         <Formik
-          initialValues={{ email: '', phone: '' }}
+          initialValues={{ email: email, phone: '' }}
           innerRef={formRef}
+          enableReinitialize
           validationSchema={
             activeTab == '1'
               ? UserSetupSchema.emailForm

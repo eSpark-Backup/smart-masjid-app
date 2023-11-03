@@ -44,7 +44,7 @@ const SearchListing = ({
   const [locationStatus, setlocationStatus] = useState(false);
   const [message, setMessage] = useState('');
 
-  const checkLocation = async () => {
+  const checkLocation = async (locationStatus: boolean, pressed?: boolean) => {
     try {
       if (Platform.OS == 'ios') {
         await requestMultiple([
@@ -53,24 +53,87 @@ const SearchListing = ({
         ]).then(status => {
           console.log('status', status);
           if (
-            status['ios.permission.LOCATION_ALWAYS'] == 'granted' ||
-            status['ios.permission.LOCATION_WHEN_IN_USE'] == 'granted'
+            (status['ios.permission.LOCATION_ALWAYS'] == 'granted' ||
+              status['ios.permission.LOCATION_WHEN_IN_USE'] == 'granted') &&
+            locationStatus
           ) {
             console.log('chala2');
             onCurrentLocationPress();
+            setMessage('');
+          } else if (
+            status['ios.permission.LOCATION_ALWAYS'] != 'granted' &&
+            status['ios.permission.LOCATION_WHEN_IN_USE'] != 'granted' &&
+            locationStatus == false
+          ) {
+            if (pressed) {
+              Toast.show({
+                text2: 'Enable Location Permission \n Turn on Location',
+                type: 'warning',
+                visibilityTime: 10000,
+              });
+            } else {
+              setMessage('Enable Location Permission');
+            }
+          } else if (locationStatus == false) {
+            if (pressed) {
+              Toast.show({
+                text2: 'Turn on Location',
+                type: 'warning',
+              });
+            } else {
+              setMessage('');
+            }
           } else {
-            _requestUserLocationPermission();
+            if (pressed) {
+              Toast.show({
+                text2: 'Enable Location Permission',
+                type: 'warning',
+              });
+            } else {
+              setMessage('Enable Location Permission');
+            }
           }
         });
       } else {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        if (granted === PermissionsAndroid.RESULTS.GRANTED && locationStatus) {
           console.log('chala2');
           onCurrentLocationPress();
+          setMessage('');
+        } else if (
+          granted != PermissionsAndroid.RESULTS.GRANTED &&
+          locationStatus == false
+        ) {
+          if (pressed) {
+            Toast.show({
+              text2: 'Enable Location Permission \n Turn on Location',
+              type: 'warning',
+              visibilityTime: 10000,
+            });
+          } else {
+            setMessage('Enable Location Permission');
+          }
+          // _requestUserLocationPermission();
+        } else if (locationStatus == false) {
+          if (pressed) {
+            Toast.show({
+              text2: 'Turn on Location',
+              type: 'warning',
+            });
+          } else {
+            setMessage('');
+          }
         } else {
-          _requestUserLocationPermission();
+          if (pressed) {
+            Toast.show({
+              text2: 'Enable Location Permission',
+              type: 'warning',
+            });
+          } else {
+            setMessage('Enable Location Permission');
+          }
         }
       }
     } catch (error) {
@@ -82,14 +145,20 @@ const SearchListing = ({
   const checkLocationAdapter = async () => {
     try {
       const enable = await systemSetting.isLocationEnabled();
-      if (enable || locationStatus) {
-        checkLocation();
-      } else {
-        Toast.show({
-          text2: 'Enable Location Adapter',
-          type: 'warning',
-          visibilityTime: 10000,
-        });
+      checkLocation(enable);
+      if (!enable && !locationStatus) {
+        setMasjidList([]);
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
+
+  const locationAdapterPressed = async () => {
+    try {
+      const enable = await systemSetting.isLocationEnabled();
+      checkLocation(enable, true);
+      if (!enable && !locationStatus) {
         setMasjidList([]);
       }
     } catch (e) {
@@ -100,6 +169,10 @@ const SearchListing = ({
   function _handleGPSProviderEvent(e: any) {
     if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
       setlocationStatus(false);
+      setMasjidList([]);
+      if (zipCode == 'Your Location') {
+        setZipCode('');
+      }
     } else {
       setlocationStatus(true);
       console.log('check');
@@ -116,18 +189,21 @@ const SearchListing = ({
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
     setLoader(true);
-    if (zipCode) setZipCode(zipCode);
-    const res: any = await SearchMasjidByLocation(zipCode, lat, long);
-    if (res?.length > 0) {
-      setMasjidList(res);
-      setMessage('');
-    } else {
-      setMasjidList([]);
-      if (Boolean(zipCode)) {
-        setMessage('No Masjid found for the Zip Code');
+    if (zipCode != 'Your Location') {
+      setZipCode(zipCode);
+      const res: any = await SearchMasjidByLocation(zipCode, lat, long);
+      if (res?.length > 0) {
+        setMasjidList(res);
+      } else {
+        setMasjidList([]);
       }
+      setMessage('');
+      setLoader(false);
+    } else {
+      setMessage('');
+      onCurrentLocationPress();
+      setLoader(false);
     }
-    setLoader(false);
   };
 
   const onCurrentLocationPress = () => {
@@ -188,7 +264,7 @@ const SearchListing = ({
                   setZipCode('');
                 }
               }}
-              onCurrentLocationPress={checkLocationAdapter}
+              onCurrentLocationPress={locationAdapterPressed}
               inputStyle={{ width: WINDOW_WIDTH - 80 }}
               placeholder="Enter Zip Code"
               onSearch={onSearch}
@@ -196,13 +272,9 @@ const SearchListing = ({
             />
           </Card>
         </View>
-        <GapView />
+        <GapView length={20} />
         <FlatList
           data={masjidList}
-          contentContainerStyle={{
-            paddingBottom: 240,
-            paddingTop: 10,
-          }}
           renderItem={({ item, index }) => (
             <MasjidListCard
               onPress={() => onPress?.(item)}
@@ -218,12 +290,14 @@ const SearchListing = ({
           ListEmptyComponent={
             <ListEmptyComponent
               message1={''}
+              link={message}
+              onLinkPressed={_requestUserLocationPermission}
               isShowBtn={false}
               message2={
-                locationStatus
-                  ? 'No Masjid found near you'
-                  : message.length > 0
-                  ? message
+                zipCode.length > 0 && zipCode != 'Your Location'
+                  ? 'No masjid found for the zip code'
+                  : locationStatus
+                  ? 'No masjid found near you'
                   : 'Enter Zip Code to search masjid near you'
               }
             />

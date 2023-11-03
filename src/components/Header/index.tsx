@@ -16,9 +16,12 @@ export default function Header({
     <View
       style={{
         position: 'absolute',
-        top: Platform.OS == 'ios' ? useSafeAreaInsets().top : 10,
+        top:
+          Platform.OS == 'ios'
+            ? useSafeAreaInsets().top
+            : useSafeAreaInsets().top + 5,
         justifyContent: 'center',
-        paddingHorizontal: 25,
+        paddingHorizontal: 15,
       }}>
       {showBack && (
         <TouchableOpacity style={{ width: 30 }} onPress={onBackPress}>

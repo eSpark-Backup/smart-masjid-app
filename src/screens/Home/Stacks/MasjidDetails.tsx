@@ -41,7 +41,7 @@ import { masjidStore } from '../../../store/MasjidStore';
 import { Device } from '../../../types/deviceControllerTypes';
 import { useMasjid } from '../../../utils/hooks';
 import {
-  GetMasjidJummahTiming,
+  GetMasjidCurrentJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
 
@@ -80,12 +80,6 @@ export default function MasjidDetails({
     }
   }, [isFocused]);
 
-  useEffect(() => {
-    if (currentDevice) {
-      getSubscriptions(currentDevice?.id.toString()!);
-    }
-  }, [currentDevice]);
-
   const getSalahTimes = async () => {
     try {
       setLoading(true);
@@ -94,14 +88,17 @@ export default function MasjidDetails({
         selectedMasjid?.id.toString(),
       ).then(res => {
         setCurrentDevice(connectedDevices[0] as Device);
+        if (connectedDevices[0]) {
+          getSubscriptions(connectedDevices[0]?.id.toString()!);
+        }
       });
-      getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
+      await getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
         data => {
           setSalahTime(data as SalahTimings[]);
-          setLoading(false);
         },
       );
-      await GetMasjidJummahTiming(selectedMasjid?.id.toString() ?? '');
+      await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
+      setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -111,11 +108,6 @@ export default function MasjidDetails({
     try {
       getDeviceSubscriptions(id).then(data => {
         setSubs(data);
-        setTimeout(() => {
-          if (loading) {
-            setLoading(false);
-          }
-        }, 2000);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -188,6 +180,7 @@ export default function MasjidDetails({
           subscriptions={subs}
           setSubscriptions={setSubs}
           setLoading={val => setLoading(val)}
+          deviceGetsOnline={getSalahTimes}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />

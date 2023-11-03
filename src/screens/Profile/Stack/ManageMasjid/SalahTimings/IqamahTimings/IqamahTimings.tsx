@@ -105,14 +105,35 @@ export default function IqamahTimings({
             id: i.id,
             date: i.effectiveDate,
             data: [
-              { name: 'fajr', value: moment(i?.fajr, 'HH:mm:ss').format('LT') },
+              {
+                name: 'fajr',
+                value:
+                  i.type == 'D'
+                    ? '+' + i.fajrDelay + ' mins'
+                    : moment(i?.fajr, 'HH:mm:ss').format('LT'),
+              },
               {
                 name: 'dhuhr',
-                value: moment(i?.dhuhr, 'HH:mm:ss').format('LT'),
+                value:
+                  i.type == 'D'
+                    ? '+' + i.dhuhrDelay + ' mins'
+                    : moment(i?.dhuhr, 'HH:mm:ss').format('LT'),
               },
-              { name: 'asr', value: moment(i?.asr, 'HH:mm:ss').format('LT') },
+              {
+                name: 'asr',
+                value:
+                  i.type == 'D'
+                    ? '+' + i.asrDelay + ' mins'
+                    : moment(i?.asr, 'HH:mm:ss').format('LT'),
+              },
               { name: 'maghrib', value: '+' + i.maghribDelay + ' mins' },
-              { name: 'isha', value: moment(i?.isha, 'HH:mm:ss').format('LT') },
+              {
+                name: 'isha',
+                value:
+                  i.type == 'D'
+                    ? '+' + i.ishaDelay + ' mins'
+                    : moment(i?.isha, 'HH:mm:ss').format('LT'),
+              },
             ],
             type: i.type,
           };

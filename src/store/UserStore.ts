@@ -6,4 +6,5 @@ export const userStore = hookstate<UserStoreProps>({
   masjidAdmins: [],
   token: null,
   currentRegisterUser: null,
+  userRoles: [],
 });

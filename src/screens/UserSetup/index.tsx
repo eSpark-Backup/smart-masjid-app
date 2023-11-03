@@ -15,13 +15,18 @@ import {
 } from './UserForms';
 import { RootStackParamList } from '../../types';
 import { MyToast, OverlayLoader, SLoader } from '../../components';
-import { RegisterUserPhone, updateUserPhone } from '../../api/userController';
+import {
+  RegisterUserPhone,
+  UpdateUserLogin,
+  updateUserPhone,
+} from '../../api/userController';
 import {
   CreateUserRequest,
+  UserPhone,
   UserResponse,
 } from '../../types/userControllerApiResponse';
 import { globalStore } from '../../store/GlobalStates';
-import { _getFCMToken } from '../../utils/functions';
+import { _getFCMToken, setDataInLocalStorage } from '../../utils/functions';
 import {
   CheckUserExists,
   CreateUser,
@@ -78,6 +83,8 @@ export default function UserSetupScreen() {
   };
 
   const onSubmit = async (dataObj: CreateUserRequest, otp: string) => {
+    console.log('onsubmit otp', otp);
+
     try {
       setStep(7);
       const res: UserResponse | undefined | any = await CreateUser(
@@ -105,23 +112,73 @@ export default function UserSetupScreen() {
     }
   };
 
+  const checkUserDeviceExist = (
+    userPhone: UserPhone[],
+    type: 'dev' | 'devAndFcm',
+  ) => {
+    if (type == 'dev') {
+      return userPhone.some(
+        ({ deviceId }: { deviceId: string }) => deviceId == phoneId,
+      );
+    } else if (type == 'devAndFcm') {
+      return userPhone.some(
+        (info: any) => info.deviceId == phoneId && info.fcmToken == fcmToken,
+      );
+    }
+  };
+
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     try {
-      setLoader(true);
-      const res = await LoginUser(email, phone, OTPvalue);
-      if (res?.id && phoneId && !isDeviceRegistered) {
-        await RegisterUserPhone(
+      const res: UserResponse = await LoginUser(email, phone, OTPvalue);
+      if (
+        res?.id &&
+        phoneId &&
+        checkUserDeviceExist(res?.userPhone, 'devAndFcm')
+      ) {
+        navigation.navigate('HomeBottomTab'); //TODO: Change it later
+        setLoader(false);
+      } else if (
+        res?.id &&
+        phoneId &&
+        !checkUserDeviceExist(res?.userPhone, 'dev')
+      ) {
+        const registerPhoneRes = await RegisterUserPhone(
           { deviceId: phoneId, fcmToken: fcmToken as string },
           res?.id.toString(),
         );
-      } else if (res?.id && phoneId && isDeviceRegistered) {
-        await updateUserPhone(fcmToken as string, res?.id.toString(), phoneId);
+        if (registerPhoneRes?.ok) {
+          const login: any = await UpdateUserLogin(phoneId, res?.id);
+          if (login?.ok) {
+            navigation.navigate('HomeBottomTab'); //TODO: Change it later
+          } else {
+            setLoader(false);
+          }
+        } else {
+          setLoader(false);
+        }
+      } else if (
+        res?.id &&
+        phoneId &&
+        !checkUserDeviceExist(res?.userPhone, 'devAndFcm')
+      ) {
+        const updatePhoneRes = await updateUserPhone(
+          fcmToken as string,
+          res?.id.toString(),
+          phoneId,
+        );
+        if (updatePhoneRes?.ok) {
+          const login: any = await UpdateUserLogin(phoneId, res?.id);
+          if (login?.ok) {
+            navigation.navigate('HomeBottomTab'); //TODO: Change it later
+          } else {
+            setLoader(false);
+          }
+        } else {
+          setLoader(false);
+        }
+      } else {
+        setLoader(false);
       }
-
-      if (res?.id) {
-        navigation.navigate('HomeBottomTab'); //TODO: Change it later
-      }
-      setLoader(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -145,7 +202,11 @@ export default function UserSetupScreen() {
         } else {
           const result = await SendOTP(email, phone);
           if (result) {
-            setData({ ...data, email: email ?? '', phone: phone ?? '' });
+            if (phone) {
+              setData({ ...data, phone: phone ?? '' });
+            } else {
+              setData({ ...data, email: email ?? '', phone: phone ?? '' });
+            }
             setStep(3);
           }
         }
@@ -213,6 +274,7 @@ export default function UserSetupScreen() {
                   contentOpacity={props.contentOpacity}
                   title={activeFlow == 'signup' ? 'Create Account' : 'Login'}
                   userEmail={data.email}
+                  userPhone={data.phone}
                   setStep={async (value: string) => {
                     setLoader(true);
                     const isVerified = await ValidateOTP(
@@ -234,10 +296,13 @@ export default function UserSetupScreen() {
                           value,
                         );
                       }
+                    } else {
+                      setLoader(false);
                     }
-                    setLoader(false);
                   }}
-                  goBack={() => setStep(2)}
+                  goBack={() =>
+                    activeFlow == 'signup' ? setStep(2) : setStep(1)
+                  }
                   onResend={async () => {
                     await SendOTP(data.email ?? '', data.phone ?? '');
                   }}
@@ -247,7 +312,7 @@ export default function UserSetupScreen() {
                 <AddPhoneForm
                   contentOpacity={props.contentOpacity}
                   setStep={(value: number, values: any) => {
-                    setStep(6);
+                    setStep(value);
                   }}
                 />
               )}
@@ -257,7 +322,20 @@ export default function UserSetupScreen() {
                   title="Create Account"
                   userPhone={data.phone}
                   goBack={() => setStep(4)}
-                  setStep={(value: string) => setStep(6)}
+                  setStep={async (value: string) => {
+                    setLoader(true);
+                    const isVerified = await ValidateOTP(
+                      value,
+                      data.email ?? '',
+                      data.phone ?? '',
+                    );
+                    console.log('isVerified', isVerified);
+                    if (isVerified) {
+                      setStep(6);
+                      setLoader(false);
+                    }
+                    setLoader(false);
+                  }}
                 />
               )}
               {step == 6 && (
@@ -297,7 +375,11 @@ export default function UserSetupScreen() {
                         JSON.stringify(userStore.currentRegisterUser.get()),
                       ),
                     );
-                    navigation.navigate('HomeBottomTab');
+                    setDataInLocalStorage(
+                      'user',
+                      JSON.stringify(userStore.currentRegisterUser.get()),
+                    );
+                    // navigation.navigate('HomeBottomTab');
                   }}
                   btnText={'Connect Device'}
                   title="Account setup complete"

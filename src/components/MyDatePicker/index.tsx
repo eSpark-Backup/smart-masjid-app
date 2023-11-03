@@ -18,7 +18,9 @@ export default function MyDatePicker({
   maximumDate = undefined,
   dateFormat,
   showLabel,
+  disablePicker,
 }: {
+  disablePicker?: boolean;
   onDateChange?: (e: any) => void;
   type?: 'box' | 'standard';
   currentDate?: Date | null;
@@ -69,6 +71,7 @@ export default function MyDatePicker({
       <>
         <TouchableOpacity
           activeOpacity={0.9}
+          disabled={disablePicker}
           onPress={() => setShow(true)}
           style={{
             flexDirection: 'row',
@@ -106,7 +109,7 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          <MyText text={moment(date)?.format('DD/MM/YYYY')} />
+          <MyText text={moment(date)?.format('MM/DD/YYYY')} />
           <GapView length={10} mode="horizontal" />
           <Calendar style={{ color: '#006870' }} />
         </TouchableOpacity>
@@ -115,9 +118,7 @@ export default function MyDatePicker({
   } else {
     return (
       <>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={() => setShow(true)}
+        <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -135,34 +136,43 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          <II
+          <TouchableOpacity
             disabled={!moment(date).isAfter(minimumDate)}
-            onPress={prevDate}
-            color={
-              moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
-            }
-            name="md-chevron-back"
-            size={24}
-          />
+            onPress={prevDate}>
+            <II
+              color={
+                moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
+              }
+              name="md-chevron-back"
+              size={24}
+            />
+          </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          <MyTextSubHeader
-            text={
-              dateFormat == 'Monthly'
-                ? moment(date)?.format('MMM, YYYY')
-                : moment(date)?.format('MMM-DD, YYYY')
-            }
-          />
+          <TouchableOpacity
+            activeOpacity={0.9}
+            disabled={disablePicker}
+            onPress={() => setShow(true)}>
+            <MyTextSubHeader
+              text={
+                dateFormat == 'Monthly'
+                  ? moment(date)?.format('MMM, YYYY')
+                  : moment(date)?.format('MMM-DD, YYYY')
+              }
+            />
+          </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          <II
+          <TouchableOpacity
             disabled={!moment(date).isBefore(maximumDate)}
-            color={
-              moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
-            }
-            onPress={nextDate}
-            name="md-chevron-forward"
-            size={24}
-          />
-        </TouchableOpacity>
+            onPress={nextDate}>
+            <II
+              color={
+                moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
+              }
+              name="md-chevron-forward"
+              size={24}
+            />
+          </TouchableOpacity>
+        </View>
       </>
     );
   }
