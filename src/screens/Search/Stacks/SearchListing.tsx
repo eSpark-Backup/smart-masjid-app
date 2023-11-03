@@ -12,6 +12,7 @@ import systemSetting from 'react-native-system-setting';
 import Toast from 'react-native-toast-message';
 //@ts-ignore
 import RNSettings from 'react-native-settings';
+import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 
 import { SearchMasjidByLocation } from '../../../api/masjidController';
 import {
@@ -27,7 +28,6 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
 import { _startLocationCheck, _stopLocationCheck } from '../utils/functions';
-import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 
 const SearchListing = ({
   onPress,
