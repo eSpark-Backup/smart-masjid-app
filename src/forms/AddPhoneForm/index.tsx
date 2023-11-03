@@ -20,6 +20,7 @@ import {
 import { WINDOW_WIDTH } from '../../constants';
 import { UserSetupSchema } from '../../constants/validations/schema';
 import { Card } from '../../containers';
+import { CountryCodes } from '../../types';
 
 export default function AddPhoneForm({
   setStep,
@@ -29,6 +30,14 @@ export default function AddPhoneForm({
   contentOpacity?: any;
 }) {
   const { colors }: Theme = useTheme();
+  const [currentCountry, setCurrentCountry] = React.useState<CountryCodes>({
+    code: '+1',
+    country: 'United States',
+    enabled: true,
+    id: 231,
+    iso_code: 'US',
+  });
+
   return (
     <View style={styles.container}>
       <View
@@ -50,8 +59,8 @@ export default function AddPhoneForm({
         <Formik
           initialValues={{ phone: '' }}
           validationSchema={UserSetupSchema.optionalPhoneForm}
-          onSubmit={values => {
-            setStep(5, values);
+          onSubmit={({ phone }) => {
+            setStep(5, { phone: currentCountry?.code + phone });
           }}>
           {({ handleChange, handleSubmit, values, errors, touched }) => (
             <>
@@ -60,8 +69,12 @@ export default function AddPhoneForm({
                   placeholder="Phone"
                   onChangeText={handleChange('phone')}
                   value={values.phone}
-                  phoneCodeValue="+1"
+                  phoneCodeValue="US"
                   isPhoneCode
+                  onPhoneCodeChange={country => {
+                    console.log('e', country);
+                    setCurrentCountry(country);
+                  }}
                 />
               </Card>
               {errors.phone && touched.phone && (

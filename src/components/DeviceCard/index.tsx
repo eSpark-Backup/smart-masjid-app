@@ -7,6 +7,7 @@ import GapView from '../GapView';
 import TextLabel from '../TextLabel';
 import { Device } from '../../types/deviceControllerTypes';
 import DeviceStatus from '../DeviceStatus';
+import { WINDOW_WIDTH } from '../../constants';
 
 export default function DeviceCard({
   deviceData,
@@ -23,7 +24,7 @@ export default function DeviceCard({
   );
   return (
     <View>
-      <Card height={160} width={160}>
+      <Card height={160} width={WINDOW_WIDTH / 2 - 25}>
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.9}

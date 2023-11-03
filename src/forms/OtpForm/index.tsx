@@ -41,7 +41,7 @@ export default function OtpForm({
   const { colors }: Theme = useTheme();
   const [otp, setOtp] = React.useState('');
   const [expTime, setExpTime] = React.useState(false);
-  const [time, setTime] = React.useState(300);
+  const [time, setTime] = React.useState(120);
   const [loader, setLoader] = React.useState(false);
   const [countdownId, setCountdownId] = React.useState(
     new Date().getTime().toString(),
@@ -50,7 +50,7 @@ export default function OtpForm({
   const onResendOtp = async () => {
     setLoader(true);
     await onResend?.();
-    setTime((prevVal: number) => 300);
+    setTime((prevVal: number) => 120);
     setCountdownId(new Date().getTime().toString());
     setExpTime(false);
     setLoader(false);
@@ -73,10 +73,12 @@ export default function OtpForm({
       <GapView />
       <View style={{ alignItems: 'center' }}>
         <OverlayLoader isShow={loader} />
-        <MyTextSubHeader text="One-time passcode sent to email" />
+        <MyTextSubHeader
+          text={`One-time passcode sent to ${userPhone ? 'number' : 'email'}`}
+        />
         <GapView length={10} />
         <MyText
-          text={userPhone ?? userEmail ?? ''}
+          text={userPhone?.length! > 0 ? userPhone ?? '' : userEmail ?? ''}
           size={14}
           textStyle={{
             // fontWeight: '400',
@@ -87,7 +89,7 @@ export default function OtpForm({
         <GapView length={10} />
         <TouchableOpacity onPress={goBack}>
           <MyText
-            text={`Use a different ${userEmail ? 'email?' : 'number?'}`}
+            text={`Use a different ${userPhone ? 'number?' : 'email?'}`}
             size={16}
             textStyle={{
               // fontWeight: '400',
@@ -111,11 +113,6 @@ export default function OtpForm({
             until={time}
             onFinish={() => {
               setExpTime(true);
-            }}
-            onChange={(until: number) => {
-              if (until == 180) {
-                setExpTime(true);
-              }
             }}
             size={10}
             showSeparator

@@ -17,10 +17,11 @@ import { Device } from '../../types/deviceControllerTypes';
 import { WINDOW_WIDTH } from '../../constants';
 //@ts-ignore
 import { bytesToString } from 'convert-string';
+import { UserPermissions } from '../../types/userControllerApiResponse';
 
 export default function DeviceSelectForm({
   data = [],
-  userInfo,
+  userPermissions,
   setStep,
   setDevMacId,
   autoSelect,
@@ -28,7 +29,7 @@ export default function DeviceSelectForm({
   contentOpacity,
 }: {
   data?: Array<Peripheral | undefined>;
-  userInfo?: string;
+  userPermissions?: UserPermissions[];
   setStep: (value: number) => void;
   setDevMacId?: (value?: string) => void;
   autoSelect?: boolean;
@@ -73,15 +74,17 @@ export default function DeviceSelectForm({
 
   const newArr = data.map(item => {
     const isBtn = item?.name?.includes('SMBTN');
-    console.log('===============>>>>>>>>', userInfo);
-    const isAdmin = userInfo === 'Masjid Admin';
+    console.log('===============>>>>>>>>', userPermissions);
+    const isAdmin = userPermissions?.some(
+      val => val.name === 'MANAGE_MASJID_DEVICES',
+    );
     if (!isAdmin) {
       if (!isBtn) {
         console.log('admin nhi button nhi');
         return {
           ...item,
           leftIcon: <DeviceSvg />,
-          title: 'Smart Adhan Speaker',
+          title: 'Bilal Smart Speaker',
           onPress: () => {
             console.log('selected macId', item?.id);
             handleDeviceCheck(item as Peripheral);
@@ -96,7 +99,7 @@ export default function DeviceSelectForm({
       return {
         ...item,
         leftIcon: isBtn ? <AdhanButton /> : <DeviceSvg />,
-        title: isBtn ? 'Smart Adhan Button' : 'Smart Adhan Speaker',
+        title: isBtn ? 'Smart Masjid Adhan Button' : 'Bilal Smart Speaker',
         onPress: () => {
           console.log('selected macId', item?.id);
           handleDeviceCheck(item as Peripheral);

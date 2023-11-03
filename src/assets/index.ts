@@ -1,6 +1,9 @@
 //* pngs
 export { default as HeaderBackgroundImage } from './images/Header.png';
-export { default as HeaderIOSBackgroundImage } from './images/Header2.png';
+export { default as HeaderIOSBackgroundImage } from './images/iOSHeader.png';
+export { default as HeaderIOSBackgroundImageUp } from './images/iOSUpHeader.png';
+export { default as HeaderAndroidBackgroundImage } from './images/AndroidHeader.png';
+export { default as HeaderAndroidBackgroundImageUp } from './images/AndroidUpHeader.png';
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
 export { default as SL } from './animations/simpleLoader.gif';
@@ -37,6 +40,7 @@ export { default as Help } from './vectors/Help.svg';
 export { default as MasjidGear } from './vectors/masjid-gear.svg';
 export { default as ProfileUser } from './vectors/profile-user.svg';
 export { default as Email } from './vectors/email.svg';
+export { default as Envelope } from './vectors/envelope.svg';
 export { default as Earth } from './vectors/earth.svg';
 export { default as Phone } from './vectors/phone.svg';
 export { default as AdhanSettingSvg } from './vectors/adhan-speak.svg';
@@ -55,6 +59,7 @@ export { default as History } from './vectors/History.svg';
 export { default as HistoryBox } from './vectors/history-box.svg';
 export { default as ManageUser } from './vectors/manage-user.svg';
 export { default as Delete } from './vectors/Delete.svg';
+export { default as DeleteSvg } from './vectors/delete_forever.svg';
 export { default as ArrowLeft } from './vectors/ArrowLeft.svg';
 export { default as SearchWhite } from './vectors/SearchWhite.svg';
 export { default as AdhanCalculation } from './vectors/AdhanCalculation.svg';
@@ -65,6 +70,7 @@ export { default as Chevron_Right } from './vectors/chevron_right.svg';
 export { default as Wifi } from './vectors/Wifi.svg';
 export { default as Version } from './vectors/Version.svg';
 export { default as DeviceReset } from './vectors/device-reset.svg';
+export { default as Restart } from './vectors/restart.svg';
 export { default as DeviceObject } from './vectors/data-object.svg';
 export { default as Caution } from './vectors/Caution.svg';
 export { default as Check } from './vectors/Check.svg';

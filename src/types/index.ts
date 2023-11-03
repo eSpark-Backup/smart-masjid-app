@@ -12,6 +12,7 @@ import {
   FailCheckPhoneId,
   SuccessCheckPhoneId,
   UserResponse,
+  UserType,
 } from './userControllerApiResponse';
 
 export type RootStackParamList = {
@@ -44,6 +45,7 @@ export type UserStoreProps = {
   currentRegisterUser: UserResponse | null;
   token: UserResponse | null;
   masjidAdmins: UserResponse[];
+  userRoles: UserType[];
 };
 
 export type MasjidStoreProps = {

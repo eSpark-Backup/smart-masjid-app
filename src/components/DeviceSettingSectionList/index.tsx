@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Caution, CheckSvg, Chevron_Right, EditLight } from '../../assets';
+import {
+  Caution,
+  CheckSvg,
+  Chevron_Right,
+  DeleteSvg,
+  EditLight,
+  Restart,
+} from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
 import GapView from '../GapView';
@@ -20,12 +27,17 @@ interface DataProp {
   icon: JSX.Element;
   onPress?: () => void;
   onEditPress?: () => void;
+  onDangerPress?: () => void;
   isEditable?: boolean;
   isEdit?: boolean;
   rightArrow?: boolean;
   danger?: boolean;
   charLength?: number;
   onDoneEdit?: (text: string | undefined) => void;
+  isDelete?: boolean;
+  onDelete?: () => void;
+  isReset?: boolean;
+  onReset?: () => void;
 }
 
 export default function DeviceSettingSectionList({
@@ -70,11 +82,11 @@ const SectionCard = ({ item }: { item: DataProp }) => {
       {!item.isEdit ? (
         <>
           <GapView />
-          <TouchableOpacity
-            disabled={Boolean(!item?.onPress)}
-            onPress={item?.onPress}
-            style={{ ...styles.cardContainer }}>
-            <View style={styles.row}>
+          <View style={{ ...styles.cardContainer }}>
+            <TouchableOpacity
+              disabled={Boolean(!item?.onPress)}
+              onPress={item?.onPress}
+              style={styles.row}>
               <View style={styles.leftIcon}>{item?.icon}</View>
               <GapView mode="horizontal" length={15} />
               <View>
@@ -97,13 +109,26 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                   />
                 </View>
               </View>
-            </View>
-            <View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={
+                item.isReset
+                  ? item?.onReset
+                  : item.isDelete
+                  ? item.onDelete
+                  : item.danger
+                  ? item.onDangerPress
+                  : item.isEditable
+                  ? item.onEditPress
+                  : undefined
+              }>
+              {item?.isReset && <Restart />}
+              {item?.isDelete && <DeleteSvg />}
               {item?.rightArrow && <Chevron_Right />}
               {item?.isEditable && <EditLight />}
               {item?.danger && <Caution />}
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
           <GapView />
         </>
       ) : (

@@ -19,10 +19,10 @@ export default function PossibleCauseErrorModal({
 
   const causes = [
     'Device is powered off. Please charge and power on the device.',
-    'Device not in WiFi range. Please bring the device within WiFi range.',
-    'Internet outage. WiFi working now. Please power off and power on device.',
+    'Device not in WiFi range. Please bring the device within WiFi range and reboot.',
+    'Internet issues? Is your WiFi working now? Please power off and power on device.',
     'WiFi password changed. Please tap error icon on WiFi to update new password.',
-    'WiFi network changed. Please tap error icon on WiFi to setup new connection.',
+    'Changed your Internet provider? Please tap error icon on WiFi to setup new connection.',
   ];
 
   return (

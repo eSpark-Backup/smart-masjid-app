@@ -18,7 +18,8 @@ export type CreateUserRequest = {
   lastName: string;
   email?: string;
   phone?: string;
-  userType: 'Customer' | 'Masjid Admin';
+  userType?: 'Customer' | 'Masjid Admin';
+  userTypeId?: number;
   masjidId?: string;
 };
 
@@ -38,18 +39,18 @@ export type UserToken = {
   exp: Date;
 };
 
-type Permission = {
+export type UserPermissions = {
   id: number;
   name: string;
 };
 
-type UserType = {
+export type UserType = {
   id: number;
   name: string;
-  permissions: Permission[];
+  permissions: UserPermissions[];
 };
 
-type UserPhone = {
+export type UserPhone = {
   deviceId: string;
   fcmToken: string;
   isNotificationsAllowed: string;

@@ -12,6 +12,7 @@ import { Theme, useTheme } from '@react-navigation/native';
 import { GradientColors } from '../../../theme';
 import { WINDOW_WIDTH } from '../../../constants';
 import GapView from '../../GapView';
+import MyText from '../../MyText';
 
 interface JoinedButtonType {
   title1?: string;
@@ -40,14 +41,16 @@ export default function Joined({
           <LinearGradient
             colors={activeButton == 'one' ? GradientColors : ['#fff', '#fff']}
             style={activeButton == 'one' ? styles.gradient : styles.hollowLeft}>
-            <Text
-              style={activeButton == 'one' ? styles.activeText : styles.text}>
-              {title1}
-            </Text>
+            <MyText
+              textStyle={
+                activeButton == 'one' ? styles.activeText : styles.text
+              }
+              text={title1}
+            />
           </LinearGradient>
         ) : (
           <View style={styles.hollowLeft}>
-            <Text style={styles.text}>{title1}</Text>
+            <MyText textStyle={styles.text} text={title1} />
           </View>
         )}
       </TouchableWithoutFeedback>
@@ -61,14 +64,16 @@ export default function Joined({
             style={
               activeButton == 'two' ? styles.rightGradient : styles.hollow
             }>
-            <Text
-              style={activeButton == 'two' ? styles.activeText : styles.text}>
-              {title2}
-            </Text>
+            <MyText
+              textStyle={
+                activeButton == 'two' ? styles.activeText : styles.text
+              }
+              text={title2}
+            />
           </LinearGradient>
         ) : (
           <View style={styles.hollow}>
-            <Text style={styles.text}>{title2}</Text>
+            <MyText textStyle={styles.text} text={title2} />
           </View>
         )}
       </TouchableWithoutFeedback>

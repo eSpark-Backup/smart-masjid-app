@@ -16,6 +16,7 @@ import { SalahTimings } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
+import { Email, Envelope } from '../../../../../../assets';
 
 export default function History({
   setFlag,
@@ -39,6 +40,8 @@ export default function History({
       setLoading(false);
     });
   }, []);
+
+  console.log('moment start', moment().startOf('month').format('YYYY-MM-DD'));
 
   const onDateChange = (e: Date) => {
     setCurrentDate(e);
@@ -70,7 +73,7 @@ export default function History({
       };
       item.salah.forEach(sItem => {
         time[sItem.name + ' Adhan'] = sItem.adhanTime;
-        time[sItem.name + ' Iqamah'] = sItem.iqamaTime;
+        time[sItem.name + ' Iqama'] = sItem.iqamaTime;
       });
       return time;
     });
@@ -94,15 +97,29 @@ export default function History({
         </Animated.View>
       </View>
       <View>
-        <MyDatePicker
-          minimumDate={moment().startOf('month').toDate()}
-          maximumDate={moment().add(4, 'month').toDate()}
-          type="standard"
-          currentDate={currentDate}
-          onDateChange={onDateChange}
-          dateFormat={'Monthly'}
-        />
-        <GapView length={10} />
+        <GapView />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: WINDOW_WIDTH,
+          }}>
+          <MyDatePicker
+            minimumDate={moment().startOf('month').date(2).toDate()}
+            maximumDate={moment().add(4, 'month').date(1).toDate()}
+            disablePicker
+            type="standard"
+            // currentDate={currentDate.getMonth}
+            currentDate={moment()
+              .month(currentDate.getMonth())
+              .date(1)
+              .toDate()}
+            onDateChange={onDateChange}
+            dateFormat={'Monthly'}
+          />
+          <Envelope style={{ position: 'absolute', right: 22 }} />
+        </View>
         {adhaTime.length < 1 && !loading ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}

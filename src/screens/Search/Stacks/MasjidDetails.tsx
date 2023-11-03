@@ -34,7 +34,7 @@ import { _normalizedSubscriptions, openMap } from '../../../utils/functions';
 import { Card } from '../../../containers';
 import { useMasjid } from '../../../utils/hooks';
 import {
-  GetMasjidJummahTiming,
+  GetMasjidCurrentJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
 import { WINDOW_WIDTH } from '../../../constants';
@@ -60,7 +60,7 @@ const MasjidDetails = ({
     try {
       setLoading(true);
       await getSalahTimingsOfMasjid(masjidDetails?.id.toString() ?? '');
-      await GetMasjidJummahTiming(masjidDetails?.id.toString() ?? '');
+      await GetMasjidCurrentJummahTiming(masjidDetails?.id.toString() ?? '');
       setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -181,7 +181,7 @@ const MasjidDetails = ({
                   }
                   size={16}
                   textStyle={{ color: '#3E3E3E' }}
-                  lines={2}
+                  lines={1}
                 />
               </View>
               <GapView length={5} mode="horizontal" />

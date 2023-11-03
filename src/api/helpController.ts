@@ -4,6 +4,8 @@ import Toast from 'react-native-toast-message';
 import { api } from '.';
 import { helpStore } from '../store/HelpStore';
 import { supportRequestData } from '../types';
+import { LogoutUser } from './userController';
+import { userStore } from '../store/UserStore';
 
 /**
  * Fetches frequently asked questions (FAQs) from the help endpoint.
@@ -18,6 +20,13 @@ export const GetHelpFAQs = async () => {
       console.log('FAQ result', result.data);
       helpStore.FAQs.set(result?.data);
       return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -38,6 +47,13 @@ export const GetContactReasons = async () => {
       console.log('Reason result', result.data);
       helpStore.reasons.set(result?.data);
       return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -57,6 +73,13 @@ export const CreateSupportRequest = async (requestData: supportRequestData) => {
     if (result.status == 200 && result.data) {
       Toast.show({
         text2: result.data?.message ?? 'Request Submitted Successfully',
+      });
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
       });
     }
   } catch (error) {

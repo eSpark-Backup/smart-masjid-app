@@ -97,12 +97,15 @@ export default function MasjidListCard(
                 style={{
                   ...styles.row,
                   width: '95%',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
                   // flexWrap: 'wrap',
                 }}>
-                <SujudSvg />
-                <GapView mode="horizontal" length={5} />
-                <MyText text={namazName ?? 'Maghrib'} />
+                <View style={styles.row}>
+                  <SujudSvg />
+                  <GapView mode="horizontal" length={5} />
+                  <MyText text={namazName ?? 'Maghrib'} />
+                </View>
                 <GapView mode="horizontal" length={10} />
                 <View style={styles.row}>
                   <Speaker height={20} width={20} />

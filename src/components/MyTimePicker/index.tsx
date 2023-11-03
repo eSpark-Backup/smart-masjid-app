@@ -32,9 +32,25 @@ export default function MyTimePicker({
     today.getFullYear(),
     today.getMonth(),
     today.getDate(),
-    parseInt(hours ?? 0),
+    parseInt(convert12to24(hours, time.slice(time.length - 2)) ?? 0),
     parseInt(minutes ?? 0),
   );
+
+  function convert12to24(hours12: string, amPm: string) {
+    let hours24 = parseInt(hours12, 10);
+
+    if (amPm.toLowerCase() === 'pm' && hours24 !== 12) {
+      hours24 += 12;
+    } else if (amPm.toLowerCase() === 'am' && hours24 === 12) {
+      hours24 = 0;
+    }
+
+    // Ensure the result is formatted with two digits
+    const hours24Formatted = String(hours24).padStart(2, '0');
+
+    return hours24Formatted;
+  }
+
   return (
     <>
       {show && (
@@ -60,7 +76,7 @@ export default function MyTimePicker({
             justifyContent: 'center',
           },
         ]}>
-        <MyText text={convertTo12Hour(time)} size={16} />
+        <MyText text={time} size={16} />
       </TouchableOpacity>
     </>
   );

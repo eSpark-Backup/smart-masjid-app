@@ -66,12 +66,15 @@ async function _getFCMToken(): Promise<string> {
       await AsyncStorage.setItem('apns', apns ?? '');
       console.log('sx getAPNSToken', apns);
       await messaging().setAPNSToken(apns ?? '');
+      token = await messaging().getToken();
+      console.log('token ', token);
+      globalStore.fcmToken.set(token);
     } else {
       await messaging().setAPNSToken(apnsToken ?? '');
+      token = await messaging().getToken();
+      console.log('token ', token);
+      globalStore.fcmToken.set(token);
     }
-    token = await messaging().getToken();
-    console.log('token ', token);
-    globalStore.fcmToken.set(token);
   } else {
     // Get the token
     token = await messaging().getToken();
@@ -88,27 +91,30 @@ async function _getFCMToken(): Promise<string> {
  * @todo //todo: Delete This later
  */
 async function _requestUserNotificationPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  if (Platform.OS == 'ios') {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+      _getFCMToken();
+    }
+  } else {
+    checkMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]).then(statuses => {
+      console.log(
+        'kia ha notification status ' +
+          statuses['android.permission.POST_NOTIFICATIONS'],
+      );
+      if (statuses['android.permission.POST_NOTIFICATIONS'] == 'blocked') {
+        _openSettingIsBlocked(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+      }
+      if (statuses[PERMISSIONS.ANDROID.POST_NOTIFICATIONS] != 'granted') {
+        requestMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]);
+      }
+    });
   }
-
-  checkMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]).then(statuses => {
-    console.log(
-      'kia ha notification status ' +
-        statuses['android.permission.POST_NOTIFICATIONS'],
-    );
-    if (statuses['android.permission.POST_NOTIFICATIONS'] == 'blocked') {
-      _openSettingIsBlocked(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-    }
-    if (statuses[PERMISSIONS.ANDROID.POST_NOTIFICATIONS] != 'granted') {
-      requestMultiple([PERMISSIONS.ANDROID.POST_NOTIFICATIONS]);
-    }
-  });
 }
 
 /**
@@ -394,7 +400,8 @@ function convertResponseToData(
           } else {
             // it is a valid date string, so extract the date part
             // value = dateValue.toISOString().slice(0, 10);
-            value = moment(dateValue).format('DD/MM/YYYY');
+            // value = moment(dateValue).format('DD/MM/YYYY');
+            value = moment(currValue, 'YYYY-MM-DD').format('DD/MM/YYYY');
           }
         } else if (currValue instanceof Date) {
           // it is a Date object, so extract the date part

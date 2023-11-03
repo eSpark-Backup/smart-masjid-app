@@ -34,43 +34,27 @@ export default function ErrorModal({
           <MyText text="Wi-Fi Error" textStyle={styles.label} size={16} />
           <GapView length={20} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
-          <View style={{ flexDirection: 'row' }}>
+          <GapView length={20} />
+          <View style={{ flexDirection: 'row', ...styles.bodyText }}>
             <MyText
               text={'Note: Device must be '}
-              textStyle={styles.noteText}
+              textStyle={styles.text}
               size={16}
             />
             <MyText
-              text={'powered on'}
-              textStyle={{ ...styles.noteText, fontWeight: '800' }}
               size={16}
+              text="powered on"
+              textStyle={{ fontFamily: 'Roboto-Bold' }}
             />
           </View>
-          <GapView length={30} />
-          <View
-            style={{
-              width: '100%',
-              alignItems: 'center',
-            }}>
-            {options?.map(item => (
-              <View
-                key={item.label}
-                style={{ width: '100%', alignItems: 'center' }}>
-                <Rounded
-                  label={item?.label}
-                  onPress={item?.onPress}
-                  width={'100%'}
-                />
-                <GapView length={15} />
-              </View>
-            ))}
-            <Rounded
-              label={"No, I'm good"}
-              onPress={onClose}
-              outlined
-              width={'100%'}
-            />
-          </View>
+          <GapView length={20} />
+          {options?.map(item => (
+            <View key={item.label}>
+              <Rounded label={item?.label} onPress={item?.onPress} />
+              <GapView length={15} />
+            </View>
+          ))}
+          <Rounded label={"No, I'm good"} onPress={onClose} outlined />
         </View>
       </View>
     </Modal>
@@ -113,6 +97,11 @@ const makeStyles = (theme: Theme) => {
       // fontWeight: '400',
       fontFamily: 'Roboto-Regular',
       textAlign: 'center',
+    },
+    text: {
+      color: '#3E3E3E',
+      // fontWeight: '400',
+      fontFamily: 'Roboto-Regular',
     },
   });
 };

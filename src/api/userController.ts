@@ -14,6 +14,44 @@ import {
 import { globalStore } from '../store/GlobalStates';
 
 /**
+ * Update user's login status on the server.
+ *
+ * @param phoneDeviceId - The data to be sent for phone device registration.
+ * @param userId - The user's ID.
+ * @returns A promise that resolves when the registration is successful or rejects if there is an error.
+ */
+export const UpdateUserLogin = async (
+  phoneDeviceId: string,
+  userId: string | number,
+) => {
+  try {
+    const login: any = await api.put(`/users/${userId}/login`, {
+      phoneDeviceId: phoneDeviceId,
+    });
+    if (login.ok) {
+      return login;
+    } else if (login.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: login.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log(
+      'error UpdateUserLogin',
+      error,
+      'Request',
+      phoneDeviceId,
+      userId,
+    );
+  }
+};
+
+/**
  * Register a user's phone device on the server.
  *
  * @param data - The data to be sent for phone device registration.
@@ -23,9 +61,20 @@ import { globalStore } from '../store/GlobalStates';
 export const RegisterUserPhone = async (
   data: RequestRegisterPhone,
   userId: string,
-): Promise<void> => {
+) => {
   try {
-    await api.post(`/users/${userId}/phones`, data);
+    const res: any = await api.post(`/users/${userId}/phones`, data);
+    if (res.ok) {
+      return res;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: res.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
+      });
+    }
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('error RegisterUserPhone', error, 'Request', data, userId);
@@ -44,18 +93,22 @@ export const updateUserPhone = async (
   fcmToken: string,
   userId: string,
   phoneDeviceId: string,
-): Promise<void> => {
+) => {
   try {
-    const res = await api.put(`/users/${userId}/phones/${phoneDeviceId}`, {
+    const res: any = await api.put(`/users/${userId}/phones/${phoneDeviceId}`, {
       fcmToken: fcmToken,
     });
     if (res.ok) {
-      const login = await api.put(`/users/${userId}/login`, {
-        phoneDeviceId: phoneDeviceId,
+      return res;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: res.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
       });
-      console.log('login', login);
     }
-    console.log('update phone res', res);
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log(
@@ -74,11 +127,17 @@ export const updateUserPhone = async (
  * @param userId - The ID of the user to log out.
  * @returns A promise that resolves when the user is successfully logged out or rejects if there is an error.
  */
-export const LogoutUser = async (userId: string) => {
+export const LogoutUser = async (userId: string, saveEmail?: boolean) => {
   try {
     await api.put(`/users/${userId}/logout`, {
       phoneDeviceId: globalStore.phoneId?.get(),
     });
+    if (saveEmail) {
+      await setDataInLocalStorage(
+        'lastLoggedInEmail',
+        userStore.userData.get()?.email,
+      );
+    }
     await removeDatafromLocalStorage('user');
     userStore.userData.set(null);
   } catch (error) {
@@ -96,9 +155,21 @@ export const LogoutUser = async (userId: string) => {
 
 export const DeleteUser = async (userId: string) => {
   try {
-    await api.delete(`/users/${userId}`);
-    await removeDatafromLocalStorage('user');
-    userStore.userData.set(null);
+    const res: any = await api.delete(`/users/${userId}`);
+    console.log('res=>>>>', res);
+
+    if (res.ok) {
+      await removeDatafromLocalStorage('user');
+      userStore.userData.set(null);
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: res.data?.message,
+        type: 'error',
+        visibilityTime: 10000,
+      });
+    }
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('error DeleteUser', error);
@@ -135,6 +206,8 @@ export const UpdateUser = async (
         text2: 'User Updated Successfully',
         type: 'success',
       });
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message,
@@ -160,6 +233,13 @@ export const GetMasjidAdmins = async (id: string) => {
     const result: any = await api.get(`/users/masjid/${id}`);
     if (result.data && result.status === 200) {
       userStore.masjidAdmins.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -187,6 +267,8 @@ export const DeleteAdminFromMasjid = async (
         type: 'success',
       });
       GetMasjidAdmins(masjidId);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message,
@@ -207,9 +289,15 @@ export const DeleteAdminFromMasjid = async (
  * @param masjidId - The ID of the masjid to which the admin will be added.
  * @returns A promise that resolves to `true` when the admin is successfully added or `false` if there's an error.
  */
-export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
+export const AddAdminIntoMasjid = async (
+  userId: string,
+  masjidId: string,
+  userTypeId: number,
+) => {
   try {
-    const result: any = await api.post(`/users/${userId}/masjid/${masjidId}`);
+    const result: any = await api.post(`/users/${userId}/masjid/${masjidId}`, {
+      userTypeId: userTypeId,
+    });
     if (result.status === 200) {
       Toast.show({
         text2: 'Admin added to the masjid',
@@ -217,6 +305,8 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
       });
       GetMasjidAdmins(masjidId);
       return true;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
         text2: result.data?.message,
@@ -225,6 +315,68 @@ export const AddAdminIntoMasjid = async (userId: string, masjidId: string) => {
         visibilityTime: 10000,
       });
       return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Get Users of category masjid and display a success or error message.
+ *
+ * @returns A promise that resolves when the data is successfully retrieved otherwise displays an error message.
+ */
+export const GetUserTypes = async () => {
+  try {
+    console.log('usertypes result');
+    const result: any = await api.get(`/users/type?category=masjid`);
+    console.log('usertypes results', result);
+
+    if (result.status === 200) {
+      userStore.userRoles.set(result.data);
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Get a User by using email, phone,firstName or lastName or Get all Users by not given details.
+ *
+ * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
+ */
+export const GetUser = async (
+  email: string = '',
+  phone: number | string = '',
+  firstName: string = '',
+  lastName: string = '',
+) => {
+  try {
+    console.log('usertypes result');
+    const result: any = await api.get(
+      `/users?email=${email}&phone=${phone}&firstName=${firstName}&lastName=${lastName}`,
+    );
+    console.log('user results', result);
+    if (result.status === 200) {
+      return result.data[0];
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
