@@ -4,5 +4,6 @@ import { GlobalProps } from '../types';
 export const globalStore = hookstate<GlobalProps>({
   phoneId: null,
   fcmToken: 'fcmToken',
-  isDeviceRegistered: false
+  isDeviceRegistered: false,
+  devSetup: false,
 });

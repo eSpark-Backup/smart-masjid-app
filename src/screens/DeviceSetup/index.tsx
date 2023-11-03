@@ -63,6 +63,8 @@ import {
   UserPermissions,
   UserToken,
 } from '../../types/userControllerApiResponse';
+import { useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -77,6 +79,7 @@ export default function DeviceSetupScreen() {
   let telemetryInterval: number;
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
+  const devSetup = useHookstate(globalStore.devSetup);
   const isFocused = useIsFocused();
   const [bleStatus, setBleStatus] = useState<boolean | undefined>();
   const [locationStatus, setlocationStatus] = useState<boolean | undefined>();
@@ -136,27 +139,35 @@ export default function DeviceSetupScreen() {
   };
 
   useEffect(() => {
-    // console.log('xxx', JSON.stringify(Array.from(iosScannedData.values())));
-  }, [iosScannedData.values()]);
+    if (devSetup.get()) {
+      devSetup.set(false);
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   // console.log('xxx', JSON.stringify(Array.from(iosScannedData.values())));
+  // }, [iosScannedData.values()]);
 
   useEffect(() => {
-    const listeners = [
-      bleManagerEmitter.addListener(
-        'BleManagerDiscoverPeripheral',
-        peripheral => addOrUpdatePeripheral(peripheral),
-      ),
-      bleManagerEmitter.addListener('BleManagerStopScan', () =>
-        console.log('scan stopped'),
-      ),
-    ];
+    if (isFocused) {
+      const listeners = [
+        bleManagerEmitter.addListener(
+          'BleManagerDiscoverPeripheral',
+          peripheral => addOrUpdatePeripheral(peripheral),
+        ),
+        bleManagerEmitter.addListener('BleManagerStopScan', () =>
+          console.log('scan stopped'),
+        ),
+      ];
 
-    return () => {
-      console.debug('[app] main component unmounting. Removing listeners...');
-      for (const listener of listeners) {
-        listener.remove();
-      }
-    };
-  }, []);
+      return () => {
+        console.debug('[app] main component unmounting. Removing listeners...');
+        for (const listener of listeners) {
+          listener.remove();
+        }
+      };
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -297,7 +308,11 @@ export default function DeviceSetupScreen() {
     console.log('parent?', route?.params?.from);
     switch (currStep) {
       case 2:
-        if (route?.params?.from === 'Device') setDisable(true);
+        if (route?.params?.from == 'SelectedDevice') {
+          setDisable(false);
+        } else {
+          setDisable(true);
+        }
         break;
       case 3:
         setDisable(true);
@@ -643,6 +658,20 @@ export default function DeviceSetupScreen() {
             } else {
               console.log('====== step 2 jana chahta ha', iosScannedData);
               setStep(2);
+              setToastContent(state => ({
+                ...state,
+                title: 'Device not found',
+                message: 'Please Check',
+                points: [
+                  'Device is powered on',
+                  'Phone is within range of the device',
+                  'Device Light is yellow',
+                  'WiFi is working',
+                ],
+                onPress: () => {
+                  setRetry(true);
+                },
+              }));
             }
           }
         }, 100);
@@ -798,7 +827,7 @@ export default function DeviceSetupScreen() {
                     ? ''
                     : route.params?.from == 'SelectedDevice'
                     ? ''
-                    : 'Let’s subscribe to a masjid now.' + masjidSetupText
+                    : 'Let’s subscribe to a masjid now.'
                 }
                 center
               />

@@ -167,6 +167,7 @@ export default function App() {
   }, []);
 
   console.log('checkid', checkedId);
+  console.log('devSetup', state.devSetup.get());
   console.log('userData.get()?.id', userData.get()?.id);
 
   if (checkedId !== null) {
@@ -191,12 +192,26 @@ export default function App() {
                   <Stack.Screen name="Welcome" component={WelcomeScreen} />
                 </>
               )}
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
           ) : (
             <Stack.Group>
-              <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+              {state.devSetup.get() ? (
+                <>
+                  <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+                  <Stack.Screen
+                    name="HomeBottomTab"
+                    component={HomeBottomTab}
+                  />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="HomeBottomTab"
+                    component={HomeBottomTab}
+                  />
+                  <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+                </>
+              )}
             </Stack.Group>
           )}
         </Stack.Navigator>

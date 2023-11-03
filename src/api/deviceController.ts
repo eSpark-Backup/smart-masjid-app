@@ -18,7 +18,10 @@ import { LogoutUser } from './userController';
 
 export const GetUserDevices = async (userId: string) => {
   try {
+    console.log('GetUserDevices chala', userId);
     const result: any = await api.get(`/devices/user/${userId}`);
+    console.log('user devices result', result);
+
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
     } else if (result.status == 401) {
@@ -30,6 +33,8 @@ export const GetUserDevices = async (userId: string) => {
       });
     }
   } catch (error) {
+    console.log('errr', error);
+
     crashlytics().recordError(error as Error);
   }
 };

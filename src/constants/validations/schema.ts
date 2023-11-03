@@ -48,7 +48,10 @@ export const DeviceSetupSchema = {
     nickName: string()
       .min(2, 'Device Name is Too Short!')
       .max(50, 'Device Name is Too Long!')
-      .required('Device Name is Required'),
+      .required('Device Name is Required')
+      .matches(NAME_REGEX, {
+        message: 'Please enter a valid device name',
+      }),
   }),
   wifiPassword: object({
     password: string().required('Password is required'),
@@ -60,11 +63,17 @@ export const AddAdminForSchema = {
     firstName: string()
       .min(2, 'First Name Too Short!')
       .max(50, 'First Name Too Long!')
-      .required('First Name is Required'),
+      .required('First Name is Required')
+      .matches(NAME_REGEX, {
+        message: 'Please enter a valid first name',
+      }),
     lastName: string()
       .min(2, 'Last Name is Too Short!')
       .max(50, 'Last Name is Too Long!')
-      .required('Last Name is Required'),
+      .required('Last Name is Required')
+      .matches(NAME_REGEX, {
+        message: 'Please enter a valid last name',
+      }),
     email: string().email('Invalid email').required('Email is required'),
   }),
 };

@@ -38,6 +38,7 @@ export type GlobalProps = {
   phoneId?: string | null;
   fcmToken?: string;
   isDeviceRegistered?: boolean;
+  devSetup?: boolean;
 };
 
 export type UserStoreProps = {

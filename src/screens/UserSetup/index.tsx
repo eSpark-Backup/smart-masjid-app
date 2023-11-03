@@ -41,6 +41,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 export default function UserSetupScreen() {
   const navigation = useNavigation<Props['navigation']>();
   const phoneId = useHookstate(globalStore.phoneId).get();
+  const devSetup = useHookstate(globalStore.devSetup);
+  const userData = useHookstate(userStore.userData);
   const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
   const [activeFlow, setActiveFlow] = useState('login');
@@ -311,8 +313,19 @@ export default function UserSetupScreen() {
               {step == 4 && (
                 <AddPhoneForm
                   contentOpacity={props.contentOpacity}
-                  setStep={(value: number, values: any) => {
-                    setStep(value);
+                  setStep={async (value: number, values: any) => {
+                    if (value == 5) {
+                      console.log('phoneNumber', values);
+                      const result = await SendOTP('', values.phone);
+                      if (result) {
+                        if (values.phone) {
+                          setData({ ...data, phone: values.phone ?? '' });
+                        }
+                        setStep(value);
+                      }
+                    } else {
+                      setStep(value);
+                    }
                   }}
                 />
               )}
@@ -368,9 +381,21 @@ export default function UserSetupScreen() {
                   heading="Create Account"
                   contentOpacity={props.contentOpacity}
                   isSuccess={true}
-                  onPress={() => navigation.navigate('DSetup')}
+                  onPress={() => {
+                    devSetup.set(true);
+                    userData.set(
+                      JSON.parse(
+                        JSON.stringify(userStore.currentRegisterUser.get()),
+                      ),
+                    );
+                    setDataInLocalStorage(
+                      'user',
+                      JSON.stringify(userStore.currentRegisterUser.get()),
+                    );
+                    // navigation.navigate('DSetup');
+                  }}
                   onSkip={async () => {
-                    userStore.userData.set(
+                    userData.set(
                       JSON.parse(
                         JSON.stringify(userStore.currentRegisterUser.get()),
                       ),

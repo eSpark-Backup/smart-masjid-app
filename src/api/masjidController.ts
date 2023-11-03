@@ -473,7 +473,9 @@ export const SearchMasjidByLocation = async (
  */
 export const getListMasjidSubscribedByUser = async (userId: string) => {
   try {
+    console.log('GetMasjidlist chala', userId);
     const result: any = await api.get(`/masjid/subscriptions/user/${userId}`);
+    console.log('user masjidlist result', result);
     if (result.status == 200 && result.data) {
       const masjidList = result.data as Masjid[];
       // console.log("masjidList", masjidList);
