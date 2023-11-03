@@ -774,10 +774,8 @@ export default function DeviceSetupScreen() {
                 isSuccess={true}
                 onSkip={!route.params?.isBtn ? handleSkip : undefined}
                 btnText={
-                  route.params?.from == 'Device'
-                    ? !route.params?.isBtn
-                      ? 'Search Masjid'
-                      : 'View Device'
+                  route.params?.isBtn || route.params?.from === 'SelectedDevice'
+                    ? 'View Device'
                     : 'Search Masjid'
                 }
                 onPress={() => {
@@ -785,11 +783,11 @@ export default function DeviceSetupScreen() {
                     userStore.userData.set(userStore.currentRegisterUser.get());
                   }
                   navigation.navigate('HomeBottomTab', {
-                    screen: route.params?.from
-                      ? !route.params?.isBtn
-                        ? 'Search'
-                        : 'Device'
-                      : 'Home',
+                    screen:
+                      route.params?.isBtn ||
+                      route.params?.from === 'SelectedDevice'
+                        ? 'Device'
+                        : 'Search',
                   });
                 }}
                 title="Device connected successfully"

@@ -67,6 +67,8 @@ export type DeviceStoreProps = {
   masjidDevices: Device[];
 };
 
+export type DStatus = 'Online' | 'Offline' | 'Low battery';
+
 export type HelpStoreProps = {
   FAQs: FAQ[];
   reasons: FAQ[];

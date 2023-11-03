@@ -32,7 +32,7 @@ export default function MyToast({
 }: {
   heading?: string;
   title: string;
-  message: string;
+  message?: string;
   isSuccess: boolean;
   btnText: string;
   onPress?: () => void;
@@ -92,22 +92,28 @@ export default function MyToast({
             />
           )}
           <View
-            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 50 }}>
+            style={{
+              alignSelf: 'center',
+              marginTop: 20,
+              marginBottom: message ? 50 : 30,
+            }}>
             {isSuccess ? <CheckSvg /> : <CautionDevice />}
           </View>
           <View
             style={
               center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
             }>
-            <MyText
-              size={16}
-              text={message}
-              textStyle={{
-                color: isSuccess ? '#3E3E3E' : '#000000',
-                fontFamily: isSuccess ? 'Roboto-Regular' : 'Roboto-Medium',
-                fontSize: 16,
-              }}
-            />
+            {message && (
+              <MyText
+                size={16}
+                text={message!}
+                textStyle={{
+                  color: isSuccess ? '#3E3E3E' : '#000000',
+                  fontFamily: isSuccess ? 'Roboto-Regular' : 'Roboto-Medium',
+                  fontSize: 16,
+                }}
+              />
+            )}
           </View>
           {points?.length!! > 0 && (
             <>
@@ -119,7 +125,7 @@ export default function MyToast({
               />
             </>
           )}
-          <GapView length={40} />
+          {message && <GapView length={40} />}
           <View style={{ alignSelf: 'center' }}>
             <Rounded onPress={onPress} label={btnText!!} />
           </View>

@@ -84,6 +84,12 @@ const makeStyles = (theme: Theme) => {
       // fontWeight: 'bold',
       fontFamily: 'Roboto-Bold',
     },
+    noteText: {
+      color: '#3E3E3E',
+      // fontWeight: '400',
+      fontFamily: 'Roboto-Regular',
+      textAlign: 'center',
+    },
     bodyText: {
       paddingHorizontal: 27.5,
       paddingBottom: 20,

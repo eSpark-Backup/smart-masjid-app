@@ -69,13 +69,7 @@ export default function DeviceCard({
                   bottom: 5,
                   right: 2,
                 }}>
-                <DeviceStatus
-                  online={
-                    deviceData?.deviceTelemetry?.status !== 'Offline'
-                      ? true
-                      : false
-                  }
-                />
+                <DeviceStatus status={deviceData?.deviceTelemetry?.status} />
               </View>
             </View>
           </View>

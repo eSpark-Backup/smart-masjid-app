@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
-import RnWifi from '@react-native-tethering/wifi';
 import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -58,18 +57,27 @@ export default function PasswordForm({
           false,
         );
         await WifiManager.disconnect();
-        Wifi.connectToNetwork({ ssid, password })
-          .then(() => {
-            console.log('Connected Successfully', res);
-            setLoading(false);
-            setStep(6);
-            clear();
-          })
-          .catch((error: any) => {
-            console.error(error);
-            crashlytics().recordError(error as Error);
-            setLoading(false);
-          });
+        const isForget = await WifiManager.isRemoveWifiNetwork(ssid);
+        if (isForget) {
+          console.log('Forgot Network which was validated', isForget);
+          setLoading(false);
+          setStep(6);
+          clear();
+        } else {
+          console.log('Failed to forgot', isForget);
+        }
+        // Wifi.connectToNetwork({ ssid, password })
+        //   .then(() => {
+        //     console.log('Connected Successfully', res);
+        //     setLoading(false);
+        //     setStep(6);
+        //     clear();
+        //   })
+        //   .catch((error: any) => {
+        //     console.error(error);
+        //     crashlytics().recordError(error as Error);
+        //     setLoading(false);
+        //   });
       } else {
         const res = await WifiManager.connectToProtectedSSID(
           ssid,
@@ -173,7 +181,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    // fontWeight: '400',
     fontFamily: 'Roboto-Regular',
     textAlign: 'center',
     color: '#3e3e3e',

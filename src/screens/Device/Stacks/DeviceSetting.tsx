@@ -41,7 +41,11 @@ import {
   _updateDevice,
   unSubscribeMasjid,
 } from '../../../api/deviceController';
-import { BottomNavigationParamList, RootStackParamList } from '../../../types';
+import {
+  BottomNavigationParamList,
+  DStatus,
+  RootStackParamList,
+} from '../../../types';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -247,9 +251,7 @@ const DeviceSetting = ({
                 trademark
               />
               <DeviceStatus
-                online={
-                  device?.deviceTelemetry?.status !== 'Offline' ? true : false
-                }
+                status={device?.deviceTelemetry?.status as DStatus}
               />
             </View>
             <GapView length={10} />
@@ -374,7 +376,7 @@ const DeviceSetting = ({
         </View>
       </TouchableWithoutFeedback>
       <LogoutModal
-        message="The device will remove permanently. Do you still want to reset?"
+        message="The device will be removed permanently. Do you still want to reset?"
         visible={isVisible}
         onAllowed={async () => {
           await removeDevice();
