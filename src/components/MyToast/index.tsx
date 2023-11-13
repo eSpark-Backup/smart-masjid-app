@@ -33,7 +33,7 @@ export default function MyToast({
 }: {
   heading?: string;
   title: string;
-  message: string;
+  message?: string;
   isSuccess: boolean;
   btnText: string;
   onPress?: () => void;
@@ -126,7 +126,7 @@ export default function MyToast({
               />
             </>
           )}
-          <GapView length={40} />
+          {message && <GapView length={40} />}
           <View style={{ alignSelf: 'center' }}>
             <Rounded onPress={onPress} label={btnText!!} />
           </View>
