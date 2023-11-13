@@ -147,15 +147,7 @@ export default function IqamahTimings({
 
   const contentToRender = () => {
     return currentData != null ? (
-      <TimeTableCard
-        onEdit={() => {
-          const ind = iqamahTimings?.findIndex(e => e.id == currentData.id);
-          selectedIqamah(iqamahTimings![ind!]);
-          setFlag('iEdit');
-        }}
-        date={currentData?.date}
-        data={currentData?.data}
-      />
+      <TimeTableCard date={currentData?.date} data={currentData?.data} />
     ) : loading ? null : (
       <MyText
         textStyle={{ textAlign: 'center', marginVertical: 10 }}
@@ -164,10 +156,10 @@ export default function IqamahTimings({
     );
   };
 
-  const deleteIqamahTime = () => {
+  const deleteIqamahTime = async () => {
     setIsVisible(false);
     setLoading(true);
-    DeleteMasjidIqamahTiming(
+    await DeleteMasjidIqamahTiming(
       userData?.masjid.id.toString() as string,
       deleteId as string,
     );

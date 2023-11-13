@@ -22,6 +22,7 @@ export default function Header({
             : useSafeAreaInsets().top + 5,
         justifyContent: 'center',
         paddingHorizontal: 15,
+        zIndex: 1,
       }}>
       {showBack && (
         <TouchableOpacity style={{ width: 30 }} onPress={onBackPress}>

@@ -67,8 +67,9 @@ const SearchListing = ({
           ) {
             if (pressed) {
               Toast.show({
-                text2: 'Enable Location Permission \n Turn on Location',
-                type: 'warning',
+                text1: 'Alert!',
+                text2: 'Enable Location Permission & Turn on Location',
+                type: 'success',
                 visibilityTime: 10000,
               });
             } else {
@@ -77,8 +78,9 @@ const SearchListing = ({
           } else if (locationStatus == false) {
             if (pressed) {
               Toast.show({
+                text1: 'Alert!',
                 text2: 'Turn on Location',
-                type: 'warning',
+                type: 'success',
               });
             } else {
               setMessage('');
@@ -86,8 +88,9 @@ const SearchListing = ({
           } else {
             if (pressed) {
               Toast.show({
+                text1: 'Alert!',
                 text2: 'Enable Location Permission',
-                type: 'warning',
+                type: 'success',
               });
             } else {
               setMessage('Enable Location Permission');
@@ -108,8 +111,9 @@ const SearchListing = ({
         ) {
           if (pressed) {
             Toast.show({
-              text2: 'Enable Location Permission \n Turn on Location',
-              type: 'warning',
+              text1: 'Alert!',
+              text2: 'Enable Location Permission & Turn on Location',
+              type: 'success',
               visibilityTime: 10000,
             });
           } else {
@@ -119,8 +123,9 @@ const SearchListing = ({
         } else if (locationStatus == false) {
           if (pressed) {
             Toast.show({
+              text1: 'Alert!',
               text2: 'Turn on Location',
-              type: 'warning',
+              type: 'success',
             });
           } else {
             setMessage('');
@@ -128,8 +133,9 @@ const SearchListing = ({
         } else {
           if (pressed) {
             Toast.show({
+              text1: 'Alert!',
               text2: 'Enable Location Permission',
-              type: 'warning',
+              type: 'success',
             });
           } else {
             setMessage('Enable Location Permission');

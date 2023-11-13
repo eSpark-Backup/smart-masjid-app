@@ -9,13 +9,14 @@ import {
 import { Theme, useTheme } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 
-import { CautionDevice, Check, CheckSvg, CrossC } from '../../assets';
+import { CautionDevice, Check, CheckSvg, CrossC, OpenLink } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import GapView from '../GapView';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
 import { WINDOW_WIDTH } from '../../constants';
+import { _requestUserLocationPermission } from '../../utils/functions';
 
 export default function MyToast({
   heading,
@@ -92,23 +93,29 @@ export default function MyToast({
             />
           )}
           <View
-            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 50 }}>
+            style={{
+              alignSelf: 'center',
+              marginTop: 20,
+              marginBottom: message || points?.length!! > 0 ? 50 : 0,
+            }}>
             {isSuccess ? <CheckSvg /> : <CautionDevice />}
           </View>
-          <View
-            style={
-              center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
-            }>
-            <MyText
-              size={16}
-              text={message}
-              textStyle={{
-                color: isSuccess ? '#3E3E3E' : '#000000',
-                fontFamily: isSuccess ? 'Roboto-Regular' : 'Roboto-Medium',
-                fontSize: 16,
-              }}
-            />
-          </View>
+          {message && (
+            <View
+              style={
+                center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
+              }>
+              <MyText
+                size={16}
+                text={message}
+                textStyle={{
+                  color: isSuccess ? '#3E3E3E' : '#000000',
+                  fontFamily: isSuccess ? 'Roboto-Regular' : 'Roboto-Medium',
+                  fontSize: 16,
+                }}
+              />
+            </View>
+          )}
           {points?.length!! > 0 && (
             <>
               <GapView length={20} />
@@ -123,7 +130,7 @@ export default function MyToast({
           <View style={{ alignSelf: 'center' }}>
             <Rounded onPress={onPress} label={btnText!!} />
           </View>
-          <GapView />
+          <GapView length={20} />
           {onSkip && (
             <TouchableOpacity onPress={onSkip}>
               <MyText
@@ -160,6 +167,19 @@ const Points = ({
               size={16}
               textStyle={{ color: '#3e3e3e', fontSize: 16 }}
             />
+            <GapView mode="horizontal" length={5} />
+            {item == 'Location permission denied' && (
+              <TouchableOpacity
+                onPress={_requestUserLocationPermission}
+                style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <MyText
+                  text={'Enable'}
+                  size={16}
+                  textStyle={{ color: '#006870', fontSize: 16 }}
+                />
+                <OpenLink width={14} height={14} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       ))}

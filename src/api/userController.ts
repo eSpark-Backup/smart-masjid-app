@@ -1,7 +1,7 @@
 import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
 
-import { api } from '.';
+import { api, xApi } from '.';
 import {
   RequestRegisterPhone,
   UserResponse,
@@ -137,6 +137,8 @@ export const LogoutUser = async (userId: string, saveEmail?: boolean) => {
         'lastLoggedInEmail',
         userStore.userData.get()?.email,
       );
+    } else {
+      await setDataInLocalStorage('lastLoggedInEmail', null);
     }
     await removeDatafromLocalStorage('user');
     userStore.userData.set(null);
@@ -196,16 +198,56 @@ export const UpdateUser = async (
     email?: string;
     phone?: string;
   },
+  otp?: string,
 ) => {
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
+
     if (result.data && result.status == 200) {
-      userStore.userData.set(result.data);
-      await setDataInLocalStorage('user', JSON.stringify(result.data));
-      Toast.show({
-        text2: 'User Updated Successfully',
-        type: 'success',
-      });
+      console.log('update user result', otp);
+      if (otp) {
+        const token: any = await xApi.post(`/external/auth/token/create`, {
+          application: 'MOBILE',
+          userId: result.data.id,
+          lastOTPVerified: otp,
+        });
+        if (token?.data?.token == null || token?.data?.token == '') {
+          Toast.show({
+            text2:
+              'Some error occurred during account setup, please try logging in again',
+            type: 'error',
+          });
+        } else {
+          userStore.token.set(token?.data?.token);
+          api.setHeaders({
+            Authorization: `Bearer ${token?.data?.token}`,
+          });
+          userStore.userData.set(result.data);
+          await setDataInLocalStorage('user', JSON.stringify(result.data));
+          await setDataInLocalStorage(
+            'token',
+            JSON.stringify(token?.data?.token),
+          );
+          console.log('token', JSON.stringify(token?.data?.token));
+          Toast.show({
+            text2: 'User Updated Successfully',
+            type: 'success',
+          });
+        }
+      } else {
+        userStore.userData.set(result.data);
+        await setDataInLocalStorage('user', JSON.stringify(result.data));
+        Toast.show({
+          text2: 'User Updated Successfully',
+          type: 'success',
+        });
+      }
+      // userStore.userData.set(result.data);
+      // await setDataInLocalStorage('user', JSON.stringify(result.data));
+      // Toast.show({
+      //   text2: 'User Updated Successfully',
+      //   type: 'success',
+      // });
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {

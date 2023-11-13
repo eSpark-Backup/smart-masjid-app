@@ -48,11 +48,14 @@ const RowItem = ({
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
           if (key == 'onChange') return;
+          console.log('key', index, item[key]);
+
           return (
             <React.Fragment key={index}>
               {index != 0 && edit ? (
                 <>
-                  {(type == 'F' && item[key]?.search(':') != -1) ||
+                  {(type == 'F' && item[key] == '-') ||
+                  item[key]?.search(':') != -1 ||
                   type == 'J' ? (
                     <MyTimePicker
                       onTimeChanged={item?.onChange}

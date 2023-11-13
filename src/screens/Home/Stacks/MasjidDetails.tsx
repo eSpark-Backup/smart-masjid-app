@@ -92,13 +92,13 @@ export default function MasjidDetails({
           getSubscriptions(connectedDevices[0]?.id.toString()!);
         }
       });
+      await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
       await getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
         data => {
           setSalahTime(data as SalahTimings[]);
+          setLoading(false);
         },
       );
-      await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
-      setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -198,7 +198,7 @@ export default function MasjidDetails({
           setLoading={val => setLoading(val)}
         />
         <GapView length={15} />
-        <View style={{ width: '100%', alignItems: 'center' }}>
+        {/* <View style={{ width: '100%', alignItems: 'center' }}>
           <TouchableOpacity
             activeOpacity={0.9}
             style={{
@@ -242,7 +242,7 @@ export default function MasjidDetails({
               }}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

@@ -35,10 +35,16 @@ export default function MasjidListing({
     try {
       data.map(
         item =>
-          getSalahTimingsOfMasjid(item?.id.toString() ?? '').then(data => {
-            let dat = [...allTimes];
-            dat.push({ id: item?.id.toString(), salahs: data! });
-            setAllTimes(dat);
+          getSalahTimingsOfMasjid(
+            item?.id.toString() ?? '',
+            moment().format('YYYY-MM-DD'),
+            true,
+          ).then(data => {
+            if (data) {
+              let dat = [];
+              dat.push({ id: item?.id.toString(), salahs: data! });
+              setAllTimes(dat);
+            }
           }),
         setLoading(false),
       );
@@ -46,6 +52,8 @@ export default function MasjidListing({
       crashlytics().recordError(e as Error);
     }
   };
+
+  // console.log('allTimes', JSON.stringify(allTimes));
 
   const getAzanNameTime = (id: string, type?: string) => {
     let masjidInd = allTimes?.findIndex(item => item?.id == id);

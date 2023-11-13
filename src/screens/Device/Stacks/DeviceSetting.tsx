@@ -20,6 +20,7 @@ import {
   Heart,
   Version,
   Wifi,
+  WifiManage,
 } from '../../../assets';
 import {
   GapView,
@@ -116,7 +117,7 @@ const DeviceSetting = ({
           device?.id?.toString()!,
           device?.masjid.id.toString()!,
         );
-        console.log('res', res);
+        console.log('unsub res', res);
         if (res) {
           setLoader(false);
         }
@@ -308,12 +309,16 @@ const DeviceSetting = ({
                         ? 'No Subscription'
                         : 'No Masjid',
                       icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                      isDelete: device?.masjid?.name ? true : false,
+                      isDelete:
+                        device?.masjid?.name && device?.deviceType?.id == 1
+                          ? true
+                          : false,
                       onDelete: () => setIsResetVisible(true),
                       onPress:
                         device?.deviceType.id == 1
                           ? () => {
                               if (!device?.masjid?.id.toString()) {
+                                goBack?.();
                                 navigation.navigate('Search');
                                 return;
                               }
@@ -333,6 +338,7 @@ const DeviceSetting = ({
                       title: 'Wifi',
                       subtitle: device?.wifiSsid,
                       icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
+                      editIcon: <WifiManage width={24} height={24} />,
                       isEditable:
                         device?.deviceTelemetry?.status !== 'Offline'
                           ? true
@@ -390,8 +396,9 @@ const DeviceSetting = ({
         message="Are you sure you want to cancel subscription?"
         visible={isResetVisible}
         onAllowed={async () => {
-          await cancelSubscription();
           setIsResetVisible(!isResetVisible);
+          await cancelSubscription();
+          goBack?.();
           console.log('Logged Out');
         }}
         onClose={() => {

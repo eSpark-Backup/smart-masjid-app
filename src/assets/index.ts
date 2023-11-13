@@ -34,12 +34,14 @@ export { default as SalahTimingsSVG } from './images/SalahTimings.svg';
 
 //* vector/svg
 export { default as InfoRed } from './vectors/InfoRed.svg';
+export { default as OpenLink } from './vectors/openLink.svg';
 export { default as CloseIcon } from './vectors/CloseIcon.svg';
 export { default as AccountGear } from './vectors/account-gear.svg';
 export { default as Help } from './vectors/Help.svg';
 export { default as MasjidGear } from './vectors/masjid-gear.svg';
 export { default as ProfileUser } from './vectors/profile-user.svg';
 export { default as Email } from './vectors/email.svg';
+export { default as EditSquare } from './vectors/editSquare.svg';
 export { default as Envelope } from './vectors/envelope.svg';
 export { default as Earth } from './vectors/earth.svg';
 export { default as Phone } from './vectors/phone.svg';
@@ -68,6 +70,7 @@ export { default as BatteryBar } from './vectors/battery-bar.svg';
 export { default as EditLight } from './vectors/edit-light.svg';
 export { default as Chevron_Right } from './vectors/chevron_right.svg';
 export { default as Wifi } from './vectors/Wifi.svg';
+export { default as WifiManage } from './vectors/wifiManage.svg';
 export { default as Version } from './vectors/Version.svg';
 export { default as DeviceReset } from './vectors/device-reset.svg';
 export { default as Restart } from './vectors/restart.svg';

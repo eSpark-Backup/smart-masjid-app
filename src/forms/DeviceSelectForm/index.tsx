@@ -27,6 +27,7 @@ export default function DeviceSelectForm({
   autoSelect,
   selectedDeviceData,
   contentOpacity,
+  fromMasjidDevices,
 }: {
   data?: Array<Peripheral | undefined>;
   userPermissions?: UserPermissions[];
@@ -35,10 +36,13 @@ export default function DeviceSelectForm({
   autoSelect?: boolean;
   selectedDeviceData: Device;
   contentOpacity: any;
+  fromMasjidDevices: boolean;
 }) {
   const [loading, setLoading] = useState(false);
 
   const getIOSMacAdd = async (devData: Peripheral) => {
+    console.log(devData);
+
     const devBytes = devData.advertising.manufacturerData?.bytes;
     const strData: string = bytesToString(devBytes);
     return strData;
@@ -47,6 +51,7 @@ export default function DeviceSelectForm({
   async function handleDeviceCheck(item: Peripheral) {
     setLoading(true);
     try {
+      console.log('try mein aya');
       const res = await _checkDeviceExists(
         Platform.OS == 'ios'
           ? ((await getIOSMacAdd(item as Peripheral)) as unknown as string)
@@ -72,7 +77,7 @@ export default function DeviceSelectForm({
     }
   }
 
-  const newArr = data.map(item => {
+  const newArr = data?.map(item => {
     const isBtn = item?.name?.includes('SMBTN');
     console.log('===============>>>>>>>>', userPermissions);
     const isAdmin = userPermissions?.some(
@@ -94,6 +99,9 @@ export default function DeviceSelectForm({
         console.log('admin nhi button hai');
         return { ...item, title: 'null' };
       }
+    } else if (!fromMasjidDevices && isBtn) {
+      console.log('masjid devices se nhi hai button hai');
+      return { ...item, title: 'null' };
     } else {
       console.log('admin hai button hai');
       return {

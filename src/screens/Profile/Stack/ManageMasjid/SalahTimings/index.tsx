@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Animated, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  KeyboardAvoidingView,
+} from 'react-native';
 
 import { SalahTimingsSVG } from '../../../../../assets';
 import {

@@ -15,6 +15,7 @@ import {
 } from '../../components';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { _requestUserLocationPermission } from '../../utils/functions';
+import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
 
 export default function WifiSelectForm({
   setStep,
@@ -56,21 +57,35 @@ export default function WifiSelectForm({
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           getWifiList();
         } else {
-          _requestUserLocationPermission();
+          // _requestUserLocationPermission();
           setIssues('Location permission denied');
         }
       } else {
-        const ssid = await WifiManager.getCurrentWifiSSID();
-        console.log('ios ke ssid bta', ssid);
-        if (currentWifiSSID == ssid && autoSelect) {
-          setSSID(ssid);
-          setStep(5);
-        } else if (!autoSelect) {
-          setSSID(ssid);
-          setStep(5);
-        } else {
-          setIssues('Wifi SSID not found');
-        }
+        checkMultiple([
+          PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        ]).then(async statuses => {
+          console.log(statuses[PERMISSIONS.IOS.LOCATION_ALWAYS]);
+          if (
+            statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] == 'granted' ||
+            statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
+          ) {
+            const ssid = await WifiManager.getCurrentWifiSSID();
+            console.log('ios ke ssid bta', ssid);
+            if (currentWifiSSID == ssid && autoSelect) {
+              setSSID(ssid);
+              setStep(5);
+            } else if (!autoSelect) {
+              setSSID(ssid);
+              setStep(5);
+            } else {
+              setIssues('Wifi SSID not found');
+            }
+          } else {
+            // _requestUserLocationPermission();
+            setIssues('Location permission denied');
+          }
+        });
       }
     } catch (error) {
       crashlytics().recordError(error as Error);

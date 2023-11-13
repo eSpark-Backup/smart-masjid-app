@@ -219,10 +219,10 @@ export default function AddUsers({
                   />
                 )}
               </View>
+              <GapView length={30} />
               <View
                 style={{
                   alignSelf: 'center',
-                  marginVertical: 20,
                 }}>
                 <Rounded onPress={handleSubmit} label="Save" />
               </View>

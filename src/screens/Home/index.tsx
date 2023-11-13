@@ -102,7 +102,8 @@ export default function Home() {
   useEffect(() => {
     if (isFocused && step == 0) {
       setLoading(true);
-      GetUserDevices(userData?.id?.toString() ?? '');
+      console.log('token issue hai?', userStore.token.get());
+
       getListMasjidSubscribedByUser(userData?.id?.toString() ?? '').then(
         data => {
           let sData = data as Masjid[];
@@ -120,7 +121,7 @@ export default function Home() {
             if (typeof uniqueObj?.[0] == 'object') {
               setSelectedMasjid(uniqueObj?.[0]);
             }
-            setStep(1);
+            // setStep(1);
           }
           setLoading(false);
         },

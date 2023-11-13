@@ -6,6 +6,7 @@ import {
   Animated,
   StyleSheet,
   Platform,
+  Linking,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -29,6 +30,9 @@ import {
   AdhanJuristic,
   LocationSvg,
   NavigationSvg,
+  OpenLink,
+  Phone,
+  Web,
 } from '../../../assets';
 import { _normalizedSubscriptions, openMap } from '../../../utils/functions';
 import { Card } from '../../../containers';
@@ -129,7 +133,7 @@ const MasjidDetails = ({
               }}>
               <LocationSvg />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '70%' }}>
+              <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
                     (masjidDetails?.address1 ?? '') +
@@ -153,10 +157,10 @@ const MasjidDetails = ({
               />
             </View>
             <GapView length={5} />
-            <View style={styles.infoCardRowContainer}>
+            {/* <View style={styles.infoCardRowContainer}>
               <AdhanCalculation />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '70%' }}>
+              <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
                     masjidDetails?.masjidAdhanConfig.adhanCalcConfig.name ?? ''
@@ -168,12 +172,31 @@ const MasjidDetails = ({
               </View>
               <GapView length={5} mode="horizontal" />
               <Tooltip content={adhanCalculations()} />
+            </View> */}
+            <View style={styles.infoCardRowContainer}>
+              <Web />
+              <GapView length={5} mode="horizontal" />
+              <View style={{ maxWidth: '80%' }}>
+                <MyText
+                  text={masjidDetails?.website ?? ''}
+                  size={16}
+                  textStyle={{ color: '#3E3E3E' }}
+                  lines={1}
+                />
+              </View>
+              <GapView length={5} mode="horizontal" />
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(`https://${masjidDetails?.website as string}`)
+                }>
+                <OpenLink width={18} height={18} />
+              </TouchableOpacity>
             </View>
             <GapView length={5} />
-            <View style={styles.infoCardRowContainer}>
+            {/* <View style={styles.infoCardRowContainer}>
               <AdhanJuristic />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '70%' }}>
+              <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
                     masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig
@@ -188,6 +211,23 @@ const MasjidDetails = ({
               <Tooltip
                 content={`This masjid uses ${masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name} fiqh for Asr time calculation.`}
               />
+            </View> */}
+            <View style={styles.infoCardRowContainer}>
+              <Phone />
+              <GapView length={5} mode="horizontal" />
+              <View style={{ maxWidth: '80%' }}>
+                <MyText
+                  text={masjidDetails?.phone ?? ''}
+                  size={16}
+                  textStyle={{ color: '#3E3E3E' }}
+                  lines={1}
+                />
+              </View>
+              <GapView length={5} mode="horizontal" />
+              <TouchableOpacity
+                onPress={() => Linking.openURL(`tel:${masjidDetails?.phone}`)}>
+                <OpenLink width={18} height={18} />
+              </TouchableOpacity>
             </View>
           </View>
         </Card>

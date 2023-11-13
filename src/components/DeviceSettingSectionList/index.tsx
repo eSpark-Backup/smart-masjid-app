@@ -7,6 +7,7 @@ import {
   Chevron_Right,
   DeleteSvg,
   EditLight,
+  EditSquare,
   Restart,
 } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
@@ -28,6 +29,7 @@ interface DataProp {
   onPress?: () => void;
   onEditPress?: () => void;
   onDangerPress?: () => void;
+  editIcon?: JSX.Element;
   isEditable?: boolean;
   isEdit?: boolean;
   rightArrow?: boolean;
@@ -125,7 +127,13 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               {item?.isReset && <Restart />}
               {item?.isDelete && <DeleteSvg />}
               {item?.rightArrow && <Chevron_Right />}
-              {item?.isEditable && <EditLight />}
+              {item?.isEditable ? (
+                item.editIcon ? (
+                  item.editIcon
+                ) : (
+                  <EditSquare width={24} height={24} />
+                )
+              ) : null}
               {item?.danger && <Caution />}
             </TouchableOpacity>
           </View>

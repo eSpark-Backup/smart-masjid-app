@@ -718,6 +718,7 @@ export default function DeviceSetupScreen() {
   };
 
   console.log('Deviceinfo', devInfo);
+  console.log('route?.params?.deviceData', route?.params?.deviceData?.masjid);
 
   return (
     <Wrapper
@@ -748,6 +749,7 @@ export default function DeviceSetupScreen() {
                 }
                 selectedDeviceData={route?.params?.deviceData}
                 autoSelect={route?.params?.from == 'SelectedDevice'}
+                fromMasjidDevices={route.params?.isBtn}
               />
               // <View style={{ backgroundColor: 'pink', flex: 1 }} />
             )}
@@ -801,10 +803,18 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                onSkip={!route.params?.isBtn ? handleSkip : undefined}
+                onSkip={
+                  !route.params?.isBtn
+                    ? route.params?.deviceData?.masjid != null
+                      ? undefined
+                      : handleSkip
+                    : undefined
+                }
                 btnText={
-                  route.params?.from == 'Device'
-                    ? !route.params?.isBtn
+                  route.params?.from
+                    ? route.params?.deviceData?.masjid != null
+                      ? 'Done'
+                      : !route.params?.isBtn
                       ? 'Search Masjid'
                       : 'View Device'
                     : 'Search Masjid'
@@ -815,17 +825,20 @@ export default function DeviceSetupScreen() {
                   }
                   navigation.navigate('HomeBottomTab', {
                     screen: route.params?.from
-                      ? !route.params?.isBtn
+                      ? route.params?.deviceData?.masjid != null
+                        ? 'Device'
+                        : !route.params?.isBtn
                         ? 'Search'
                         : 'Device'
                       : 'Home',
+                    from: 'BtnDev',
                   });
                 }}
                 title="Device connected successfully"
                 message={
                   route.params?.isBtn
                     ? ''
-                    : route.params?.from == 'SelectedDevice'
+                    : route.params?.deviceData?.masjid != null
                     ? ''
                     : 'Let’s subscribe to a masjid now.'
                 }

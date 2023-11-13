@@ -44,9 +44,11 @@ const TimeTableCard = ({
                 </TouchableOpacity>
               ) : null}
               <GapView length={5} mode="horizontal" />
-              <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
-                <EditPencil />
-              </TouchableOpacity>
+              {onEdit ? (
+                <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
+                  <EditPencil />
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
           <GapView />

@@ -231,18 +231,8 @@ export default function MyInput(props: MyInputProps) {
           <View
             style={{
               position: 'absolute',
-              top:
-                value || getFocused
-                  ? isDropDown
-                    ? -16
-                    : -25
-                  : isDropDown
-                  ? 5
-                  : multiline
-                  ? 0
-                  : 0,
+              top: value || getFocused ? -25 : 0,
               left: isPhoneCode ? 95 : 15,
-              backgroundColor: 'transparent',
               zIndex: value || getFocused ? 1 : 0,
               height: 50,
               justifyContent: 'center',

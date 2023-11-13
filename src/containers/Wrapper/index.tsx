@@ -11,6 +11,7 @@ import {
   Easing,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import {
@@ -94,10 +95,7 @@ export default function Wrapper({
         <MyTitle text={title} style={{ color: '#fff' }} />
       </Animated.View>
 
-      <View
-        style={{ flex: 1 }}
-        // onPress={onBackDropPress}
-      >
+      <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <View style={styles.imageBackgroundStyle}>
             <Animated.View
@@ -105,6 +103,7 @@ export default function Wrapper({
                 {
                   position: 'absolute',
                   alignSelf: 'center',
+                  zIndex: 1,
                 },
                 { transform: [{ translateY: contentOpacity }] },
               ]}>
@@ -122,6 +121,7 @@ export default function Wrapper({
                 {
                   position: 'absolute',
                   alignSelf: 'center',
+                  zIndex: 1,
                 },
                 { opacity: headerOpacity },
               ]}>
@@ -149,23 +149,27 @@ export default function Wrapper({
                   : HeaderBackgroundImage
               }> */}
             <Header onBackPress={onBackPress} showBack={showBack} />
-            <ScrollView
-              onScroll={handleScroll}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ flexGrow: 1 }}
-              style={{ zIndex: -1 }}>
-              <>
-                <GapView
-                  length={
-                    Platform.OS == 'ios'
-                      ? WINDOW_WIDTH / 1.6
-                      : WINDOW_WIDTH / 1.74
-                  }
-                />
-                {children({ props: { contentOpacity: titleOpacity } })}
-              </>
-            </ScrollView>
+            <KeyboardAvoidingView
+              style={{ flex: 1, zIndex: 0 }}
+              behavior={'height'}>
+              <ScrollView
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+                style={{ zIndex: -1 }}>
+                <>
+                  <GapView
+                    length={
+                      Platform.OS == 'ios'
+                        ? WINDOW_WIDTH / 1.6
+                        : WINDOW_WIDTH / 1.74
+                    }
+                  />
+                  {children({ props: { contentOpacity: titleOpacity } })}
+                </>
+              </ScrollView>
+            </KeyboardAvoidingView>
             {/* </ImageBackground> */}
           </View>
 

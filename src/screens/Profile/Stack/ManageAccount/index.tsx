@@ -138,7 +138,7 @@ export default function ManageAccount({
     setDisplayingData([...newData]);
   };
 
-  const onSave = async () => {
+  const onSave = async (otp?: string) => {
     setLoading(true);
     const isValidPhone = await isValidPhoneNumber(data.phone, country);
     if (!isValidPhone) {
@@ -155,14 +155,19 @@ export default function ManageAccount({
     };
     console.log('kia bhej raha hu me??', dataToUpdate);
     if (gotUpdated) {
-      await UpdateUser(userData?.id?.toString()!, dataToUpdate);
+      await UpdateUser(
+        userData?.id?.toString()!,
+        dataToUpdate,
+        dataToUpdate?.email ? otp : undefined,
+      );
     }
     onEditPress('');
     setLoading(false);
   };
 
   return (
-    <TouchableWithoutFeedback onPress={clearSelection}>
+    <TouchableWithoutFeedback
+      onPress={!showVerification ? clearSelection : undefined}>
       <View style={{ flex: 1 }}>
         <OverlayLoader isShow={loading} />
         {!showVerification ? (
@@ -313,6 +318,14 @@ export default function ManageAccount({
                         displayData.find(val => val.editable)?.key ?? '',
                       )
                     ) {
+                      const oldData: any = userData;
+                      const gotUpdated =
+                        data[displayData.find(val => val.editable)?.key!] !=
+                        oldData[displayData.find(val => val.editable)?.key!];
+                      if (!gotUpdated) {
+                        clearSelection();
+                        return;
+                      }
                       setLoading(true);
                       const email = data['email'];
                       const phoneNo = data['phone'];
@@ -428,15 +441,24 @@ export default function ManageAccount({
           <>
             <OtpForm
               title="Verification"
-              userEmail={data.email}
-              userPhone={data.phone}
+              userEmail={
+                displayData.find(val => val.editable)?.key == 'email'
+                  ? data.email
+                  : undefined
+              }
+              userPhone={
+                displayData.find(val => val.editable)?.key == 'phone'
+                  ? data.phone
+                  : undefined
+              }
               goBack={() => {
                 setFlag('mAcc');
-                clearSelection();
+                // clearSelection();
               }}
               setStep={async (value: string) => {
                 setLoading(true);
                 const activeKey = displayData.find(val => val.editable)?.key;
+
                 const isVerified = await ValidateOTP(
                   value,
                   activeKey == 'email' ? data.email : '',
@@ -445,7 +467,7 @@ export default function ManageAccount({
                 console.log('isVerified', isVerified);
                 if (isVerified) {
                   clearSelection();
-                  onSave();
+                  onSave(value);
                   setFlag('mAcc');
                 } else {
                   setLoading(false);

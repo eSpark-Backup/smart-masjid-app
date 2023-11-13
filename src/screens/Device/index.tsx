@@ -12,6 +12,7 @@ import {
   Theme,
   useIsFocused,
   useNavigation,
+  useRoute,
   useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -26,6 +27,7 @@ import {
   DeviceCard,
   TabView,
   MyTitle,
+  OverlayLoader,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
@@ -78,6 +80,7 @@ const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
 export default function Device({ contentOpacity = 0 }: any) {
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('1');
+  const [showLoader, setshowLoader] = useState<boolean>(false);
   const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
   const [clear, setClear] = useState(false);
   const user = useHookstate(userStore?.userData)?.get();
@@ -85,25 +88,31 @@ export default function Device({ contentOpacity = 0 }: any) {
   const devices: any = useHookstate(deviceStore?.devices)?.get();
   const masjidDevices: any = useHookstate(deviceStore?.masjidDevices)?.get();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
+  const route: any = useRoute();
   const isFocused = useIsFocused();
   const theme: Theme = useTheme();
   const { colors } = theme;
 
   useEffect(() => {
-    if (step == 0) {
+    if (isFocused && step == 0) {
       handleGetDevices();
     }
   }, [isFocused, step]);
 
   const handleGetDevices = async () => {
     try {
+      if (route?.params?.from == 'BtnDev') {
+        setshowLoader(true);
+      }
       const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
       console.log('what is the user info', user?.userType?.name);
       console.log('what is the user info++++', JSON.stringify(jwtDecodedObj));
       await GetUserDevices(user?.id.toString() ?? '');
       await GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
+      setshowLoader(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
+      setshowLoader(false);
     }
   };
 
@@ -139,6 +148,7 @@ export default function Device({ contentOpacity = 0 }: any) {
           <>
             {step == 0 && (
               <View>
+                <OverlayLoader isShow={showLoader} />
                 <View
                   style={{
                     alignSelf: 'center',

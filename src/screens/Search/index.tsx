@@ -119,16 +119,17 @@ export default function Search() {
                 masjidDetails={selectedMasjid}
                 onSubscribe={() => {
                   // @ts-ignore
-                  const distance = getDistance(userLocation, {
-                    latitude: selectedMasjid?.location.coordinates[0],
-                    longitude: selectedMasjid?.location.coordinates[1],
-                  });
-                  // for converting meter into mile dividing distance by 1609
-                  if (distance / 1609 > 50) {
-                    setShowError(true);
-                  } else {
-                    setStep(2);
-                  }
+                  // const distance = getDistance(userLocation, {
+                  //   latitude: selectedMasjid?.location.coordinates[0],
+                  //   longitude: selectedMasjid?.location.coordinates[1],
+                  // });
+                  // // for converting meter into mile dividing distance by 1609
+                  // if (distance / 1609 > 50) {
+                  //   setShowError(true);
+                  // } else {
+                  //   setStep(2);
+                  // }
+                  setStep(2);
                 }}
               />
             )}

@@ -316,6 +316,7 @@ export default function SwipeableTimeTable({
             //   currentItem ? moment(currentItem.date).toDate() : new Date()
             // }
             onDateChange={onDateChange}
+            disablePicker
           />
         </View>
         <GapView length={15} />

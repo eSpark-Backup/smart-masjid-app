@@ -101,10 +101,10 @@ export default function JummaTimings({
     );
   };
 
-  const deleteJumuahTime = () => {
+  const deleteJumuahTime = async () => {
     setIsVisible(false);
     setLoading(true);
-    DeleteMasjidJummahTiming(
+    await DeleteMasjidJummahTiming(
       userData?.masjid.id.toString() as string,
       deleteId as string,
     );
@@ -148,14 +148,7 @@ export default function JummaTimings({
   const contentToRender = () => {
     return !loading ? (
       currentData ? (
-        <TimeTableCard
-          onEdit={() => {
-            selectedJumma!(currentData);
-            setFlag('jEdit');
-          }}
-          date={currentData?.date}
-          data={currentData?.data}
-        />
+        <TimeTableCard date={currentData?.date} data={currentData?.data} />
       ) : (
         <MyText
           textStyle={{ textAlign: 'center', marginVertical: 10 }}

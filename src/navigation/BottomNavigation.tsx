@@ -67,7 +67,8 @@ function HomeBottomTab() {
         tabBarActiveTintColor: colors?.primary,
         tabBarInactiveTintColor: '#9E9F9F',
         tabBarStyle: styles.tabBar,
-        tabBarShowLabel: false,
+        tabBarLabelStyle: styles.tabBarLabelStyle,
+        tabBarShowLabel: true,
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Search" component={Search} />
@@ -92,11 +93,15 @@ const makeStyles = (theme: Theme) => {
       height: 65,
       alignItems: 'center',
       justifyContent: 'center',
+      // backgroundColor: 'red',
     },
     tabBarLabelStyle: {
-      color: '#9E9F9F',
-      fontSize: 14,
-      bottom: Platform.OS == 'android' ? 18 : 0,
+      // color: '#9E9F9F',
+      fontSize: 8,
+      bottom: Platform.OS == 'android' ? 12 : undefined,
+      top: Platform.OS == 'ios' ? 14 : undefined,
+      fontFamily: 'Roboto-Regular',
+      // backgroundColor: 'red',
     },
     ActiveTabBarLabelStyle: {
       color: colors.primary,
