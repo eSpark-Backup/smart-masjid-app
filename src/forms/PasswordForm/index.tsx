@@ -79,16 +79,25 @@ export default function PasswordForm({
         //     setLoading(false);
         //   });
       } else {
-        const res = await WifiManager.connectToProtectedSSID(
-          ssid,
-          password,
-          false,
-        ).then(() => {
-          console.log('Connected Successfully', res);
-          setLoading(false);
-          setStep(6);
-          clear();
-        });
+        const res = await WifiManager.disconnectFromSSID(ssid);
+        WifiManager.connectToProtectedSSID(ssid, password, false).then(
+          a => {
+            console.log('Connected successfully!', a);
+            setLoading(false);
+            setStep(6);
+            clear();
+          },
+          e => {
+            console.log('Connection failed!', e);
+            setLoading(false);
+            Toast.show({
+              text2: 'WiFi Password incorrect. Please try again',
+              type: 'error',
+              visibilityTime: 10000,
+            });
+            clear();
+          },
+        );
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
@@ -123,15 +132,12 @@ export default function PasswordForm({
       <View>
         <MyTextSubHeader
           text="Enter Wi-Fi password"
-          style={{ ...styles.text, color: '#0e0e0e' }}
+          style={{ textAlign: 'center' }}
         />
         <GapView length={20} />
         <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
           <MyText text={'Connecting to : '} textStyle={styles.text} />
-          <MyTextSubHeader
-            text={ssid!}
-            style={{ ...styles.text, color: '#0e0e0e' }}
-          />
+          <MyTextSubHeader text={ssid!} />
         </View>
         <GapView length={30} />
         <Formik

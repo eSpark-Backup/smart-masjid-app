@@ -24,6 +24,7 @@ export const GetUserDevices = async (userId: string) => {
 
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
+      return result.data;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {

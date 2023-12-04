@@ -200,12 +200,12 @@ export default function IqamahTimings({
                 onPress={() => setFlag('iAdd')}>
                 <PlusCircle />
               </TouchableOpacity>
-              <GapView mode="horizontal" />
+              {/* <GapView mode="horizontal" />
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => setFlag('iHist')}>
                 <HistoryBox />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           {contentToRender()}

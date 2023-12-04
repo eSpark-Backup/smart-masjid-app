@@ -65,6 +65,7 @@ export default function Profile() {
 
   const titles: Titles = {
     mAcc: 'Manage Account',
+    mAccOtp: 'Manage Account',
     modAcc: 'Manage Account',
     mMas: 'Manage Masjid',
     sTime: 'Salah Timings',
@@ -94,7 +95,7 @@ export default function Profile() {
     iTime: () => setFlag('sTime'),
     jTime: () => setFlag('sTime'),
     iEdit: () => setFlag('iTime'),
-    iHist: () => setFlag('iTime'),
+    iHist: () => setFlag('sTime'),
     iAdd: () => setFlag('iTime'),
     jEdit: () => setFlag('jTime'),
     jAdd: () => setFlag('jTime'),

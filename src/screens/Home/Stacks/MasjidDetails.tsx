@@ -44,6 +44,7 @@ import {
   GetMasjidCurrentJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
+import moment from 'moment';
 
 export default function MasjidDetails({
   setStep,
@@ -93,12 +94,14 @@ export default function MasjidDetails({
         }
       });
       await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
-      await getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
-        data => {
-          setSalahTime(data as SalahTimings[]);
-          setLoading(false);
-        },
-      );
+      await getSalahTimingsOfMasjid(
+        selectedMasjid?.id.toString() ?? '',
+        undefined,
+        'WEEK',
+      ).then(data => {
+        setSalahTime(data as SalahTimings[]);
+        setLoading(false);
+      });
     } catch (e) {
       crashlytics().recordError(e as Error);
     }

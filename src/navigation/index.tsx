@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, {
@@ -141,10 +141,17 @@ export default function App() {
       }
     });
 
-    setTimeout(() => {
-      SplashScreen.hide();
-    }, 5000);
+    // SplashScreen.hide();
+    //   setTimeout(() => {
+    //   SplashScreen.hide();
+    // }, 5000);
   }, []);
+
+  useEffect(() => {
+    if (checkedId != null) {
+      SplashScreen.hide();
+    }
+  }, [checkedId]);
 
   const handleDeviceIdCheck = useCallback(async () => {
     const res = await getUniqueId();
@@ -192,7 +199,6 @@ export default function App() {
                   <Stack.Screen name="Welcome" component={WelcomeScreen} />
                 </>
               )}
-              {/* <Stack.Screen name="DSetup" component={DeviceSetupScreen} /> */}
             </Stack.Group>
           ) : (
             <Stack.Group>
@@ -226,7 +232,7 @@ export default function App() {
       </NavigationContainer>
     );
   } else {
-    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;
+    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={true} />;
   }
 }
 

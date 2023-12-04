@@ -40,7 +40,10 @@ export default function ManageUsers({
   const userData: ImmutableObject<ImmutableObject<UserResponse>> | null =
     useHookstate(userStore?.userData).get();
   const [loading, setLoading] = useState(false);
-  const [isVisible, setIsVisible] = useState('');
+  const [isVisible, setIsVisible] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   useEffect(() => {
     setLoading(true);
     GetMasjidAdmins(userData?.masjid?.id.toString()!)
@@ -54,25 +57,28 @@ export default function ManageUsers({
   }, []);
 
   const onDelete = async () => {
-    setIsVisible('');
+    setIsVisible(null);
     setLoading(true);
-    if (isVisible == userData?.id.toString()) {
+    if (isVisible?.id == userData?.id.toString()) {
       await LogoutUser(userData?.id?.toString() ?? '', true);
       setLoading(false);
       return;
     }
-    await DeleteAdminFromMasjid(isVisible, userData?.masjid?.id.toString()!);
+    await DeleteAdminFromMasjid(
+      isVisible?.id!,
+      userData?.masjid?.id.toString()!,
+    );
     setLoading(false);
   };
 
   return (
     <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
       <LogoutModal
-        message="Are you sure you want to delete this Masjid Admin?"
+        message={`Are you sure you want to delete the user ${isVisible?.name}?`}
         visible={Boolean(isVisible)}
         onAllowed={onDelete}
         onClose={() => {
-          setIsVisible('');
+          setIsVisible(null);
           console.log('Cancelled');
         }}
       />
@@ -112,7 +118,7 @@ export default function ManageUsers({
                 onPress={() => {
                   setFlag('vUser', item);
                 }}
-                onDeletePress={setIsVisible}
+                onDeletePress={(id, name) => setIsVisible({ id, name })}
               />
             );
           }}
@@ -132,7 +138,7 @@ const UserCard = ({
 }: {
   item: UserResponse;
   onPress: () => void;
-  onDeletePress?: (userId: string) => void;
+  onDeletePress?: (userId: string, userName: string) => void;
 }) => {
   return (
     <View style={{ marginTop: 10 }}>
@@ -167,7 +173,13 @@ const UserCard = ({
               />
             </View>
           </View>
-          <TouchableOpacity onPress={() => onDeletePress?.(item.id.toString())}>
+          <TouchableOpacity
+            onPress={() =>
+              onDeletePress?.(
+                item.id.toString(),
+                item.firstName + item.lastName,
+              )
+            }>
             <Delete />
           </TouchableOpacity>
         </TouchableOpacity>

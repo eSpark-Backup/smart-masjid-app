@@ -95,8 +95,8 @@ export default function MyToast({
           <View
             style={{
               alignSelf: 'center',
-              marginTop: 20,
-              marginBottom: message || points?.length!! > 0 ? 50 : 0,
+              marginTop: 30,
+              marginBottom: message || points?.length!! > 0 ? 50 : 40,
             }}>
             {isSuccess ? <CheckSvg /> : <CautionDevice />}
           </View>
@@ -122,7 +122,9 @@ export default function MyToast({
               <Points
                 data={points}
                 success={isSuccess}
-                notFound={title == 'Device not found'}
+                notFound={
+                  title == 'Device not found' && message != 'Issues Found'
+                }
               />
             </>
           )}
@@ -167,7 +169,7 @@ const Points = ({
               size={16}
               textStyle={{ color: '#3e3e3e', fontSize: 16 }}
             />
-            <GapView mode="horizontal" length={5} />
+            <GapView mode="horizontal" length={10} />
             {item == 'Location permission denied' && (
               <TouchableOpacity
                 onPress={_requestUserLocationPermission}

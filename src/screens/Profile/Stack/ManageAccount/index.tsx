@@ -37,6 +37,7 @@ import { BottomNavigationParamList, CountryCodes } from '../../../../types';
 import { OtpForm } from '../../ProfileForms';
 import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 import { deviceStore } from '../../../../store/DeviceStore';
+import { GetUserDevices } from '../../../../api/deviceController';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -163,6 +164,34 @@ export default function ManageAccount({
     }
     onEditPress('');
     setLoading(false);
+  };
+
+  const onDeletePermitted = async () => {
+    setLoading(true);
+    setIsDVisible(false);
+    if (devices?.length > 0) {
+      navigation.navigate('Device');
+      Toast.show({
+        text1: 'Warning!',
+        text2: 'Delete your devices before account deletion!',
+        type: 'warning',
+      });
+      setLoading(true);
+    } else {
+      let devs = await GetUserDevices(userData?.id.toString() as string);
+      if (devs.length > 0) {
+        navigation.navigate('Device');
+        Toast.show({
+          text1: 'Warning!',
+          text2: 'Delete your devices before account deletion!',
+          type: 'warning',
+        });
+        setLoading(false);
+      } else {
+        await DeleteUser(userData?.id?.toString() ?? '');
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -386,7 +415,10 @@ export default function ManageAccount({
                     />
                   </TouchableOpacity>
                   <GapView length={20} />
-                  <TouchableOpacity onPress={() => setIsDVisible(true)}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIsDVisible(true);
+                    }}>
                     <MyText
                       size={18}
                       text={'Delete Account'}
@@ -416,21 +448,7 @@ export default function ManageAccount({
               visible={isDVisible}
               title1={'No'}
               title2={'Yes'}
-              onAllowed={async () => {
-                console.log('userData', userData);
-                if (devices?.length > 0) {
-                  navigation.navigate('Device');
-                  Toast.show({
-                    text1: 'Warning!',
-                    text2: 'Delete your devices before account deletion!',
-                    type: 'warning',
-                  });
-                  setIsDVisible(false);
-                } else {
-                  await DeleteUser(userData?.id?.toString() ?? '');
-                  setIsDVisible(false);
-                }
-              }}
+              onAllowed={onDeletePermitted}
               onClose={() => {
                 setIsDVisible(false);
                 console.log('Cancelled');
@@ -440,7 +458,8 @@ export default function ManageAccount({
         ) : (
           <>
             <OtpForm
-              title="Verification"
+              title="Manage Account"
+              contentOpacity={contentOpacity}
               userEmail={
                 displayData.find(val => val.editable)?.key == 'email'
                   ? data.email

@@ -31,6 +31,9 @@ export { default as TimeCircleSvg } from './images/TimeCircle.svg';
 export { default as PlusSvg } from './images/plus.svg';
 export { default as SujudSvg } from './images/Sujud.svg';
 export { default as SalahTimingsSVG } from './images/SalahTimings.svg';
+export { default as IqamaTimingsSVG } from './vectors/prayer_times.svg';
+export { default as JummaTimingsSVG } from './vectors/mosque.svg';
+export { default as MonthlyScheduleSVG } from './vectors/calendar_month.svg';
 
 //* vector/svg
 export { default as InfoRed } from './vectors/InfoRed.svg';

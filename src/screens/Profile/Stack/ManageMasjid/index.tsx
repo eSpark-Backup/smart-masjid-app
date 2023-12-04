@@ -120,7 +120,7 @@ export default function ManageMasjid({
             {
               data: [
                 {
-                  title: 'Adhan settings',
+                  title: 'Adhan Settings',
                   icon: <AdhanSettingSvg width={25} height={25} />,
                   onPress: () => setFlag('aSet'),
                 },

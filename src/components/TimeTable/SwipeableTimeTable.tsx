@@ -297,6 +297,8 @@ export default function SwipeableTimeTable({
     } else return false;
   };
 
+  console.log('moment().days()', moment().add(5, 'days'));
+
   return (
     <View style={styles.container}>
       <>
@@ -308,9 +310,7 @@ export default function SwipeableTimeTable({
           }}>
           <MyDatePicker
             minimumDate={moment().toDate()}
-            maximumDate={moment()
-              .add(moment().daysInMonth() - 2, 'd')
-              .toDate()}
+            maximumDate={moment().add(6, 'days').toDate()}
             type="standard"
             // currentDate={
             //   currentItem ? moment(currentItem.date).toDate() : new Date()
@@ -352,6 +352,7 @@ export default function SwipeableTimeTable({
         ref={slider}
         data={data}
         horizontal
+        scrollEnabled={false}
         pagingEnabled
         snapToInterval={WINDOW_WIDTH - 50}
         decelerationRate={0}

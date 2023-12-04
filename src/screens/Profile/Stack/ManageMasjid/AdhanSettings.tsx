@@ -1,5 +1,12 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View, Animated, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { useHookstate } from '@hookstate/core';
 
 import { GetMasjidAdhanSetting } from '../../../../api/masjidController';
@@ -7,6 +14,7 @@ import { GapView, MyText, MyTitle } from '../../../../components';
 import { masjidStore } from '../../../../store/MasjidStore';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { userStore } from '../../../../store/UserStore';
+import { useTheme } from '@react-navigation/native';
 
 export default function AdhanSettings({
   setFlag,
@@ -15,14 +23,93 @@ export default function AdhanSettings({
   setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
+  const { colors } = useTheme();
   const adhanConfig = useHookstate(masjidStore.adhanConfig).get();
   const userData = useHookstate(userStore.userData).get();
+  const [displayData, setDisplayingData] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
+
+  console.log('adhanCofig', adhanConfig);
+
+  const getAdhanConfig = async () => {
+    setLoading(true);
+    await GetMasjidAdhanSetting(userData?.masjid.id.toString() as string);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    if (!adhanConfig) {
-      GetMasjidAdhanSetting(userData?.masjid.id.toString() as string);
-    }
+    getAdhanConfig();
   }, []);
+  useEffect(() => {
+    if (adhanConfig && displayData.length < 1) {
+      setDisplayingData([
+        {
+          id: 1,
+          title: 'Calculation',
+          val: adhanConfig?.adhanCalcConfig?.name,
+        },
+        {
+          id: 2,
+          title: 'Juristic',
+          val: adhanConfig?.adhanJuristicConfig?.name,
+        },
+        {
+          id: 3,
+          title: 'Fajr Angle',
+          val: adhanConfig?.fajrAngle,
+        },
+        {
+          id: 4,
+          title: 'Maghrib Rule',
+          val: adhanConfig?.maghribRule,
+        },
+        {
+          id: 5,
+          title: 'Maghrib Value',
+          val: adhanConfig?.maghribValue,
+        },
+        {
+          id: 6,
+          title: 'Isha Rule',
+          val: adhanConfig?.ishaRule,
+        },
+        {
+          id: 7,
+          title: 'Isha Value',
+          val: adhanConfig?.ishaValue,
+        },
+      ]);
+    }
+  }, [adhanConfig, displayData]);
+
+  const renderAdhanConfig = (item: any) => (
+    <TouchableOpacity
+      key={item.id}
+      activeOpacity={0.8}
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: WINDOW_WIDTH - 30,
+        alignSelf: 'center',
+        paddingVertical: 10,
+        alignItems: 'center',
+      }}>
+      <MyText text={item.title} size={14} textStyle={{ marginRight: 10 }} />
+      <View style={{ flex: 1 }}>
+        {item.val && (
+          <MyText
+            text={item.val}
+            textStyle={{
+              fontSize: 14,
+              color: '#6E6E6E',
+              textAlign: 'right',
+            }}
+            lines={1}
+          />
+        )}
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -39,24 +126,56 @@ export default function AdhanSettings({
           <MyTitle text="Adhan Settings" />
         </Animated.View>
       </View>
-
       <GapView length={10} />
       <View>
-        <View style={styles.settingContainer}>
+        {loading ? (
+          <ActivityIndicator size={'large'} color={colors.primary} />
+        ) : (
+          displayData.map((item: any, index: number) => renderAdhanConfig(item))
+        )}
+
+        {/* <TouchableOpacity
+          activeOpacity={0.8}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: WINDOW_WIDTH - 30,
+            alignSelf: 'center',
+            paddingVertical: 10,
+            alignItems: 'center',
+          }}>
+          <MyText
+            text={'Adhan Juristic'}
+            size={14}
+            textStyle={{ marginRight: 10 }}
+          />
+          <View style={{ flex: 1 }}>
+            <MyText
+              text={adhanConfig?.adhanJuristicConfig?.name ?? ''}
+              textStyle={{
+                fontSize: 14,
+                color: '#6E6E6E',
+                textAlign: 'right',
+              }}
+              lines={1}
+            />
+          </View>
+        </TouchableOpacity> */}
+        {/* <View style={styles.settingContainer}>
           <MyText
             textStyle={styles.settingText}
             size={12}
             text={adhanConfig?.adhanCalcConfig?.name ?? ''}
           />
-        </View>
-        <GapView length={20} />
+        </View> */}
+        {/* <GapView length={20} />
         <View style={styles.settingContainer}>
           <MyText
             textStyle={styles.settingText}
             size={12}
             text={adhanConfig?.adhanJuristicConfig?.name ?? ''}
           />
-        </View>
+        </View> */}
         <GapView length={30} />
         <MyText
           text="Contact support@smartmasjid.app to update the adhan settings"

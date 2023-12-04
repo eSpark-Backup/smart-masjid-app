@@ -19,6 +19,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHookstate } from '@hookstate/core';
 import jwtDecode from 'jwt-decode';
 import crashlytics from '@react-native-firebase/crashlytics';
+import WifiManager from 'react-native-wifi-reborn';
 
 import { PlusSvg } from '../../assets';
 import {
@@ -49,13 +50,42 @@ const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
   const styles = useMemo(() => makeStyles(theme), []);
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
 
+  const connectToWifi = async () => {
+    console.log('connected to specific wifi');
+    // const res = await WifiManager.connectToProtectedSSID(
+    //   'OnePlus 6T',
+    //   'Mudassir4321',
+    //   false,
+    // );
+
+    // console.log('res', res);
+    const res = await WifiManager.getCurrentWifiSSID();
+    console.log('res', res);
+    // await WifiManager.disconnectFromSSID(res);
+    WifiManager.connectToProtectedSSIDPrefix(
+      'eSpark Wifi',
+      '47356880',
+      false,
+    ).then(
+      a => {
+        console.log('Connected successfully!', a);
+      },
+      e => {
+        console.log('Connection failed!', e);
+      },
+    );
+  };
+
   return (
     <View>
       <Card height={161} width={172} backgroundColor="#ffffff">
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() =>
-            navigation.navigate('DSetup', { from: 'Device', isBtn: isBtn })
+          onPress={
+            () =>
+              navigation.navigate('DSetup', { from: 'Device', isBtn: isBtn })
+
+            // connectToWifi()
           }
           style={styles.AddDeviceContainer}>
           <View style={{ alignItems: 'center' }}>
@@ -99,11 +129,15 @@ export default function Device({ contentOpacity = 0 }: any) {
     }
   }, [isFocused, step]);
 
+  useEffect(() => {
+    if (isFocused && route?.params?.from == 'BtnDev') {
+      setStep(0);
+    }
+  }, [isFocused, route?.params?.from]);
+
   const handleGetDevices = async () => {
     try {
-      if (route?.params?.from == 'BtnDev') {
-        setshowLoader(true);
-      }
+      setshowLoader(true);
       const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
       console.log('what is the user info', user?.userType?.name);
       console.log('what is the user info++++', JSON.stringify(jwtDecodedObj));
@@ -135,7 +169,8 @@ export default function Device({ contentOpacity = 0 }: any) {
 
   const finalData = activeTab == '1' ? devices : masjidDevices;
 
-  console.log('devices', activeTab == '1' ? devices : masjidDevices);
+  // console.log('devices', activeTab == '1' ? devices : masjidDevices);
+  console.log('route?.params?.from', route?.params?.from);
 
   return (
     <Wrapper

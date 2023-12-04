@@ -129,16 +129,18 @@ export default function DeviceSelectForm({
   useEffect(() => {
     if (autoSelect) {
       finalArr.filter(item => {
-        const strData = bytesToString(
-          item.advertising?.manufacturerData?.bytes,
-        );
-        console.log('finalstrData', strData);
-        console.log('match', strData == selectedDeviceData?.macAddress);
+        // const strData = bytesToString(
+        //   item.advertising?.manufacturerData?.bytes,
+        // );
+        // console.log('finalstrData', strData);
+        // console.log('match', strData == selectedDeviceData?.macAddress);
 
         if (
           Platform.OS == 'ios'
-            ? bytesToString(item.advertising?.manufacturerData?.bytes) ==
-              selectedDeviceData?.macAddress
+            ? item.advertising?.manufacturerData?.bytes == undefined
+              ? false
+              : bytesToString(item.advertising?.manufacturerData?.bytes) ==
+                selectedDeviceData?.macAddress
             : item.id == selectedDeviceData?.macAddress
         ) {
           setStep(3);

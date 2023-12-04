@@ -1,5 +1,5 @@
-import React from 'react';
-import { Theme, useTheme } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { StyleSheet, Platform, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -14,7 +14,10 @@ import {
   SearchActiveSvg,
   SearchSvg,
 } from '../assets';
-import { BottomNavigationParamList } from '../types';
+import { BottomNavigationParamList, RootStackParamList } from '../types';
+import { useHookstate } from '@hookstate/core';
+import { globalStore } from '../store/GlobalStates';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator<BottomNavigationParamList>();
 
@@ -49,10 +52,27 @@ const TabIcon = (screen: string, isFocused: boolean) => {
   }
 };
 
+type DSetupNavigationProps = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'DSetup'
+>;
+
 function HomeBottomTab() {
   const theme: Theme = useTheme();
   const { colors } = theme;
   const styles = makeStyles(theme);
+  const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
+
+  const devSetup = useHookstate(globalStore.devSetup);
+
+  useEffect(() => {
+    if (devSetup.get()) {
+      navigation.navigate('DSetup');
+    }
+  }, []);
+
+  console.log('devSetup.get()', devSetup.get());
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -72,8 +92,16 @@ function HomeBottomTab() {
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="Device" component={Device} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Device"
+        component={Device}
+        options={{ tabBarLabel: 'Devices' }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{ tabBarLabel: 'Account' }}
+      />
     </Tab.Navigator>
   );
 }

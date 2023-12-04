@@ -24,7 +24,11 @@ export type AdhanConfig = {
   id: number;
   adhanCalcConfig: AdhanCalcConfig;
   adhanJuristicConfig: AdhanJuristicConfig;
-  adhanCustomConfig: AdhanCustomConfig;
+  fajrAngle: number;
+  maghribRule: string;
+  maghribValue: string;
+  ishaRule: string;
+  ishaValue: string;
   createdBy: string;
   createdDate: string;
   updatedBy: string;

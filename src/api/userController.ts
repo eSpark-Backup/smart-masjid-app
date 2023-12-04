@@ -138,7 +138,7 @@ export const LogoutUser = async (userId: string, saveEmail?: boolean) => {
         userStore.userData.get()?.email,
       );
     } else {
-      await setDataInLocalStorage('lastLoggedInEmail', null);
+      await removeDatafromLocalStorage('lastLoggedInEmail');
     }
     await removeDatafromLocalStorage('user');
     userStore.userData.set(null);
@@ -161,6 +161,7 @@ export const DeleteUser = async (userId: string) => {
     console.log('res=>>>>', res);
 
     if (res.ok) {
+      await removeDatafromLocalStorage('lastLoggedInEmail');
       await removeDatafromLocalStorage('user');
       userStore.userData.set(null);
     } else if (res.status == 401) {
@@ -305,7 +306,7 @@ export const DeleteAdminFromMasjid = async (
     const result: any = await api.delete(`/users/${userId}/masjid/${masjidId}`);
     if (result.status === 200) {
       Toast.show({
-        text2: 'Admin removed from the masjid',
+        text2: 'User successfully removed from Masjid',
         type: 'success',
       });
       GetMasjidAdmins(masjidId);

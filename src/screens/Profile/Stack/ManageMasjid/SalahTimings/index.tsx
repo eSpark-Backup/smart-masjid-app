@@ -7,7 +7,13 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
-import { SalahTimingsSVG } from '../../../../../assets';
+import {
+  HistoryBox,
+  IqamaTimingsSVG,
+  JummaTimingsSVG,
+  MonthlyScheduleSVG,
+  SalahTimingsSVG,
+} from '../../../../../assets';
 import {
   GapView,
   MyTitle,
@@ -34,7 +40,7 @@ export default function SalahSettings({
               : -WINDOW_WIDTH / 1.9 / 3,
         }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Salah Settings" />
+          <MyTitle text="Salah Timings" />
         </Animated.View>
       </View>
       <GapView />
@@ -42,17 +48,22 @@ export default function SalahSettings({
         <ProfileSectionlist
           data={[
             {
-              title: 'Salah Settings',
+              title: 'Salah Timings',
               data: [
                 {
                   title: 'Iqama Timings',
-                  icon: <SalahTimingsSVG />,
+                  icon: <IqamaTimingsSVG />,
                   onPress: () => setFlag('iTime'),
                 },
                 {
                   title: 'Jumuah Timings',
-                  icon: <SalahTimingsSVG />,
+                  icon: <JummaTimingsSVG />,
                   onPress: () => setFlag('jTime'),
+                },
+                {
+                  title: 'Monthly Schedule',
+                  icon: <MonthlyScheduleSVG />,
+                  onPress: () => setFlag('iHist'),
                 },
               ],
             },

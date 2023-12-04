@@ -35,6 +35,7 @@ export default function History({
     getSalahTimingsOfMasjid(
       userData?.masjid.id.toString() as string,
       moment().startOf('month').format('YYYY-MM-DD'),
+      'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
       setLoading(false);
@@ -49,6 +50,7 @@ export default function History({
     getSalahTimingsOfMasjid(
       userData?.masjid.id.toString() as string,
       moment(e).startOf('month').format('YYYY-MM-DD') as string,
+      'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
       setLoading(false);
@@ -112,6 +114,7 @@ export default function History({
             type="standard"
             // currentDate={currentDate.getMonth}
             currentDate={moment()
+              .year(currentDate.getFullYear())
               .month(currentDate.getMonth())
               .date(1)
               .toDate()}

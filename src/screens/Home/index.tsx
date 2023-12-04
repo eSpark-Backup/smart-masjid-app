@@ -121,7 +121,7 @@ export default function Home() {
             if (typeof uniqueObj?.[0] == 'object') {
               setSelectedMasjid(uniqueObj?.[0]);
             }
-            // setStep(1);
+            setStep(1);
           }
           setLoading(false);
         },

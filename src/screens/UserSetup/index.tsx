@@ -233,6 +233,8 @@ export default function UserSetupScreen() {
     }
   };
 
+  console.log('data', data);
+
   return (
     <>
       <OverlayLoader isShow={loader} />
@@ -324,6 +326,7 @@ export default function UserSetupScreen() {
                         setStep(value);
                       }
                     } else {
+                      setData({ ...data, phone: '' });
                       setStep(value);
                     }
                   }}
@@ -392,7 +395,6 @@ export default function UserSetupScreen() {
                       'user',
                       JSON.stringify(userStore.currentRegisterUser.get()),
                     );
-                    // navigation.navigate('DSetup');
                   }}
                   onSkip={async () => {
                     userData.set(
@@ -404,7 +406,6 @@ export default function UserSetupScreen() {
                       'user',
                       JSON.stringify(userStore.currentRegisterUser.get()),
                     );
-                    // navigation.navigate('HomeBottomTab');
                   }}
                   btnText={'Connect Device'}
                   title="Account setup complete"

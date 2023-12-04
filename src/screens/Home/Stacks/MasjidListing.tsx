@@ -38,7 +38,6 @@ export default function MasjidListing({
           getSalahTimingsOfMasjid(
             item?.id.toString() ?? '',
             moment().format('YYYY-MM-DD'),
-            true,
           ).then(data => {
             if (data) {
               let dat = [];

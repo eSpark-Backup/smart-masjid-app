@@ -61,7 +61,6 @@ const DeviceListing = ({
             textStyle={{
               // fontWeight: '400',
               fontFamily: 'Roboto-Medium',
-              color: '#3e3e3e',
             }}
             text={masjidDetails?.name ?? ''}
           />
@@ -89,9 +88,7 @@ const DeviceListing = ({
                       item.masjid ? item.masjid.name : 'No Subscription'
                     }
                     disabled={!!item.masjid}
-                    online={
-                      item?.deviceTelemetry?.status == 'Online' ? true : false
-                    }
+                    online={item?.deviceTelemetry?.status}
                   />
                 );
               }}
