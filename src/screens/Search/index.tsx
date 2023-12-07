@@ -60,9 +60,11 @@ export default function Search() {
           text2: 'Masjid Subscribed',
           type: 'success',
         });
+        setLoading(false);
         navigation.navigate('Home');
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }

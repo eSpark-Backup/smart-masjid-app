@@ -59,16 +59,18 @@ export default function ManageUsers({
   const onDelete = async () => {
     setIsVisible(null);
     setLoading(true);
-    if (isVisible?.id == userData?.id.toString()) {
-      await LogoutUser(userData?.id?.toString() ?? '', true);
-      setLoading(false);
-      return;
-    }
     await DeleteAdminFromMasjid(
       isVisible?.id!,
       userData?.masjid?.id.toString()!,
     );
-    setLoading(false);
+    console.log('delete done');
+
+    if (isVisible?.id == userData?.id.toString()) {
+      await LogoutUser(userData?.id?.toString() ?? '', true);
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
   };
 
   return (

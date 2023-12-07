@@ -98,6 +98,7 @@ export default function DeviceSetupScreen() {
     new Map<Peripheral['id'], Peripheral>(),
   );
   const [disable, setDisable] = useState(false);
+  const [wifiError, setWifiError] = useState(false);
   const [connFlag, setConnFlag] = useState(true);
   const [toastContent, setToastContent] = useState<{
     title?: string;
@@ -259,8 +260,14 @@ export default function DeviceSetupScreen() {
         title: 'Device not found',
         message: 'Issues Found',
         onPress: () => {
-          setRetry(true);
-          setIssues([]);
+          if (wifiError) {
+            setStep(4);
+            setIssues([]);
+            setWifiError(false);
+          } else {
+            setRetry(true);
+            setIssues([]);
+          }
         },
         points: [...new Set(issues)],
       }));
@@ -377,6 +384,7 @@ export default function DeviceSetupScreen() {
         devInfo,
         '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
         '6e400011-b5a3-f393-e0a9-e50e24dcca9e',
+        route.params?.isBtn,
       );
       const response = await _scanBleDevices(5);
       if (
@@ -835,11 +843,12 @@ export default function DeviceSetupScreen() {
                 setSSID={(value: string) =>
                   setDevInfo(state => ({ ...state, ssid: value }))
                 }
-                setIssues={val =>
+                setIssues={val => {
+                  setWifiError(true);
                   setIssues(state => {
                     return [...state, val];
-                  })
-                }
+                  });
+                }}
                 setStep={(value: number) => setStep(value)}
                 currentWifiSSID={route?.params?.deviceData?.wifiSsid}
                 autoSelect={route?.params?.onlyPassword}
@@ -852,8 +861,8 @@ export default function DeviceSetupScreen() {
                   route.params?.isBtn
                     ? setDevInfo(state => ({
                         ...state,
+                        masjid_id: userSetup.userData?.masjid.id.toString(),
                         password: value,
-                        masjidId: userSetup.userData?.masjid.id,
                       }))
                     : setDevInfo(state => ({ ...state, password: value }))
                 }
@@ -891,7 +900,11 @@ export default function DeviceSetupScreen() {
                 onPress={() => {
                   navigation.navigate('HomeBottomTab', {
                     screen:
-                      route.params?.from == 'Device' ? 'Search' : 'Device',
+                      route.params?.from == 'Device'
+                        ? route.params?.isBtn
+                          ? 'Device'
+                          : 'Search'
+                        : 'Device',
                     params: { from: 'BtnDev' },
                   });
                 }}

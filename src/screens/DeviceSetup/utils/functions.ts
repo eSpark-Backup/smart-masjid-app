@@ -210,13 +210,20 @@ export async function _writeToDevice(
   devInfo: DeviceInfo,
   serviceUUID: string,
   charUUID: string,
+  isBtn: boolean,
 ) {
   try {
     // return new Promise((resolve, reject) => {
-    const string = JSON.stringify({
+    let dat: any = {
       ssid: devInfo?.ssid,
       pass: devInfo?.password,
-    });
+    };
+    if (isBtn) {
+      dat.masjid_id = devInfo?.masjid_id;
+    }
+
+    const string = JSON.stringify(dat);
+
     const data = stringToBytes(string);
     console.log('device info1', string);
     BleManager.write(devInfo?.macId!!, serviceUUID, charUUID, data, 64)

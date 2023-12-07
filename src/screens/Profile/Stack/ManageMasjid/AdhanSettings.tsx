@@ -15,6 +15,7 @@ import { masjidStore } from '../../../../store/MasjidStore';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { userStore } from '../../../../store/UserStore';
 import { useTheme } from '@react-navigation/native';
+import { AdhanConfig } from '../../../../types/masjidControllerTypes';
 
 export default function AdhanSettings({
   setFlag,
@@ -33,70 +34,113 @@ export default function AdhanSettings({
 
   const getAdhanConfig = async () => {
     setLoading(true);
-    await GetMasjidAdhanSetting(userData?.masjid.id.toString() as string);
+    await GetMasjidAdhanSetting(userData?.masjid.id.toString() as string)
+      .then((adhanConfig: AdhanConfig) =>
+        setDisplayingData([
+          {
+            id: 1,
+            title: 'Calculation',
+            val: adhanConfig?.adhanCalcConfig?.name,
+          },
+          {
+            id: 2,
+            title: 'Juristic',
+            val: adhanConfig?.adhanJuristicConfig?.name,
+          },
+          {
+            id: 3,
+            title: 'Fajr Angle',
+            val: adhanConfig?.fajrAngle,
+          },
+          {
+            id: 4,
+            title: 'Maghrib Rule',
+            val: adhanConfig?.maghribRule,
+          },
+          {
+            id: 5,
+            title: 'Maghrib Value',
+            val: adhanConfig?.maghribValue,
+          },
+          {
+            id: 6,
+            title: 'Isha Rule',
+            val: adhanConfig?.ishaRule,
+          },
+          {
+            id: 7,
+            title: 'Isha Value',
+            val: adhanConfig?.ishaValue,
+          },
+        ]),
+      )
+      .catch(e => {
+        console.log(e);
+        setLoading(false);
+      });
     setLoading(false);
   };
 
   useEffect(() => {
     getAdhanConfig();
   }, []);
-  useEffect(() => {
-    if (adhanConfig && displayData.length < 1) {
-      setDisplayingData([
-        {
-          id: 1,
-          title: 'Calculation',
-          val: adhanConfig?.adhanCalcConfig?.name,
-        },
-        {
-          id: 2,
-          title: 'Juristic',
-          val: adhanConfig?.adhanJuristicConfig?.name,
-        },
-        {
-          id: 3,
-          title: 'Fajr Angle',
-          val: adhanConfig?.fajrAngle,
-        },
-        {
-          id: 4,
-          title: 'Maghrib Rule',
-          val: adhanConfig?.maghribRule,
-        },
-        {
-          id: 5,
-          title: 'Maghrib Value',
-          val: adhanConfig?.maghribValue,
-        },
-        {
-          id: 6,
-          title: 'Isha Rule',
-          val: adhanConfig?.ishaRule,
-        },
-        {
-          id: 7,
-          title: 'Isha Value',
-          val: adhanConfig?.ishaValue,
-        },
-      ]);
-    }
-  }, [adhanConfig, displayData]);
+  // useEffect(() => {
+  //   if (adhanConfig && displayData.length < 1) {
+  //     setDisplayingData([
+  //       {
+  //         id: 1,
+  //         title: 'Calculation',
+  //         val: adhanConfig?.adhanCalcConfig?.name,
+  //       },
+  //       {
+  //         id: 2,
+  //         title: 'Juristic',
+  //         val: adhanConfig?.adhanJuristicConfig?.name,
+  //       },
+  //       {
+  //         id: 3,
+  //         title: 'Fajr Angle',
+  //         val: adhanConfig?.fajrAngle,
+  //       },
+  //       {
+  //         id: 4,
+  //         title: 'Maghrib Rule',
+  //         val: adhanConfig?.maghribRule,
+  //       },
+  //       {
+  //         id: 5,
+  //         title: 'Maghrib Value',
+  //         val: adhanConfig?.maghribValue,
+  //       },
+  //       {
+  //         id: 6,
+  //         title: 'Isha Rule',
+  //         val: adhanConfig?.ishaRule,
+  //       },
+  //       {
+  //         id: 7,
+  //         title: 'Isha Value',
+  //         val: adhanConfig?.ishaValue,
+  //       },
+  //     ]);
+  //   }
+  // }, [adhanConfig, displayData]);
 
-  const renderAdhanConfig = (item: any) => (
-    <TouchableOpacity
-      key={item.id}
-      activeOpacity={0.8}
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: WINDOW_WIDTH - 30,
-        alignSelf: 'center',
-        paddingVertical: 10,
-        alignItems: 'center',
-      }}>
-      <MyText text={item.title} size={14} textStyle={{ marginRight: 10 }} />
-      <View style={{ flex: 1 }}>
-        {item.val && (
+  const renderAdhanConfig = (item: any) =>
+    item?.val ? (
+      <TouchableOpacity
+        key={item.id}
+        activeOpacity={0.8}
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: WINDOW_WIDTH - 30,
+          alignSelf: 'center',
+          paddingVertical: 10,
+          alignItems: 'center',
+        }}>
+        <MyText text={item.title} size={14} textStyle={{ marginRight: 10 }} />
+        <View style={{ flex: 1 }}>
           <MyText
             text={item.val}
             textStyle={{
@@ -106,10 +150,9 @@ export default function AdhanSettings({
             }}
             lines={1}
           />
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+        </View>
+      </TouchableOpacity>
+    ) : null;
 
   return (
     <View style={{ flex: 1 }}>

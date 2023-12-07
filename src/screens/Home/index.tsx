@@ -146,7 +146,6 @@ export default function Home() {
         }
       } else {
         setSelectedMasjid(null);
-        masjidStore.salahTimings.set([]);
       }
     }
   }, [isFocused]);

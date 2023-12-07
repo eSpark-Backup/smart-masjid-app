@@ -45,7 +45,8 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/adhan/config`);
     if (result.status == 200) {
-      masjidStore.adhanConfig.set(result.data);
+      // masjidStore.adhanConfig.set(result.data);
+      return result.data;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
@@ -516,7 +517,6 @@ export const getSalahTimingsOfMasjid = async (
     });
     if (result.status == 200 && result.data) {
       const timings = result?.data?.timings as SalahTimings[];
-      masjidStore?.salahTimings?.set(timings ?? []);
       return timings;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');

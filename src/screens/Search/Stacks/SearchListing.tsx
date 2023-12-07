@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   Platform,
   Animated,
+  AppState,
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -28,6 +29,7 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
 import { _startLocationCheck, _stopLocationCheck } from '../utils/functions';
+import { useIsFocused } from '@react-navigation/native';
 
 const SearchListing = ({
   onPress,
@@ -38,11 +40,30 @@ const SearchListing = ({
   setUserLocation?: (e: any) => void;
   contentOpacity: any;
 }) => {
+  const isFocused = useIsFocused();
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
   const [zipCode, setZipCode] = useState('');
   const [loader, setLoader] = useState(false);
   const [locationStatus, setlocationStatus] = useState(false);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (isFocused) {
+      const subscription = AppState.addEventListener(
+        'change',
+        async appState => {
+          if (appState == 'active') {
+            const enable = await systemSetting.isLocationEnabled();
+            checkLocation(enable, false);
+          }
+        },
+      );
+
+      return () => {
+        subscription.remove();
+      };
+    }
+  }, [isFocused]);
 
   const checkLocation = async (locationStatus: boolean, pressed?: boolean) => {
     try {
@@ -192,6 +213,12 @@ const SearchListing = ({
       _stopLocationCheck();
     };
   }, [locationStatus]);
+
+  useEffect(() => {
+    if (message != '') {
+      setMasjidList([]);
+    }
+  }, [message]);
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
     setLoader(true);

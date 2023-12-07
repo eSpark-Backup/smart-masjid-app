@@ -60,7 +60,6 @@ export type MasjidStoreProps = {
   JummahHistory: JummahTime[];
   userMasjidList: Masjid[] | null;
   connectedDevices: Device[];
-  salahTimings: SalahTimings[];
 };
 
 export type DeviceStoreProps = {
@@ -107,6 +106,7 @@ export type DeviceInfo = {
   device_model?: string;
   mac_address?: string;
   firmware_rev?: string;
+  masjid_id?: string;
 };
 
 export interface SalahInfo {

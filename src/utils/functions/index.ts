@@ -132,10 +132,13 @@ async function _requestUserLocationPermission() {
     if (Platform.OS == 'android') {
       ToastAndroid.show('Enable Location Permission', 8000);
     }
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-    _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_ALWAYS);
-    _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    if (Platform.OS == 'android') {
+      _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+      _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    } else {
+      _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_ALWAYS);
+      _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    }
     if (
       statuses[
         (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,

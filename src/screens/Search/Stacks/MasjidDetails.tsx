@@ -24,7 +24,11 @@ import {
   TextLabel,
   Tooltip,
 } from '../../../components';
-import { JummahTime, Masjid } from '../../../types/masjidControllerTypes';
+import {
+  JummahTime,
+  Masjid,
+  SalahTimings,
+} from '../../../types/masjidControllerTypes';
 import {
   AdhanCalculation,
   AdhanJuristic,
@@ -42,6 +46,7 @@ import {
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
 import { WINDOW_WIDTH } from '../../../constants';
+import moment from 'moment';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -54,16 +59,20 @@ const MasjidDetails = ({
 }) => {
   const [subscribe, setSubscribe] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [salahTimings, setSalahTimings] = useState<SalahTimings[]>([]);
   const isFocused = useIsFocused();
 
   const {
-    store: { salahTimings, JummahTime },
+    store: { JummahTime },
   } = useMasjid();
 
   const getSalahTimes = async () => {
     try {
       setLoading(true);
-      await getSalahTimingsOfMasjid(masjidDetails?.id.toString() ?? '');
+      await getSalahTimingsOfMasjid(
+        masjidDetails?.id.toString() ?? '',
+        moment().format('YYYY-MM-DD').toString(),
+      ).then(data => setSalahTimings(data!));
       await GetMasjidCurrentJummahTiming(masjidDetails?.id.toString() ?? '');
       setLoading(false);
     } catch (e) {
@@ -147,14 +156,15 @@ const MasjidDetails = ({
                 />
               </View>
               <GapView length={5} mode="horizontal" />
-              <NavigationSvg
+              <TouchableOpacity
                 onPress={() => {
                   openMap(
                     masjidDetails?.location?.coordinates[0].toString() ?? '',
                     masjidDetails?.location?.coordinates[1].toString() ?? '',
                   );
-                }}
-              />
+                }}>
+                <NavigationSvg />
+              </TouchableOpacity>
             </View>
             <GapView length={5} />
             {/* <View style={styles.infoCardRowContainer}>

@@ -297,8 +297,6 @@ export default function SwipeableTimeTable({
     } else return false;
   };
 
-  console.log('moment().days()', moment().add(5, 'days'));
-
   return (
     <View style={styles.container}>
       <>

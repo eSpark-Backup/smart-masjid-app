@@ -308,7 +308,7 @@ export default function UserSetupScreen() {
                     activeFlow == 'signup' ? setStep(2) : setStep(1)
                   }
                   onResend={async () => {
-                    await SendOTP(data.email ?? '', data.phone ?? '');
+                    await SendOTP(data.email ?? '');
                   }}
                 />
               )}
@@ -351,6 +351,9 @@ export default function UserSetupScreen() {
                       setLoader(false);
                     }
                     setLoader(false);
+                  }}
+                  onResend={async () => {
+                    await SendOTP('', data.phone ?? '');
                   }}
                 />
               )}

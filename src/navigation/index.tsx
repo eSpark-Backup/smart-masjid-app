@@ -232,7 +232,7 @@ export default function App() {
       </NavigationContainer>
     );
   } else {
-    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={true} />;
+    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;
   }
 }
 

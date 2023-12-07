@@ -96,7 +96,7 @@ export default function MasjidDetails({
       await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
       await getSalahTimingsOfMasjid(
         selectedMasjid?.id.toString() ?? '',
-        undefined,
+        moment().format('YYYY-MM-DD').toString(),
         'WEEK',
       ).then(data => {
         setSalahTime(data as SalahTimings[]);
