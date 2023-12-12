@@ -142,12 +142,14 @@ export default function Profile() {
   }, [flag]);
 
   const getTitle = () => titles[flag] ?? '';
+  console.log('fiag', flag);
 
   return (
     <Wrapper
       bgImageSpacer={false}
       showFooter={false}
       title={getTitle()}
+      avoidKeyboard={flag == 'iAdd' || flag == 'iAdd'}
       onBackPress={() => handleBack(flag)}>
       {({ props }) => {
         const componentMapping: ComponentMap = {

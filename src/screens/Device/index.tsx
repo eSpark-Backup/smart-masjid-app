@@ -276,6 +276,7 @@ export default function Device({ contentOpacity = 0 }: any) {
                 contentOpacity={props.contentOpacity}
                 device={selectedDevice}
                 goBack={() => setStep(0)}
+                isBtn={activeTab == '1' ? false : true}
               />
             )}
           </>

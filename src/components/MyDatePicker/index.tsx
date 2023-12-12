@@ -80,7 +80,7 @@ export default function MyDatePicker({
             paddingHorizontal: 10,
             borderWidth: 0.5,
             borderRadius: 10,
-            height: 42,
+            height: 50,
           }}>
           <View
             style={{

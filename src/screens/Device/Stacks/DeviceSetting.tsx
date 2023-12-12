@@ -57,10 +57,12 @@ const DeviceSetting = ({
   device,
   contentOpacity = 0,
   goBack,
+  isBtn,
 }: {
   device?: Device;
   contentOpacity: any;
   goBack?: () => void;
+  isBtn?: boolean;
 }) => {
   const theme: Theme = useTheme();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
@@ -169,6 +171,7 @@ const DeviceSetting = ({
                   from: 'SelectedDevice',
                   deviceData: device,
                   onlyPassword: true,
+                  isBtn: isBtn,
                 });
                 setErrorShow(false);
                 setLoader(false);
@@ -196,6 +199,7 @@ const DeviceSetting = ({
                 navigation.navigate('DSetup', {
                   from: 'SelectedDevice',
                   deviceData: device,
+                  isBtn: isBtn,
                 });
                 setErrorShow(false);
                 setLoader(false);

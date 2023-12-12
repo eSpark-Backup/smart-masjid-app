@@ -87,7 +87,7 @@ export default function MasjidDetails({
       await GetMasjidDevicesForUser(
         userData?.id?.toString() ?? '',
         selectedMasjid?.id.toString(),
-      ).then(res => {
+      ).then(() => {
         setCurrentDevice(connectedDevices[0] as Device);
         if (connectedDevices[0]) {
           getSubscriptions(connectedDevices[0]?.id.toString()!);

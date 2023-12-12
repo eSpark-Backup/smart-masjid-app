@@ -118,7 +118,7 @@ export default function EditIqamahTimings({
                 <View>
                   <MyDropDown
                     title={''}
-                    // searchDisabled={true}
+                    searchDisabled={true}
                     placeholder="Select Iqama Type"
                     items={[
                       { id: 1, name: 'Fixed' },

@@ -83,6 +83,7 @@ export default function DeviceSelectForm({
     const isAdmin = userPermissions?.some(
       val => val.name === 'MANAGE_MASJID_DEVICES',
     );
+    console.log('fromMasjidDevices isBtn', fromMasjidDevices, isBtn);
     if (!isAdmin) {
       if (!isBtn) {
         console.log('admin nhi button nhi');

@@ -34,6 +34,7 @@ export default function Wrapper({
   bgImageSpacer = true,
   showBack = true,
   title = '',
+  avoidKeyboard,
 }: {
   children: ({
     props,
@@ -47,6 +48,7 @@ export default function Wrapper({
   bgImageSpacer?: boolean;
   showBack?: boolean;
   title?: string;
+  avoidKeyboard?: boolean;
 }) {
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -148,7 +150,9 @@ export default function Wrapper({
                   : HeaderBackgroundImage
               }> */}
           <Header onBackPress={onBackPress} showBack={showBack} />
-          <View style={{ flex: 1, zIndex: 0 }}>
+          <KeyboardAvoidingView
+            behavior={avoidKeyboard ? 'position' : undefined}
+            style={{ flex: 1, zIndex: 0 }}>
             <ScrollView
               onScroll={handleScroll}
               scrollEventThrottle={16}
@@ -166,7 +170,7 @@ export default function Wrapper({
                 {children({ props: { contentOpacity: titleOpacity } })}
               </>
             </ScrollView>
-          </View>
+          </KeyboardAvoidingView>
           {/* </ImageBackground> */}
         </View>
 

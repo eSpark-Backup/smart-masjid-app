@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Animated, ScrollView, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 
@@ -22,6 +22,8 @@ import {
 } from '../../../../components';
 import { userStore } from '../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../constants';
+import { GetMasjid } from '../../../../api/masjidController';
+import { masjidStore } from '../../../../store/MasjidStore';
 
 export default function ManageMasjid({
   setFlag,
@@ -31,9 +33,21 @@ export default function ManageMasjid({
   contentOpacity?: any;
 }) {
   const userData = useHookstate(userStore.userData).get();
-  const masjidInfo = userData?.masjid;
+  const masjidInfo = useHookstate(masjidStore.masjid).get();
 
   const [showLoader, setShowLoader] = useState(false);
+
+  useEffect(() => {
+    getMasjidInfo();
+  }, []);
+
+  const getMasjidInfo = async () => {
+    try {
+      setShowLoader(true);
+      await GetMasjid(userData?.masjid.id.toString() as string);
+      setShowLoader(false);
+    } catch (error) {}
+  };
 
   return (
     <View style={{ flex: 1 }}>
