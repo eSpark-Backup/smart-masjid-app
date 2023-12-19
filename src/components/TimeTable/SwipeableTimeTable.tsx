@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   ViewToken,
+  Text,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -235,6 +236,30 @@ export default function SwipeableTimeTable({
               setSubscriptions={updateSubscriptions}
             />
           ))}
+          {item?.salah?.map((data, i) =>
+            data?.sunriseTime ? (
+              <View key={i} style={[styles.contentRow, { height: 40 }]}>
+                <View style={styles.contentCol}>
+                  <MyText text={'Sunrise'} size={16} />
+                </View>
+                <View style={styles.contentCol}>
+                  <MyText
+                    text={moment(data.sunriseTime, 'HH:mm:ss').format('hh:mm')}
+                    size={16}
+                  />
+                </View>
+                <View style={{ ...styles.contentCol, width: '26%' }}>
+                  <MyText text={'Shurooq'} size={16} />
+                </View>
+                <View style={{ ...styles.contentIcon, width: undefined }}>
+                  <MyText
+                    text={moment(data.shurooqTime, 'HH:mm:ss').format('hh:mm')}
+                    size={16}
+                  />
+                </View>
+              </View>
+            ) : null,
+          )}
         </View>
       </View>
     );

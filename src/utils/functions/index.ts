@@ -216,7 +216,7 @@ async function _requestBlePermissions(): Promise<Boolean> {
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
         PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
         PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
-      ] !== 'granted' ||
+      ] == 'blocked' ||
       checkStatus[
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
         PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,

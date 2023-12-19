@@ -186,6 +186,8 @@ export interface Salah {
   name: string;
   adhanTime: string;
   iqamaTime: string;
+  sunriseTime: string;
+  shurooqTime: string;
 }
 
 export interface SalahTimings {

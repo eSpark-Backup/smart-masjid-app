@@ -531,3 +531,45 @@ export const getSalahTimingsOfMasjid = async (
     crashlytics().recordError(error as Error);
   }
 };
+
+/**
+ * Generate Monthly Schedule PDF of a masjid for a specific month.
+ *
+ * @param masjidId - The ID of the masjid.
+ * @param [date] - The date for which Monthly Schedule is requested.
+ * @param sendEmail - Flag for sending email.
+ * @returns An array of Salah timings for the masjid or undefined if there is an error.
+ */
+export const generatePDf = async (
+  masjidId: string,
+  date: string,
+  sendEmail: boolean,
+) => {
+  try {
+    console.log('masjidId, date, sendEmail', masjidId, date, sendEmail);
+
+    const result: any = await api.post(
+      `/masjid/${masjidId}/monthly/pdf?date=${date.toString()}&sendEmail=${sendEmail}`,
+      {
+        emails: ['wirad@esparkconsultants.com'],
+      },
+    );
+    console.log('result', result);
+    console.log('result.data', result.data);
+
+    if (result.status == 200 && result.data) {
+      const filePath = result?.data;
+      return filePath;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
+    }
+  } catch (error) {
+    console.log('generatePDf error: ', error);
+    crashlytics().recordError(error as Error);
+  }
+};

@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Animated, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import { useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
-import { getSalahTimingsOfMasjid } from '../../../../../../api/masjidController';
+import {
+  generatePDf,
+  getSalahTimingsOfMasjid,
+} from '../../../../../../api/masjidController';
 import {
   GapView,
+  LogoutModal,
   MyText,
   MyTitle,
   OverlayLoader,
@@ -16,7 +27,7 @@ import { SalahTimings } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
-import { Email, Envelope } from '../../../../../../assets';
+import { Download, Email, Envelope, Mail } from '../../../../../../assets';
 
 export default function History({
   setFlag,
@@ -29,6 +40,8 @@ export default function History({
   const [adhaTime, setAdhaTime] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [prompt1, setPrompt1] = useState(false);
+  const [prompt2, setPrompt2] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -41,8 +54,6 @@ export default function History({
       setLoading(false);
     });
   }, []);
-
-  console.log('moment start', moment().startOf('month').format('YYYY-MM-DD'));
 
   const onDateChange = (e: Date) => {
     setCurrentDate(e);
@@ -82,6 +93,15 @@ export default function History({
     setAdhaTime(adhanTiming);
   };
 
+  const sendPDFtoEmail = () => {
+    setPrompt1(false);
+    generatePDf(
+      userData?.masjid.id.toString() as string,
+      moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
+      true,
+    ).then(path => setPrompt2(true));
+  };
+
   return (
     <View style={{ alignItems: 'center' }}>
       <View
@@ -98,6 +118,16 @@ export default function History({
           <MyTitle text="Monthly Schedule" />
         </Animated.View>
       </View>
+      <LogoutModal
+        visible={prompt1}
+        message={`Monthly Schedule PDF will be sent to ${userData?.email}. Would you like to add an optional email?`}
+        onClose={sendPDFtoEmail}
+      />
+      <LogoutModal
+        visible={prompt2}
+        message={`Monthly Schedule PDF sent successfully. Would you like to download the PDF?`}
+        onClose={() => setPrompt2(false)}
+      />
       <View>
         <GapView />
         <View
@@ -121,7 +151,20 @@ export default function History({
             onDateChange={onDateChange}
             dateFormat={'Monthly'}
           />
-          <Envelope style={{ position: 'absolute', right: 22 }} />
+          <View
+            style={{
+              position: 'absolute',
+              right: 20,
+              flexDirection: 'row',
+            }}>
+            <TouchableOpacity onPress={() => setPrompt1(true)}>
+              <Mail />
+            </TouchableOpacity>
+            <GapView mode="horizontal" />
+            <TouchableOpacity>
+              <Download />
+            </TouchableOpacity>
+          </View>
         </View>
         {adhaTime.length < 1 && !loading ? (
           <MyText

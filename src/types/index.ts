@@ -113,6 +113,8 @@ export interface SalahInfo {
   name: string;
   adhanTime: string;
   iqamaTime: string;
+  shurooqTime: string;
+  sunriseTime: string;
 }
 export interface IPrayerTimeForPeriod {
   date: string;
