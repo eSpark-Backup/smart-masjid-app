@@ -4,7 +4,6 @@ import {
   View,
   Animated,
   Platform,
-  Touchable,
   TouchableOpacity,
 } from 'react-native';
 import { useHookstate } from '@hookstate/core';
@@ -17,6 +16,7 @@ import {
 import {
   GapView,
   LogoutModal,
+  MyModal,
   MyText,
   MyTitle,
   OverlayLoader,
@@ -27,13 +27,11 @@ import { SalahTimings } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
-import { Download, Email, Envelope, Mail } from '../../../../../../assets';
+import { Download, Mail } from '../../../../../../assets';
 
 export default function History({
-  setFlag,
   contentOpacity = 0,
 }: {
-  setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
   const userData = useHookstate(userStore.userData).get();
@@ -93,13 +91,18 @@ export default function History({
     setAdhaTime(adhanTiming);
   };
 
-  const sendPDFtoEmail = () => {
+  const sendPDFtoEmail = (email: string) => {
     setPrompt1(false);
+    setLoading(true);
     generatePDf(
       userData?.masjid.id.toString() as string,
       moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
       true,
-    ).then(path => setPrompt2(true));
+      [userData?.email!, email],
+    ).then(path => {
+      setPrompt2(true);
+      setLoading(false);
+    });
   };
 
   return (
@@ -118,14 +121,20 @@ export default function History({
           <MyTitle text="Monthly Schedule" />
         </Animated.View>
       </View>
-      <LogoutModal
+      {/* <LogoutModal
         visible={prompt1}
-        message={`Monthly Schedule PDF will be sent to ${userData?.email}. Would you like to add an optional email?`}
+        message={`Monthly Schedule will emailed to ${userData?.email}. Would you like to add an optional email?`}
         onClose={sendPDFtoEmail}
+      /> */}
+      <MyModal
+        visible={prompt1}
+        onSend={email => sendPDFtoEmail(email)}
+        message={`Monthly Schedule will emailed to ${userData?.email}.`}
+        title1="Send"
       />
       <LogoutModal
         visible={prompt2}
-        message={`Monthly Schedule PDF sent successfully. Would you like to download the PDF?`}
+        message={`Monthly Schedule sent successfully.\nWould you like to download the PDF as well?`}
         onClose={() => setPrompt2(false)}
       />
       <View>

@@ -80,28 +80,28 @@ const MasjidDetails = ({
     }
   };
 
-  const adhanCalculations = (): string => {
-    let masjidAdhanCalcConfig =
-      masjidDetails?.masjidAdhanConfig.adhanCalcConfig;
-    let masjidAdhanCustomConfig =
-      masjidDetails?.masjidAdhanConfig.adhanCustomConfig;
-    let toolTip = '';
-    if (!masjidDetails?.masjidAdhanConfig.adhanCustomConfig) {
-      toolTip = `This masjid uses ${masjidAdhanCalcConfig?.name} for Adhan calculation. ${masjidAdhanCalcConfig?.calculation}`;
-      return toolTip;
-    } else {
-      toolTip = `This masjid uses ${
-        masjidAdhanCalcConfig?.name
-      } for Adhan calculation. Fajr: ${
-        masjidAdhanCustomConfig?.fajrAngle
-      }° Maghrib: ${masjidAdhanCustomConfig?.maghribValue} ${
-        masjidAdhanCustomConfig?.maghribRule == 'ANGLE' ? '°' : 'mins'
-      } Isha: ${masjidAdhanCustomConfig?.ishaValue} ${
-        masjidAdhanCustomConfig?.ishaRule == 'ANGLE' ? '°' : 'mins'
-      }`;
-      return toolTip;
-    }
-  };
+  // const adhanCalculations = (): string => {
+  //   let masjidAdhanCalcConfig =
+  //     masjidDetails?.masjidAdhanConfig.adhanCalcConfig;
+  //   let masjidAdhanCustomConfig =
+  //     masjidDetails?.masjidAdhanConfig.adhanCustomConfig;
+  //   let toolTip = '';
+  //   if (!masjidDetails?.masjidAdhanConfig.adhanCustomConfig) {
+  //     toolTip = `This masjid uses ${masjidAdhanCalcConfig?.name} for Adhan calculation. ${masjidAdhanCalcConfig?.calculation}`;
+  //     return toolTip;
+  //   } else {
+  //     toolTip = `This masjid uses ${
+  //       masjidAdhanCalcConfig?.name
+  //     } for Adhan calculation. Fajr: ${
+  //       masjidAdhanCustomConfig?.fajrAngle
+  //     }° Maghrib: ${masjidAdhanCustomConfig?.maghribValue} ${
+  //       masjidAdhanCustomConfig?.maghribRule == 'ANGLE' ? '°' : 'mins'
+  //     } Isha: ${masjidAdhanCustomConfig?.ishaValue} ${
+  //       masjidAdhanCustomConfig?.ishaRule == 'ANGLE' ? '°' : 'mins'
+  //     }`;
+  //     return toolTip;
+  //   }
+  // };
 
   useEffect(() => {
     if (isFocused) {

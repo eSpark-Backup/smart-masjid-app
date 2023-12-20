@@ -18,23 +18,66 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
   const renderTable = ({ item, index }: { item: string; index: number }) => {
     return (
       <View key={index}>
-        <View
-          style={{
-            backgroundColor: colors.primary,
-            paddingHorizontal: 8,
-            paddingVertical: 5,
-            borderColor: '#9E9F9F',
-            borderWidth: 0.25,
-          }}>
-          <MyText
-            text={item}
-            textStyle={{
-              color: '#ffffff',
-              fontFamily: 'Roboto-Regular',
-              textAlign: 'center',
-            }}
-          />
-        </View>
+        {item == 'Date' ? (
+          <View
+            style={{
+              backgroundColor: colors.primary,
+              paddingHorizontal: 8,
+              paddingVertical: 5,
+              borderColor: '#9E9F9F',
+              borderBottomColor: colors.primary,
+              borderWidth: 0.25,
+            }}>
+            <MyText
+              text=" "
+              textStyle={{
+                color: '#ffffff',
+                fontFamily: 'Roboto-Regular',
+                textAlign: 'center',
+              }}
+            />
+          </View>
+        ) : null}
+        {item == 'Date' ? (
+          <View
+            style={{
+              backgroundColor: colors.primary,
+              paddingHorizontal: 8,
+              paddingVertical: 5,
+              position: 'absolute',
+              top: 15,
+              left: 20,
+              zIndex: 1,
+            }}>
+            <MyText
+              text={item}
+              textStyle={{
+                color: '#ffffff',
+                fontFamily: 'Roboto-Regular',
+                textAlign: 'center',
+              }}
+            />
+          </View>
+        ) : null}
+        {item != 'Date' ? (
+          <View
+            style={{
+              backgroundColor: colors.primary,
+              paddingHorizontal: 8,
+              paddingVertical: 5,
+              borderColor: '#9E9F9F',
+              borderWidth: 0.25,
+            }}>
+            <MyText
+              text={item}
+              textStyle={{
+                color: '#ffffff',
+                fontFamily: 'Roboto-Regular',
+                textAlign: 'center',
+              }}
+            />
+          </View>
+        ) : null}
         <View style={{ flexDirection: 'row' }}>
           {data.map((head: Props | null, index: number) =>
             head?.heading.includes(item) ? (
@@ -46,6 +89,8 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
                     paddingVertical: 5,
                     borderColor: '#9E9F9F',
                     borderWidth: 0.25,
+                    borderTopColor:
+                      head?.heading == 'Date' ? colors.primary : undefined,
                   }}>
                   <MyText
                     text={
@@ -54,7 +99,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
                         : head?.heading.includes('Iqama')
                         ? 'Iqama'
                         : head?.heading == 'Date'
-                        ? '-'
+                        ? ' '
                         : head?.heading ?? ''
                     }
                     textStyle={{
