@@ -197,12 +197,7 @@ export default function Profile() {
               selectedIqamah={obj => setIqamaData(obj)}
             />
           ),
-          iHist: (
-            <IqamahHistory
-              contentOpacity={props.contentOpacity}
-              setFlag={(value: string) => setFlag(value)}
-            />
-          ),
+          iHist: <IqamahHistory contentOpacity={props.contentOpacity} />,
           iEdit: (
             <EditIqamahTimings
               contentOpacity={props.contentOpacity}

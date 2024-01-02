@@ -24,6 +24,9 @@ import {
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { DeviceSetupSchema } from '../../constants/validations/schema';
+import { GlobalProps } from '../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
 
 export default function PasswordForm({
   ssid,
@@ -36,6 +39,7 @@ export default function PasswordForm({
   setStep: (value: number) => void;
   contentOpacity: any;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [loading, setLoading] = useState(false);
 
   const connectToWifi = async (
@@ -48,7 +52,8 @@ export default function PasswordForm({
     },
     clear: () => void,
   ) => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     try {
       if (Platform.OS == 'android') {
         const res = await WifiManager.connectToProtectedSSID(
@@ -60,7 +65,8 @@ export default function PasswordForm({
         const isForget = await WifiManager.isRemoveWifiNetwork(ssid);
         if (isForget) {
           console.log('Forgot Network which was validated', isForget);
-          setLoading(false);
+          state.globalLoading.set(false);
+          // setLoading(false);
           setStep(6);
           clear();
         } else {
@@ -83,13 +89,15 @@ export default function PasswordForm({
         WifiManager.connectToProtectedSSID(ssid, password, false).then(
           a => {
             console.log('Connected successfully!', a);
-            setLoading(false);
+            state.globalLoading.set(false);
+            // setLoading(false);
             setStep(6);
             clear();
           },
           e => {
             console.log('Connection failed!', e);
-            setLoading(false);
+            state.globalLoading.set(false);
+            // setLoading(false);
             Toast.show({
               text2: 'WiFi Password incorrect. Please try again',
               type: 'error',
@@ -102,7 +110,8 @@ export default function PasswordForm({
     } catch (error) {
       crashlytics().recordError(error as Error);
       console.log('error in connecting wifi', error);
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
       Toast.show({
         text2: 'WiFi Password incorrect. Please try again',
         type: 'error',
@@ -114,7 +123,7 @@ export default function PasswordForm({
 
   return (
     <View style={styles.container}>
-      <OverlayLoader isShow={loading} />
+      {/* <OverlayLoader isShow={loading} /> */}
       <View
         style={{
           alignSelf: 'center',

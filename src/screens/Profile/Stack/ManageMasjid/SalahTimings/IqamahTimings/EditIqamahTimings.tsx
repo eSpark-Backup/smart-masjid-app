@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
 import {
@@ -21,6 +21,8 @@ import { WINDOW_WIDTH } from '../../../../../../constants';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import { userStore } from '../../../../../../store/UserStore';
+import { globalStore } from '../../../../../../store/GlobalStates';
+import { GlobalProps } from '../../../../../../types';
 
 export default function EditIqamahTimings({
   setFlag,
@@ -33,6 +35,7 @@ export default function EditIqamahTimings({
   iqamahType: 'Add' | 'Edit';
   selectedIqamah?: IqamahTime | null;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [data, setData] = useState<any>([]);
@@ -63,7 +66,8 @@ export default function EditIqamahTimings({
     console.log('data kia hai', data);
 
     var dataObj: IqamahTime = data;
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     if (iqamahType == 'Add') {
       await AddMasjidIqamahTiming(
         userData?.masjid.id.toString() as string,
@@ -83,7 +87,8 @@ export default function EditIqamahTimings({
     //   !Boolean(dataObj.ishaDelay)
     // ) {
     // }
-    setLoading(false);
+    state.globalLoading.set(false);
+    // setLoading(false);
     setData(null);
     setFlag('iTime');
   };
@@ -107,7 +112,7 @@ export default function EditIqamahTimings({
         </View>
 
         <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
-          <OverlayLoader isShow={loading} />
+          {/* <OverlayLoader isShow={loading} /> */}
           <TimeTable
             type={data?.type}
             containerStyle={{

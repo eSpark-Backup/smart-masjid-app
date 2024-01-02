@@ -1,4 +1,4 @@
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -33,11 +33,16 @@ import { userStore } from '../../../../store/UserStore';
 import { isValidPhoneNumber } from '../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
-import { BottomNavigationParamList, CountryCodes } from '../../../../types';
+import {
+  BottomNavigationParamList,
+  CountryCodes,
+  GlobalProps,
+} from '../../../../types';
 import { OtpForm } from '../../ProfileForms';
 import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 import { deviceStore } from '../../../../store/DeviceStore';
 import { GetUserDevices } from '../../../../api/deviceController';
+import { globalStore } from '../../../../store/GlobalStates';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -56,6 +61,7 @@ export default function ManageAccount({
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const { colors }: Theme = useTheme();
 
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [isVisible, setIsVisible] = useState(false);
   const [isDVisible, setIsDVisible] = useState(false);
   const [country, setCountry] = useState<CountryCodes>();
@@ -140,7 +146,8 @@ export default function ManageAccount({
   };
 
   const onSave = async (otp?: string) => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     const isValidPhone = await isValidPhoneNumber(data.phone, country);
     if (!isValidPhone) {
       return;
@@ -163,11 +170,13 @@ export default function ManageAccount({
       );
     }
     onEditPress('');
-    setLoading(false);
+    state.globalLoading.set(false);
+    // setLoading(false);
   };
 
   const onDeletePermitted = async () => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     setIsDVisible(false);
     if (devices?.length > 0) {
       navigation.navigate('Device');
@@ -176,7 +185,8 @@ export default function ManageAccount({
         text2: 'Delete your devices before account deletion!',
         type: 'warning',
       });
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
     } else {
       let devs = await GetUserDevices(userData?.id.toString() as string);
       if (devs.length > 0) {
@@ -186,10 +196,12 @@ export default function ManageAccount({
           text2: 'Delete your devices before account deletion!',
           type: 'warning',
         });
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
       } else {
         await DeleteUser(userData?.id?.toString() ?? '');
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
       }
     }
   };
@@ -198,7 +210,7 @@ export default function ManageAccount({
     <TouchableWithoutFeedback
       onPress={!showVerification ? clearSelection : undefined}>
       <View style={{ flex: 1 }}>
-        <OverlayLoader isShow={loading} />
+        {/* <OverlayLoader isShow={loading} /> */}
         {!showVerification ? (
           <>
             <View
@@ -355,7 +367,8 @@ export default function ManageAccount({
                         clearSelection();
                         return;
                       }
-                      setLoading(true);
+                      state.globalLoading.set(true);
+                      // setLoading(true);
                       const email = data['email'];
                       const phoneNo = data['phone'];
                       const activeKey = displayData.find(
@@ -367,7 +380,8 @@ export default function ManageAccount({
                           country,
                         );
                         if (!isValidPhone) {
-                          setLoading(false);
+                          state.globalLoading.set(false);
+                          // setLoading(false);
                           return;
                         }
                         if (Boolean(phoneNo) == false) {
@@ -376,7 +390,8 @@ export default function ManageAccount({
                             type: 'error',
                             visibilityTime: 10000,
                           });
-                          setLoading(false);
+                          state.globalLoading.set(false);
+                          // setLoading(false);
                           return;
                         }
                       }
@@ -385,7 +400,8 @@ export default function ManageAccount({
                         activeKey == 'phone' ? phoneNo : '',
                       );
                       setFlag('mAccOtp');
-                      setLoading(false);
+                      state.globalLoading.set(false);
+                      // setLoading(false);
                     } else {
                       onSave();
                     }
@@ -432,10 +448,12 @@ export default function ManageAccount({
               message="Do you wish to logout?"
               visible={isVisible}
               onAllowed={async () => {
-                setLoading(true);
+                state.globalLoading.set(true);
+                // setLoading(true);
                 setIsVisible(!isVisible);
                 await LogoutUser(userData?.id?.toString() ?? '', true);
-                setLoading(false);
+                state.globalLoading.set(false);
+                // setLoading(false);
                 console.log('Logged Out');
               }}
               onClose={() => {
@@ -475,7 +493,8 @@ export default function ManageAccount({
                 // clearSelection();
               }}
               setStep={async (value: string) => {
-                setLoading(true);
+                state.globalLoading.set(true);
+                // setLoading(true);
                 const activeKey = displayData.find(val => val.editable)?.key;
 
                 const isVerified = await ValidateOTP(
@@ -489,7 +508,8 @@ export default function ManageAccount({
                   onSave(value);
                   setFlag('mAcc');
                 } else {
-                  setLoading(false);
+                  state.globalLoading.set(false);
+                  // setLoading(false);
                 }
               }}
               onResend={async () => {

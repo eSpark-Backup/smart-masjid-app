@@ -18,6 +18,9 @@ import { WINDOW_WIDTH } from '../../constants';
 //@ts-ignore
 import { bytesToString } from 'convert-string';
 import { UserPermissions } from '../../types/userControllerApiResponse';
+import { GlobalProps } from '../../types';
+import { globalStore } from '../../store/GlobalStates';
+import { State, useHookstate } from '@hookstate/core';
 
 export default function DeviceSelectForm({
   data = [],
@@ -38,6 +41,7 @@ export default function DeviceSelectForm({
   contentOpacity: any;
   fromMasjidDevices: boolean;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [loading, setLoading] = useState(false);
 
   const getIOSMacAdd = async (devData: Peripheral) => {
@@ -49,7 +53,8 @@ export default function DeviceSelectForm({
   };
 
   async function handleDeviceCheck(item: Peripheral) {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     try {
       console.log('try mein aya');
       const res = await _checkDeviceExists(
@@ -69,11 +74,13 @@ export default function DeviceSelectForm({
           visibilityTime: 10000,
         });
       }
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     } catch (error) {
       crashlytics().recordError(error as Error);
       console.log('error thrown', error);
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     }
   }
 
@@ -170,9 +177,7 @@ export default function DeviceSelectForm({
       <View>
         <MyTextSubHeader text="Devices found" style={{ alignSelf: 'center' }} />
         <GapView length={30} />
-        {loading ? (
-          <OverlayLoader isShow={loading} noBg={true} />
-        ) : (
+        {!state.globalLoading.get() && (
           <ButtonListing trademark radius={12} data={finalArr} />
         )}
       </View>

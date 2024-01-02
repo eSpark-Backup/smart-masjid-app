@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { Wrapper } from '../../containers';
@@ -13,7 +13,7 @@ import {
   PersonalInfoForm,
   AddPhoneForm,
 } from './UserForms';
-import { RootStackParamList } from '../../types';
+import { GlobalProps, RootStackParamList } from '../../types';
 import { MyToast, OverlayLoader, SLoader } from '../../components';
 import {
   RegisterUserPhone,
@@ -39,6 +39,7 @@ import { userStore } from '../../store/UserStore';
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
 export default function UserSetupScreen() {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const navigation = useNavigation<Props['navigation']>();
   const phoneId = useHookstate(globalStore.phoneId).get();
   const devSetup = useHookstate(globalStore.devSetup);
@@ -138,7 +139,8 @@ export default function UserSetupScreen() {
         checkUserDeviceExist(res?.userPhone, 'devAndFcm')
       ) {
         navigation.navigate('HomeBottomTab'); //TODO: Change it later
-        setLoader(false);
+        state.globalLoading.set(false);
+        // setLoader(false);
       } else if (
         res?.id &&
         phoneId &&
@@ -153,10 +155,12 @@ export default function UserSetupScreen() {
           if (login?.ok) {
             navigation.navigate('HomeBottomTab'); //TODO: Change it later
           } else {
-            setLoader(false);
+            state.globalLoading.set(false);
+            // setLoader(false);
           }
         } else {
-          setLoader(false);
+          state.globalLoading.set(false);
+          // setLoader(false);
         }
       } else if (
         res?.id &&
@@ -173,13 +177,16 @@ export default function UserSetupScreen() {
           if (login?.ok) {
             navigation.navigate('HomeBottomTab'); //TODO: Change it later
           } else {
-            setLoader(false);
+            state.globalLoading.set(false);
+            // setLoader(false);
           }
         } else {
-          setLoader(false);
+          state.globalLoading.set(false);
+          // setLoader(false);
         }
       } else {
-        setLoader(false);
+        state.globalLoading.set(false);
+        // setLoader(false);
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -192,7 +199,8 @@ export default function UserSetupScreen() {
     type?: string,
   ) => {
     try {
-      setLoader(true);
+      state.globalLoading.set(true);
+      // setLoader(true);
       const res: any = await CheckUserExists(email ?? '', phone ?? '');
       if (type == 'signup') {
         if (res?.id) {
@@ -227,7 +235,8 @@ export default function UserSetupScreen() {
           });
         }
       }
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -237,7 +246,7 @@ export default function UserSetupScreen() {
 
   return (
     <>
-      <OverlayLoader isShow={loader} />
+      {/* <OverlayLoader isShow={loader} /> */}
       <Wrapper
         bgImageSpacer={false}
         showBack={step == 1 ? false : true}
@@ -280,7 +289,8 @@ export default function UserSetupScreen() {
                   userEmail={data.email}
                   userPhone={data.phone}
                   setStep={async (value: string) => {
-                    setLoader(true);
+                    state.globalLoading.set(true);
+                    // setLoader(true);
                     const isVerified = await ValidateOTP(
                       value,
                       data.email ?? '',
@@ -291,7 +301,8 @@ export default function UserSetupScreen() {
                       if (activeFlow == 'signup') {
                         setStep(4);
                         setOTP(value);
-                        setLoader(false);
+                        state.globalLoading.set(false);
+                        // setLoader(false);
                       } else {
                         setOTP(value);
                         onLogin(
@@ -301,7 +312,8 @@ export default function UserSetupScreen() {
                         );
                       }
                     } else {
-                      setLoader(false);
+                      state.globalLoading.set(false);
+                      // setLoader(false);
                     }
                   }}
                   goBack={() =>
@@ -339,7 +351,8 @@ export default function UserSetupScreen() {
                   userPhone={data.phone}
                   goBack={() => setStep(4)}
                   setStep={async (value: string) => {
-                    setLoader(true);
+                    state.globalLoading.set(true);
+                    // setLoader(true);
                     const isVerified = await ValidateOTP(
                       value,
                       data.email ?? '',
@@ -348,9 +361,11 @@ export default function UserSetupScreen() {
                     console.log('isVerified', isVerified);
                     if (isVerified) {
                       setStep(6);
-                      setLoader(false);
+                      state.globalLoading.set(false);
+                      // setLoader(false);
                     }
-                    setLoader(false);
+                    state.globalLoading.set(false);
+                    // setLoader(false);
                   }}
                   onResend={async () => {
                     await SendOTP('', data.phone ?? '');

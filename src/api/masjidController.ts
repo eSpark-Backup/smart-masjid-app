@@ -547,7 +547,7 @@ export const generatePDf = async (
   emails: string[],
 ) => {
   try {
-    console.log('masjidId, date, sendEmail', masjidId, date, sendEmail);
+    console.log('masjidId, date, sendEmail', masjidId, date, sendEmail, emails);
 
     const result: any = await api.post(
       `/masjid/${masjidId}/monthly/pdf?date=${date.toString()}&sendEmail=${sendEmail}`,

@@ -5,9 +5,11 @@ import {
   Animated,
   Platform,
   TouchableOpacity,
+  PermissionsAndroid,
 } from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
+import RNFS from 'react-native-fs';
 
 import {
   generatePDf,
@@ -28,12 +30,16 @@ import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import { Download, Mail } from '../../../../../../assets';
+import { globalStore } from '../../../../../../store/GlobalStates';
+import { GlobalProps } from '../../../../../../types';
+import DeviceInfo from 'react-native-device-info';
 
 export default function History({
   contentOpacity = 0,
 }: {
   contentOpacity?: any;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const [adhaTime, setAdhaTime] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,27 +48,31 @@ export default function History({
   const [prompt2, setPrompt2] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     getSalahTimingsOfMasjid(
       userData?.masjid.id.toString() as string,
       moment().startOf('month').format('YYYY-MM-DD'),
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     });
   }, []);
 
   const onDateChange = (e: Date) => {
     setCurrentDate(e);
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     getSalahTimingsOfMasjid(
       userData?.masjid.id.toString() as string,
       moment(e).startOf('month').format('YYYY-MM-DD') as string,
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     });
 
     // const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
@@ -83,8 +93,14 @@ export default function History({
         date: item.date,
       };
       item.salah.forEach(sItem => {
-        time[sItem.name + ' Adhan'] = sItem.adhanTime;
-        time[sItem.name + ' Iqama'] = sItem.iqamaTime;
+        time[sItem.name + ' Adhan'] = moment(
+          sItem.adhanTime,
+          'HH:mm:ss',
+        ).format('hh:mm:ss');
+        time[sItem.name + ' Iqama'] = moment(
+          sItem.iqamaTime,
+          'HH:mm:ss',
+        ).format('hh:mm:ss');
       });
       return time;
     });
@@ -93,16 +109,100 @@ export default function History({
 
   const sendPDFtoEmail = (email: string) => {
     setPrompt1(false);
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     generatePDf(
       userData?.masjid.id.toString() as string,
       moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
       true,
-      [userData?.email!, email],
+      email.length < 1 ? [userData?.email!] : [userData?.email!, email],
     ).then(path => {
-      setPrompt2(true);
-      setLoading(false);
+      if (path) {
+        setPrompt2(true);
+        state.globalLoading.set(false);
+        // setLoading(false);
+      } else {
+        state.globalLoading.set(false);
+        // setLoading(false);
+      }
     });
+  };
+
+  const isPermitted = async () => {
+    let deviceVersion = DeviceInfo.getSystemVersion();
+    if (Platform.OS === 'android' && !Boolean(Number(deviceVersion) >= 11)) {
+      try {
+        let granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        console.log('granted', granted);
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          downloadPDF();
+        }
+      } catch (err) {
+        console.log('Write permission err', err);
+        return false;
+      }
+    } else {
+      downloadPDF();
+    }
+  };
+
+  const downloadPDF = () => {
+    state.globalLoading.set(true);
+    // setLoading(true);
+    generatePDf(
+      userData?.masjid.id.toString() as string,
+      moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
+      false,
+      [],
+    ).then(path => {
+      if (path) {
+        // setPrompt2(true);
+        console.log('paths', path);
+        downloadFile(path.filePath);
+        // setLoading(false);
+      } else {
+        state.globalLoading.set(false);
+        // setLoading(false);
+      }
+    });
+  };
+
+  const downloadFile = (path: string) => {
+    const url = path;
+
+    const regex = /\/([^/]+)$/; // Match the last '/' and capture the text after it
+    const matches = url.match(regex);
+    const fileName = matches ? matches[0] : 'example.pdf';
+
+    let filePath;
+    if (Platform.OS == 'ios') {
+      filePath = RNFS.DocumentDirectoryPath + fileName;
+    } else {
+      filePath = RNFS.DownloadDirectoryPath + fileName;
+    }
+
+    RNFS.downloadFile({
+      fromUrl: url,
+      toFile: filePath,
+      background: true, // Enable downloading in the background (iOS only)
+      discretionary: true, // Allow the OS to control the timing and speed (iOS only)
+      progress: res => {
+        // Handle download progress updates if needed
+        const progress = (res.bytesWritten / res.contentLength) * 100;
+        console.log(`Progress: ${progress.toFixed(2)}%`);
+      },
+    })
+      .promise.then(response => {
+        console.log('File downloaded!', response);
+        state.globalLoading.set(false);
+      })
+      .catch(err => {
+        console.log('Download error:', err);
+        state.globalLoading.set(false);
+      });
   };
 
   return (
@@ -116,7 +216,7 @@ export default function History({
               ? -WINDOW_WIDTH / 1.6 / 3
               : -WINDOW_WIDTH / 1.9 / 3,
         }}>
-        <OverlayLoader isShow={loading} />
+        {/* <OverlayLoader isShow={loading} /> */}
         <Animated.View style={[{ opacity: contentOpacity }]}>
           <MyTitle text="Monthly Schedule" />
         </Animated.View>
@@ -135,6 +235,10 @@ export default function History({
       <LogoutModal
         visible={prompt2}
         message={`Monthly Schedule sent successfully.\nWould you like to download the PDF as well?`}
+        onAllowed={() => {
+          setPrompt2(false);
+          isPermitted();
+        }}
         onClose={() => setPrompt2(false)}
       />
       <View>
@@ -170,12 +274,12 @@ export default function History({
               <Mail />
             </TouchableOpacity>
             <GapView mode="horizontal" />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={isPermitted}>
               <Download />
             </TouchableOpacity>
           </View>
         </View>
-        {adhaTime.length < 1 && !loading ? (
+        {adhaTime.length < 1 && !state.globalLoading.get() ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}
             text="No schedule of current month to show!"

@@ -9,9 +9,15 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import { SubscribeMasjid } from '../../api/deviceController';
 import { LogoutModal, OverlayLoader } from '../../components';
 import { Wrapper } from '../../containers';
-import { BottomNavigationParamList, RootStackParamList } from '../../types';
+import {
+  BottomNavigationParamList,
+  GlobalProps,
+  RootStackParamList,
+} from '../../types';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { DeviceListing, MasjidDetails, SearchListing } from './Stacks';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
 
 type SearchNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -20,6 +26,7 @@ type SearchNavigationProps = NativeStackScreenProps<
 
 export default function Search() {
   const [step, setStep] = useState(0);
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const navigation = useNavigation<SearchNavigationProps['navigation']>();
   const [selectedMasjid, setSelectedMasjid] = useState<Masjid>();
   const isFocused = useIsFocused();
@@ -53,17 +60,20 @@ export default function Search() {
   const onSubscribe = async (deviceId: string, masjidId: string) => {
     try {
       console.log('deviceId', deviceId, 'masjidId', masjidId);
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
       const result = await SubscribeMasjid(deviceId, masjidId);
       if (result) {
         Toast.show({
           text2: 'Masjid Subscribed',
           type: 'success',
         });
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
         navigation.navigate('Home');
       } else {
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -92,7 +102,7 @@ export default function Search() {
       {({ props }) => {
         return (
           <>
-            <OverlayLoader isShow={loading} />
+            {/* <OverlayLoader isShow={loading} /> */}
             <LogoutModal
               visible={showError}
               message="Please note that the selected mosque is located far from your current location. As a result, the prayer timings may differ significantly"

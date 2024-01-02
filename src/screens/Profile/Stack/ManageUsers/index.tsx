@@ -7,7 +7,7 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import { ImmutableObject, useHookstate } from '@hookstate/core';
+import { ImmutableObject, State, useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
 import crashlytics from '@react-native-firebase/crashlytics';
 
@@ -28,6 +28,8 @@ import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
 import { userStore } from '../../../../store/UserStore';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
+import { globalStore } from '../../../../store/GlobalStates';
+import { GlobalProps } from '../../../../types';
 
 export default function ManageUsers({
   setFlag,
@@ -36,6 +38,7 @@ export default function ManageUsers({
   setFlag: (value: string, user?: UserResponse) => void;
   contentOpacity?: any;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const admins: any = useHookstate(userStore?.masjidAdmins).get();
   const userData: ImmutableObject<ImmutableObject<UserResponse>> | null =
     useHookstate(userStore?.userData).get();
@@ -45,20 +48,24 @@ export default function ManageUsers({
     name: string;
   } | null>(null);
   useEffect(() => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     GetMasjidAdmins(userData?.masjid?.id.toString()!)
       .then(() => {
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
       })
       .catch(error => {
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
         crashlytics().recordError(error as Error);
       });
   }, []);
 
   const onDelete = async () => {
     setIsVisible(null);
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     await DeleteAdminFromMasjid(
       isVisible?.id!,
       userData?.masjid?.id.toString()!,
@@ -67,9 +74,11 @@ export default function ManageUsers({
 
     if (isVisible?.id == userData?.id.toString()) {
       await LogoutUser(userData?.id?.toString() ?? '', true);
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     } else {
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     }
   };
 
@@ -84,7 +93,7 @@ export default function ManageUsers({
           console.log('Cancelled');
         }}
       />
-      <OverlayLoader isShow={loading} />
+      {/* <OverlayLoader isShow={loading} /> */}
       <View
         style={{
           alignSelf: 'center',

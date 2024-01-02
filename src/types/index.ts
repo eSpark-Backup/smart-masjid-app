@@ -39,6 +39,7 @@ export type GlobalProps = {
   fcmToken?: string;
   isDeviceRegistered?: boolean;
   devSetup?: boolean;
+  globalLoading?: boolean;
 };
 
 export type UserStoreProps = {

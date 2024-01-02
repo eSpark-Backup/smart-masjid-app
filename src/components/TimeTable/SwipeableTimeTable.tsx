@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -28,6 +28,7 @@ import {
   removeSubscription,
   _checkDeviceTelemetry,
 } from '../../api/deviceController';
+import { useLayoutAnimation } from '../../utils';
 
 const RowItem = ({
   item,
@@ -52,15 +53,31 @@ const RowItem = ({
         <View style={styles.contentCol}>
           <MyText text={item.name} size={16} />
         </View>
-        <View style={styles.contentCol}>
+        <View
+          style={{
+            width: '28%',
+            alignItems: 'center',
+          }}>
           <MyText
-            text={moment(item.adhan, 'HH:mm:ss').format('hh:mm')}
+            text={
+              moment(item.adhan, 'HH:mm:ss').format('h:mm A') == 'Invalid date'
+                ? '-'
+                : moment(item.adhan, 'HH:mm:ss').format('h:mm A')
+            }
             size={16}
           />
         </View>
-        <View style={{ ...styles.contentCol, width: '26%' }}>
+        <View
+          style={{
+            width: '32%',
+            alignItems: 'center',
+          }}>
           <MyText
-            text={moment(item.Iqama, 'HH:mm:ss').format('hh:mm')}
+            text={
+              moment(item.Iqama, 'HH:mm:ss').format('hh:mm') == 'Invalid date'
+                ? '6:21 AM'
+                : moment(item.Iqama, 'HH:mm:ss').format('hh:mm')
+            }
             size={16}
           />
         </View>
@@ -102,6 +119,7 @@ export default function SwipeableTimeTable({
   deviceInfo,
   setLoading,
   deviceGetsOnline,
+  loading,
 }: {
   data: SalahTimings[];
   subscriptions: SubscriptionList[];
@@ -120,12 +138,17 @@ export default function SwipeableTimeTable({
   deviceInfo: Device;
   setLoading: (val: boolean) => void;
   deviceGetsOnline?: () => void;
+  loading?: boolean;
 }) {
   const [currentItem, setCurrentItem] = useState<IPrayerTimeForPeriod | null>(
     data?.length > 0 ? data[0] : null,
   );
   const [currInd, setCurrInd] = useState(0);
   const slider = useRef<FlatList>(null);
+
+  useEffect(() => {
+    useLayoutAnimation(500);
+  }, [loading]);
 
   const updateSubscriptions = async (id: string, adhanName: string) => {
     setLoading(true);
@@ -242,18 +265,22 @@ export default function SwipeableTimeTable({
                 <View style={styles.contentCol}>
                   <MyText text={'Sunrise'} size={16} />
                 </View>
-                <View style={styles.contentCol}>
+                <View
+                  style={{
+                    width: '28%',
+                    alignItems: 'center',
+                  }}>
                   <MyText
-                    text={moment(data.sunriseTime, 'HH:mm:ss').format('hh:mm')}
+                    text={moment(data.sunriseTime, 'HH:mm:ss').format('h:mm A')}
                     size={16}
                   />
                 </View>
-                <View style={{ ...styles.contentCol, width: '26%' }}>
+                <View style={styles.contentCol}>
                   <MyText text={'Shurooq'} size={16} />
                 </View>
                 <View style={{ ...styles.contentIcon, width: undefined }}>
                   <MyText
-                    text={moment(data.shurooqTime, 'HH:mm:ss').format('hh:mm')}
+                    text={moment(data.shurooqTime, 'HH:mm:ss').format('h:mm A')}
                     size={16}
                   />
                 </View>
@@ -389,15 +416,32 @@ export default function SwipeableTimeTable({
           itemVisiblePercentThreshold: 80,
         }}
         ListEmptyComponent={
-          <MyText
-            textStyle={{
-              textAlign: 'center',
-              alignSelf: 'center',
-              marginVertical: 10,
-              width: WINDOW_WIDTH - 50,
-            }}
-            text="No Salah timings to show"
-          />
+          loading ? (
+            <View
+              style={{
+                height: 240,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <MyText
+                textStyle={{
+                  textAlign: 'center',
+                  marginVertical: 10,
+                  width: WINDOW_WIDTH - 50,
+                }}
+                text="Fetching Salah timings..."
+              />
+            </View>
+          ) : (
+            <MyText
+              textStyle={{
+                textAlign: 'center',
+                marginVertical: 10,
+                width: WINDOW_WIDTH - 50,
+              }}
+              text="No Salah timings to show"
+            />
+          )
         }
       />
     </View>
@@ -436,7 +480,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '32%', alignItems: 'flex-start' },
+  contentCol: { width: '22%', alignItems: 'flex-start' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

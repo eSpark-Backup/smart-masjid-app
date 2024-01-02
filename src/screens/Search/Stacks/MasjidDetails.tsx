@@ -47,6 +47,9 @@ import {
 } from '../../../api/masjidController';
 import { WINDOW_WIDTH } from '../../../constants';
 import moment from 'moment';
+import { GlobalProps } from '../../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../../store/GlobalStates';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -57,6 +60,7 @@ const MasjidDetails = ({
   masjidDetails?: Masjid;
   contentOpacity?: any;
 }) => {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [subscribe, setSubscribe] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [salahTimings, setSalahTimings] = useState<SalahTimings[]>([]);
@@ -68,13 +72,15 @@ const MasjidDetails = ({
 
   const getSalahTimes = async () => {
     try {
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
       await getSalahTimingsOfMasjid(
         masjidDetails?.id.toString() ?? '',
         moment().format('YYYY-MM-DD').toString(),
       ).then(data => setSalahTimings(data!));
       await GetMasjidCurrentJummahTiming(masjidDetails?.id.toString() ?? '');
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -111,7 +117,7 @@ const MasjidDetails = ({
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <OverlayLoader isShow={loading} noBg={false} />
+      {/* <OverlayLoader isShow={loading} noBg={false} /> */}
       <View
         style={{
           alignSelf: 'center',

@@ -6,4 +6,5 @@ export const globalStore = hookstate<GlobalProps>({
   fcmToken: 'fcmToken',
   isDeviceRegistered: false,
   devSetup: false,
+  globalLoading: false,
 });

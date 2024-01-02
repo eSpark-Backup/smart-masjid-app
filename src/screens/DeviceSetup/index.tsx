@@ -844,7 +844,9 @@ export default function DeviceSetupScreen() {
                   setDevInfo(state => ({ ...state, ssid: value }))
                 }
                 setIssues={val => {
-                  setWifiError(true);
+                  if (val != 'Wifi SSID not found') {
+                    setWifiError(true);
+                  }
                   setIssues(state => {
                     return [...state, val];
                   });

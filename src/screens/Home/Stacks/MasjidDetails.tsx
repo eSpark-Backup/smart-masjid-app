@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
 
@@ -45,6 +45,8 @@ import {
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
 import moment from 'moment';
+import { globalStore } from '../../../store/GlobalStates';
+import { GlobalProps } from '../../../types';
 
 export default function MasjidDetails({
   setStep,
@@ -59,6 +61,7 @@ export default function MasjidDetails({
 }) {
   const { colors }: Theme = useTheme();
   const userData = useHookstate(userStore.userData).get();
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const devices = useHookstate(masjidStore.connectedDevices).get();
   const [loading, setLoading] = useState<boolean>(false);
   const [subs, setSubs] = useState<SubscriptionList[]>([]);
@@ -83,7 +86,8 @@ export default function MasjidDetails({
 
   const getSalahTimes = async () => {
     try {
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
       await GetMasjidDevicesForUser(
         userData?.id?.toString() ?? '',
         selectedMasjid?.id.toString(),
@@ -100,7 +104,8 @@ export default function MasjidDetails({
         'WEEK',
       ).then(data => {
         setSalahTime(data as SalahTimings[]);
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -119,7 +124,7 @@ export default function MasjidDetails({
 
   return (
     <View style={{ flex: 1 }}>
-      <OverlayLoader isShow={loading} noBg={false} />
+      {/* <OverlayLoader isShow={loading} noBg={false} /> */}
       <View
         style={{
           alignSelf: 'center',
@@ -182,8 +187,12 @@ export default function MasjidDetails({
           data={(salahTime as SalahTimings[]) ?? []}
           subscriptions={subs}
           setSubscriptions={setSubs}
-          setLoading={val => setLoading(val)}
+          setLoading={val => {
+            state.globalLoading.set(val);
+            // setLoading(val);
+          }}
           deviceGetsOnline={getSalahTimes}
+          loading={state.globalLoading.get()}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
@@ -198,7 +207,10 @@ export default function MasjidDetails({
           deviceInfo={currentDevice!}
           isMute={true}
           data={JummahTime as JummahTime}
-          setLoading={val => setLoading(val)}
+          setLoading={val => {
+            state.globalLoading.set(val);
+            // setLoading(val);
+          }}
         />
         <GapView length={15} />
         {/* <View style={{ width: '100%', alignItems: 'center' }}>

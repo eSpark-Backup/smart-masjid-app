@@ -151,11 +151,12 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
           Authorization: `Bearer ${token?.data?.token}`,
         });
         userStore.userData.set(result.data);
-        crashlytics().setAttributes({
-          id: result.data?.id.toString(),
-          email: result.data?.email,
-          phone: result.data?.phone,
-        });
+        crashlytics().setUserId(result.data?.id.toString()),
+          crashlytics().setAttributes({
+            id: result.data?.id.toString(),
+            email: result.data?.email,
+            phone: result.data?.phone,
+          });
         setDataInLocalStorage('user', JSON.stringify(result.data));
         setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
         console.log('token', JSON.stringify(token?.data?.token));

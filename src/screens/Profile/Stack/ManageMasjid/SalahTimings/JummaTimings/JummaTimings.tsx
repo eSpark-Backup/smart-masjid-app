@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 
 import {
   DeleteMasjidJummahTiming,
@@ -31,6 +31,8 @@ import {
 } from '../../../../../../types/masjidControllerTypes';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
+import { GlobalProps } from '../../../../../../types';
+import { globalStore } from '../../../../../../store/GlobalStates';
 
 export default function JummaTimings({
   setFlag,
@@ -41,6 +43,7 @@ export default function JummaTimings({
   contentOpacity?: any;
   selectedJumma?: (value: JummahTime) => void;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const jummahTimings: any = useHookstate(masjidStore.JummahTime).get();
   const userData = useHookstate(userStore.userData).get();
   const [data, setData] = useState<any>([]);
@@ -50,7 +53,8 @@ export default function JummaTimings({
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     getAllJumuahTimings();
   }, []);
 
@@ -95,15 +99,18 @@ export default function JummaTimings({
             }
           });
           setData(jumuahData);
-          setLoading(false);
-        } else setLoading(false);
+          state.globalLoading.set(false);
+          // setLoading(false);
+        } else state.globalLoading.set(false);
+        // setLoading(false);
       },
     );
   };
 
   const deleteJumuahTime = async () => {
     setIsVisible(false);
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     await DeleteMasjidJummahTiming(
       userData?.masjid.id.toString() as string,
       deleteId as string,
@@ -146,7 +153,7 @@ export default function JummaTimings({
   }
 
   const contentToRender = () => {
-    return !loading ? (
+    return !state.globalLoading.get() ? (
       currentData ? (
         <TimeTableCard date={currentData?.date} data={currentData?.data} />
       ) : (
@@ -161,7 +168,7 @@ export default function JummaTimings({
   return (
     <>
       <View style={{ flex: 1 }}>
-        <OverlayLoader isShow={loading} />
+        {/* <OverlayLoader isShow={loading} /> */}
         <View
           style={{
             alignSelf: 'center',
@@ -177,7 +184,7 @@ export default function JummaTimings({
         </View>
         <GapView />
         <View style={{ paddingHorizontal: 15 }}>
-          <OverlayLoader isShow={loading} />
+          {/* <OverlayLoader isShow={loading} /> */}
           <View
             style={{
               flexDirection: 'row',
@@ -217,7 +224,7 @@ export default function JummaTimings({
               />
             )}
             ListEmptyComponent={
-              loading ? null : (
+              state.globalLoading.get() ? null : (
                 <MyText
                   textStyle={{ textAlign: 'center', marginVertical: 10 }}
                   text="No upcoming Jumuah to show yet!"

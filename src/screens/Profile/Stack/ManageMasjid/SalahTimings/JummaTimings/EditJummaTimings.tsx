@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
 import moment from 'moment';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
@@ -28,6 +28,8 @@ import { masjidStore } from '../../../../../../store/MasjidStore';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import { KeyboardAvoidingView } from 'react-native';
+import { globalStore } from '../../../../../../store/GlobalStates';
+import { GlobalProps } from '../../../../../../types';
 
 interface selectedJummmaData {
   id: number;
@@ -46,6 +48,7 @@ export default function EditJummaTimings({
   jummaType: 'Add' | 'Edit';
   selectedJumma?: selectedJummmaData | null;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const masjid = useHookstate(masjidStore.masjid).get();
   const jummas = useHookstate(masjidStore.masjidsJummaSubs).get();
   const userData = useHookstate(userStore.userData).get();
@@ -61,7 +64,8 @@ export default function EditJummaTimings({
 
   useEffect(() => {
     if (jummaType == 'Edit') {
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
       GetMasjidCurrentJummahTiming(
         userData?.masjid.id.toString() as string,
         moment(selectedJumma?.date).format('YYYY-MM-DD'),
@@ -69,7 +73,8 @@ export default function EditJummaTimings({
         .then((jumuahTime: JummahTime | AddJummas) => {
           console.log('jumuahTimes', jumuahTime);
           setData(jumuahTime as AddJummas);
-          setLoading(false);
+          state.globalLoading.set(false);
+          // setLoading(false);
         })
         .catch(error => crashlytics().recordError(error));
     } else {
@@ -85,7 +90,8 @@ export default function EditJummaTimings({
 
   const onUpdate = async () => {
     console.log('data', data);
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     if (jummaType == 'Add') {
       await AddMasjidJummahTiming(
         userData?.masjid?.id.toString() as string,
@@ -97,7 +103,8 @@ export default function EditJummaTimings({
         data as AddJummas,
       );
     }
-    setLoading(false);
+    state.globalLoading.set(false);
+    // setLoading(false);
     setData(null);
     setFlag('jTime');
   };
@@ -118,7 +125,7 @@ export default function EditJummaTimings({
         </Animated.View>
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
-        <OverlayLoader isShow={loading} />
+        {/* <OverlayLoader isShow={loading} /> */}
         <TimeTable
           type={'J'}
           containerStyle={{
@@ -130,7 +137,7 @@ export default function EditJummaTimings({
               <View>
                 <MyDatePicker
                   currentDate={
-                    loading
+                    state.globalLoading.get()
                       ? new Date()
                       : moment(data?.effectiveDate, 'YYYY-MM-DD').toDate()
                   }

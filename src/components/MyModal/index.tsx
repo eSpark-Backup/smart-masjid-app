@@ -1,5 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, View, Modal, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 
 import { Joined, Rounded } from '../Buttons';
@@ -29,7 +35,7 @@ export default function MyModal({
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const checkEmailAndSend = () => {
-    if (!email.match(EMAIL_REGEX)) {
+    if (showInput && !email.match(EMAIL_REGEX)) {
       setShowError(true);
     } else {
       setShowError(false);
@@ -45,8 +51,8 @@ export default function MyModal({
       visible={visible}
       transparent
       statusBarTranslucent>
-      <View style={styles.main}>
-        <View style={styles.body}>
+      <TouchableOpacity style={styles.main}>
+        <TouchableOpacity activeOpacity={1} style={styles.body}>
           <MyText text="Confirm" textStyle={styles.label} size={16} />
           <GapView length={40} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
@@ -86,8 +92,8 @@ export default function MyModal({
           </TouchableOpacity>
           <GapView length={40} />
           <Rounded label={title1!} onPress={checkEmailAndSend} />
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 }
@@ -100,6 +106,7 @@ const makeStyles = (theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#000000a5',
+      zIndex: 0,
     },
     body: {
       width: '90%',
@@ -107,6 +114,7 @@ const makeStyles = (theme: Theme) => {
       borderRadius: 12,
       alignItems: 'center',
       padding: 20,
+      zIndex: 2,
     },
     label: {
       paddingHorizontal: 27.5,

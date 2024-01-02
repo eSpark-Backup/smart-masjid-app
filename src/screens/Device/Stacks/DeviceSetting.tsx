@@ -45,8 +45,11 @@ import {
 import {
   BottomNavigationParamList,
   DStatus,
+  GlobalProps,
   RootStackParamList,
 } from '../../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../../store/GlobalStates';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -67,6 +70,7 @@ const DeviceSetting = ({
   const theme: Theme = useTheme();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
 
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -78,16 +82,19 @@ const DeviceSetting = ({
   const styles = useMemo(() => makeStyles(theme), []);
 
   const removeDevice = async () => {
-    setLoader(true);
+    state.globalLoading.set(true);
+    // setLoader(true);
     try {
       const res = await _resetDevice(device?.id.toString()!);
       console.log('res', res);
       if (res) {
-        setLoader(false);
+        state.globalLoading.set(false);
+        // setLoader(false);
         goBack?.();
       }
     } catch (error) {
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
       crashlytics().recordError(error as Error);
       console.error(error);
     }
@@ -96,7 +103,8 @@ const DeviceSetting = ({
   const updateDeviceName = async (text?: string, oldText?: string) => {
     console.log('text res', text, oldText);
     if (text !== oldText) {
-      setLoader(true);
+      state.globalLoading.set(true);
+      // setLoader(true);
       try {
         const res = await _updateDevice({
           ...device!,
@@ -104,12 +112,14 @@ const DeviceSetting = ({
         });
         console.log('update res', res);
         if (res) {
-          setLoader(false);
+          state.globalLoading.set(false);
+          // setLoader(false);
           goBack?.();
         }
       } catch (error) {
         crashlytics().recordError(error as Error);
-        setLoader(false);
+        state.globalLoading.set(false);
+        // setLoader(false);
         console.error(error);
       }
     }
@@ -118,14 +128,16 @@ const DeviceSetting = ({
   const cancelSubscription = async () => {
     try {
       if (device?.deviceTelemetry.status === 'Online') {
-        setLoader(true);
+        state.globalLoading.set(true);
+        // setLoader(true);
         const res = await unSubscribeMasjid(
           device?.id?.toString()!,
           device?.masjid.id.toString()!,
         );
         console.log('unsub res', res);
         if (res) {
-          setLoader(false);
+          state.globalLoading.set(false);
+          // setLoader(false);
         }
       } else {
         Toast.show({
@@ -140,7 +152,7 @@ const DeviceSetting = ({
 
   return (
     <View>
-      <OverlayLoader isShow={loader} />
+      {/* <OverlayLoader isShow={loader} /> */}
       <ErrorModal
         visible={errorShow}
         message={
@@ -152,14 +164,16 @@ const DeviceSetting = ({
             label: 'Update Password',
             onPress: async () => {
               console.log('error', device);
-              setLoader(true);
+              state.globalLoading.set(true);
+              // setLoader(true);
               const isValid = await _checkDeviceTelemetry(
                 device?.id.toString() as string,
                 false,
               );
               if (isValid) {
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
                 goBack?.();
                 Toast.show({
                   text1: 'Success!',
@@ -174,21 +188,24 @@ const DeviceSetting = ({
                   isBtn: isBtn,
                 });
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
               }
             },
           },
           {
             label: 'Connect new Wi-Fi',
             onPress: async () => {
-              setLoader(true);
+              state.globalLoading.set(true);
+              // setLoader(true);
               const isValid = await _checkDeviceTelemetry(
                 device?.id.toString() as string,
                 false,
               );
               if (isValid) {
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
                 goBack?.();
                 Toast.show({
                   text1: 'Success!',
@@ -202,7 +219,8 @@ const DeviceSetting = ({
                   isBtn: isBtn,
                 });
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
               }
             },
           },

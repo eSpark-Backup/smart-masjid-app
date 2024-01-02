@@ -22,13 +22,21 @@ const RowItem = ({
         </View>
         <View style={styles.contentCol}>
           <MyText
-            text={moment(item.adhan, 'HH:mm:ss').format('hh:mm')}
+            text={
+              moment(item.adhan, 'HH:mm:ss').format('hh:mm') == 'Invalid date'
+                ? '-'
+                : moment(item.adhan, 'HH:mm:ss').format('hh:mm')
+            }
             size={16}
           />
         </View>
         <View style={styles.contentCol}>
           <MyText
-            text={moment(item.Iqama, 'HH:mm:ss').format('hh:mm')}
+            text={
+              moment(item.Iqama, 'HH:mm:ss').format('hh:mm') == 'Invalid date'
+                ? '    -'
+                : moment(item.Iqama, 'HH:mm:ss').format('hh:mm')
+            }
             size={16}
           />
         </View>

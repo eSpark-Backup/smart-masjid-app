@@ -23,29 +23,25 @@ export default function MasjidListing({
   onPress: (data: Masjid) => void;
 }) {
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
   const [allTimes, setAllTimes] = useState<AllSalahTimings[]>([]);
 
   useEffect(() => {
-    setLoading(false);
     getSalahTimings(data);
   }, [data]);
 
   const getSalahTimings = (data: Masjid[]) => {
     try {
-      data.map(
-        item =>
-          getSalahTimingsOfMasjid(
-            item?.id.toString() ?? '',
-            moment().format('YYYY-MM-DD'),
-          ).then(data => {
-            if (data) {
-              let dat = [];
-              dat.push({ id: item?.id.toString(), salahs: data! });
-              setAllTimes(dat);
-            }
-          }),
-        setLoading(false),
+      data.map(item =>
+        getSalahTimingsOfMasjid(
+          item?.id.toString() ?? '',
+          moment().format('YYYY-MM-DD'),
+        ).then(data => {
+          if (data) {
+            let dat = [];
+            dat.push({ id: item?.id.toString(), salahs: data! });
+            setAllTimes(dat);
+          }
+        }),
       );
     } catch (e) {
       crashlytics().recordError(e as Error);

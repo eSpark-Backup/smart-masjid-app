@@ -8,12 +8,12 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Immutable, useHookstate } from '@hookstate/core';
+import { Immutable, State, useHookstate } from '@hookstate/core';
 
 import { SearchMasjidSvg } from '../../assets';
 import { GapView, MyText, OverlayLoader, Rounded } from '../../components';
 import { Wrapper } from '../../containers';
-import { BottomNavigationParamList } from '../../types';
+import { BottomNavigationParamList, GlobalProps } from '../../types';
 import { MasjidDetails, MasjidListing } from './Stacks';
 import ConnectedDevices from './Stacks/ConnectedDevices';
 import { GetUserDevices } from '../../api/deviceController';
@@ -22,6 +22,7 @@ import { useMasjid } from '../../utils/hooks';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { masjidStore } from '../../store/MasjidStore';
 import { getListMasjidSubscribedByUser } from '../../api/masjidController';
+import { globalStore } from '../../store/GlobalStates';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -92,6 +93,7 @@ export default function Home() {
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const { params } = useRoute<RouteProps['route']>();
   const isFocused = useIsFocused();
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -101,7 +103,8 @@ export default function Home() {
 
   useEffect(() => {
     if (isFocused && step == 0) {
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
       console.log('token issue hai?', userStore.token.get());
 
       getListMasjidSubscribedByUser(userData?.id?.toString() ?? '').then(
@@ -123,7 +126,8 @@ export default function Home() {
             }
             setStep(1);
           }
-          setLoading(false);
+          state.globalLoading.set(false);
+          // setLoading(false);
         },
       );
     }
@@ -168,7 +172,7 @@ export default function Home() {
       {({ props }) => {
         return (
           <>
-            <OverlayLoader isShow={loading} />
+            {/* <OverlayLoader isShow={loading} /> */}
             {step == 0 && (
               <MasjidListing
                 contentOpacity={props.contentOpacity}

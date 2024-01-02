@@ -27,9 +27,11 @@ import {
   UserResponse,
   UserType,
 } from '../../../../types/userControllerApiResponse';
-import { ImmutableObject, useHookstate } from '@hookstate/core';
+import { ImmutableObject, State, useHookstate } from '@hookstate/core';
 import { userStore } from '../../../../store/UserStore';
 import Toast from 'react-native-toast-message';
+import { globalStore } from '../../../../store/GlobalStates';
+import { GlobalProps } from '../../../../types';
 
 export default function AddUsers({
   setFlag,
@@ -38,6 +40,7 @@ export default function AddUsers({
   setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [loading, setLoading] = useState(false);
   const [roleId, setRoleId] = useState<number | null>(null);
   const [roleError, setRoleError] = useState(false);
@@ -60,7 +63,8 @@ export default function AddUsers({
         setRoleError(true);
         return;
       }
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
       // Check if user already exists
       const data: UserResponse = await GetUser(values.email);
       const obj: CreateUserRequest = {
@@ -70,32 +74,32 @@ export default function AddUsers({
         masjidId: userData?.masjid?.id.toString(),
       };
       console.log('data kitna', data);
-
-      console.log('data check', data.userType.name);
-
-      setLoading(false);
+      console.log('data check', data?.userType?.name);
 
       // If user already exists so direct add to masjid
-      if (data && data.userType.name != 'Customer') {
+      if (data && data?.userType?.name != 'Customer') {
         Toast.show({
           text2: 'User already exists with the given email',
           type: 'error',
         });
-      } else if (data && data.userType.name == 'Customer') {
+        state.globalLoading.set(false);
+        // setLoading(false);
+      } else if (data && data?.userType?.name == 'Customer') {
         const res = await AddAdminIntoMasjid(
           data?.id?.toString(),
           userData?.masjid?.id.toString()!,
           roleId ?? 0,
         );
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
         if (res) setFlag('mUsers');
       } else {
         // Else Create User with current masjid
         const createUserResp: any = await api.post('/users', obj);
         console.log('createUserResp', createUserResp);
-
         if (createUserResp.ok) {
-          setLoading(false);
+          state.globalLoading.set(false);
+          // setLoading(false);
           setFlag('mUsers');
         } else {
           Toast.show({
@@ -103,7 +107,8 @@ export default function AddUsers({
             type: 'error',
           });
         }
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
@@ -111,7 +116,7 @@ export default function AddUsers({
   };
   return (
     <View>
-      <OverlayLoader isShow={loading} />
+      {/* <OverlayLoader isShow={loading} /> */}
       <View
         style={{
           alignSelf: 'center',

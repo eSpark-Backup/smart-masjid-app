@@ -16,7 +16,7 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import jwtDecode from 'jwt-decode';
 import crashlytics from '@react-native-firebase/crashlytics';
 import WifiManager from 'react-native-wifi-reborn';
@@ -32,13 +32,18 @@ import {
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card, Wrapper } from '../../containers';
-import { BottomNavigationParamList, RootStackParamList } from '../../types';
+import {
+  BottomNavigationParamList,
+  GlobalProps,
+  RootStackParamList,
+} from '../../types';
 import { DeviceSetting } from './Stacks';
 import { userStore } from '../../store/UserStore';
 import { deviceStore } from '../../store/DeviceStore';
 import { Device as DeviceType } from '../../types/deviceControllerTypes';
 import { GetMasjidDevices, GetUserDevices } from '../../api/deviceController';
 import { UserToken } from '../../types/userControllerApiResponse';
+import { globalStore } from '../../store/GlobalStates';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -108,6 +113,7 @@ const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
 };
 
 export default function Device({ contentOpacity = 0 }: any) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('1');
   const [showLoader, setshowLoader] = useState<boolean>(false);
@@ -137,16 +143,19 @@ export default function Device({ contentOpacity = 0 }: any) {
 
   const handleGetDevices = async () => {
     try {
-      setshowLoader(true);
+      state.globalLoading.set(true);
+      // setshowLoader(true);
       const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
       console.log('what is the user info', user?.userType?.name);
       console.log('what is the user info++++', JSON.stringify(jwtDecodedObj));
       await GetUserDevices(user?.id.toString() ?? '');
       await GetMasjidDevices(jwtDecodedObj?.masjidId.toString() ?? '');
-      setshowLoader(false);
+      state.globalLoading.set(false);
+      // setshowLoader(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
-      setshowLoader(false);
+      state.globalLoading.set(false);
+      // setshowLoader(false);
     }
   };
 
@@ -183,7 +192,7 @@ export default function Device({ contentOpacity = 0 }: any) {
           <>
             {step == 0 && (
               <View>
-                <OverlayLoader isShow={showLoader} />
+                {/* <OverlayLoader isShow={showLoader} /> */}
                 <View
                   style={{
                     alignSelf: 'center',

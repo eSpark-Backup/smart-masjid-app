@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Animated, ScrollView, Platform } from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 
 import {
   AdhanSettingSvg,
@@ -24,6 +24,8 @@ import { userStore } from '../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { GetMasjid } from '../../../../api/masjidController';
 import { masjidStore } from '../../../../store/MasjidStore';
+import { GlobalProps } from '../../../../types';
+import { globalStore } from '../../../../store/GlobalStates';
 
 export default function ManageMasjid({
   setFlag,
@@ -32,6 +34,7 @@ export default function ManageMasjid({
   setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const masjidInfo = useHookstate(masjidStore.masjid).get();
 
@@ -43,15 +46,17 @@ export default function ManageMasjid({
 
   const getMasjidInfo = async () => {
     try {
-      setShowLoader(true);
+      state.globalLoading.set(true);
+      // setShowLoader(true);
       await GetMasjid(userData?.masjid.id.toString() as string);
-      setShowLoader(false);
+      state.globalLoading.set(false);
+      // setShowLoader(false);
     } catch (error) {}
   };
 
   return (
     <View style={{ flex: 1 }}>
-      <OverlayLoader isShow={showLoader} />
+      {/* <OverlayLoader isShow={showLoader} /> */}
       <View
         style={{
           alignSelf: 'center',

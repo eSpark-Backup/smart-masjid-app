@@ -229,10 +229,14 @@ export default function App() {
           topOffset={StatusBar.currentHeight}
           visibilityTime={5000}
         />
+        <OverlayLoader
+          loaderColor={'rgb(0, 104, 112)'}
+          isShow={Boolean(state.globalLoading.get())}
+        />
       </NavigationContainer>
     );
   } else {
-    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;
+    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={true} />;
   }
 }
 

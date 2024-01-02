@@ -30,6 +30,9 @@ import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
 import { _startLocationCheck, _stopLocationCheck } from '../utils/functions';
 import { useIsFocused } from '@react-navigation/native';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../../store/GlobalStates';
+import { GlobalProps } from '../../../types';
 
 const SearchListing = ({
   onPress,
@@ -40,6 +43,7 @@ const SearchListing = ({
   setUserLocation?: (e: any) => void;
   contentOpacity: any;
 }) => {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const isFocused = useIsFocused();
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
   const [zipCode, setZipCode] = useState('');
@@ -221,7 +225,8 @@ const SearchListing = ({
   }, [message]);
 
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
-    setLoader(true);
+    state.globalLoading.set(true);
+    // setLoader(true);
     if (zipCode != 'Your Location') {
       setZipCode(zipCode);
       const res: any = await SearchMasjidByLocation(zipCode, lat, long);
@@ -231,11 +236,13 @@ const SearchListing = ({
         setMasjidList([]);
       }
       setMessage('');
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
     } else {
       setMessage('');
       onCurrentLocationPress();
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
     }
   };
 
@@ -261,7 +268,7 @@ const SearchListing = ({
         justifyContent: 'center',
         width: WINDOW_WIDTH,
       }}>
-      <OverlayLoader isShow={loader} />
+      {/* <OverlayLoader isShow={loader} /> */}
       <View
         style={{
           alignSelf: 'center',
