@@ -143,6 +143,7 @@ export default function DeviceSetupScreen() {
 
   useEffect(() => {
     if (devSetup.get()) {
+      navigation.navigate('DSetup', { from: 'Device' });
       devSetup.set(false);
     }
   }, []);

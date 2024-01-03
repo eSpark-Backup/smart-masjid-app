@@ -48,7 +48,9 @@ export default function WifiSelectForm({
   );
 
   useEffect(() => {
-    state.globalLoading.set(true);
+    if (Platform.OS == 'android') {
+      state.globalLoading.set(true);
+    }
     checkLocation();
   }, []);
 
