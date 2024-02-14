@@ -171,7 +171,7 @@ export default function MasjidDetails({
               }
             />
           )}
-          keyExtractor={item => item.id + (Math.random() * 999).toString()}
+          // keyExtractor={item => item.id + (Math.random() * 999).toString()}
           ItemSeparatorComponent={() => <GapView mode="horizontal" />}
         />
         <GapView length={15} />
@@ -198,7 +198,7 @@ export default function MasjidDetails({
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
         <JumuahTable
-          headings={['Salah', 'Khutba']}
+          headings={['Salah', 'Khutbah']}
           masjidSubscriptions={
             selectedMasjid?.subscriptionList as SubscriptionList[]
           }

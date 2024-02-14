@@ -43,7 +43,7 @@ export default function DeviceErrorBox({
                 ) : undefined
               }
               textStyle={{
-                color: '#FF6464',
+                color: '#DC3545',
                 fontSize: 14,
                 lineHeight: 24,
                 width: 310,

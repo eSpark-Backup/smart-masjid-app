@@ -1,13 +1,15 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
 
-import { ButtonIcon, DeviceSvg } from '../../assets';
+import { ButtonIcon, DeviceSvg, StreamerMic } from '../../assets';
 import { Card } from '../../containers';
 import GapView from '../GapView';
 import TextLabel from '../TextLabel';
 import { Device } from '../../types/deviceControllerTypes';
 import DeviceStatus from '../DeviceStatus';
 import { WINDOW_WIDTH } from '../../constants';
+import { DStatus } from '../../types';
+import { Image } from 'react-native-animatable';
 
 export default function DeviceCard({
   deviceData,
@@ -50,7 +52,12 @@ export default function DeviceCard({
                   fontFamily: 'Roboto-Medium',
                 }}
               />
-              {deviceData?.deviceType?.modelNumber.includes('SBB') ? (
+              {deviceData?.deviceType.id == 3 ? (
+                <Image
+                  source={StreamerMic}
+                  style={{ width: 50, height: 50, tintColor: '#9E9F9F' }}
+                />
+              ) : deviceData?.deviceType?.modelNumber.includes('SBB') ? (
                 <ButtonIcon
                   height={50}
                   width={50}
@@ -69,7 +76,15 @@ export default function DeviceCard({
                   bottom: 5,
                   right: 2,
                 }}>
-                <DeviceStatus status={deviceData?.deviceTelemetry?.status} />
+                <DeviceStatus
+                  status={
+                    deviceData?.deviceType.id == 3
+                      ? ((deviceData?.deviceTelemetry?.status +
+                          '/' +
+                          deviceData?.deviceTelemetry?.streamer) as DStatus)
+                      : deviceData?.deviceTelemetry?.status
+                  }
+                />
               </View>
             </View>
           </View>

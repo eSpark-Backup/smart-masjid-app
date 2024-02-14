@@ -4,7 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHookstate } from '@hookstate/core';
 
-import { AccountGear, Help, MasjidGear, ProfileDummy } from '../../assets';
+import {
+  AccountGear,
+  Help,
+  IqamaTimingsSVG,
+  MasjidGear,
+  ProfileDummy,
+} from '../../assets';
 import { GapView, MyTitle, ProfileSectionlist } from '../../components';
 import { Wrapper } from '../../containers';
 import {
@@ -90,7 +96,7 @@ export default function Profile() {
     mAcc: () => setFlag('uInfo'),
     mMas: () => setFlag('uInfo'),
     mAccOtp: () => setFlag('mAcc'),
-    sTime: () => setFlag('mMas'),
+    sTime: () => setFlag('uInfo'),
     aSet: () => setFlag('mMas'),
     iTime: () => setFlag('sTime'),
     jTime: () => setFlag('sTime'),
@@ -348,6 +354,14 @@ function UserInformation({
                   onPress: () => setFlag('mMas'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID',
+                  ),
+                },
+                {
+                  title: 'Salah Timings',
+                  icon: <IqamaTimingsSVG />,
+                  onPress: () => setFlag('sTime'),
+                  hidden: !userData?.userType?.permissions?.some(
+                    val => val?.name == 'MANAGE_MASJID_SALAH_TIMINGS',
                   ),
                 },
               ],

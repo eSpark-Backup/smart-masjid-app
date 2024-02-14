@@ -520,6 +520,8 @@ PODS:
     - FirebaseCoreExtension (= 10.14.0)
     - React-Core
     - RNFBApp
+  - RNFileViewer (2.1.5):
+    - React-Core
   - RNFS (2.20.0):
     - React-Core
   - RNGestureHandler (2.9.0):
@@ -602,6 +604,7 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
+  - RNFileViewer (from `../node_modules/react-native-file-viewer`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -744,6 +747,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
+  RNFileViewer:
+    :path: "../node_modules/react-native-file-viewer"
   RNFS:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
@@ -835,6 +840,7 @@ SPEC CHECKSUMS:
   RNFBApp: af276a038f2e1488d59920697bba97b43f83164c
   RNFBCrashlytics: 788609aee13670263aa185500f69714c538af4ba
   RNFBMessaging: d991f55546b940c4aaf73559d8590bf9a9d8620c
+  RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNPermissions: 3bad5f7035a7b72bc529441a820474bd0b42bc5f
@@ -848,4 +854,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1e40211df31529c25cafa04bea34be0af2a613d0
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.14.3

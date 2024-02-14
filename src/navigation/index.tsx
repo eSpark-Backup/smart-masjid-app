@@ -239,12 +239,7 @@ export default function App() {
       </NavigationContainer>
     );
   } else {
-    return (
-      <OverlayLoader
-        loaderColor={'rgb(0, 104, 112)'}
-        isShow={Boolean(state.globalLoading.get())}
-      />
-    );
+    return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;
   }
 }
 

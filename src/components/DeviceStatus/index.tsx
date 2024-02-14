@@ -19,7 +19,10 @@ const DeviceStatus = ({ status = 'Offline' }: { status?: DStatus }) => {
           height: 10,
           width: 10,
           borderRadius: 100,
-          backgroundColor: status == 'Online' ? '#1DF126' : '#FF6464',
+          backgroundColor:
+            status == 'Online' || status == 'Online/Running'
+              ? '#1DF126'
+              : '#FF6464',
         }}
       />
       <GapView length={5} mode="horizontal" />

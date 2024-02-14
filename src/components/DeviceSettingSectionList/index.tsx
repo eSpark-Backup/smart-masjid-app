@@ -6,6 +6,7 @@ import {
   CheckSvg,
   Chevron_Right,
   DeleteSvg,
+  DeviceReset,
   EditLight,
   EditSquare,
   Restart,
@@ -23,7 +24,7 @@ interface DataItem {
 }
 
 interface DataProp {
-  title: string;
+  title: string | null;
   subtitle?: string;
   icon: JSX.Element;
   onPress?: () => void;
@@ -39,6 +40,7 @@ interface DataProp {
   isDelete?: boolean;
   onDelete?: () => void;
   isReset?: boolean;
+  isReboot?: boolean;
   onReset?: () => void;
 }
 
@@ -52,7 +54,7 @@ export default function DeviceSettingSectionList({
       <SectionList
         showsVerticalScrollIndicator={false}
         sections={data ?? []}
-        keyExtractor={(item, index) => item.title + index}
+        keyExtractor={(item, index) => (item.title as string) + index}
         renderItem={({ item }) => <SectionCard item={item} />}
         renderSectionHeader={({ section: { title } }) => (
           <>
@@ -79,9 +81,9 @@ export default function DeviceSettingSectionList({
 
 const SectionCard = ({ item }: { item: DataProp }) => {
   const [dName, setDName] = useState('');
-  return (
+  return item.title ? (
     <>
-      {!item.isEdit ? (
+      {!item?.isEdit ? (
         <>
           <GapView />
           <View style={{ ...styles.cardContainer }}>
@@ -93,18 +95,18 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               <GapView mode="horizontal" length={15} />
               <View>
                 <View>
-                  <MyText text={item?.title} size={16} />
+                  <MyText text={item?.title as string} size={16} />
                   <GapView mode="horizontal" length={5} />
                   <MyText
                     text={
-                      item?.danger && item.title == 'Battery'
+                      item?.danger && item?.title == 'Battery'
                         ? item?.subtitle!!
                         : item?.subtitle!!
                     }
                     size={16}
                     textStyle={{
                       color:
-                        item?.danger && item.title == 'Battery'
+                        item?.danger && item?.title == 'Battery'
                           ? '#FF6464'
                           : '#6E6E6E',
                     }}
@@ -116,20 +118,21 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               onPress={
                 item.isReset
                   ? item?.onReset
-                  : item.isDelete
-                  ? item.onDelete
-                  : item.danger
-                  ? item.onDangerPress
-                  : item.isEditable
-                  ? item.onEditPress
+                  : item?.isDelete
+                  ? item?.onDelete
+                  : item?.danger
+                  ? item?.onDangerPress
+                  : item?.isEditable
+                  ? item?.onEditPress
                   : undefined
               }>
-              {item?.isReset && <Restart />}
+              {item?.isReset && <DeviceReset />}
+              {item?.isReboot && <Restart />}
               {item?.isDelete && <DeleteSvg />}
               {item?.rightArrow && <Chevron_Right />}
               {item?.isEditable ? (
-                item.editIcon ? (
-                  item.editIcon
+                item?.editIcon ? (
+                  item?.editIcon
                 ) : (
                   <EditSquare width={24} height={24} />
                 )
@@ -150,31 +153,31 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               justifyContent: 'space-between',
               alignSelf: 'center',
             }}>
-            <Card width={WINDOW_WIDTH - 90} backgroundColor="#ffffff">
+            <Card width={WINDOW_WIDTH - 90} noShadow>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <GapView mode="horizontal" />
-                {item.icon}
+                {item?.icon}
                 <GapView mode="horizontal" />
                 <MyInput
                   isMAccont
-                  maxLength={item.title == 'Name' ? 25 : undefined}
+                  maxLength={item?.title == 'Name' ? 25 : undefined}
                   placeholderColor="#CFCFCF"
-                  placeholder={item.title}
+                  placeholder={item?.title as string}
                   onChangeText={(value: string) => setDName(value)}
-                  value={item.subtitle}
+                  value={item?.subtitle}
                 />
               </View>
             </Card>
             <TouchableOpacity
               style={{ marginHorizontal: 5 }}
-              onPress={() => item.onDoneEdit?.(dName)}>
+              onPress={() => item?.onDoneEdit?.(dName)}>
               <CheckSvg width={35} height={35} />
             </TouchableOpacity>
           </View>
         </>
       )}
     </>
-  );
+  ) : null;
 };
 
 const styles = StyleSheet.create({

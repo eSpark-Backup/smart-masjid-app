@@ -20,22 +20,22 @@ const RowItem = ({
         <View style={styles.contentCol}>
           <MyText text={item.name} size={16} />
         </View>
-        <View style={styles.contentCol}>
+        <View style={styles.contentCol2}>
           <MyText
             text={
-              moment(item.adhan, 'HH:mm:ss').format('hh:mm') == 'Invalid date'
+              moment(item.adhan, 'HH:mm:ss').format('h:mm A') == 'Invalid date'
                 ? '-'
-                : moment(item.adhan, 'HH:mm:ss').format('hh:mm')
+                : moment(item.adhan, 'HH:mm:ss').format('h:mm A')
             }
             size={16}
           />
         </View>
-        <View style={styles.contentCol}>
+        <View style={styles.contentCol2}>
           <MyText
             text={
-              moment(item.Iqama, 'HH:mm:ss').format('hh:mm') == 'Invalid date'
+              moment(item.Iqama, 'HH:mm:ss').format('h:mm A') == 'Invalid date'
                 ? '    -'
-                : moment(item.Iqama, 'HH:mm:ss').format('hh:mm')
+                : moment(item.Iqama, 'HH:mm:ss').format('h:mm A')
             }
             size={16}
           />
@@ -84,8 +84,10 @@ export default function SalahTable({
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        {headings?.map(value => (
-          <View key={value} style={styles.headerCol}>
+        {headings?.map((value, index) => (
+          <View
+            key={value}
+            style={index > 0 ? styles.headerCol2 : styles.headerCol}>
             <MyText
               text={value}
               size={16}
@@ -136,7 +138,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerCol: { width: '20%' },
+  headerCol2: {
+    width: '25%',
+    alignItems: 'center',
+  },
   headerIcon: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -146,7 +152,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     paddingVertical: 5,
   },
   editContentRow: {
@@ -154,7 +160,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30.5%', alignItems: 'flex-start' },
+  contentCol: { width: '20%' },
+  contentCol2: {
+    width: '25%',
+    alignItems: 'center',
+  },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

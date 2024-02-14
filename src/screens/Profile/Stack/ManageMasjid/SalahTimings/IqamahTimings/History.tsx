@@ -33,6 +33,7 @@ import { Download, Mail } from '../../../../../../assets';
 import { globalStore } from '../../../../../../store/GlobalStates';
 import { GlobalProps } from '../../../../../../types';
 import DeviceInfo from 'react-native-device-info';
+import FileViewer from 'react-native-file-viewer';
 
 export default function History({
   contentOpacity = 0,
@@ -44,8 +45,10 @@ export default function History({
   const [adhaTime, setAdhaTime] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [downloadPrompt, setDownloadPrompt] = useState(false);
   const [prompt1, setPrompt1] = useState(false);
   const [prompt2, setPrompt2] = useState(false);
+  const [filePath, setFilePath] = useState('');
 
   useEffect(() => {
     state.globalLoading.set(true);
@@ -177,12 +180,14 @@ export default function History({
     const matches = url.match(regex);
     const fileName = matches ? matches[0] : 'example.pdf';
 
-    let filePath;
+    let filePath: string;
     if (Platform.OS == 'ios') {
       filePath = RNFS.DocumentDirectoryPath + fileName;
     } else {
       filePath = RNFS.DownloadDirectoryPath + fileName;
     }
+
+    console.log('filePath', filePath);
 
     RNFS.downloadFile({
       fromUrl: url,
@@ -197,10 +202,13 @@ export default function History({
     })
       .promise.then(response => {
         console.log('File downloaded!', response);
+        setFilePath(filePath);
+        setDownloadPrompt(true);
         state.globalLoading.set(false);
       })
       .catch(err => {
         console.log('Download error:', err);
+        setDownloadPrompt(false);
         state.globalLoading.set(false);
       });
   };
@@ -240,6 +248,31 @@ export default function History({
           isPermitted();
         }}
         onClose={() => setPrompt2(false)}
+      />
+      <LogoutModal
+        visible={downloadPrompt}
+        message={`Monthly Schedule downloaded successfully.\nWould you like to view the PDF as well?`}
+        onAllowed={() => {
+          FileViewer.open(filePath, {
+            onDismiss() {
+              setDownloadPrompt(false);
+            },
+          })
+            .then(() => {
+              // success
+            })
+            .catch(error => {
+              // error
+              console.log('err view error', error);
+              // showMessage({
+              //   message: 'PDF Generated Successfully',
+              //   description: 'to: ' + file.filePath.slice(19),
+              //   type: 'success',
+              //   icon: 'auto',
+              // });
+            });
+        }}
+        onClose={() => setDownloadPrompt(false)}
       />
       <View>
         <GapView />

@@ -74,9 +74,9 @@ const RowItem = ({
           }}>
           <MyText
             text={
-              moment(item.Iqama, 'HH:mm:ss').format('hh:mm') == 'Invalid date'
+              moment(item.Iqama, 'HH:mm:ss').format('h:mm A') == 'Invalid date'
                 ? '6:21 AM'
-                : moment(item.Iqama, 'HH:mm:ss').format('hh:mm')
+                : moment(item.Iqama, 'HH:mm:ss').format('h:mm A')
             }
             size={16}
           />
@@ -451,10 +451,18 @@ export default function SwipeableTimeTable({
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#F1F7F8',
+    backgroundColor: '#fff',
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   headerRow: {
     flexDirection: 'row',

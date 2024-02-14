@@ -109,6 +109,28 @@ const MasjidDetails = ({
   //   }
   // };
 
+  function formatPhoneNumber(phoneNumber: number) {
+    // Remove non-numeric characters from the phone number
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+
+    // Check if the cleaned phone number has a valid length
+    const isValidLength = cleaned.length === 10 || cleaned.length === 11;
+
+    if (isValidLength) {
+      // Format the phone number in (XXX) XXX-XXXX format
+      const formattedNumber = cleaned.replace(
+        /(\d{3})(\d{3})(\d{4})/,
+        '($1) $2-$3',
+      );
+
+      // If there's an extra digit, it's probably a country code. Add a '+' in that case.
+      return cleaned.length === 11 ? '+' + formattedNumber : formattedNumber;
+    } else {
+      // Return the original input if it doesn't have a valid length
+      return phoneNumber;
+    }
+  }
+
   useEffect(() => {
     if (isFocused) {
       getSalahTimes();
@@ -233,7 +255,11 @@ const MasjidDetails = ({
               <GapView length={5} mode="horizontal" />
               <View style={{ maxWidth: '80%' }}>
                 <MyText
-                  text={masjidDetails?.phone ?? ''}
+                  text={
+                    formatPhoneNumber(
+                      Number(masjidDetails?.phone),
+                    ).toString() ?? ''
+                  }
                   size={16}
                   textStyle={{ color: '#3E3E3E' }}
                   lines={1}
@@ -258,7 +284,7 @@ const MasjidDetails = ({
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
         <JumuahTable
-          headings={['Salah', 'Khutba']}
+          headings={['Salah', 'Khutbah']}
           data={JummahTime as JummahTime}
           isMute={false}
         />

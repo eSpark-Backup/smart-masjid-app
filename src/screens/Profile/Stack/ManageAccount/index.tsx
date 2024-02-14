@@ -270,7 +270,7 @@ export default function ManageAccount({
                         width: WINDOW_WIDTH - 60,
                         alignSelf: 'center',
                       }}>
-                      <Card backgroundColor="#ffffff">
+                      <Card noShadow>
                         {val.key != 'phone' ? (
                           <View
                             style={{

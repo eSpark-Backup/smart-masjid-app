@@ -38,6 +38,7 @@ export const GetCountryCodes = async () => {
  */
 export const SendOTP = async (email?: string, phone?: string) => {
   try {
+    console.log('data.email data.phone', email, phone);
     const result: any = await xApi.post(`/external/auth/otp/send`, {
       email: email ?? '',
       phone: phone ?? '',

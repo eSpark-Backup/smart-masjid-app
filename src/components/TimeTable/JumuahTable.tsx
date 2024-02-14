@@ -47,7 +47,7 @@ const RowItem = ({
       <View style={[styles.contentRow, { height: 40 }]}>
         <View
           style={{
-            width: '35%',
+            width: '30%',
           }}>
           <MyText text={item.name} size={16} />
         </View>
@@ -55,7 +55,7 @@ const RowItem = ({
           <MyText
             text={
               item.khutba
-                ? moment(item.khutba, 'HH:mm:ss').format('hh:mm')
+                ? moment(item.khutba, 'HH:mm:ss').format('h:mm A')
                 : 'unknown'
             }
             size={16}
@@ -208,10 +208,18 @@ export default function JumuahTable({
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#F1F7F8',
+    backgroundColor: '#fff',
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   headerRow: {
     flexDirection: 'row',

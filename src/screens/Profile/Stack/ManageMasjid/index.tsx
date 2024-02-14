@@ -143,14 +143,14 @@ export default function ManageMasjid({
                   icon: <AdhanSettingSvg width={25} height={25} />,
                   onPress: () => setFlag('aSet'),
                 },
-                {
-                  title: 'Salah Timings',
-                  icon: <SalahTimingsSVG />,
-                  onPress: () => setFlag('sTime'),
-                  hidden: !userData?.userType?.permissions?.some(
-                    val => val?.name == 'MANAGE_MASJID_SALAH_TIMINGS',
-                  ),
-                },
+                // {
+                //   title: 'Salah Timings',
+                //   icon: <SalahTimingsSVG />,
+                //   onPress: () => setFlag('sTime'),
+                //   hidden: !userData?.userType?.permissions?.some(
+                //     val => val?.name == 'MANAGE_MASJID_SALAH_TIMINGS',
+                //   ),
+                // },
                 {
                   title: 'Manage Users',
                   icon: <ManageUser />,

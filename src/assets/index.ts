@@ -15,6 +15,7 @@ export { default as MasjidSvg } from './images/MasjidSvg.svg';
 export { default as CheckSvg } from './images/Check.svg';
 export { default as CrossSvg } from './images/Cross.svg';
 export { default as DeviceSvg } from './images/Device.svg';
+export { default as LAN } from './vectors/lan.svg';
 export { default as LockSvg } from './images/Lock.svg';
 export { default as WifiSvg } from './images/Wifi.svg';
 export { default as HomeSvg } from './images/Home.svg';
@@ -85,12 +86,16 @@ export { default as Check } from './vectors/Check.svg';
 export { default as CrossC } from './vectors/close-circle.svg';
 export { default as CautionDevice } from './vectors/caution-device.svg';
 export { default as Speaker } from './vectors/Speaker.svg';
+export { default as Streamer } from './vectors/stream.svg';
+export { default as StreamerMic } from './vectors/streammic.png';
 export { default as ArrowUp } from './vectors/ArrowUp.svg';
 export { default as NavigationSvg } from './vectors/navigation1.svg';
 export { default as EditPencil } from './vectors/EditPencil.svg';
 export { default as DeviceActiveNew } from './vectors/device-active.svg';
 export { default as DeviceUnactiveNew } from './vectors/device-unactive.svg';
+export { default as ResetDevice } from './vectors/reset_dev.svg';
 export { default as AddIcon } from './vectors/add-icon.svg';
+export { default as IqamaSvg } from './vectors/time.svg';
 
 //* vectors/flags
 export { default as AD } from './vectors/flags/ad.svg';

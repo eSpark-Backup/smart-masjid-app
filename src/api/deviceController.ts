@@ -20,7 +20,6 @@ export const GetUserDevices = async (userId: string) => {
   try {
     console.log('GetUserDevices chala', userId);
     const result: any = await api.get(`/devices/user/${userId}`);
-    console.log('user devices result', result);
 
     if (result.status == 200) {
       deviceStore.devices.set(result.data);

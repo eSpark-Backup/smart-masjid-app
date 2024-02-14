@@ -9,10 +9,12 @@ import {
 
 import {
   HistoryBox,
+  IqamaSvg,
   IqamaTimingsSVG,
   JummaTimingsSVG,
   MonthlyScheduleSVG,
   SalahTimingsSVG,
+  SujudSvg,
 } from '../../../../../assets';
 import {
   GapView,
@@ -52,7 +54,7 @@ export default function SalahSettings({
               data: [
                 {
                   title: 'Iqama Timings',
-                  icon: <IqamaTimingsSVG />,
+                  icon: <IqamaSvg width={25} height={25} />,
                   onPress: () => setFlag('iTime'),
                 },
                 {

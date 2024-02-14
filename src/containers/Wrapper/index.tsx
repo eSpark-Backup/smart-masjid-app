@@ -34,7 +34,7 @@ export default function Wrapper({
   bgImageSpacer = true,
   showBack = true,
   title = '',
-  avoidKeyboard,
+  avoidKeyboard = false,
 }: {
   children: ({
     props,

@@ -96,11 +96,32 @@ export default function UserSetupScreen() {
       );
       console.log('res', res);
       if (res?.id && phoneId) {
-        await RegisterUserPhone(
+        const registerPhoneRes = await RegisterUserPhone(
           { deviceId: phoneId, fcmToken: fcmToken as string },
           res?.id.toString(),
         );
-        setStep(8);
+        if (registerPhoneRes?.ok) {
+          const login: any = await UpdateUserLogin(phoneId, res?.id);
+          if (login?.ok) {
+            setStep(8); //TODO: Change it later
+          } else {
+            setStep(6);
+            Toast.show({
+              text2: login?.message ?? 'Something went wrong',
+              type: 'error',
+              autoHide: true,
+              visibilityTime: 10000,
+            });
+          }
+        } else {
+          setStep(6);
+          Toast.show({
+            text2: registerPhoneRes?.message ?? 'Something went wrong',
+            type: 'error',
+            autoHide: true,
+            visibilityTime: 10000,
+          });
+        }
       } else {
         setStep(6);
         Toast.show({
@@ -320,7 +341,7 @@ export default function UserSetupScreen() {
                     activeFlow == 'signup' ? setStep(2) : setStep(1)
                   }
                   onResend={async () => {
-                    await SendOTP(data.email ?? '');
+                    await SendOTP(data.email ?? '', data.phone ?? '');
                   }}
                 />
               )}

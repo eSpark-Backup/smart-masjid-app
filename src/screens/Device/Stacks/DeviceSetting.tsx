@@ -18,6 +18,9 @@ import {
   DeviceReset,
   DeviceSvg,
   Heart,
+  LAN,
+  ResetDevice,
+  Streamer,
   Version,
   Wifi,
   WifiManage,
@@ -77,7 +80,6 @@ const DeviceSetting = ({
   const [isResetVisible, setIsResetVisible] = useState<boolean>(false);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [offlineErrors, setOfflineErrors] = useState<boolean>(false);
-  console.log('deive selectedx ??', device);
 
   const styles = useMemo(() => makeStyles(theme), []);
 
@@ -110,7 +112,6 @@ const DeviceSetting = ({
           ...device!,
           name: text ?? device?.name!,
         });
-        console.log('update res', res);
         if (res) {
           state.globalLoading.set(false);
           // setLoader(false);
@@ -248,10 +249,14 @@ const DeviceSetting = ({
       <TouchableWithoutFeedback onPress={() => setIsEditable(false)}>
         <View>
           <DeviceErrorBox
-            show={Boolean(
-              device?.deviceTelemetry?.status == 'Offline' ||
-                device?.deviceTelemetry?.status == 'Low battery',
-            )}
+            show={
+              device?.deviceType?.id == 3
+                ? false
+                : Boolean(
+                    device?.deviceTelemetry?.status == 'Offline' ||
+                      device?.deviceTelemetry?.status == 'Low battery',
+                  )
+            }
             onClose={() => console.log('on Close Box', device)}
             message={
               device?.deviceTelemetry?.status == 'Low battery'
@@ -314,13 +319,25 @@ const DeviceSetting = ({
                       },
                     },
                     {
-                      title: 'Battery',
-                      subtitle: device?.deviceTelemetry?.batteryLife.toString()
-                        ? device?.deviceTelemetry?.batteryLife.toString() + '%'
-                        : 'NaN',
-                      icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
+                      title:
+                        device?.deviceType?.id == 3 ? 'Streamer' : 'Battery',
+                      subtitle:
+                        device?.deviceType?.id == 3
+                          ? device?.deviceTelemetry?.streamer
+                          : device?.deviceTelemetry?.batteryLife.toString()
+                          ? device?.deviceTelemetry?.batteryLife.toString() +
+                            '%'
+                          : 'NaN',
+                      icon:
+                        device?.deviceType?.id == 3 ? (
+                          <Streamer style={{ padding: 10, bottom: 2 }} />
+                        ) : (
+                          <BatteryBar style={{ padding: 10, bottom: 2 }} />
+                        ),
                       danger:
-                        device?.deviceTelemetry?.batteryLife! <= 15
+                        device?.deviceType?.id == 3
+                          ? false
+                          : device?.deviceTelemetry?.batteryLife! <= 15
                           ? true
                           : false,
                     },
@@ -359,16 +376,29 @@ const DeviceSetting = ({
                   title: 'Advanced',
                   data: [
                     {
-                      title: 'Wifi',
-                      subtitle: device?.wifiSsid,
-                      icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
+                      title:
+                        device?.deviceType?.id == 3 ? 'IP Address' : 'Wi-Fi',
+                      subtitle:
+                        device?.deviceType?.id == 3
+                          ? device?.ipAddress
+                          : device?.wifiSsid,
+                      icon:
+                        device?.deviceType?.id == 3 ? (
+                          <LAN />
+                        ) : (
+                          <Wifi style={{ padding: 10, bottom: 2 }} />
+                        ),
                       editIcon: <WifiManage width={24} height={24} />,
                       isEditable:
-                        device?.deviceTelemetry?.status !== 'Offline'
+                        device?.deviceType?.id == 3
+                          ? false
+                          : device?.deviceTelemetry?.status !== 'Offline'
                           ? true
                           : false,
                       danger:
-                        device?.deviceTelemetry?.status !== 'Offline'
+                        device?.deviceType?.id == 3
+                          ? false
+                          : device?.deviceTelemetry?.status !== 'Offline'
                           ? false
                           : true,
                       onEditPress: () =>
@@ -389,11 +419,18 @@ const DeviceSetting = ({
                       icon: <DeviceObject style={{ padding: 10, bottom: 2 }} />,
                     },
                     {
-                      title: 'Factory Reset',
-                      subtitle: 'Reseting will erase all data',
+                      title:
+                        device?.deviceType?.id == 3
+                          ? 'Reboot'
+                          : 'Factory Reset',
+                      subtitle:
+                        device?.deviceType?.id == 3
+                          ? 'Rebooting will restart the device'
+                          : 'Reseting will erase all data',
                       // onPress: () => setIsVisible(true),
-                      icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
-                      isReset: true,
+                      icon: <ResetDevice style={{ padding: 10, bottom: 2 }} />,
+                      isReset: device?.deviceType?.id == 3 ? false : true,
+                      isReboot: device?.deviceType?.id == 3 ? true : false,
                       onReset: () => setIsVisible(true),
                     },
                   ],

@@ -83,7 +83,7 @@ const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
 
   return (
     <View>
-      <Card height={161} width={172} backgroundColor="#ffffff">
+      <Card noShadow height={161} width={172}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={
@@ -179,7 +179,6 @@ export default function Device({ contentOpacity = 0 }: any) {
   const finalData = activeTab == '1' ? devices : masjidDevices;
 
   // console.log('devices', activeTab == '1' ? devices : masjidDevices);
-  console.log('route?.params?.from', route?.params?.from);
 
   return (
     <Wrapper
