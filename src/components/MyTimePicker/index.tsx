@@ -33,7 +33,7 @@ export default function MyTimePicker({
     today.getMonth(),
     today.getDate(),
     time.search(':') != -1
-      ? parseInt(convert12to24(hours, time.slice(time.length - 2)) ?? 0)
+      ? parseInt(convert12to24(hours, time.slice(time?.length - 2)) ?? 0)
       : parseInt(convert12to24('12', 'am') ?? 0),
     parseInt(minutes ?? 0),
   );

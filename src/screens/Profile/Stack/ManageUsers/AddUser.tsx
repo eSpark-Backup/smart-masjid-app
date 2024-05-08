@@ -191,7 +191,7 @@ export default function AddUsers({
                     containerPadding={0}
                   />
                 </Card>
-                {Object.entries(errors).map(([key, value]) => {
+                {Object.entries(errors)?.map(([key, value]) => {
                   // @ts-ignore
                   if (touched[key]) {
                     if (roleId! < 1) {

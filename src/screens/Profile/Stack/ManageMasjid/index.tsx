@@ -48,7 +48,7 @@ export default function ManageMasjid({
     try {
       state.globalLoading.set(true);
       // setShowLoader(true);
-      await GetMasjid(userData?.masjid.id.toString() as string);
+      await GetMasjid(userData?.masjid?.id.toString() as string);
       state.globalLoading.set(false);
       // setShowLoader(false);
     } catch (error) {}

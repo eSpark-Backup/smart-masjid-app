@@ -116,7 +116,7 @@ const SectionCard = ({ item }: { item: DataProp }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={
-                item.isReset
+                item.isReset || item.isReboot
                   ? item?.onReset
                   : item?.isDelete
                   ? item?.onDelete

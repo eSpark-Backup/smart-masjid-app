@@ -109,16 +109,18 @@ export default function MasjidDetails({
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
+      state.globalLoading.set(false);
     }
   };
 
-  const getSubscriptions = (id: string) => {
+  const getSubscriptions = async (id: string) => {
     try {
-      getDeviceSubscriptions(id).then(data => {
+      await getDeviceSubscriptions(id).then(data => {
         setSubs(data);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
+      state.globalLoading.set(false);
     }
   };
 
@@ -161,8 +163,11 @@ export default function MasjidDetails({
           data={connectedDevices! as Device[]}
           renderItem={({ item, index }: { item: Device; index: number }) => (
             <OutlineDeviceContainer
-              onPress={() => {
+              onPress={async () => {
+                state.globalLoading.set(true);
                 setCurrentDevice(item);
+                await getSubscriptions(item.id.toString());
+                state.globalLoading.set(false);
               }}
               name={item.name}
               isActive={item.id == currentDevice?.id}

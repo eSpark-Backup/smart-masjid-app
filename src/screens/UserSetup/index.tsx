@@ -154,14 +154,26 @@ export default function UserSetupScreen() {
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     try {
       const res: UserResponse = await LoginUser(email, phone, OTPvalue);
+      console.log(
+        'res?.id phoneId checkUserDeviceExistWithOutFCM checkUserDeviceExist',
+        res?.id,
+        phoneId,
+        checkUserDeviceExist(res?.userPhone, 'dev'),
+        checkUserDeviceExist(res?.userPhone, 'devAndFcm'),
+      );
       if (
         res?.id &&
         phoneId &&
         checkUserDeviceExist(res?.userPhone, 'devAndFcm')
       ) {
-        navigation.navigate('HomeBottomTab'); //TODO: Change it later
-        state.globalLoading.set(false);
-        // setLoader(false);
+        const login: any = await UpdateUserLogin(phoneId, res?.id);
+        if (login?.ok) {
+          navigation.navigate('HomeBottomTab'); //TODO: Change it later
+          state.globalLoading.set(false);
+        } else {
+          state.globalLoading.set(false);
+          // setLoader(false);
+        }
       } else if (
         res?.id &&
         phoneId &&

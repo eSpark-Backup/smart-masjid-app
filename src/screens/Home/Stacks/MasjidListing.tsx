@@ -10,6 +10,7 @@ import { GapView, MasjidListCard, MyTitle } from '../../../components';
 import { AllSalahTimings, Masjid } from '../../../types/masjidControllerTypes';
 import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
 import { WINDOW_WIDTH } from '../../../constants';
+import { Text } from 'react-native-animatable';
 
 export default function MasjidListing({
   data,
@@ -31,24 +32,21 @@ export default function MasjidListing({
 
   const getSalahTimings = (data: Masjid[]) => {
     try {
-      data.map(item =>
-        getSalahTimingsOfMasjid(
+      let dat: AllSalahTimings[] = [];
+      data?.map(async item => {
+        const salahRes = await getSalahTimingsOfMasjid(
           item?.id.toString() ?? '',
           moment().format('YYYY-MM-DD'),
-        ).then(data => {
-          if (data) {
-            let dat = [];
-            dat.push({ id: item?.id.toString(), salahs: data! });
-            setAllTimes(dat);
-          }
-        }),
-      );
+        );
+        dat.push({ id: item?.id.toString(), salahs: salahRes! });
+        if (dat?.length == data?.length) {
+          setAllTimes(dat);
+        }
+      });
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
   };
-
-  // console.log('allTimes', JSON.stringify(allTimes));
 
   const getAzanNameTime = (id: string, type?: string) => {
     let masjidInd = allTimes?.findIndex(item => item?.id == id);
@@ -85,6 +83,8 @@ export default function MasjidListing({
     ).format('hh:mm');
     return time;
   };
+
+  // console.log('allTimes', JSON.stringify(allTimes));
 
   return (
     <View>

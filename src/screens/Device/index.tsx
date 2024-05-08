@@ -83,7 +83,7 @@ const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
 
   return (
     <View>
-      <Card noShadow height={161} width={172}>
+      <Card noShadow height={161} width={172} backgroundColor="#f8fbfb">
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={

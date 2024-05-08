@@ -129,7 +129,7 @@ export default function DeviceSelectForm({
   console.log('final Array', finalArr);
 
   useEffect(() => {
-    if (finalArr.length <= 0) {
+    if (finalArr?.length <= 0) {
       setStep(8);
     }
   }, [finalArr]);

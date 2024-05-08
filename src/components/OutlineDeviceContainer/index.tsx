@@ -25,7 +25,7 @@ export default function OutlineDeviceContainer({
         borderWidth: 0.8,
         borderColor: colors.primary,
         height: 32,
-        width: 110,
+        width: 130,
         borderRadius: 20,
         flexDirection: 'row',
         paddingHorizontal: 10,

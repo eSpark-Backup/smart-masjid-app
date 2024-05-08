@@ -59,16 +59,16 @@ export default function JummaTimings({
   }, []);
 
   const getAllJumuahTimings = () => {
-    GetMasjidJummahTiming(userData?.masjid.id.toString() as string).then(
+    GetMasjidJummahTiming(userData?.masjid?.id.toString() as string).then(
       (jumuahTime: JummahTime[]) => {
-        if (jumuahTime.length > 0) {
+        if (jumuahTime?.length > 0) {
           let jumuahData: any = [];
-          jumuahTime.map((item, index) => {
+          jumuahTime?.map((item, index) => {
             let jumuahs: jumuahsData[] = [];
             let jumuah = Object.keys(item).filter(val =>
               val.includes('jumuah'),
             ) as Array<'jumuah1' | 'jumuah2' | 'jumuah3'>;
-            jumuah.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
+            jumuah?.map((jumuah: 'jumuah1' | 'jumuah2' | 'jumuah3') => {
               let data: jumuahsData;
               data = {
                 name: jumuah.slice(0, 1).toUpperCase() + jumuah.slice(1),
@@ -112,7 +112,7 @@ export default function JummaTimings({
     state.globalLoading.set(true);
     // setLoading(true);
     await DeleteMasjidJummahTiming(
-      userData?.masjid.id.toString() as string,
+      userData?.masjid?.id.toString() as string,
       deleteId as string,
     );
     getAllJumuahTimings();

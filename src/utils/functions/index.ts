@@ -343,7 +343,7 @@ function getCurrentMonthAdhanData(): IPrayerTimeForPeriod[] {
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  for (let i = 0; i < dates.length; i++) {
+  for (let i = 0; i < dates?.length; i++) {
     const date = new Date(dates[i]); // April 4th plus the current day number
     const dateString = date.toISOString().slice(0, 10);
     const prayerTiming = JSON.parse(JSON.stringify(prayerTimings[0])); // create a deep copy of the first day's timings object
@@ -368,7 +368,7 @@ interface ConvertedData {
 function convertResponseToData(
   arr: (IqamahTime & JummahTime)[],
 ): ConvertedData[] {
-  const data = arr.reduce<ConvertedData[]>((acc, curr: any) => {
+  const data = arr?.reduce<ConvertedData[]>((acc, curr: any) => {
     const keys = Object.keys(curr);
 
     // loop through each key of the current object
@@ -404,7 +404,7 @@ function convertResponseToData(
             // it is a valid date string, so extract the date part
             // value = dateValue.toISOString().slice(0, 10);
             // value = moment(dateValue).format('DD/MM/YYYY');
-            value = moment(currValue, 'YYYY-MM-DD').format('DD/MM/YYYY');
+            value = moment(currValue, 'YYYY-MM-DD').format('MM/DD/YYYY');
           }
         } else if (currValue instanceof Date) {
           // it is a Date object, so extract the date part
@@ -464,7 +464,7 @@ async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
  */
 
 function convertTo12Hour(time: string) {
-  if (time.length == 5) {
+  if (time?.length == 5) {
     var str = new Date().toString().split('');
     str.splice(16, 5, time);
     var modifiedStr = str.join('');

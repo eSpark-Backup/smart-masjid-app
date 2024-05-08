@@ -322,7 +322,7 @@ const SearchListing = ({
               onLinkPressed={_requestUserLocationPermission}
               isShowBtn={false}
               message2={
-                zipCode.length > 0 && zipCode != 'Your Location'
+                zipCode?.length > 0 && zipCode != 'Your Location'
                   ? 'No masjid found for the zip code'
                   : locationStatus
                   ? 'No masjid found near you'

@@ -29,7 +29,7 @@ import { SalahTimings } from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
-import { Download, Mail } from '../../../../../../assets';
+import { Download, Mail, Publish } from '../../../../../../assets';
 import { globalStore } from '../../../../../../store/GlobalStates';
 import { GlobalProps } from '../../../../../../types';
 import DeviceInfo from 'react-native-device-info';
@@ -54,7 +54,7 @@ export default function History({
     state.globalLoading.set(true);
     // setLoading(true);
     getSalahTimingsOfMasjid(
-      userData?.masjid.id.toString() as string,
+      userData?.masjid?.id.toString() as string,
       moment().startOf('month').format('YYYY-MM-DD'),
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
@@ -69,7 +69,7 @@ export default function History({
     state.globalLoading.set(true);
     // setLoading(true);
     getSalahTimingsOfMasjid(
-      userData?.masjid.id.toString() as string,
+      userData?.masjid?.id.toString() as string,
       moment(e).startOf('month').format('YYYY-MM-DD') as string,
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
@@ -115,10 +115,10 @@ export default function History({
     state.globalLoading.set(true);
     // setLoading(true);
     generatePDf(
-      userData?.masjid.id.toString() as string,
+      userData?.masjid?.id.toString() as string,
       moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
       true,
-      email.length < 1 ? [userData?.email!] : [userData?.email!, email],
+      email?.length < 1 ? [userData?.email!] : [userData?.email!, email],
     ).then(path => {
       if (path) {
         setPrompt2(true);
@@ -156,7 +156,7 @@ export default function History({
     state.globalLoading.set(true);
     // setLoading(true);
     generatePDf(
-      userData?.masjid.id.toString() as string,
+      userData?.masjid?.id.toString() as string,
       moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
       false,
       [],
@@ -229,16 +229,12 @@ export default function History({
           <MyTitle text="Monthly Schedule" />
         </Animated.View>
       </View>
-      {/* <LogoutModal
-        visible={prompt1}
-        message={`Monthly Schedule will emailed to ${userData?.email}. Would you like to add an optional email?`}
-        onClose={sendPDFtoEmail}
-      /> */}
       <MyModal
         visible={prompt1}
         onSend={email => sendPDFtoEmail(email)}
         message={`Monthly Schedule will emailed to ${userData?.email}.`}
         title1="Send"
+        onBackDropPress={() => setPrompt1(false)}
       />
       <LogoutModal
         visible={prompt2}
@@ -300,7 +296,7 @@ export default function History({
           <View
             style={{
               position: 'absolute',
-              right: 20,
+              right: 10,
               flexDirection: 'row',
             }}>
             <TouchableOpacity onPress={() => setPrompt1(true)}>
@@ -310,9 +306,13 @@ export default function History({
             <TouchableOpacity onPress={isPermitted}>
               <Download />
             </TouchableOpacity>
+            <GapView mode="horizontal" />
+            <TouchableOpacity>
+              <Publish />
+            </TouchableOpacity>
           </View>
         </View>
-        {adhaTime.length < 1 && !state.globalLoading.get() ? (
+        {adhaTime?.length < 1 && !state.globalLoading.get() ? (
           <MyText
             textStyle={{ textAlign: 'center', marginVertical: 10 }}
             text="No schedule of current month to show!"

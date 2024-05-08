@@ -188,7 +188,12 @@ export default function MyInput(props: MyInputProps) {
   const Flag = CountryFlags[currentCountry?.iso_code] ?? UnknownFlag;
 
   return (
-    <View style={{ justifyContent: 'center' }}>
+    <View
+      style={{
+        justifyContent: 'center',
+        backgroundColor: '#f8fbFb',
+        borderRadius: 15,
+      }}>
       <CountryPickerModal
         onSetValue={e => {
           setCurrentCountry(e);
@@ -243,7 +248,7 @@ export default function MyInput(props: MyInputProps) {
                   (value && isDropDown) || getFocused
                     ? theme.colors.primary
                     : '#9E9F9F',
-                backgroundColor: theme.colors.background,
+                backgroundColor: '#f8fbfb',
                 paddingHorizontal: 5,
               }}
               text={placeholder}

@@ -46,6 +46,7 @@ export { default as MasjidGear } from './vectors/masjid-gear.svg';
 export { default as ProfileUser } from './vectors/profile-user.svg';
 export { default as Mail } from './vectors/mail.svg';
 export { default as Download } from './vectors/download.svg';
+export { default as Publish } from './vectors/publish.svg';
 export { default as Email } from './vectors/email.svg';
 export { default as EditSquare } from './vectors/editSquare.svg';
 export { default as Envelope } from './vectors/envelope.svg';

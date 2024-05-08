@@ -23,7 +23,7 @@ import { globalStore } from '../store/GlobalStates';
 import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
 import { userStore } from '../store/UserStore';
 import { UserResponse, UserToken } from '../types/userControllerApiResponse';
-import { OverlayLoader } from '../components';
+import { BlurBackground, OverlayLoader } from '../components';
 import {
   GetCountryCodes,
   RefreshToken,
@@ -236,6 +236,7 @@ export default function App() {
           loaderColor={'rgb(0, 104, 112)'}
           isShow={Boolean(state.globalLoading.get())}
         />
+        {/* <BlurBackground show={true} /> */}
       </NavigationContainer>
     );
   } else {

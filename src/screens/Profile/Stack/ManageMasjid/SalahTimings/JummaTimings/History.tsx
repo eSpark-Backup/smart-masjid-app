@@ -22,7 +22,7 @@ export default function History({
   ).get();
 
   useEffect(() => {
-    GetJummahHistory(userData?.masjid.id.toString() as string);
+    GetJummahHistory(userData?.masjid?.id.toString() as string);
   }, []);
 
   return (

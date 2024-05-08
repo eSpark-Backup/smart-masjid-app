@@ -396,6 +396,27 @@ export async function _resetDevice(deviceId: string) {
   }
 }
 
+export async function _rebootDevice(deviceId: string) {
+  console.log('Rebooting Device now =>', deviceId);
+  try {
+    const res = await api.post<any>(`devices/${deviceId}/reboot`);
+    if (res?.ok) {
+      console.log('Reboot Success', Boolean(res.data));
+      return true;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when device exists problems', error);
+    return false;
+  }
+}
+
 /**
  * Get device subscriptions.
  * @param deviceId - The ID of the device.

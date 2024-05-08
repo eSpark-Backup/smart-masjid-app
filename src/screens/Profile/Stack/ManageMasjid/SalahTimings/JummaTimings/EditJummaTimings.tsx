@@ -91,22 +91,26 @@ export default function EditJummaTimings({
   const onUpdate = async () => {
     console.log('data', data);
     state.globalLoading.set(true);
-    // setLoading(true);
     if (jummaType == 'Add') {
-      await AddMasjidJummahTiming(
+      const res = await AddMasjidJummahTiming(
         userData?.masjid?.id.toString() as string,
         data as AddJummas,
       );
+      if (res == 200) {
+        setData(null);
+        setFlag('jTime');
+      }
     } else {
-      await UpdatedMasjidJummahTiming(
+      const res = await UpdatedMasjidJummahTiming(
         userData?.masjid?.id.toString() as string,
         data as AddJummas,
       );
+      if (res == 200) {
+        setData(null);
+        setFlag('jTime');
+      }
     }
     state.globalLoading.set(false);
-    // setLoading(false);
-    setData(null);
-    setFlag('jTime');
   };
 
   return (

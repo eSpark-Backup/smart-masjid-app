@@ -86,20 +86,19 @@ export default function PasswordForm({
         //   });
       } else {
         const res = await WifiManager.disconnectFromSSID(ssid);
-        WifiManager.connectToProtectedSSID(ssid, password, false).then(
+        console.log('res', res);
+        WifiManager.connectToProtectedSSID(ssid, password, false, false).then(
           a => {
             console.log('Connected successfully!', a);
             state.globalLoading.set(false);
-            // setLoading(false);
             setStep(6);
             clear();
           },
           e => {
             console.log('Connection failed!', e);
             state.globalLoading.set(false);
-            // setLoading(false);
             Toast.show({
-              text2: 'WiFi Password incorrect. Please try again',
+              text2: 'WiFi Password incorrect.' + e,
               type: 'error',
               visibilityTime: 10000,
             });

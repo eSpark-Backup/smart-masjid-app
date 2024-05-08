@@ -41,6 +41,7 @@ import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
 import {
   _checkDeviceTelemetry,
+  _rebootDevice,
   _resetDevice,
   _updateDevice,
   unSubscribeMasjid,
@@ -77,6 +78,7 @@ const DeviceSetting = ({
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const [isResetVisible, setIsResetVisible] = useState<boolean>(false);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [offlineErrors, setOfflineErrors] = useState<boolean>(false);
@@ -93,10 +95,30 @@ const DeviceSetting = ({
         state.globalLoading.set(false);
         // setLoader(false);
         goBack?.();
+      } else {
+        state.globalLoading.set(false);
       }
     } catch (error) {
       state.globalLoading.set(false);
       // setLoader(false);
+      crashlytics().recordError(error as Error);
+      console.error(error);
+    }
+  };
+
+  const restartDevice = async () => {
+    state.globalLoading.set(true);
+    try {
+      const res = await _rebootDevice(device?.id.toString()!);
+      console.log('res', res);
+      if (res) {
+        state.globalLoading.set(false);
+        goBack?.();
+      } else {
+        state.globalLoading.set(false);
+      }
+    } catch (error) {
+      state.globalLoading.set(false);
       crashlytics().recordError(error as Error);
       console.error(error);
     }
@@ -251,16 +273,22 @@ const DeviceSetting = ({
           <DeviceErrorBox
             show={
               device?.deviceType?.id == 3
-                ? false
+                ? Boolean(
+                    device?.deviceTelemetry?.status != 'Online' &&
+                      device?.deviceTelemetry?.streamer != 'Running',
+                  )
                 : Boolean(
                     device?.deviceTelemetry?.status == 'Offline' ||
                       device?.deviceTelemetry?.status == 'Low battery',
                   )
             }
+            icon={device?.deviceType?.id == 3 ? false : true}
             onClose={() => console.log('on Close Box', device)}
             message={
               device?.deviceTelemetry?.status == 'Low battery'
                 ? 'Device battery low. Please power on your device.'
+                : device?.deviceType?.id == 3
+                ? 'Looks like the Masjid Streamer might be Offline. Contact support@smartmasjid.app for help.'
                 : 'Looks like your device is offline. Tap here to see causes.'
             }
             onIconPress={() => setOfflineErrors(true)}
@@ -279,7 +307,11 @@ const DeviceSetting = ({
                 trademark
               />
               <DeviceStatus
-                status={device?.deviceTelemetry?.status as DStatus}
+                status={
+                  device?.deviceType?.id == 3
+                    ? (device?.deviceTelemetry?.streamer as DStatus)
+                    : (device?.deviceTelemetry?.status as DStatus)
+                }
               />
             </View>
             <GapView length={10} />
@@ -319,11 +351,10 @@ const DeviceSetting = ({
                       },
                     },
                     {
-                      title:
-                        device?.deviceType?.id == 3 ? 'Streamer' : 'Battery',
+                      title: device?.deviceType?.id == 3 ? '' : 'Battery',
                       subtitle:
                         device?.deviceType?.id == 3
-                          ? device?.deviceTelemetry?.streamer
+                          ? device?.deviceTelemetry?.streamer ?? 'null'
                           : device?.deviceTelemetry?.batteryLife.toString()
                           ? device?.deviceTelemetry?.batteryLife.toString() +
                             '%'
@@ -431,7 +462,10 @@ const DeviceSetting = ({
                       icon: <ResetDevice style={{ padding: 10, bottom: 2 }} />,
                       isReset: device?.deviceType?.id == 3 ? false : true,
                       isReboot: device?.deviceType?.id == 3 ? true : false,
-                      onReset: () => setIsVisible(true),
+                      onReset: () =>
+                        device?.deviceType?.id == 3
+                          ? setVisible(true)
+                          : setIsVisible(true),
                     },
                   ],
                 },
@@ -450,6 +484,18 @@ const DeviceSetting = ({
         }}
         onClose={() => {
           setIsVisible(!isVisible);
+          console.log('Cancelled');
+        }}
+      />
+      <LogoutModal
+        message="Are you sure you want to restart the device?"
+        visible={visible}
+        onAllowed={async () => {
+          await restartDevice();
+          setVisible(!visible);
+        }}
+        onClose={() => {
+          setVisible(!visible);
           console.log('Cancelled');
         }}
       />

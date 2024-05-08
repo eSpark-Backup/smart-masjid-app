@@ -78,7 +78,10 @@ export default function MyDropdown({
   };
 
   return (
-    <View>
+    <View
+      style={{
+        backgroundColor: '#f8fbfb',
+      }}>
       <TouchableOpacity
         onPress={openDropDown}
         style={{ ...styles.container, paddingHorizontal: containerPadding }}

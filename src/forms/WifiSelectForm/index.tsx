@@ -64,6 +64,7 @@ export default function WifiSelectForm({
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           getWifiList();
         } else {
+          state.globalLoading.set(false);
           // _requestUserLocationPermission();
           setIssues('Location permission denied');
         }
@@ -78,7 +79,15 @@ export default function WifiSelectForm({
             statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
           ) {
             const ssid = await WifiManager.getCurrentWifiSSID();
+            // const frequency = await WifiManager.getFrequency();
             console.log('ios ke ssid bta', ssid);
+            // console.log('ios ke ssid ki frequency bta', frequency);
+            // if (frequency >= 5000) {
+            //   setIssues(
+            //     'It looks like you are connected to a 5Ghz network (SSID name). Please connect to 2.4Ghz network temporarily to setup your device',
+            //   );
+            //   return;
+            // }
             if (currentWifiSSID == ssid && autoSelect) {
               setSSID(ssid);
               setStep(5);
@@ -106,15 +115,16 @@ export default function WifiSelectForm({
       console.log('All Wifis', res);
       state.globalLoading.set(false);
       // setLoading(false);
-      const removeHidden = res.filter(
+      const remove5G = res.filter(item => item?.frequency < 5000);
+      const removeHidden = remove5G.filter(
         item => !item.SSID.includes('(hidden SSID)'),
       );
       const uniqueSsid = Array.from(
-        new Set(removeHidden.map(item => item.SSID)),
-      ).map(item2 => {
+        new Set(removeHidden?.map(item => item.SSID)),
+      )?.map(item2 => {
         return removeHidden.find(item3 => item3.SSID === item2);
       });
-      const newArr = uniqueSsid.map(item => ({
+      const newArr = uniqueSsid?.map(item => ({
         ...item,
         title: item?.SSID,
         rightChild: rightChild,

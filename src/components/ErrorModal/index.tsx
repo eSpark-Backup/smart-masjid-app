@@ -37,15 +37,22 @@ export default function ErrorModal({
           <GapView length={20} />
           <View style={{ flexDirection: 'row', ...styles.bodyText }}>
             <MyText
-              text={'Note: Device must be '}
+              text={'Note: Restart your Device ( '}
               textStyle={styles.text}
               size={16}
             />
             <MyText
               size={16}
-              text="powered on"
+              text="Power Off"
               textStyle={{ fontFamily: 'Roboto-Bold' }}
             />
+            <MyText size={16} text="and" textStyle={styles.text} />
+            <MyText
+              size={16}
+              text="Power On"
+              textStyle={{ fontFamily: 'Roboto-Bold' }}
+            />
+            <MyText size={16} text=" )" textStyle={styles.text} />
           </View>
           <GapView length={20} />
           {options?.map(item => (
@@ -54,7 +61,7 @@ export default function ErrorModal({
               <GapView length={15} />
             </View>
           ))}
-          <Rounded label={"No, I'm good"} onPress={onClose} outlined />
+          {/* <Rounded label={"No, I'm good"} onPress={onClose} outlined /> */}
         </View>
       </View>
     </Modal>

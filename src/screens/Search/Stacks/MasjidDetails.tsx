@@ -114,7 +114,7 @@ const MasjidDetails = ({
     const cleaned = ('' + phoneNumber).replace(/\D/g, '');
 
     // Check if the cleaned phone number has a valid length
-    const isValidLength = cleaned.length === 10 || cleaned.length === 11;
+    const isValidLength = cleaned?.length === 10 || cleaned?.length === 11;
 
     if (isValidLength) {
       // Format the phone number in (XXX) XXX-XXXX format
@@ -124,7 +124,7 @@ const MasjidDetails = ({
       );
 
       // If there's an extra digit, it's probably a country code. Add a '+' in that case.
-      return cleaned.length === 11 ? '+' + formattedNumber : formattedNumber;
+      return cleaned?.length === 11 ? '+' + formattedNumber : formattedNumber;
     } else {
       // Return the original input if it doesn't have a valid length
       return phoneNumber;
@@ -154,12 +154,7 @@ const MasjidDetails = ({
         </Animated.View>
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingVertical: 10,
-          paddingHorizontal: 15,
-        }}>
+      <View style={{ paddingVertical: 10 }}>
         <MyTextHeader text={masjidDetails?.name ?? ''} />
         <GapView length={15} />
         <Card>
@@ -211,25 +206,29 @@ const MasjidDetails = ({
               <GapView length={5} mode="horizontal" />
               <Tooltip content={adhanCalculations()} />
             </View> */}
-            <View style={styles.infoCardRowContainer}>
-              <Web />
-              <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '80%' }}>
-                <MyText
-                  text={masjidDetails?.website ?? ''}
-                  size={16}
-                  textStyle={{ color: '#3E3E3E' }}
-                  lines={1}
-                />
+            {masjidDetails?.website ? (
+              <View style={styles.infoCardRowContainer}>
+                <Web />
+                <GapView length={5} mode="horizontal" />
+                <View style={{ maxWidth: '80%' }}>
+                  <MyText
+                    text={masjidDetails?.website}
+                    size={16}
+                    textStyle={{ color: '#3E3E3E' }}
+                    lines={1}
+                  />
+                </View>
+                <GapView length={5} mode="horizontal" />
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      `https://${masjidDetails?.website as string}`,
+                    )
+                  }>
+                  <OpenLink width={18} height={18} />
+                </TouchableOpacity>
               </View>
-              <GapView length={5} mode="horizontal" />
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(`https://${masjidDetails?.website as string}`)
-                }>
-                <OpenLink width={18} height={18} />
-              </TouchableOpacity>
-            </View>
+            ) : null}
             <GapView length={5} />
             {/* <View style={styles.infoCardRowContainer}>
               <AdhanJuristic />
@@ -250,27 +249,29 @@ const MasjidDetails = ({
                 content={`This masjid uses ${masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name} fiqh for Asr time calculation.`}
               />
             </View> */}
-            <View style={styles.infoCardRowContainer}>
-              <Phone />
-              <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '80%' }}>
-                <MyText
-                  text={
-                    formatPhoneNumber(
+            {masjidDetails?.phone ? (
+              <View style={styles.infoCardRowContainer}>
+                <Phone />
+                <GapView length={5} mode="horizontal" />
+                <View style={{ maxWidth: '80%' }}>
+                  <MyText
+                    text={formatPhoneNumber(
                       Number(masjidDetails?.phone),
-                    ).toString() ?? ''
-                  }
-                  size={16}
-                  textStyle={{ color: '#3E3E3E' }}
-                  lines={1}
-                />
+                    ).toString()}
+                    size={16}
+                    textStyle={{ color: '#3E3E3E' }}
+                    lines={1}
+                  />
+                </View>
+                <GapView length={5} mode="horizontal" />
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(`tel:${masjidDetails?.phone}`)
+                  }>
+                  <OpenLink width={18} height={18} />
+                </TouchableOpacity>
               </View>
-              <GapView length={5} mode="horizontal" />
-              <TouchableOpacity
-                onPress={() => Linking.openURL(`tel:${masjidDetails?.phone}`)}>
-                <OpenLink width={18} height={18} />
-              </TouchableOpacity>
-            </View>
+            ) : null}
           </View>
         </Card>
         <GapView length={15} />
@@ -315,7 +316,7 @@ const MasjidDetails = ({
             <TextLabel label="Unsubscribe" textStyle={{ color: '#ffffff' }} />
           </TouchableOpacity>
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 };

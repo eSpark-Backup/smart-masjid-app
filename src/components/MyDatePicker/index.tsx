@@ -87,7 +87,7 @@ export default function MyDatePicker({
               position: 'absolute',
               top: -10,
               left: 15,
-              backgroundColor: colors.background,
+              backgroundColor: '#f8fbfb',
               paddingHorizontal: 5,
             }}>
             <MyText

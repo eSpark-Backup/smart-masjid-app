@@ -151,6 +151,8 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         api.setHeaders({
           Authorization: `Bearer ${token?.data?.token}`,
         });
+        console.log('userData got', result.data);
+
         userStore.userData.set(result.data);
         crashlytics().setUserId(result.data?.id.toString()),
           crashlytics().setAttributes({

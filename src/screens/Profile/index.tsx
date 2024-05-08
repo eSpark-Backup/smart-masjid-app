@@ -68,6 +68,7 @@ export default function Profile() {
   const [iqamaData, setIqamaData] = useState<IqamahTime | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
   const [clear, setClear] = useState(false);
+  const [up, setUp] = useState(false);
 
   const titles: Titles = {
     mAcc: 'Manage Account',
@@ -156,7 +157,9 @@ export default function Profile() {
       showFooter={false}
       title={getTitle()}
       avoidKeyboard={flag == 'iAdd' || flag == 'iAdd'}
-      onBackPress={() => handleBack(flag)}>
+      onBackPress={() => handleBack(flag)}
+      setUp={() => setUp(false)}
+      goUp={up}>
       {({ props }) => {
         const componentMapping: ComponentMap = {
           uInfo: (
@@ -217,6 +220,7 @@ export default function Profile() {
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
               iqamahType={'Add'}
+              getUp={() => setUp(true)}
             />
           ),
           jTime: (
@@ -297,7 +301,7 @@ function UserInformation({
 }) {
   const userData = useHookstate(userStore.userData).get();
   console.log(userData?.userType.id);
-  console.log(userData?.userType);
+  console.log('User Data permissions', userData?.userType.permissions);
 
   return (
     <View style={{ flex: 1 }}>

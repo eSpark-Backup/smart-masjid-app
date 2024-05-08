@@ -35,6 +35,8 @@ export default function Wrapper({
   showBack = true,
   title = '',
   avoidKeyboard = false,
+  goUp = false,
+  setUp,
 }: {
   children: ({
     props,
@@ -49,8 +51,12 @@ export default function Wrapper({
   showBack?: boolean;
   title?: string;
   avoidKeyboard?: boolean;
+  goUp?: boolean;
+  setUp?: () => void;
 }) {
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const listRef = useRef<any>(null);
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -74,6 +80,22 @@ export default function Wrapper({
     outputRange: [1, 0],
     extrapolate: 'clamp',
   });
+
+  useEffect(() => {
+    if (goUp) {
+      console.log('goUPPPP', goUp);
+
+      scrollToTop();
+      setUp?.();
+    }
+  }, [goUp]);
+
+  const scrollToTop = async () => {
+    await listRef?.current?.scrollTo({ y: 0 });
+    setTimeout(() => {
+      onBackPress?.();
+    }, 500);
+  };
 
   return (
     <>
@@ -149,28 +171,29 @@ export default function Wrapper({
                   ? HeaderIOSBackgroundImage
                   : HeaderBackgroundImage
               }> */}
-          <Header onBackPress={onBackPress} showBack={showBack} />
-          <KeyboardAvoidingView
+          <Header onBackPress={scrollToTop} showBack={showBack} />
+          {/* <KeyboardAvoidingView
             behavior={avoidKeyboard ? 'position' : undefined}
-            style={{ flex: 1, zIndex: 0 }}>
-            <ScrollView
-              onScroll={handleScroll}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ flexGrow: 1 }}
-              style={{ zIndex: -1 }}>
-              <>
-                <GapView
-                  length={
-                    Platform.OS == 'ios'
-                      ? WINDOW_WIDTH / 1.6
-                      : WINDOW_WIDTH / 1.74
-                  }
-                />
-                {children({ props: { contentOpacity: titleOpacity } })}
-              </>
-            </ScrollView>
-          </KeyboardAvoidingView>
+            style={{ flex: 1, zIndex: 0 }}> */}
+          <ScrollView
+            ref={listRef}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ flexGrow: 1 }}
+            style={{ zIndex: -1, backgroundColor: '#f8fbFb' }}>
+            <>
+              <GapView
+                length={
+                  Platform.OS == 'ios'
+                    ? WINDOW_WIDTH / 1.6
+                    : WINDOW_WIDTH / 1.74
+                }
+              />
+              {children({ props: { contentOpacity: titleOpacity } })}
+            </>
+          </ScrollView>
+          {/* </KeyboardAvoidingView> */}
           {/* </ImageBackground> */}
         </View>
 

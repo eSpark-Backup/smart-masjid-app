@@ -29,11 +29,13 @@ export default function EditIqamahTimings({
   contentOpacity = 0,
   iqamahType,
   selectedIqamah,
+  getUp,
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
   iqamahType: 'Add' | 'Edit';
   selectedIqamah?: IqamahTime | null;
+  getUp?: () => void;
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
@@ -63,34 +65,29 @@ export default function EditIqamahTimings({
   }, []);
 
   const onUpdate = async () => {
-    console.log('data kia hai', data);
-
+    getUp?.();
     var dataObj: IqamahTime = data;
     state.globalLoading.set(true);
-    // setLoading(true);
     if (iqamahType == 'Add') {
-      await AddMasjidIqamahTiming(
-        userData?.masjid.id.toString() as string,
+      const res = await AddMasjidIqamahTiming(
+        userData?.masjid?.id.toString() as string,
         dataObj,
       );
+      if (res == '200') {
+        setData(null);
+        setFlag('iTime');
+      }
     } else {
-      await UpdateMasjidIqamahTiming(
-        userData?.masjid.id.toString() as string,
+      const res = await UpdateMasjidIqamahTiming(
+        userData?.masjid?.id.toString() as string,
         dataObj,
       );
+      if (res == '200') {
+        setData(null);
+        setFlag('iTime');
+      }
     }
-    // if (
-    //   (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
-    //   !Boolean(dataObj.dhuhrDelay) ||
-    //   !Boolean(dataObj.asrDelay) ||
-    //   !Boolean(dataObj.maghribDelay) ||
-    //   !Boolean(dataObj.ishaDelay)
-    // ) {
-    // }
     state.globalLoading.set(false);
-    // setLoading(false);
-    setData(null);
-    setFlag('iTime');
   };
 
   const type = data?.type;

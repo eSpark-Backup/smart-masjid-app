@@ -103,7 +103,7 @@ export default function ManageAccount({
   ]);
 
   const onEditPress = (key: string) => {
-    const newData = displayData.map(data => {
+    const newData = displayData?.map(data => {
       if (data.key == key) {
         return {
           ...data,
@@ -128,7 +128,7 @@ export default function ManageAccount({
   };
 
   const clearSelection = () => {
-    const newData = displayData.map(data => {
+    const newData = displayData?.map(data => {
       return {
         ...data,
         editable: false,
@@ -189,7 +189,7 @@ export default function ManageAccount({
       // setLoading(true);
     } else {
       let devs = await GetUserDevices(userData?.id.toString() as string);
-      if (devs.length > 0) {
+      if (devs?.length > 0) {
         navigation.navigate('Device');
         Toast.show({
           text1: 'Warning!',
@@ -229,7 +229,7 @@ export default function ManageAccount({
             <View>
               <MyText text="Tap to edit" textStyle={{ alignSelf: 'center' }} />
               <GapView />
-              {displayData.map((val, ind) => {
+              {displayData?.map((val, ind) => {
                 if (!val.editable) {
                   return (
                     <TouchableOpacity
@@ -276,6 +276,7 @@ export default function ManageAccount({
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
+                              backgroundColor: '#f8fbfb',
                             }}>
                             <GapView mode="horizontal" />
                             {val.icon}
@@ -302,6 +303,7 @@ export default function ManageAccount({
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
+                              backgroundColor: '#f8fbfb',
                             }}>
                             <GapView mode="horizontal" />
                             {val.icon}

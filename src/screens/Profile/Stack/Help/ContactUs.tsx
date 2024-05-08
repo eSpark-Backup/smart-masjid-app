@@ -37,7 +37,7 @@ export default function ContactUsScreen({
   const requestToSupport = async () => {
     state.globalLoading.set(true);
     // setLoading(true);
-    if (!userData?.id || selectedReasonId == null || description.length == 0) {
+    if (!userData?.id || selectedReasonId == null || description?.length == 0) {
       Toast.show({
         type: 'error',
         text2: 'Please fill given fields',

@@ -19,11 +19,13 @@ export default function MyModal({
   onSend,
   message = '',
   title1,
+  onBackDropPress,
 }: {
   visible: boolean;
   onSend: (text: string) => void;
   message: string;
   title1?: string;
+  onBackDropPress?: () => void;
 }): JSX.Element {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
@@ -51,7 +53,10 @@ export default function MyModal({
       visible={visible}
       transparent
       statusBarTranslucent>
-      <TouchableOpacity style={styles.main}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={onBackDropPress}
+        style={styles.main}>
         <TouchableOpacity activeOpacity={1} style={styles.body}>
           <MyText text="Confirm" textStyle={styles.label} size={16} />
           <GapView length={40} />

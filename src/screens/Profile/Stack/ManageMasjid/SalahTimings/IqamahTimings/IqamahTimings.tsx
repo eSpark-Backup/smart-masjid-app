@@ -58,7 +58,7 @@ export default function IqamahTimings({
   }, []);
 
   const getAllIqamahTimings = () => {
-    GetMasjidIqamahTiming(userData?.masjid.id.toString() as string).then(
+    GetMasjidIqamahTiming(userData?.masjid?.id.toString() as string).then(
       iqamahTime => {
         let iqamahData: any = [];
         iqamahTime?.map((i: IqamahTime) => {
@@ -143,6 +143,8 @@ export default function IqamahTimings({
           };
           iqamahData.push(namazData);
         });
+        console.log('iqamahDataiqamahData', iqamahData);
+
         setData(iqamahData);
         state.globalLoading.set(false);
         // setLoading(false);
@@ -166,7 +168,7 @@ export default function IqamahTimings({
     state.globalLoading.set(true);
     // setLoading(true);
     await DeleteMasjidIqamahTiming(
-      userData?.masjid.id.toString() as string,
+      userData?.masjid?.id.toString() as string,
       deleteId as string,
     );
     getAllIqamahTimings();

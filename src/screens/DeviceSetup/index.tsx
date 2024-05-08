@@ -254,7 +254,7 @@ export default function DeviceSetupScreen() {
   }, [locationStatus, bleStatus]);
 
   useUpdateEffect(() => {
-    if (issues.length > 0) {
+    if (issues?.length > 0) {
       setStep(8);
       setToastContent(state => ({
         ...state,
@@ -702,7 +702,7 @@ export default function DeviceSetupScreen() {
                 : item.id === macAdd
               : true,
           );
-          if (issues.length === 0) {
+          if (issues?.length === 0) {
             if (newArr?.length === 0 || isFound) {
               setStep(8);
               setToastContent(state => ({
@@ -864,7 +864,7 @@ export default function DeviceSetupScreen() {
                   route.params?.isBtn
                     ? setDevInfo(state => ({
                         ...state,
-                        masjid_id: userSetup.userData?.masjid.id.toString(),
+                        masjid_id: userSetup.userData?.masjid?.id.toString(),
                         password: value,
                       }))
                     : setDevInfo(state => ({ ...state, password: value }))

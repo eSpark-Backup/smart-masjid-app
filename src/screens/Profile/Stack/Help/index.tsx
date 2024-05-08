@@ -40,7 +40,7 @@ export default function HelpScreen({
   }, []);
 
   const onSearch = (text: string) => {
-    if (text.length == 0) {
+    if (text?.length == 0) {
       setFAQs(FAQData);
       return;
     }
@@ -76,7 +76,7 @@ export default function HelpScreen({
           justifyContent: 'space-between',
         }}>
         <View style={{ flex: 1 }}>
-          <Card height={45} width={WINDOW_WIDTH - 30}>
+          <Card width={WINDOW_WIDTH - 30}>
             <MyInput
               helpSearch
               inputStyle={{ width: WINDOW_WIDTH - 30 }}

@@ -29,6 +29,7 @@ import {
   _checkDeviceTelemetry,
 } from '../../api/deviceController';
 import { useLayoutAnimation } from '../../utils';
+import { Card } from '../../containers';
 
 const RowItem = ({
   item,
@@ -90,7 +91,9 @@ const RowItem = ({
                 <VolumUpGreen height={16} width={16} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={toggleSubscription}>
+              <TouchableOpacity
+                style={{ padding: 5 }}
+                onPress={toggleSubscription}>
                 <MuteSvg height={16} width={16} />
               </TouchableOpacity>
             )}
@@ -196,7 +199,7 @@ export default function SwipeableTimeTable({
   const onViewRef = React.useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       // Use viewable items in state or as intended
-      if (viewableItems.length > 0) {
+      if (viewableItems?.length > 0) {
         let itemData: any = viewableItems[0].item;
         setCurrentItem(itemData);
       }
@@ -208,7 +211,7 @@ export default function SwipeableTimeTable({
       return (
         <View key={index}>
           <View style={{ width: WINDOW_WIDTH - 50 }}>
-            {item.salah.map((data, i) => (
+            {item?.salah?.map((data, i) => (
               <RowItem
                 key={i}
                 item={{
@@ -259,7 +262,7 @@ export default function SwipeableTimeTable({
               setSubscriptions={updateSubscriptions}
             />
           ))}
-          {item?.salah?.map((data, i) =>
+          {/* {item?.salah?.map((data, i) =>
             data?.sunriseTime ? (
               <View key={i} style={[styles.contentRow, { height: 40 }]}>
                 <View style={styles.contentCol}>
@@ -286,7 +289,7 @@ export default function SwipeableTimeTable({
                 </View>
               </View>
             ) : null,
-          )}
+          )} */}
         </View>
       </View>
     );
@@ -294,7 +297,7 @@ export default function SwipeableTimeTable({
 
   const onDateChange = (e: Date) => {
     if (
-      currInd < data.length - 1 &&
+      currInd < data?.length - 1 &&
       currInd > -1 &&
       data[currInd].date == moment(e).subtract(1, 'd').format('YYYY-MM-DD')
     ) {
@@ -304,7 +307,7 @@ export default function SwipeableTimeTable({
         animated: true,
       });
     } else if (
-      currInd < data.length &&
+      currInd < data?.length &&
       currInd > -1 &&
       data[currInd].date == moment(e).add(1, 'd').format('YYYY-MM-DD')
     ) {
@@ -317,7 +320,7 @@ export default function SwipeableTimeTable({
       const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
         return value.date == moment(e).format('YYYY-MM-DD');
       });
-      if (currInd > -1 && currInd < data.length - 1) {
+      if (currInd > -1 && currInd < data?.length - 1) {
         slider.current?.scrollToIndex({
           index: currentIndex,
           animated: true,
@@ -350,101 +353,138 @@ export default function SwipeableTimeTable({
   };
 
   return (
-    <View style={styles.container}>
-      <>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <MyDatePicker
-            minimumDate={moment().toDate()}
-            maximumDate={moment().add(6, 'days').toDate()}
-            type="standard"
-            // currentDate={
-            //   currentItem ? moment(currentItem.date).toDate() : new Date()
-            // }
-            onDateChange={onDateChange}
-            disablePicker
-          />
+    <>
+      <View style={styles.container}>
+        <>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <MyDatePicker
+              minimumDate={moment().toDate()}
+              maximumDate={moment().add(6, 'days').toDate()}
+              type="standard"
+              // currentDate={
+              //   currentItem ? moment(currentItem.date).toDate() : new Date()
+              // }
+              onDateChange={onDateChange}
+              disablePicker
+            />
+          </View>
+          <GapView length={15} />
+        </>
+        <View style={styles.headerRow}>
+          {headings?.map(value => (
+            <View key={value} style={styles.headerCol}>
+              <MyText
+                text={value}
+                size={16}
+                textStyle={{
+                  // fontWeight: '500',
+                  fontFamily: 'Roboto-Medium',
+                }}
+              />
+            </View>
+          ))}
+          {isMute && !isInfo && <View style={styles.headerIcon} />}
+          {isEdit && !isInfo && <View style={styles.headerIcon} />}
+          {isInfo && (
+            <View style={{ right: 10 }}>
+              <Tooltip
+                position="top"
+                content="You can subscribe to Adhan here. Adhan will play on your device when called at your masjid."
+                iconColor={'#006870'}
+              />
+            </View>
+          )}
         </View>
-        <GapView length={15} />
-      </>
-      <View style={styles.headerRow}>
-        {headings?.map(value => (
-          <View key={value} style={styles.headerCol}>
-            <MyText
-              text={value}
-              size={16}
-              textStyle={{
-                // fontWeight: '500',
-                fontFamily: 'Roboto-Medium',
-              }}
-            />
-          </View>
-        ))}
-        {isMute && !isInfo && <View style={styles.headerIcon} />}
-        {isEdit && !isInfo && <View style={styles.headerIcon} />}
-        {isInfo && (
-          <View style={{ right: 10 }}>
-            <Tooltip
-              position="top"
-              content="You can subscribe to Adhan here. Adhan will play on your device when called at your masjid."
-              iconColor={'#006870'}
-            />
-          </View>
-        )}
-      </View>
-      <GapView />
-      <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
-      <FlatList
-        ref={slider}
-        data={data}
-        horizontal
-        scrollEnabled={false}
-        pagingEnabled
-        snapToInterval={WINDOW_WIDTH - 50}
-        decelerationRate={0}
-        pinchGestureEnabled={true}
-        scrollEventThrottle={0}
-        showsHorizontalScrollIndicator={false}
-        // onViewableItemsChanged={onViewRef.current}
-        renderItem={renderItem}
-        keyExtractor={(_, index) => `list_item${index}`}
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 80,
-        }}
-        ListEmptyComponent={
-          loading ? (
-            <View
-              style={{
-                height: 240,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+        <GapView />
+        <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
+        <FlatList
+          ref={slider}
+          data={data}
+          horizontal
+          scrollEnabled={false}
+          pagingEnabled
+          snapToInterval={WINDOW_WIDTH - 50}
+          decelerationRate={0}
+          pinchGestureEnabled={true}
+          scrollEventThrottle={0}
+          showsHorizontalScrollIndicator={false}
+          // onViewableItemsChanged={onViewRef.current}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => `list_item${index}`}
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 80,
+          }}
+          ListEmptyComponent={
+            loading && data?.length < 1 ? (
+              <View
+                style={{
+                  height: 220,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <MyText
+                  textStyle={{
+                    textAlign: 'center',
+                    marginVertical: 10,
+                    width: WINDOW_WIDTH - 50,
+                  }}
+                  text="Fetching Salah timings..."
+                />
+              </View>
+            ) : (
               <MyText
                 textStyle={{
                   textAlign: 'center',
                   marginVertical: 10,
                   width: WINDOW_WIDTH - 50,
                 }}
-                text="Fetching Salah timings..."
+                text="No Salah timings to show"
               />
-            </View>
-          ) : (
-            <MyText
-              textStyle={{
-                textAlign: 'center',
-                marginVertical: 10,
-                width: WINDOW_WIDTH - 50,
-              }}
-              text="No Salah timings to show"
-            />
+            )
+          }
+        />
+      </View>
+      <GapView length={15} />
+      <Card style={{ padding: 5 }}>
+        {data[currInd]?.salah ? (
+          data[currInd]?.salah?.map((data, i) =>
+            data?.sunriseTime ? (
+              <View key={i} style={[styles.contentRow, { height: 40 }]}>
+                <View style={styles.contentCol}>
+                  <MyText text={'Sunrise'} size={16} />
+                </View>
+                <View
+                  style={{
+                    width: '28%',
+                    alignItems: 'center',
+                  }}>
+                  <MyText
+                    text={moment(data.sunriseTime, 'HH:mm:ss').format('h:mm A')}
+                    size={16}
+                  />
+                </View>
+                <View style={styles.contentCol}>
+                  <MyText text={'Shurooq'} size={16} />
+                </View>
+                <View style={{ ...styles.contentIcon, width: undefined }}>
+                  <MyText
+                    text={moment(data.shurooqTime, 'HH:mm:ss').format('h:mm A')}
+                    size={16}
+                  />
+                </View>
+              </View>
+            ) : null,
           )
-        }
-      />
-    </View>
+        ) : (
+          <View style={{ height: 40 }} />
+        )}
+      </Card>
+    </>
   );
 }
 

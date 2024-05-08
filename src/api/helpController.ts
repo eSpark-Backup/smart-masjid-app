@@ -17,7 +17,6 @@ export const GetHelpFAQs = async () => {
   try {
     const result: any = await api.get(`/help`);
     if (result.status == 200 && result.data) {
-      console.log('FAQ result', result.data);
       helpStore.FAQs.set(result?.data);
       return result.data;
     } else if (result.status == 401) {

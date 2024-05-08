@@ -79,7 +79,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
           </View>
         ) : null}
         <View style={{ flexDirection: 'row' }}>
-          {data.map((head: Props | null, index: number) =>
+          {data?.map((head: Props | null, index: number) =>
             head?.heading.includes(item) ? (
               <View key={index}>
                 <View
@@ -109,7 +109,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
                     }}
                   />
                 </View>
-                {head.values.map((val: string | null, index: number) => (
+                {head?.values?.map((val: string | null, index: number) => (
                   <View
                     key={index}
                     style={{
@@ -138,7 +138,7 @@ export default function TimeSheet({ data }: { data: Array<Props> }) {
 
   return (
     <View style={{ paddingVertical: 10 }}>
-      {data.length > 0 ? (
+      {data?.length > 0 ? (
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}

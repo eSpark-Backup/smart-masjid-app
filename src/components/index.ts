@@ -37,3 +37,4 @@ export { default as Tooltip } from './Tooltip';
 export { default as JumuahTable } from './TimeTable/JumuahTable';
 export { default as SalahTable } from './TimeTable/SalahTable';
 export { default as PossibleCauseErrorModal } from './PossibleCauseErrorModal';
+export { default as BlurBackground } from './BlurBackground';

@@ -103,8 +103,10 @@ export const AddMasjidIqamahTiming = async (
     console.log('result.data', result);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -112,6 +114,7 @@ export const AddMasjidIqamahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -137,8 +140,10 @@ export const UpdateMasjidIqamahTiming = async (
     );
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       console.log('result.data', result.data?.message);
       Toast.show({
@@ -147,6 +152,7 @@ export const UpdateMasjidIqamahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -321,8 +327,10 @@ export const AddMasjidJummahTiming = async (
     const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -330,6 +338,7 @@ export const AddMasjidJummahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -356,8 +365,10 @@ export const UpdatedMasjidJummahTiming = async (
     console.log(result);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -365,6 +376,7 @@ export const UpdatedMasjidJummahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);

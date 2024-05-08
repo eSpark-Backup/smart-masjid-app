@@ -34,7 +34,7 @@ export default function AdhanSettings({
 
   const getAdhanConfig = async () => {
     setLoading(true);
-    await GetMasjidAdhanSetting(userData?.masjid.id.toString() as string)
+    await GetMasjidAdhanSetting(userData?.masjid?.id.toString() as string)
       .then((adhanConfig: AdhanConfig) =>
         setDisplayingData([
           {
@@ -174,7 +174,9 @@ export default function AdhanSettings({
         {loading ? (
           <ActivityIndicator size={'large'} color={colors.primary} />
         ) : (
-          displayData.map((item: any, index: number) => renderAdhanConfig(item))
+          displayData?.map((item: any, index: number) =>
+            renderAdhanConfig(item),
+          )
         )}
 
         {/* <TouchableOpacity

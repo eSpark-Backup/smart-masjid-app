@@ -15,6 +15,7 @@
     "@hookstate/core": "^4.0.0",
     "@react-native-async-storage/async-storage": "^1.18.0",
     "@react-native-community/art": "^1.2.0",
+    "@react-native-community/blur": "^4.4.0",
     "@react-native-community/cli-platform-android": "^10.1.3",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/datetimepicker": "^6.7.5",
@@ -66,7 +67,7 @@
     "react-native-toast-message": "^2.1.6",
     "react-native-vector-icons": "^9.2.0",
     "react-native-walkthrough-tooltip": "^1.5.0",
-    "react-native-wifi-reborn": "^4.7.0",
+    "react-native-wifi-reborn": "^4.11.0",
     "yup": "^1.0.2"
   },
   "reactNativePermissionsIOS": [
