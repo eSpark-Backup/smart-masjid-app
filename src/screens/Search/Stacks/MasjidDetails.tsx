@@ -50,6 +50,7 @@ import moment from 'moment';
 import { GlobalProps } from '../../../types';
 import { State, useHookstate } from '@hookstate/core';
 import { globalStore } from '../../../store/GlobalStates';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -255,9 +256,9 @@ const MasjidDetails = ({
                 <GapView length={5} mode="horizontal" />
                 <View style={{ maxWidth: '80%' }}>
                   <MyText
-                    text={formatPhoneNumber(
-                      Number(masjidDetails?.phone),
-                    ).toString()}
+                    text={parsePhoneNumber(
+                      masjidDetails?.phone,
+                    ).formatInternational()}
                     size={16}
                     textStyle={{ color: '#3E3E3E' }}
                     lines={1}

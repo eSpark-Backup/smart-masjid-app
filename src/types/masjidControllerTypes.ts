@@ -194,6 +194,12 @@ export interface SalahTimings {
   date: string;
   salah: Salah[];
 }
+export interface JumuahTimings {
+  date: string;
+  jumuah1?: string;
+  jumuah2?: string;
+  jumuah3?: string;
+}
 export interface AllSalahTimings {
   id: string;
   salahs: SalahTimings[];

@@ -28,6 +28,7 @@ import {
   JummahTime,
   SubscriptionList,
 } from '../../types/masjidControllerTypes';
+import systemSetting from 'react-native-system-setting';
 
 /**
  *
@@ -505,6 +506,50 @@ async function openMap(lat: string, long: string) {
   }
 }
 
+const requestLocation = async () => {
+  console.log('chala');
+  try {
+    if (Platform.OS == 'ios') {
+      checkMultiple([
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      ]).then(async statuses => {
+        console.log(statuses[PERMISSIONS.IOS.LOCATION_ALWAYS]);
+        if (
+          statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] == 'granted' ||
+          statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
+        ) {
+          const enable = await systemSetting.isLocationEnabled();
+          if (enable) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      });
+    } else {
+      const granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted) {
+        const enable = await systemSetting.isLocationEnabled();
+        if (enable) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.error(error);
+  }
+};
+
 export {
   _getPhoneId,
   _getFCMToken,
@@ -520,4 +565,5 @@ export {
   convertTo12Hour,
   _normalizedSubscriptions,
   openMap,
+  requestLocation,
 };

@@ -29,13 +29,11 @@ export default function EditIqamahTimings({
   contentOpacity = 0,
   iqamahType,
   selectedIqamah,
-  getUp,
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
   iqamahType: 'Add' | 'Edit';
   selectedIqamah?: IqamahTime | null;
-  getUp?: () => void;
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
@@ -65,7 +63,6 @@ export default function EditIqamahTimings({
   }, []);
 
   const onUpdate = async () => {
-    getUp?.();
     var dataObj: IqamahTime = data;
     state.globalLoading.set(true);
     if (iqamahType == 'Add') {
@@ -73,7 +70,9 @@ export default function EditIqamahTimings({
         userData?.masjid?.id.toString() as string,
         dataObj,
       );
-      if (res == '200') {
+      console.log('resresresresres', res);
+
+      if (res == 200) {
         setData(null);
         setFlag('iTime');
       }
@@ -82,7 +81,7 @@ export default function EditIqamahTimings({
         userData?.masjid?.id.toString() as string,
         dataObj,
       );
-      if (res == '200') {
+      if (res == 200) {
         setData(null);
         setFlag('iTime');
       }

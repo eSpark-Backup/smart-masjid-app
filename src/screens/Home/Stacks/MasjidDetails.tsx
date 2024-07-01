@@ -7,10 +7,16 @@ import {
   FlatList,
   Platform,
 } from 'react-native';
-import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
+import {
+  Theme,
+  useIsFocused,
+  useNavigation,
+  useTheme,
+} from '@react-navigation/native';
 import { State, useHookstate } from '@hookstate/core';
 import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
   GapView,
@@ -46,7 +52,13 @@ import {
 } from '../../../api/masjidController';
 import moment from 'moment';
 import { globalStore } from '../../../store/GlobalStates';
-import { GlobalProps } from '../../../types';
+import { BottomNavigationParamList, GlobalProps } from '../../../types';
+import { Calendar } from '../../../assets';
+
+type HomeNavigationProps = NativeStackScreenProps<
+  BottomNavigationParamList,
+  'Home'
+>;
 
 export default function MasjidDetails({
   setStep,
@@ -60,7 +72,9 @@ export default function MasjidDetails({
   isSingle?: boolean;
 }) {
   const { colors }: Theme = useTheme();
+  const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const userData = useHookstate(userStore.userData).get();
+  const monthlyScheduleData = useHookstate(userStore.monthlySchedule).get();
   const state: State<GlobalProps> = useHookstate(globalStore);
   const devices = useHookstate(masjidStore.connectedDevices).get();
   const [loading, setLoading] = useState<boolean>(false);
@@ -180,7 +194,19 @@ export default function MasjidDetails({
           ItemSeparatorComponent={() => <GapView mode="horizontal" />}
         />
         <GapView length={15} />
-        <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
+          {monthlyScheduleData && (
+            <TouchableOpacity activeOpacity={0.5} onPress={() => setStep(2)}>
+              <Calendar style={{ color: '#006870', right: 15 }} />
+            </TouchableOpacity>
+          )}
+        </View>
         <GapView length={15} />
         <SwipeableTimeTable
           isMute

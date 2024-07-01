@@ -218,6 +218,7 @@ export const UpdateUser = async (
               'Some error occurred during account setup, please try logging in again',
             type: 'error',
           });
+          return 201;
         } else {
           userStore.token.set(token?.data?.token);
           api.setHeaders({
@@ -234,6 +235,7 @@ export const UpdateUser = async (
             text2: 'User Updated Successfully',
             type: 'success',
           });
+          return result.status;
         }
       } else {
         userStore.userData.set(result.data);
@@ -242,6 +244,7 @@ export const UpdateUser = async (
           text2: 'User Updated Successfully',
           type: 'success',
         });
+        return result.status;
       }
       // userStore.userData.set(result.data);
       // await setDataInLocalStorage('user', JSON.stringify(result.data));
@@ -251,14 +254,15 @@ export const UpdateUser = async (
       // });
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message,
         type: 'error',
         visibilityTime: 10000,
       });
+      return result.status;
     }
-    return result.data;
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('error UpdateUser', error, 'Request', data);
@@ -408,6 +412,101 @@ export const GetUser = async (
     console.log('user results', result);
     if (result.status === 200) {
       return result.data[0];
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+/**
+ * Get a Monthly Schedule by using masjidId, month or year.
+ *
+ * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
+ */
+export const GetMonthlySchedule = async (masjidId: number) => {
+  try {
+    console.log('masjidId masjidId masjidId', masjidId);
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const result: any = await api.get(
+      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}&month=${month}&year=${year}`,
+    );
+    console.log('schedule results', result);
+    if (result.status === 200) {
+      return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Publish a Monthly Schedule by using masjidId, month or year.
+ *
+ * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
+ */
+export const PublishMonthlySchedule = async (masjidId: number) => {
+  try {
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const result: any = await api.post(
+      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}`,
+      {
+        month: month,
+        year: year,
+      },
+    );
+    console.log('publish schedule results', result.data);
+    if (result.status === 200) {
+      return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Update Published a Monthly Schedule by using masjidId, month or year.
+ *
+ * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
+ */
+export const UpdatePublishedMonthlySchedule = async (
+  masjidId: number,
+  scheduleId: number,
+) => {
+  try {
+    const result: any = await api.put(
+      `/masjid/{masjidId}/monthly-schedule/{scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
+    );
+    console.log('update published schedule results', result.data);
+    if (result.status === 200) {
+      return result.data;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {

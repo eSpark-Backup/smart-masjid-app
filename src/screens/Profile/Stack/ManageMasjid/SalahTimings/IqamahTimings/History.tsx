@@ -10,64 +10,72 @@ import {
 import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
 import RNFS from 'react-native-fs';
+import DeviceInfo from 'react-native-device-info';
+import FileViewer from 'react-native-file-viewer';
 
 import {
-  generatePDf,
+  getJummahTimingsOfMasjid,
   getSalahTimingsOfMasjid,
 } from '../../../../../../api/masjidController';
 import {
   GapView,
   LogoutModal,
-  MyModal,
   MyText,
   MyTitle,
-  OverlayLoader,
   TimeSheet,
 } from '../../../../../../components';
 import MyDatePicker from '../../../../../../components/MyDatePicker';
-import { SalahTimings } from '../../../../../../types/masjidControllerTypes';
+import {
+  JumuahTimings,
+  SalahTimings,
+} from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
-import { Download, Mail, Publish } from '../../../../../../assets';
+import { Publish } from '../../../../../../assets';
 import { globalStore } from '../../../../../../store/GlobalStates';
 import { GlobalProps } from '../../../../../../types';
-import DeviceInfo from 'react-native-device-info';
-import FileViewer from 'react-native-file-viewer';
 
 export default function History({
   contentOpacity = 0,
+  setFlag,
+  masjidId,
 }: {
   contentOpacity?: any;
+  setFlag: (value: string) => void;
+  masjidId?: number;
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
+  const monthlyScheduleData = useHookstate(userStore.monthlySchedule).get();
   const [adhaTime, setAdhaTime] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [jummaTime, setJummaTime] = useState<JumuahTimings[] | []>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [downloadPrompt, setDownloadPrompt] = useState(false);
-  const [prompt1, setPrompt1] = useState(false);
   const [prompt2, setPrompt2] = useState(false);
   const [filePath, setFilePath] = useState('');
 
   useEffect(() => {
     state.globalLoading.set(true);
-    // setLoading(true);
     getSalahTimingsOfMasjid(
-      userData?.masjid?.id.toString() as string,
+      masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
       moment().startOf('month').format('YYYY-MM-DD'),
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
-      state.globalLoading.set(false);
-      // setLoading(false);
+      getJummahTimingsOfMasjid(
+        masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
+        moment().startOf('month').format('YYYY-MM-DD'),
+      ).then((timings: JumuahTimings[] | undefined) => {
+        setJummaTime(timings!);
+        state.globalLoading.set(false);
+      });
     });
   }, []);
 
   const onDateChange = (e: Date) => {
     setCurrentDate(e);
     state.globalLoading.set(true);
-    // setLoading(true);
     getSalahTimingsOfMasjid(
       userData?.masjid?.id.toString() as string,
       moment(e).startOf('month').format('YYYY-MM-DD') as string,
@@ -75,7 +83,6 @@ export default function History({
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
       state.globalLoading.set(false);
-      // setLoading(false);
     });
 
     // const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
@@ -110,27 +117,6 @@ export default function History({
     setAdhaTime(adhanTiming);
   };
 
-  const sendPDFtoEmail = (email: string) => {
-    setPrompt1(false);
-    state.globalLoading.set(true);
-    // setLoading(true);
-    generatePDf(
-      userData?.masjid?.id.toString() as string,
-      moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
-      true,
-      email?.length < 1 ? [userData?.email!] : [userData?.email!, email],
-    ).then(path => {
-      if (path) {
-        setPrompt2(true);
-        state.globalLoading.set(false);
-        // setLoading(false);
-      } else {
-        state.globalLoading.set(false);
-        // setLoading(false);
-      }
-    });
-  };
-
   const isPermitted = async () => {
     let deviceVersion = DeviceInfo.getSystemVersion();
     if (Platform.OS === 'android' && !Boolean(Number(deviceVersion) >= 11)) {
@@ -141,36 +127,17 @@ export default function History({
         console.log('granted', granted);
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          downloadPDF();
+          state.globalLoading.set(true);
+          downloadFile(monthlyScheduleData?.url!);
         }
       } catch (err) {
         console.log('Write permission err', err);
         return false;
       }
     } else {
-      downloadPDF();
+      state.globalLoading.set(true);
+      downloadFile(monthlyScheduleData?.url!);
     }
-  };
-
-  const downloadPDF = () => {
-    state.globalLoading.set(true);
-    // setLoading(true);
-    generatePDf(
-      userData?.masjid?.id.toString() as string,
-      moment(currentDate).startOf('month').format('YYYY-MM-DD') as string,
-      false,
-      [],
-    ).then(path => {
-      if (path) {
-        // setPrompt2(true);
-        console.log('paths', path);
-        downloadFile(path.filePath);
-        // setLoading(false);
-      } else {
-        state.globalLoading.set(false);
-        // setLoading(false);
-      }
-    });
   };
 
   const downloadFile = (path: string) => {
@@ -214,28 +181,7 @@ export default function History({
   };
 
   return (
-    <View style={{ alignItems: 'center' }}>
-      <View
-        style={{
-          alignSelf: 'center',
-          position: 'absolute',
-          top:
-            Platform.OS == 'ios'
-              ? -WINDOW_WIDTH / 1.6 / 3
-              : -WINDOW_WIDTH / 1.9 / 3,
-        }}>
-        {/* <OverlayLoader isShow={loading} /> */}
-        <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Monthly Schedule" />
-        </Animated.View>
-      </View>
-      <MyModal
-        visible={prompt1}
-        onSend={email => sendPDFtoEmail(email)}
-        message={`Monthly Schedule will emailed to ${userData?.email}.`}
-        title1="Send"
-        onBackDropPress={() => setPrompt1(false)}
-      />
+    <View style={{ flex: 1, alignItems: 'center' }}>
       <LogoutModal
         visible={prompt2}
         message={`Monthly Schedule sent successfully.\nWould you like to download the PDF as well?`}
@@ -270,6 +216,21 @@ export default function History({
         }}
         onClose={() => setDownloadPrompt(false)}
       />
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
+        {/* <OverlayLoader isShow={loading} /> */}
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <MyTitle text="Monthly Schedule" />
+        </Animated.View>
+      </View>
+
       <View>
         <GapView />
         <View
@@ -296,18 +257,18 @@ export default function History({
           <View
             style={{
               position: 'absolute',
-              right: 10,
+              right: 20,
               flexDirection: 'row',
             }}>
-            <TouchableOpacity onPress={() => setPrompt1(true)}>
+            {/* <TouchableOpacity onPress={() => setPrompt1(true)}>
               <Mail />
             </TouchableOpacity>
             <GapView mode="horizontal" />
             <TouchableOpacity onPress={isPermitted}>
               <Download />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <GapView mode="horizontal" />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setFlag('HistSett')}>
               <Publish />
             </TouchableOpacity>
           </View>
@@ -318,7 +279,10 @@ export default function History({
             text="No schedule of current month to show!"
           />
         ) : (
-          <TimeSheet data={convertResponseToData(adhaTime) ?? []} />
+          <TimeSheet
+            data={convertResponseToData(adhaTime) ?? []}
+            jummaData={jummaTime}
+          />
         )}
       </View>
     </View>

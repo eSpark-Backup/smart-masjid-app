@@ -10,6 +10,7 @@ import {
 } from './masjidControllerTypes';
 import {
   FailCheckPhoneId,
+  ScheduleResponse,
   SuccessCheckPhoneId,
   UserResponse,
   UserType,
@@ -31,15 +32,16 @@ export type BottomNavigationParamList = {
   Home: { masjidId?: string } | undefined;
   Search: undefined;
   Device?: { from?: string };
-  Profile: undefined;
+  Profile: { masjidId?: number };
 };
 
 export type GlobalProps = {
   phoneId?: string | null;
-  fcmToken?: string;
+  fcmToken?: string | null;
   isDeviceRegistered?: boolean;
   devSetup?: boolean;
   globalLoading?: boolean;
+  countryCode: string | null;
 };
 
 export type UserStoreProps = {
@@ -48,6 +50,7 @@ export type UserStoreProps = {
   token: UserResponse | null;
   masjidAdmins: UserResponse[];
   userRoles: UserType[];
+  monthlySchedule: ScheduleResponse | null;
 };
 
 export type MasjidStoreProps = {

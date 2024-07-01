@@ -26,6 +26,7 @@ import { GetMasjid } from '../../../../api/masjidController';
 import { masjidStore } from '../../../../store/MasjidStore';
 import { GlobalProps } from '../../../../types';
 import { globalStore } from '../../../../store/GlobalStates';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 export default function ManageMasjid({
   setFlag,
@@ -96,22 +97,36 @@ export default function ManageMasjid({
                       masjidInfo?.city ?? ''
                     } ${masjidInfo?.state ?? ''} ${masjidInfo?.zip ?? ''}`,
                     icon: <LocationSvg width={18} height={18} />,
+                    hidden:
+                      !masjidInfo?.address1 &&
+                      !masjidInfo?.address2 &&
+                      !masjidInfo?.city &&
+                      !masjidInfo?.state &&
+                      !masjidInfo?.zip,
                   },
                   {
                     title: masjidInfo?.website ?? '',
                     icon: <Web width={18} height={18} />,
+                    hidden: !masjidInfo?.website,
                   },
                   {
                     title: masjidInfo?.email ?? '',
                     icon: <Email width={18} height={18} />,
+                    hidden: !masjidInfo?.email,
                   },
                   {
-                    title: masjidInfo?.phone ?? '',
+                    title: masjidInfo?.phone
+                      ? parsePhoneNumber(
+                          masjidInfo?.phone,
+                        ).formatInternational()
+                      : '',
                     icon: <Phone width={18} height={18} />,
+                    hidden: !masjidInfo?.phone,
                   },
                   {
                     title: masjidInfo?.timezone ?? '',
                     icon: <Earth width={18} height={18} />,
+                    hidden: !masjidInfo?.timezone,
                   },
                 ],
               },

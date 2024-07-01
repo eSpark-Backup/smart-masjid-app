@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, View, Modal } from 'react-native';
+import { StyleSheet, View, Modal, TouchableOpacity } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import GapView from '../GapView';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
+import { CloseIcon } from '../../assets';
 
 export default function ErrorModal({
   visible,
@@ -30,12 +32,31 @@ export default function ErrorModal({
       transparent
       statusBarTranslucent>
       <View style={styles.main}>
+        {/* <View style={styles.backDropContainer}>
+          <TouchableOpacity
+            onPress={() => console.log('pressed')}
+            style={styles.backDrop}></TouchableOpacity>
+        </View> */}
         <View style={styles.body}>
+          <TouchableOpacity
+            onPress={onClose}
+            style={{
+              position: 'absolute',
+              right: 5,
+              top: 5,
+            }}>
+            <CloseIcon width={30} height={30} />
+          </TouchableOpacity>
           <MyText text="Wi-Fi Error" textStyle={styles.label} size={16} />
-          <GapView length={20} />
+          <GapView length={10} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
-          <GapView length={20} />
-          <View style={{ flexDirection: 'row', ...styles.bodyText }}>
+          <GapView length={10} />
+          <View
+            style={{
+              flexDirection: 'row',
+              ...styles.bodyText,
+              paddingBottom: 0,
+            }}>
             <MyText
               text={'Note: Restart your Device ( '}
               textStyle={styles.text}
@@ -46,13 +67,19 @@ export default function ErrorModal({
               text="Power Off"
               textStyle={{ fontFamily: 'Roboto-Bold' }}
             />
-            <MyText size={16} text="and" textStyle={styles.text} />
+          </View>
+          <View style={{ flexDirection: 'row', ...styles.bodyText }}>
+            <MyText size={16} text=" and " textStyle={styles.text} />
             <MyText
               size={16}
               text="Power On"
               textStyle={{ fontFamily: 'Roboto-Bold' }}
             />
-            <MyText size={16} text=" )" textStyle={styles.text} />
+            <MyText
+              size={16}
+              text=" ) before taking any action."
+              textStyle={styles.text}
+            />
           </View>
           <GapView length={20} />
           {options?.map(item => (
@@ -76,6 +103,18 @@ const makeStyles = (theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#000000a5',
+    },
+    backDropContainer: {
+      position: 'absolute',
+      width: WINDOW_WIDTH,
+      height: WINDOW_HEIGHT,
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1,
+    },
+    backDrop: {
+      width: WINDOW_WIDTH,
+      height: WINDOW_HEIGHT,
     },
     body: {
       width: '90%',

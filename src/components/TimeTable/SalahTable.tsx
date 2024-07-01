@@ -84,7 +84,7 @@ export default function SalahTable({
 
   return (
     <Card style={styles.container}>
-      <View style={{ padding: 20 }}>
+      <View style={{ padding: 10 }}>
         <View style={styles.headerRow}>
           {headings?.map((value, index) => (
             <View

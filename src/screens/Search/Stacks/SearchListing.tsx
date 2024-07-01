@@ -38,10 +38,14 @@ const SearchListing = ({
   onPress,
   setUserLocation,
   contentOpacity = 0,
+  setLocation,
+  location,
 }: {
   onPress?: (masjidDetail: Masjid) => void;
   setUserLocation?: (e: any) => void;
   contentOpacity: any;
+  setLocation?: (val: boolean) => void;
+  location?: boolean | null;
 }) => {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const isFocused = useIsFocused();
@@ -203,6 +207,7 @@ const SearchListing = ({
       setMasjidList([]);
       if (zipCode == 'Your Location') {
         setZipCode('');
+        setLocation!(false);
       }
     } else {
       setlocationStatus(true);
@@ -211,11 +216,13 @@ const SearchListing = ({
   }
 
   useEffect(() => {
-    _startLocationCheck(_handleGPSProviderEvent);
-    checkLocationAdapter();
-    return () => {
-      _stopLocationCheck();
-    };
+    if (location == null) {
+      _startLocationCheck(_handleGPSProviderEvent);
+      checkLocationAdapter();
+      return () => {
+        _stopLocationCheck();
+      };
+    }
   }, [locationStatus]);
 
   useEffect(() => {
@@ -224,12 +231,22 @@ const SearchListing = ({
     }
   }, [message]);
 
+  console.log(
+    'state.countryCode.get() as string,',
+    state.countryCode.get() as string,
+  );
+
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
     state.globalLoading.set(true);
     // setLoader(true);
     if (zipCode != 'Your Location') {
       setZipCode(zipCode);
-      const res: any = await SearchMasjidByLocation(zipCode, lat, long);
+      const res: any = await SearchMasjidByLocation(
+        zipCode,
+        lat,
+        long,
+        state.countryCode.get() as string,
+      );
       if (res?.length > 0) {
         setMasjidList(res);
       } else {
@@ -255,6 +272,7 @@ const SearchListing = ({
         info.coords.longitude.toString(),
       );
       setZipCode('Your Location');
+      setLocation!(true);
       setMessage('');
       // Search by geo-location (reverse geo-code)
     });
@@ -290,6 +308,7 @@ const SearchListing = ({
               onFocus={() => {
                 if (zipCode == 'Your Location') {
                   setZipCode('');
+                  setLocation!(false);
                 }
               }}
               onCurrentLocationPress={locationAdapterPressed}

@@ -14,7 +14,7 @@ import { SearchMasjidSvg } from '../../assets';
 import { GapView, MyText, OverlayLoader, Rounded } from '../../components';
 import { Wrapper } from '../../containers';
 import { BottomNavigationParamList, GlobalProps } from '../../types';
-import { MasjidDetails, MasjidListing } from './Stacks';
+import { MasjidDetails, MasjidListing, Schedule } from './Stacks';
 import ConnectedDevices from './Stacks/ConnectedDevices';
 import { GetUserDevices } from '../../api/deviceController';
 import { userStore } from '../../store/UserStore';
@@ -23,6 +23,7 @@ import { Masjid } from '../../types/masjidControllerTypes';
 import { masjidStore } from '../../store/MasjidStore';
 import { getListMasjidSubscribedByUser } from '../../api/masjidController';
 import { globalStore } from '../../store/GlobalStates';
+import { GetMonthlySchedule } from '../../api/userController';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -94,7 +95,9 @@ export default function Home() {
   const { params } = useRoute<RouteProps['route']>();
   const isFocused = useIsFocused();
   const state: State<GlobalProps> = useHookstate(globalStore);
+  const countryCode = useHookstate(globalStore.countryCode);
   const userData = useHookstate(userStore.userData).get();
+  const schedule = useHookstate(userStore.monthlySchedule);
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [uniqueObjects, setUniqueObjects] = useState<Masjid[]>([]);
@@ -106,7 +109,6 @@ export default function Home() {
       state.globalLoading.set(true);
       // setLoading(true);
       console.log('token issue hai?', userStore.token.get());
-
       getListMasjidSubscribedByUser(userData?.id?.toString() ?? '').then(
         data => {
           let sData = data as Masjid[];
@@ -122,6 +124,7 @@ export default function Home() {
           setUniqueObjects(uniqueObj);
           if (step == 0 && uniqueObj?.length == 1 && uniqueObj != null) {
             if (typeof uniqueObj?.[0] == 'object') {
+              getScheduleData(uniqueObj?.[0].id);
               setSelectedMasjid(uniqueObj?.[0]);
             }
             setStep(1);
@@ -162,6 +165,18 @@ export default function Home() {
     }
   };
 
+  const getScheduleData = async (masjidId: number) => {
+    const res = await GetMonthlySchedule(masjidId);
+    if (res) {
+      schedule.set(res);
+    } else {
+      schedule.set(null);
+    }
+  };
+
+  console.log('selectedMasjid', selectedMasjid);
+  console.log('countryCode countryCode', countryCode.get());
+
   return (
     <Wrapper
       showBack={step == 0 ? false : uniqueObjects?.length == 1 ? false : true}
@@ -190,6 +205,12 @@ export default function Home() {
               />
             )}
             {step == 2 && (
+              <Schedule
+                contentOpacity={props.contentOpacity}
+                masjidId={selectedMasjid?.id}
+              />
+            )}
+            {step == 3 && (
               <ConnectedDevices contentOpacity={props.contentOpacity} />
             )}
           </>

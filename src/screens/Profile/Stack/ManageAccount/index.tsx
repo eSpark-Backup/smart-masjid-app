@@ -163,15 +163,19 @@ export default function ManageAccount({
     };
     console.log('kia bhej raha hu me??', dataToUpdate);
     if (gotUpdated) {
-      await UpdateUser(
+      const updateStatus = await UpdateUser(
         userData?.id?.toString()!,
         dataToUpdate,
         dataToUpdate?.email ? otp : undefined,
       );
+      if (updateStatus == 200) {
+        onEditPress('');
+        state.globalLoading.set(false);
+      }
+    } else {
+      onEditPress('');
+      state.globalLoading.set(false);
     }
-    onEditPress('');
-    state.globalLoading.set(false);
-    // setLoading(false);
   };
 
   const onDeletePermitted = async () => {

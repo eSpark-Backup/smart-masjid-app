@@ -344,9 +344,10 @@ export async function _updateDevice(
         text2: 'Device details updated successfully',
         type: 'success',
       });
-      if (res.data) return res.data;
+      if (res.data) return res.status;
     } else if (res.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return res.status;
     } else {
       Toast.show({
         text2: res?.data?.message ?? 'Something went wrong',
@@ -355,6 +356,7 @@ export async function _updateDevice(
         visibilityTime: 10000,
       });
       console.log('Problem status when device save', res.problem);
+      return res.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);

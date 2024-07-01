@@ -134,10 +134,11 @@ const DeviceSetting = ({
           ...device!,
           name: text ?? device?.name!,
         });
-        if (res) {
+        if (res == 200) {
           state.globalLoading.set(false);
           // setLoader(false);
           goBack?.();
+          setIsEditable(false);
         }
       } catch (error) {
         crashlytics().recordError(error as Error);
@@ -334,7 +335,6 @@ const DeviceSetting = ({
 
                         if (text?.length! > 0 && pattern.test(text as string)) {
                           updateDeviceName(text, device?.name);
-                          setIsEditable(false);
                         } else if (
                           text?.length! > 0 &&
                           !pattern.test(text as string)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -22,6 +22,10 @@ import {
   ProfileSectionlist,
 } from '../../../../../components';
 import { WINDOW_WIDTH } from '../../../../../constants';
+import { GetMonthlySchedule } from '../../../../../api/userController';
+import { useHookstate } from '@hookstate/core';
+import { masjidStore } from '../../../../../store/MasjidStore';
+import { userStore } from '../../../../../store/UserStore';
 
 export default function SalahSettings({
   setFlag,
@@ -30,6 +34,22 @@ export default function SalahSettings({
   setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
+  const userData = useHookstate(userStore.userData).get();
+  const schedule = useHookstate(userStore.monthlySchedule);
+
+  useEffect(() => {
+    getScheduleData();
+  }, []);
+
+  const getScheduleData = async () => {
+    const res = await GetMonthlySchedule(userData?.masjid.id!);
+    if (res) {
+      schedule.set(res);
+    } else {
+      schedule.set(null);
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -65,7 +85,7 @@ export default function SalahSettings({
                 {
                   title: 'Monthly Schedule',
                   icon: <MonthlyScheduleSVG />,
-                  onPress: () => setFlag('iHist'),
+                  onPress: () => setFlag('Hist'),
                 },
               ],
             },

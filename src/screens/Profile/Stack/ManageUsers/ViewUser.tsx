@@ -5,6 +5,7 @@ import { Email, PeoplesSvg, Phone, ProfileUser } from '../../../../assets';
 import { GapView, MyTitle, ProfileSectionlist } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 export default function ViewUsers({
   setFlag,
@@ -54,7 +55,9 @@ export default function ViewUsers({
                 },
                 {
                   title: 'Phone',
-                  value: user?.phone ?? '-',
+                  value: user?.phone!
+                    ? parsePhoneNumber(user?.phone!).formatInternational()
+                    : '-',
                   icon: <Phone />,
                   onPress: () => console.log('no effect'),
                 },

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, BackHandler, Animated, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHookstate } from '@hookstate/core';
 
@@ -21,7 +25,7 @@ import {
   ManageMasjid,
   SalahTimings,
   IqamahHistory,
-  JummaHistory,
+  ScheduleSettings,
   ManageUsers,
   ViewUser,
   AddUser,
@@ -37,6 +41,8 @@ import { IqamahTime, jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
 import { WINDOW_WIDTH } from '../../constants';
 import { GetUserTypes } from '../../api/userController';
+import { parsePhoneNumber } from 'libphonenumber-js';
+import { getCountry } from 'react-native-localize';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -63,12 +69,13 @@ type ScreenActions = {
 
 export default function Profile() {
   const navigation = useNavigation<ProfileNavigationProp['navigation']>();
+  const route = useRoute<ProfileNavigationProp['route']>();
   const [flag, setFlag] = useState('uInfo');
   const [jummaData, setJummaData] = useState<object | null>(null);
   const [iqamaData, setIqamaData] = useState<IqamahTime | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
   const [clear, setClear] = useState(false);
-  const [up, setUp] = useState(false);
+  const isFocused = useIsFocused();
 
   const titles: Titles = {
     mAcc: 'Manage Account',
@@ -79,12 +86,12 @@ export default function Profile() {
     aSet: 'Adhan Settings',
     iTime: 'Iqama Timings',
     iEdit: 'Iqama Timings',
-    iHist: 'Monthly Schedule',
+    Hist: 'Monthly Schedule',
+    HistSett: 'Monthly Schedule',
     iAdd: 'Iqama Timings',
     jTime: 'Jumuah Timings',
     jEdit: 'Jumuah Timings',
     jAdd: 'Jumuah Timings',
-    jHist: 'Jumuah Timings',
     vUser: 'User Information',
     addUser: 'Add User',
     mUsers: 'Manage Users',
@@ -102,11 +109,11 @@ export default function Profile() {
     iTime: () => setFlag('sTime'),
     jTime: () => setFlag('sTime'),
     iEdit: () => setFlag('iTime'),
-    iHist: () => setFlag('sTime'),
+    Hist: () => setFlag('sTime'),
+    HistSett: () => setFlag('Hist'),
     iAdd: () => setFlag('iTime'),
     jEdit: () => setFlag('jTime'),
     jAdd: () => setFlag('jTime'),
-    jHist: () => setFlag('jTime'),
     vUser: () => setFlag('mUsers'),
     addUser: () => setFlag('mUsers'),
     mUsers: () => setFlag('mMas'),
@@ -141,6 +148,10 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
+    setFlag('uInfo');
+  }, [isFocused]);
+
+  useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
@@ -156,10 +167,7 @@ export default function Profile() {
       bgImageSpacer={false}
       showFooter={false}
       title={getTitle()}
-      avoidKeyboard={flag == 'iAdd' || flag == 'iAdd'}
-      onBackPress={() => handleBack(flag)}
-      setUp={() => setUp(false)}
-      goUp={up}>
+      onBackPress={() => handleBack(flag)}>
       {({ props }) => {
         const componentMapping: ComponentMap = {
           uInfo: (
@@ -206,7 +214,19 @@ export default function Profile() {
               selectedIqamah={obj => setIqamaData(obj)}
             />
           ),
-          iHist: <IqamahHistory contentOpacity={props.contentOpacity} />,
+          Hist: (
+            <IqamahHistory
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              masjidId={route?.params?.masjidId}
+            />
+          ),
+          HistSett: (
+            <ScheduleSettings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+            />
+          ),
           iEdit: (
             <EditIqamahTimings
               contentOpacity={props.contentOpacity}
@@ -220,7 +240,6 @@ export default function Profile() {
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
               iqamahType={'Add'}
-              getUp={() => setUp(true)}
             />
           ),
           jTime: (
@@ -243,12 +262,6 @@ export default function Profile() {
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
               jummaType={'Add'}
-            />
-          ),
-          jHist: (
-            <JummaHistory
-              contentOpacity={props.contentOpacity}
-              setFlag={(value: string) => setFlag(value)}
             />
           ),
           mUsers: (

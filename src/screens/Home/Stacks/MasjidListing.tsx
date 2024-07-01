@@ -11,6 +11,9 @@ import { AllSalahTimings, Masjid } from '../../../types/masjidControllerTypes';
 import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
 import { WINDOW_WIDTH } from '../../../constants';
 import { Text } from 'react-native-animatable';
+import { useHookstate } from '@hookstate/core';
+import { userStore } from '../../../store/UserStore';
+import { GetMonthlySchedule } from '../../../api/userController';
 
 export default function MasjidListing({
   data,
@@ -25,6 +28,7 @@ export default function MasjidListing({
 }) {
   const navigation = useNavigation();
   const [allTimes, setAllTimes] = useState<AllSalahTimings[]>([]);
+  const schedule = useHookstate(userStore.monthlySchedule);
 
   useEffect(() => {
     getSalahTimings(data);
@@ -85,6 +89,17 @@ export default function MasjidListing({
   };
 
   // console.log('allTimes', JSON.stringify(allTimes));
+  const getScheduleData = async (masjidId: number, item: any) => {
+    onPress(item);
+    const res = await GetMonthlySchedule(masjidId);
+    if (res) {
+      schedule.set(res);
+      setStep(1);
+    } else {
+      schedule.set(null);
+      setStep(1);
+    }
+  };
 
   return (
     <View>
@@ -110,8 +125,7 @@ export default function MasjidListing({
             <MasjidListCard
               key={index}
               onPress={() => {
-                setStep(1);
-                onPress(item);
+                getScheduleData(item.id, item);
               }}
               masjidName={item.name ?? ''}
               masjidLogo={item.logo ? { uri: item.logo } : undefined}

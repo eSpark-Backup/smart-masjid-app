@@ -8,10 +8,10 @@ export {
   IqamahTimings,
   IqamahHistory,
   EditIqamahTimings,
+  ScheduleSettings,
 } from './ManageMasjid/SalahTimings/IqamahTimings';
 export {
   JummaTimings,
-  JummaHistory,
   EditJummaTimings,
 } from './ManageMasjid/SalahTimings/JummaTimings';
 export { default as ManageUsers } from './ManageUsers';

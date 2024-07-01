@@ -11,6 +11,7 @@ import {
 } from '../types/masjidControllerTypes';
 import { LogoutUser } from './userController';
 import { userStore } from '../store/UserStore';
+import { getCountry } from 'react-native-localize';
 
 /**
  *
@@ -100,7 +101,7 @@ export const AddMasjidIqamahTiming = async (
   try {
     console.log('start result');
     const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
-    console.log('result.data', result);
+    console.log('result.data', result.status);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
       return result.status;
@@ -453,12 +454,12 @@ export const SearchMasjidByLocation = async (
   zipcode: string | number = '',
   lat: string | number = 0,
   long: string | number = 0,
+  userCountry: string,
 ) => {
   console.log('lat long', lat, long);
-
   try {
     const result: any = await api.get(
-      `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&distance=100`,
+      `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&country=${userCountry}&distance=100`,
     );
     console.log('result', result);
 
@@ -545,6 +546,38 @@ export const getSalahTimingsOfMasjid = async (
 };
 
 /**
+ * Get Jumuah timings of a masjid for a specific month.
+ *
+ * @param masjidId - The ID of the masjid.
+ * @param [date] - The date for which Salah timings are requested. Optional.
+ * @returns An array of Salah timings for the masjid or undefined if there is an error.
+ */
+export const getJummahTimingsOfMasjid = async (
+  masjidId: string,
+  date?: string,
+) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/jumuah/monthly`, {
+      date: date?.toString(),
+    });
+    if (result.status == 200 && result.data) {
+      const timings = result?.data;
+      return timings;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
+    }
+  } catch (error) {
+    console.log('getJumuahTimingsOfMasjid error: ', error);
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
  * Generate Monthly Schedule PDF of a masjid for a specific month.
  *
  * @param masjidId - The ID of the masjid.
@@ -553,17 +586,16 @@ export const getSalahTimingsOfMasjid = async (
  * @returns An array of Salah timings for the masjid or undefined if there is an error.
  */
 export const generatePDf = async (
-  masjidId: string,
-  date: string,
-  sendEmail: boolean,
+  masjidId: number,
+  scheduleId: number,
   emails: string[],
 ) => {
   try {
-    console.log('masjidId, date, sendEmail', masjidId, date, sendEmail, emails);
+    console.log('masjidId, scheduleId, emails', masjidId, scheduleId, emails);
 
     const result: any = await api.post(
-      `/masjid/${masjidId}/monthly/pdf?date=${date.toString()}&sendEmail=${sendEmail}`,
-      { emails: emails },
+      `/masjid/${masjidId}/monthly-schedule/email`,
+      { scheduleId: scheduleId.toString(), emails: emails },
     );
     console.log('result', result);
     console.log('result.data', result.data);

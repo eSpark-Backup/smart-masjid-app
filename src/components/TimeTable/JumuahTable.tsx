@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerCol: { width: '40%', alignItems: 'flex-start' },
   headerIcon: {
     alignItems: 'flex-start',
     justifyContent: 'center',

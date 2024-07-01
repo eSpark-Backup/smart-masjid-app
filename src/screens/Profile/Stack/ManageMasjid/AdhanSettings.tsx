@@ -128,9 +128,8 @@ export default function AdhanSettings({
 
   const renderAdhanConfig = (item: any) =>
     item?.val ? (
-      <TouchableOpacity
+      <View
         key={item.id}
-        activeOpacity={0.8}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -151,7 +150,7 @@ export default function AdhanSettings({
             lines={1}
           />
         </View>
-      </TouchableOpacity>
+      </View>
     ) : null;
 
   return (

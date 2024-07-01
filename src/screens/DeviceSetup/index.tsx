@@ -106,6 +106,7 @@ export default function DeviceSetupScreen() {
     btnText?: string;
     onPress?: () => void;
     points?: string[];
+    isSuccess?: boolean;
   }>({
     title: undefined,
     message: undefined,
@@ -271,6 +272,7 @@ export default function DeviceSetupScreen() {
           }
         },
         points: [...new Set(issues)],
+        isSuccess: false,
       }));
     }
   }, [issues]);
@@ -412,11 +414,13 @@ export default function DeviceSetupScreen() {
           'Device is powered on',
           'Phone is within range of the device',
           'Device light is yellow',
-          'WiFi is working',
+          'WiFi is working (2.4 Ghz only)',
+          'WiFi password entered is correct',
         ],
         onPress: () => {
           setRetry(true);
         },
+        isSuccess: true,
       }));
     }
   };
@@ -632,11 +636,13 @@ export default function DeviceSetupScreen() {
           'Device is powered on',
           'Phone is within range of the device',
           'Device light is yellow',
-          'WiFi is working',
+          'WiFi is working (2.4 Ghz only)',
+          'WiFi password entered is correct',
         ],
         onPress: () => {
           setRetry(true);
         },
+        isSuccess: true,
       }));
       const res = await _resetDevice(deviceId);
       console.log('kia mila delte pr', res);
@@ -713,11 +719,11 @@ export default function DeviceSetupScreen() {
                   'Device is powered on',
                   'Phone is within range of the device',
                   'Device light is yellow',
-                  'WiFi is working',
                 ],
                 onPress: () => {
                   setRetry(true);
                 },
+                isSuccess: true,
               }));
             } else {
               console.log('====== step 2 jana chahta ha', iosScannedData);
@@ -730,11 +736,11 @@ export default function DeviceSetupScreen() {
                   'Device is powered on',
                   'Phone is within range of the device',
                   'Device light is yellow',
-                  'WiFi is working',
                 ],
                 onPress: () => {
                   setRetry(true);
                 },
+                isSuccess: true,
               }));
             }
           }
@@ -928,7 +934,7 @@ export default function DeviceSetupScreen() {
                 heading="Device Setup"
                 titleSize={16}
                 onSkip={handleSkip}
-                isSuccess={false}
+                isSuccess={toastContent.isSuccess ?? true}
                 btnText={toastContent.btnText ?? 'Try Again'}
                 onPress={toastContent.onPress}
                 title={toastContent.title ?? 'Device setup error'}
@@ -938,7 +944,8 @@ export default function DeviceSetupScreen() {
                     'Device is powered on',
                     'Phone is within range of the device',
                     'Device light is yellow',
-                    'WiFi is working',
+                    'WiFi is working (2.4 Ghz only)',
+                    'WiFi password entered is correct',
                   ]
                 }
               />

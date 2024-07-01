@@ -34,9 +34,6 @@ export default function Wrapper({
   bgImageSpacer = true,
   showBack = true,
   title = '',
-  avoidKeyboard = false,
-  goUp = false,
-  setUp,
 }: {
   children: ({
     props,
@@ -50,9 +47,6 @@ export default function Wrapper({
   bgImageSpacer?: boolean;
   showBack?: boolean;
   title?: string;
-  avoidKeyboard?: boolean;
-  goUp?: boolean;
-  setUp?: () => void;
 }) {
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -80,22 +74,6 @@ export default function Wrapper({
     outputRange: [1, 0],
     extrapolate: 'clamp',
   });
-
-  useEffect(() => {
-    if (goUp) {
-      console.log('goUPPPP', goUp);
-
-      scrollToTop();
-      setUp?.();
-    }
-  }, [goUp]);
-
-  const scrollToTop = async () => {
-    await listRef?.current?.scrollTo({ y: 0 });
-    setTimeout(() => {
-      onBackPress?.();
-    }, 500);
-  };
 
   return (
     <>
@@ -171,7 +149,7 @@ export default function Wrapper({
                   ? HeaderIOSBackgroundImage
                   : HeaderBackgroundImage
               }> */}
-          <Header onBackPress={scrollToTop} showBack={showBack} />
+          <Header onBackPress={onBackPress} showBack={showBack} />
           {/* <KeyboardAvoidingView
             behavior={avoidKeyboard ? 'position' : undefined}
             style={{ flex: 1, zIndex: 0 }}> */}

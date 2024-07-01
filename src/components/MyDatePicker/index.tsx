@@ -19,6 +19,7 @@ export default function MyDatePicker({
   dateFormat,
   showLabel,
   disablePicker,
+  hideChevs,
 }: {
   disablePicker?: boolean;
   onDateChange?: (e: any) => void;
@@ -28,6 +29,7 @@ export default function MyDatePicker({
   maximumDate?: Date | undefined;
   showLabel?: boolean;
   dateFormat?: 'Monthly' | 'FullDate';
+  hideChevs?: boolean;
 }) {
   const [date, setDate] = useState<any>(new Date());
   const [mode, setMode] = useState('date');
@@ -136,17 +138,19 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          <TouchableOpacity
-            disabled={!moment(date).isAfter(minimumDate)}
-            onPress={prevDate}>
-            <II
-              color={
-                moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
-              }
-              name="md-chevron-back"
-              size={24}
-            />
-          </TouchableOpacity>
+          {!hideChevs && (
+            <TouchableOpacity
+              disabled={!moment(date).isAfter(minimumDate)}
+              onPress={prevDate}>
+              <II
+                color={
+                  moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
+                }
+                name="md-chevron-back"
+                size={24}
+              />
+            </TouchableOpacity>
+          )}
           <GapView length={10} mode="horizontal" />
           <TouchableOpacity
             activeOpacity={0.9}
@@ -161,17 +165,21 @@ export default function MyDatePicker({
             />
           </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          <TouchableOpacity
-            disabled={!moment(date).isBefore(maximumDate)}
-            onPress={nextDate}>
-            <II
-              color={
-                moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
-              }
-              name="md-chevron-forward"
-              size={24}
-            />
-          </TouchableOpacity>
+          {!hideChevs && (
+            <TouchableOpacity
+              disabled={!moment(date).isBefore(maximumDate)}
+              onPress={nextDate}>
+              <II
+                color={
+                  moment(date).isBefore(maximumDate)
+                    ? colors.primary
+                    : '#bdbdbd'
+                }
+                name="md-chevron-forward"
+                size={24}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </>
     );

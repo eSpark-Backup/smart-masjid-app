@@ -17,6 +17,7 @@ import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
 import { WINDOW_WIDTH } from '../../constants';
 import { _requestUserLocationPermission } from '../../utils/functions';
+import { Tooltip } from '..';
 
 export default function MyToast({
   heading,
@@ -169,18 +170,26 @@ const Points = ({
               size={16}
               textStyle={{ color: '#3e3e3e', fontSize: 16 }}
             />
-            <GapView mode="horizontal" length={10} />
+            {item == 'WiFi is working (2.4 Ghz only)' && (
+              <>
+                <GapView length={5} mode="horizontal" />
+                <Tooltip content="Please connect to 2.4Ghz network temporarily to setup your device." />
+              </>
+            )}
             {item == 'Location permission denied' && (
-              <TouchableOpacity
-                onPress={_requestUserLocationPermission}
-                style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <MyText
-                  text={'Enable'}
-                  size={16}
-                  textStyle={{ color: '#006870', fontSize: 16 }}
-                />
-                <OpenLink width={14} height={14} />
-              </TouchableOpacity>
+              <>
+                <GapView mode="horizontal" length={10} />
+                <TouchableOpacity
+                  onPress={_requestUserLocationPermission}
+                  style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <MyText
+                    text={'Enable'}
+                    size={16}
+                    textStyle={{ color: '#006870', fontSize: 16 }}
+                  />
+                  <OpenLink width={14} height={14} />
+                </TouchableOpacity>
+              </>
             )}
           </View>
         </View>

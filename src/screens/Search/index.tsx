@@ -33,6 +33,7 @@ export default function Search() {
   const [loading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
+  const [location, setLocation] = useState<null | boolean>(null);
 
   useEffect(() => {
     if (isFocused) {
@@ -122,6 +123,8 @@ export default function Search() {
                   setSelectedMasjid(masjidDetails);
                 }}
                 setUserLocation={setUserLocation}
+                location={location}
+                setLocation={val => setLocation(val)}
               />
             )}
 
