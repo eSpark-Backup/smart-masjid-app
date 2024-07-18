@@ -44,9 +44,11 @@ const TimeTableCard = ({
                 </TouchableOpacity>
               ) : null}
               <GapView length={5} mode="horizontal" />
-              <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
-                <EditPencil />
-              </TouchableOpacity>
+              {onEdit ? (
+                <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
+                  <EditPencil />
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
           <GapView />
@@ -55,13 +57,13 @@ const TimeTableCard = ({
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: data.length > 3 ? 'space-between' : 'flex-start',
+              justifyContent: data?.length > 3 ? 'space-between' : 'flex-start',
             }}>
-            {data.map(v => {
+            {data?.map(v => {
               return (
                 <View
                   key={v.name}
-                  style={{ marginRight: data.length > 3 ? 0 : 20 }}>
+                  style={{ marginRight: data?.length > 3 ? 0 : 20 }}>
                   <MyText
                     textStyle={{ textTransform: 'capitalize' }}
                     text={v.name}

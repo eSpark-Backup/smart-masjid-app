@@ -1,7 +1,10 @@
-import React from 'react';
-import { Theme, useTheme } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { StyleSheet, Platform, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useHookstate } from '@hookstate/core';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import DeviceCountry from 'react-native-device-country';
 
 import { Home, Search, Device, Profile } from '../screens';
 import {
@@ -14,7 +17,11 @@ import {
   SearchActiveSvg,
   SearchSvg,
 } from '../assets';
-import { BottomNavigationParamList } from '../types';
+import { BottomNavigationParamList, RootStackParamList } from '../types';
+import { globalStore } from '../store/GlobalStates';
+import { requestLocation } from '../utils/functions';
+import { getCountry } from 'react-native-localize';
+import { create } from 'apisauce';
 
 const Tab = createBottomTabNavigator<BottomNavigationParamList>();
 
@@ -49,10 +56,62 @@ const TabIcon = (screen: string, isFocused: boolean) => {
   }
 };
 
+type DSetupNavigationProps = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'DSetup'
+>;
+
 function HomeBottomTab() {
   const theme: Theme = useTheme();
   const { colors } = theme;
   const styles = makeStyles(theme);
+  const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
+  const countryCode = useHookstate(globalStore.countryCode);
+
+  const devSetup = useHookstate(globalStore.devSetup);
+
+  useEffect(() => {
+    if (devSetup.get()) {
+      navigation.navigate('DSetup');
+    }
+  }, []);
+  useEffect(() => {
+    getCountryCode();
+  }, []);
+
+  const getCountryCode = async () => {
+    const getIPAPI = create({
+      baseURL: 'https://icanhazip.com',
+    });
+    const getIPInfoAPI = create({
+      baseURL: 'https://get.geojs.io/v1/ip/country',
+    });
+    const IPRes = await getIPAPI.get<any>('/');
+    console.log('IPRes>>>', IPRes);
+    const IP = IPRes.data.trim();
+    // const IP = IPRes.data.replace(/(\r\n|\n|\r)/gm, '');
+    if (IPRes.ok) {
+      const IPInfoRes = await getIPInfoAPI.get<{ country: string }>(
+        `/${IP}` + '.json',
+      );
+      console.log('IPInfoRes>>>', IPInfoRes);
+
+      if (IPInfoRes.ok) {
+        countryCode.set(IPInfoRes.data?.country as string);
+      } else {
+        const codeRes = await DeviceCountry.getCountryCode();
+        countryCode.set(codeRes.code.toUpperCase());
+        console.log('codeRescodeRes', codeRes);
+      }
+    } else {
+      const codeRes = await DeviceCountry.getCountryCode();
+      countryCode.set(codeRes.code.toUpperCase());
+      console.log('codeRescodeRes', codeRes);
+    }
+  };
+
+  console.log('devSetup.get()', devSetup.get());
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -67,12 +126,21 @@ function HomeBottomTab() {
         tabBarActiveTintColor: colors?.primary,
         tabBarInactiveTintColor: '#9E9F9F',
         tabBarStyle: styles.tabBar,
-        tabBarShowLabel: false,
+        tabBarLabelStyle: styles.tabBarLabelStyle,
+        tabBarShowLabel: true,
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="Device" component={Device} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Device"
+        component={Device}
+        options={{ tabBarLabel: 'Devices' }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{ tabBarLabel: 'Account' }}
+      />
     </Tab.Navigator>
   );
 }
@@ -92,11 +160,15 @@ const makeStyles = (theme: Theme) => {
       height: 65,
       alignItems: 'center',
       justifyContent: 'center',
+      // backgroundColor: 'red',
     },
     tabBarLabelStyle: {
-      color: '#9E9F9F',
-      fontSize: 14,
-      bottom: Platform.OS == 'android' ? 18 : 0,
+      // color: '#9E9F9F',
+      fontSize: 8,
+      bottom: Platform.OS == 'android' ? 12 : undefined,
+      top: Platform.OS == 'ios' ? 14 : undefined,
+      fontFamily: 'Roboto-Regular',
+      // backgroundColor: 'red',
     },
     ActiveTabBarLabelStyle: {
       color: colors.primary,

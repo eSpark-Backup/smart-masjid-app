@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, {
@@ -23,7 +23,7 @@ import { globalStore } from '../store/GlobalStates';
 import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
 import { userStore } from '../store/UserStore';
 import { UserResponse, UserToken } from '../types/userControllerApiResponse';
-import { OverlayLoader } from '../components';
+import { BlurBackground, OverlayLoader } from '../components';
 import {
   GetCountryCodes,
   RefreshToken,
@@ -141,10 +141,20 @@ export default function App() {
       }
     });
 
-    setTimeout(() => {
-      SplashScreen.hide();
-    }, 5000);
+    // SplashScreen.hide();
+    //   setTimeout(() => {
+    //   SplashScreen.hide();
+    // }, 5000);
   }, []);
+
+  useEffect(() => {
+    if (checkedId != null) {
+      SplashScreen.hide();
+      state.globalLoading.set(false);
+    } else {
+      state.globalLoading.set(true);
+    }
+  }, [checkedId]);
 
   const handleDeviceIdCheck = useCallback(async () => {
     const res = await getUniqueId();
@@ -167,6 +177,7 @@ export default function App() {
   }, []);
 
   console.log('checkid', checkedId);
+  console.log('devSetup', state.devSetup.get());
   console.log('userData.get()?.id', userData.get()?.id);
 
   if (checkedId !== null) {
@@ -191,10 +202,26 @@ export default function App() {
                   <Stack.Screen name="Welcome" component={WelcomeScreen} />
                 </>
               )}
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
           ) : (
             <Stack.Group>
+              {/* {state.devSetup.get() ? (
+                <>
+                  <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+                  <Stack.Screen
+                    name="HomeBottomTab"
+                    component={HomeBottomTab}
+                  />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="HomeBottomTab"
+                    component={HomeBottomTab}
+                  />
+                  <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+                </>
+              )} */}
               <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
               <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
             </Stack.Group>
@@ -205,6 +232,11 @@ export default function App() {
           topOffset={StatusBar.currentHeight}
           visibilityTime={5000}
         />
+        <OverlayLoader
+          loaderColor={'rgb(0, 104, 112)'}
+          isShow={Boolean(state.globalLoading.get())}
+        />
+        {/* <BlurBackground show={true} /> */}
       </NavigationContainer>
     );
   } else {

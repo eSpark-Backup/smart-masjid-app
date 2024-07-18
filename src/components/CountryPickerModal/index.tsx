@@ -103,7 +103,7 @@ export default function CountryModal({
                         contentContainerStyle={[
                           {
                             flexGrow: 1,
-                            width: WINDOW_WIDTH - 80,
+                            width: WINDOW_WIDTH - 45,
                             alignSelf: 'center',
                             marginTop: 10,
                           },
@@ -115,8 +115,11 @@ export default function CountryModal({
                           const Flag =
                             CountryFlags[item.iso_code] ?? UnknownFlag;
                           return (
-                            <Card width={WINDOW_WIDTH - 85}>
+                            <Card
+                              width={WINDOW_WIDTH - 50}
+                              style={{ margin: 2 }}>
                               <TouchableOpacity
+                                activeOpacity={0.5}
                                 style={{
                                   flexDirection: 'row',
                                   alignItems: 'center',

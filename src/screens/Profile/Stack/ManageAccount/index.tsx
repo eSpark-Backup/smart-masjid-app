@@ -1,4 +1,4 @@
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -33,10 +33,16 @@ import { userStore } from '../../../../store/UserStore';
 import { isValidPhoneNumber } from '../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { Card } from '../../../../containers';
-import { BottomNavigationParamList, CountryCodes } from '../../../../types';
+import {
+  BottomNavigationParamList,
+  CountryCodes,
+  GlobalProps,
+} from '../../../../types';
 import { OtpForm } from '../../ProfileForms';
 import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
 import { deviceStore } from '../../../../store/DeviceStore';
+import { GetUserDevices } from '../../../../api/deviceController';
+import { globalStore } from '../../../../store/GlobalStates';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -55,6 +61,7 @@ export default function ManageAccount({
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const { colors }: Theme = useTheme();
 
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [isVisible, setIsVisible] = useState(false);
   const [isDVisible, setIsDVisible] = useState(false);
   const [country, setCountry] = useState<CountryCodes>();
@@ -96,7 +103,7 @@ export default function ManageAccount({
   ]);
 
   const onEditPress = (key: string) => {
-    const newData = displayData.map(data => {
+    const newData = displayData?.map(data => {
       if (data.key == key) {
         return {
           ...data,
@@ -121,7 +128,7 @@ export default function ManageAccount({
   };
 
   const clearSelection = () => {
-    const newData = displayData.map(data => {
+    const newData = displayData?.map(data => {
       return {
         ...data,
         editable: false,
@@ -138,8 +145,9 @@ export default function ManageAccount({
     setDisplayingData([...newData]);
   };
 
-  const onSave = async () => {
-    setLoading(true);
+  const onSave = async (otp?: string) => {
+    state.globalLoading.set(true);
+    // setLoading(true);
     const isValidPhone = await isValidPhoneNumber(data.phone, country);
     if (!isValidPhone) {
       return;
@@ -155,16 +163,58 @@ export default function ManageAccount({
     };
     console.log('kia bhej raha hu me??', dataToUpdate);
     if (gotUpdated) {
-      await UpdateUser(userData?.id?.toString()!, dataToUpdate);
+      const updateStatus = await UpdateUser(
+        userData?.id?.toString()!,
+        dataToUpdate,
+        dataToUpdate?.email ? otp : undefined,
+      );
+      if (updateStatus == 200) {
+        onEditPress('');
+        state.globalLoading.set(false);
+      }
+    } else {
+      onEditPress('');
+      state.globalLoading.set(false);
     }
-    onEditPress('');
-    setLoading(false);
+  };
+
+  const onDeletePermitted = async () => {
+    state.globalLoading.set(true);
+    // setLoading(true);
+    setIsDVisible(false);
+    if (devices?.length > 0) {
+      navigation.navigate('Device');
+      Toast.show({
+        text1: 'Warning!',
+        text2: 'Delete your devices before account deletion!',
+        type: 'warning',
+      });
+      state.globalLoading.set(true);
+      // setLoading(true);
+    } else {
+      let devs = await GetUserDevices(userData?.id.toString() as string);
+      if (devs?.length > 0) {
+        navigation.navigate('Device');
+        Toast.show({
+          text1: 'Warning!',
+          text2: 'Delete your devices before account deletion!',
+          type: 'warning',
+        });
+        state.globalLoading.set(false);
+        // setLoading(false);
+      } else {
+        await DeleteUser(userData?.id?.toString() ?? '');
+        state.globalLoading.set(false);
+        // setLoading(false);
+      }
+    }
   };
 
   return (
-    <TouchableWithoutFeedback onPress={clearSelection}>
+    <TouchableWithoutFeedback
+      onPress={!showVerification ? clearSelection : undefined}>
       <View style={{ flex: 1 }}>
-        <OverlayLoader isShow={loading} />
+        {/* <OverlayLoader isShow={loading} /> */}
         {!showVerification ? (
           <>
             <View
@@ -183,7 +233,7 @@ export default function ManageAccount({
             <View>
               <MyText text="Tap to edit" textStyle={{ alignSelf: 'center' }} />
               <GapView />
-              {displayData.map((val, ind) => {
+              {displayData?.map((val, ind) => {
                 if (!val.editable) {
                   return (
                     <TouchableOpacity
@@ -224,12 +274,13 @@ export default function ManageAccount({
                         width: WINDOW_WIDTH - 60,
                         alignSelf: 'center',
                       }}>
-                      <Card backgroundColor="#ffffff">
+                      <Card noShadow>
                         {val.key != 'phone' ? (
                           <View
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
+                              backgroundColor: '#f8fbfb',
                             }}>
                             <GapView mode="horizontal" />
                             {val.icon}
@@ -256,6 +307,7 @@ export default function ManageAccount({
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
+                              backgroundColor: '#f8fbfb',
                             }}>
                             <GapView mode="horizontal" />
                             {val.icon}
@@ -313,7 +365,16 @@ export default function ManageAccount({
                         displayData.find(val => val.editable)?.key ?? '',
                       )
                     ) {
-                      setLoading(true);
+                      const oldData: any = userData;
+                      const gotUpdated =
+                        data[displayData.find(val => val.editable)?.key!] !=
+                        oldData[displayData.find(val => val.editable)?.key!];
+                      if (!gotUpdated) {
+                        clearSelection();
+                        return;
+                      }
+                      state.globalLoading.set(true);
+                      // setLoading(true);
                       const email = data['email'];
                       const phoneNo = data['phone'];
                       const activeKey = displayData.find(
@@ -325,7 +386,8 @@ export default function ManageAccount({
                           country,
                         );
                         if (!isValidPhone) {
-                          setLoading(false);
+                          state.globalLoading.set(false);
+                          // setLoading(false);
                           return;
                         }
                         if (Boolean(phoneNo) == false) {
@@ -334,7 +396,8 @@ export default function ManageAccount({
                             type: 'error',
                             visibilityTime: 10000,
                           });
-                          setLoading(false);
+                          state.globalLoading.set(false);
+                          // setLoading(false);
                           return;
                         }
                       }
@@ -343,7 +406,8 @@ export default function ManageAccount({
                         activeKey == 'phone' ? phoneNo : '',
                       );
                       setFlag('mAccOtp');
-                      setLoading(false);
+                      state.globalLoading.set(false);
+                      // setLoading(false);
                     } else {
                       onSave();
                     }
@@ -373,7 +437,10 @@ export default function ManageAccount({
                     />
                   </TouchableOpacity>
                   <GapView length={20} />
-                  <TouchableOpacity onPress={() => setIsDVisible(true)}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIsDVisible(true);
+                    }}>
                     <MyText
                       size={18}
                       text={'Delete Account'}
@@ -387,10 +454,12 @@ export default function ManageAccount({
               message="Do you wish to logout?"
               visible={isVisible}
               onAllowed={async () => {
-                setLoading(true);
+                state.globalLoading.set(true);
+                // setLoading(true);
                 setIsVisible(!isVisible);
                 await LogoutUser(userData?.id?.toString() ?? '', true);
-                setLoading(false);
+                state.globalLoading.set(false);
+                // setLoading(false);
                 console.log('Logged Out');
               }}
               onClose={() => {
@@ -403,21 +472,7 @@ export default function ManageAccount({
               visible={isDVisible}
               title1={'No'}
               title2={'Yes'}
-              onAllowed={async () => {
-                console.log('userData', userData);
-                if (devices?.length > 0) {
-                  navigation.navigate('Device');
-                  Toast.show({
-                    text1: 'Warning!',
-                    text2: 'Delete your devices before account deletion!',
-                    type: 'warning',
-                  });
-                  setIsDVisible(false);
-                } else {
-                  await DeleteUser(userData?.id?.toString() ?? '');
-                  setIsDVisible(false);
-                }
-              }}
+              onAllowed={onDeletePermitted}
               onClose={() => {
                 setIsDVisible(false);
                 console.log('Cancelled');
@@ -427,16 +482,27 @@ export default function ManageAccount({
         ) : (
           <>
             <OtpForm
-              title="Verification"
-              userEmail={data.email}
-              userPhone={data.phone}
+              title="Manage Account"
+              contentOpacity={contentOpacity}
+              userEmail={
+                displayData.find(val => val.editable)?.key == 'email'
+                  ? data.email
+                  : undefined
+              }
+              userPhone={
+                displayData.find(val => val.editable)?.key == 'phone'
+                  ? data.phone
+                  : undefined
+              }
               goBack={() => {
                 setFlag('mAcc');
-                clearSelection();
+                // clearSelection();
               }}
               setStep={async (value: string) => {
-                setLoading(true);
+                state.globalLoading.set(true);
+                // setLoading(true);
                 const activeKey = displayData.find(val => val.editable)?.key;
+
                 const isVerified = await ValidateOTP(
                   value,
                   activeKey == 'email' ? data.email : '',
@@ -445,10 +511,11 @@ export default function ManageAccount({
                 console.log('isVerified', isVerified);
                 if (isVerified) {
                   clearSelection();
-                  onSave();
+                  onSave(value);
                   setFlag('mAcc');
                 } else {
-                  setLoading(false);
+                  state.globalLoading.set(false);
+                  // setLoading(false);
                 }
               }}
               onResend={async () => {

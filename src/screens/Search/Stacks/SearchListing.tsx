@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   Platform,
   Animated,
+  AppState,
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -28,21 +29,49 @@ import { Masjid } from '../../../types/masjidControllerTypes';
 import { ListEmptyComponent } from '../../Home';
 import { _requestUserLocationPermission } from '../../../utils/functions';
 import { _startLocationCheck, _stopLocationCheck } from '../utils/functions';
+import { useIsFocused } from '@react-navigation/native';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../../store/GlobalStates';
+import { GlobalProps } from '../../../types';
 
 const SearchListing = ({
   onPress,
   setUserLocation,
   contentOpacity = 0,
+  setLocation,
+  location,
 }: {
   onPress?: (masjidDetail: Masjid) => void;
   setUserLocation?: (e: any) => void;
   contentOpacity: any;
+  setLocation?: (val: boolean) => void;
+  location?: boolean | null;
 }) => {
+  const state: State<GlobalProps> = useHookstate(globalStore);
+  const isFocused = useIsFocused();
   const [masjidList, setMasjidList] = useState<Masjid[]>([]);
   const [zipCode, setZipCode] = useState('');
   const [loader, setLoader] = useState(false);
   const [locationStatus, setlocationStatus] = useState(false);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (isFocused) {
+      const subscription = AppState.addEventListener(
+        'change',
+        async appState => {
+          if (appState == 'active') {
+            const enable = await systemSetting.isLocationEnabled();
+            checkLocation(enable, false);
+          }
+        },
+      );
+
+      return () => {
+        subscription.remove();
+      };
+    }
+  }, [isFocused]);
 
   const checkLocation = async (locationStatus: boolean, pressed?: boolean) => {
     try {
@@ -67,8 +96,9 @@ const SearchListing = ({
           ) {
             if (pressed) {
               Toast.show({
-                text2: 'Enable Location Permission \n Turn on Location',
-                type: 'warning',
+                text1: 'Alert!',
+                text2: 'Enable Location Permission & Turn on Location',
+                type: 'success',
                 visibilityTime: 10000,
               });
             } else {
@@ -77,8 +107,9 @@ const SearchListing = ({
           } else if (locationStatus == false) {
             if (pressed) {
               Toast.show({
+                text1: 'Alert!',
                 text2: 'Turn on Location',
-                type: 'warning',
+                type: 'success',
               });
             } else {
               setMessage('');
@@ -86,8 +117,9 @@ const SearchListing = ({
           } else {
             if (pressed) {
               Toast.show({
+                text1: 'Alert!',
                 text2: 'Enable Location Permission',
-                type: 'warning',
+                type: 'success',
               });
             } else {
               setMessage('Enable Location Permission');
@@ -108,8 +140,9 @@ const SearchListing = ({
         ) {
           if (pressed) {
             Toast.show({
-              text2: 'Enable Location Permission \n Turn on Location',
-              type: 'warning',
+              text1: 'Alert!',
+              text2: 'Enable Location Permission & Turn on Location',
+              type: 'success',
               visibilityTime: 10000,
             });
           } else {
@@ -119,8 +152,9 @@ const SearchListing = ({
         } else if (locationStatus == false) {
           if (pressed) {
             Toast.show({
+              text1: 'Alert!',
               text2: 'Turn on Location',
-              type: 'warning',
+              type: 'success',
             });
           } else {
             setMessage('');
@@ -128,8 +162,9 @@ const SearchListing = ({
         } else {
           if (pressed) {
             Toast.show({
+              text1: 'Alert!',
               text2: 'Enable Location Permission',
-              type: 'warning',
+              type: 'success',
             });
           } else {
             setMessage('Enable Location Permission');
@@ -172,6 +207,7 @@ const SearchListing = ({
       setMasjidList([]);
       if (zipCode == 'Your Location') {
         setZipCode('');
+        setLocation!(false);
       }
     } else {
       setlocationStatus(true);
@@ -180,29 +216,50 @@ const SearchListing = ({
   }
 
   useEffect(() => {
-    _startLocationCheck(_handleGPSProviderEvent);
-    checkLocationAdapter();
-    return () => {
-      _stopLocationCheck();
-    };
+    if (location == null) {
+      _startLocationCheck(_handleGPSProviderEvent);
+      checkLocationAdapter();
+      return () => {
+        _stopLocationCheck();
+      };
+    }
   }, [locationStatus]);
 
+  useEffect(() => {
+    if (message != '') {
+      setMasjidList([]);
+    }
+  }, [message]);
+
+  console.log(
+    'state.countryCode.get() as string,',
+    state.countryCode.get() as string,
+  );
+
   const onSearch = async (zipCode: string, lat?: string, long?: string) => {
-    setLoader(true);
+    state.globalLoading.set(true);
+    // setLoader(true);
     if (zipCode != 'Your Location') {
       setZipCode(zipCode);
-      const res: any = await SearchMasjidByLocation(zipCode, lat, long);
+      const res: any = await SearchMasjidByLocation(
+        zipCode,
+        lat,
+        long,
+        state.countryCode.get() as string,
+      );
       if (res?.length > 0) {
         setMasjidList(res);
       } else {
         setMasjidList([]);
       }
       setMessage('');
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
     } else {
       setMessage('');
       onCurrentLocationPress();
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
     }
   };
 
@@ -215,6 +272,7 @@ const SearchListing = ({
         info.coords.longitude.toString(),
       );
       setZipCode('Your Location');
+      setLocation!(true);
       setMessage('');
       // Search by geo-location (reverse geo-code)
     });
@@ -228,7 +286,7 @@ const SearchListing = ({
         justifyContent: 'center',
         width: WINDOW_WIDTH,
       }}>
-      <OverlayLoader isShow={loader} />
+      {/* <OverlayLoader isShow={loader} /> */}
       <View
         style={{
           alignSelf: 'center',
@@ -244,24 +302,13 @@ const SearchListing = ({
       </View>
       <View style={{ marginTop: 10 }}>
         <View>
-          <Card
-            backgroundColor="#ffffff"
-            style={{
-              elevation: 3,
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 1,
-              },
-              shadowOpacity: 0.22,
-              shadowRadius: 2.22,
-            }}
-            width={WINDOW_WIDTH - 30}>
+          <Card width={WINDOW_WIDTH - 30}>
             <MyInput
               searchBar
               onFocus={() => {
                 if (zipCode == 'Your Location') {
                   setZipCode('');
+                  setLocation!(false);
                 }
               }}
               onCurrentLocationPress={locationAdapterPressed}
@@ -294,7 +341,7 @@ const SearchListing = ({
               onLinkPressed={_requestUserLocationPermission}
               isShowBtn={false}
               message2={
-                zipCode.length > 0 && zipCode != 'Your Location'
+                zipCode?.length > 0 && zipCode != 'Your Location'
                   ? 'No masjid found for the zip code'
                   : locationStatus
                   ? 'No masjid found near you'
@@ -302,6 +349,8 @@ const SearchListing = ({
               }
             />
           }
+          ListHeaderComponent={<GapView length={5} />}
+          ListFooterComponent={<GapView length={5} />}
         />
       </View>
     </View>

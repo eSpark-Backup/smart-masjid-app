@@ -6,6 +6,7 @@ import {
   Animated,
   StyleSheet,
   Platform,
+  Linking,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -23,12 +24,19 @@ import {
   TextLabel,
   Tooltip,
 } from '../../../components';
-import { JummahTime, Masjid } from '../../../types/masjidControllerTypes';
+import {
+  JummahTime,
+  Masjid,
+  SalahTimings,
+} from '../../../types/masjidControllerTypes';
 import {
   AdhanCalculation,
   AdhanJuristic,
   LocationSvg,
   NavigationSvg,
+  OpenLink,
+  Phone,
+  Web,
 } from '../../../assets';
 import { _normalizedSubscriptions, openMap } from '../../../utils/functions';
 import { Card } from '../../../containers';
@@ -38,6 +46,11 @@ import {
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
 import { WINDOW_WIDTH } from '../../../constants';
+import moment from 'moment';
+import { GlobalProps } from '../../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../../store/GlobalStates';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 const MasjidDetails = ({
   onSubscribe,
@@ -48,47 +61,76 @@ const MasjidDetails = ({
   masjidDetails?: Masjid;
   contentOpacity?: any;
 }) => {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [subscribe, setSubscribe] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [salahTimings, setSalahTimings] = useState<SalahTimings[]>([]);
   const isFocused = useIsFocused();
 
   const {
-    store: { salahTimings, JummahTime },
+    store: { JummahTime },
   } = useMasjid();
 
   const getSalahTimes = async () => {
     try {
-      setLoading(true);
-      await getSalahTimingsOfMasjid(masjidDetails?.id.toString() ?? '');
+      state.globalLoading.set(true);
+      // setLoading(true);
+      await getSalahTimingsOfMasjid(
+        masjidDetails?.id.toString() ?? '',
+        moment().format('YYYY-MM-DD').toString(),
+      ).then(data => setSalahTimings(data!));
       await GetMasjidCurrentJummahTiming(masjidDetails?.id.toString() ?? '');
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
   };
 
-  const adhanCalculations = (): string => {
-    let masjidAdhanCalcConfig =
-      masjidDetails?.masjidAdhanConfig.adhanCalcConfig;
-    let masjidAdhanCustomConfig =
-      masjidDetails?.masjidAdhanConfig.adhanCustomConfig;
-    let toolTip = '';
-    if (!masjidDetails?.masjidAdhanConfig.adhanCustomConfig) {
-      toolTip = `This masjid uses ${masjidAdhanCalcConfig?.name} for Adhan calculation. ${masjidAdhanCalcConfig?.calculation}`;
-      return toolTip;
+  // const adhanCalculations = (): string => {
+  //   let masjidAdhanCalcConfig =
+  //     masjidDetails?.masjidAdhanConfig.adhanCalcConfig;
+  //   let masjidAdhanCustomConfig =
+  //     masjidDetails?.masjidAdhanConfig.adhanCustomConfig;
+  //   let toolTip = '';
+  //   if (!masjidDetails?.masjidAdhanConfig.adhanCustomConfig) {
+  //     toolTip = `This masjid uses ${masjidAdhanCalcConfig?.name} for Adhan calculation. ${masjidAdhanCalcConfig?.calculation}`;
+  //     return toolTip;
+  //   } else {
+  //     toolTip = `This masjid uses ${
+  //       masjidAdhanCalcConfig?.name
+  //     } for Adhan calculation. Fajr: ${
+  //       masjidAdhanCustomConfig?.fajrAngle
+  //     }° Maghrib: ${masjidAdhanCustomConfig?.maghribValue} ${
+  //       masjidAdhanCustomConfig?.maghribRule == 'ANGLE' ? '°' : 'mins'
+  //     } Isha: ${masjidAdhanCustomConfig?.ishaValue} ${
+  //       masjidAdhanCustomConfig?.ishaRule == 'ANGLE' ? '°' : 'mins'
+  //     }`;
+  //     return toolTip;
+  //   }
+  // };
+
+  function formatPhoneNumber(phoneNumber: number) {
+    // Remove non-numeric characters from the phone number
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+
+    // Check if the cleaned phone number has a valid length
+    const isValidLength = cleaned?.length === 10 || cleaned?.length === 11;
+
+    if (isValidLength) {
+      // Format the phone number in (XXX) XXX-XXXX format
+      const formattedNumber = cleaned.replace(
+        /(\d{3})(\d{3})(\d{4})/,
+        '($1) $2-$3',
+      );
+
+      // If there's an extra digit, it's probably a country code. Add a '+' in that case.
+      return cleaned?.length === 11 ? '+' + formattedNumber : formattedNumber;
     } else {
-      toolTip = `This masjid uses ${
-        masjidAdhanCalcConfig?.name
-      } for Adhan calculation. Fajr: ${
-        masjidAdhanCustomConfig?.fajrAngle
-      }° Maghrib: ${masjidAdhanCustomConfig?.maghribValue} ${
-        masjidAdhanCustomConfig?.maghribRule == 'ANGLE' ? '°' : 'mins'
-      } Isha: ${masjidAdhanCustomConfig?.ishaValue} ${
-        masjidAdhanCustomConfig?.ishaRule == 'ANGLE' ? '°' : 'mins'
-      }`;
-      return toolTip;
+      // Return the original input if it doesn't have a valid length
+      return phoneNumber;
     }
-  };
+  }
 
   useEffect(() => {
     if (isFocused) {
@@ -98,7 +140,7 @@ const MasjidDetails = ({
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <OverlayLoader isShow={loading} noBg={false} />
+      {/* <OverlayLoader isShow={loading} noBg={false} /> */}
       <View
         style={{
           alignSelf: 'center',
@@ -113,12 +155,7 @@ const MasjidDetails = ({
         </Animated.View>
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingVertical: 10,
-          paddingHorizontal: 15,
-        }}>
+      <View style={{ paddingVertical: 10 }}>
         <MyTextHeader text={masjidDetails?.name ?? ''} />
         <GapView length={15} />
         <Card>
@@ -129,7 +166,7 @@ const MasjidDetails = ({
               }}>
               <LocationSvg />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '70%' }}>
+              <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
                     (masjidDetails?.address1 ?? '') +
@@ -143,20 +180,21 @@ const MasjidDetails = ({
                 />
               </View>
               <GapView length={5} mode="horizontal" />
-              <NavigationSvg
+              <TouchableOpacity
                 onPress={() => {
                   openMap(
                     masjidDetails?.location?.coordinates[0].toString() ?? '',
                     masjidDetails?.location?.coordinates[1].toString() ?? '',
                   );
-                }}
-              />
+                }}>
+                <NavigationSvg />
+              </TouchableOpacity>
             </View>
             <GapView length={5} />
-            <View style={styles.infoCardRowContainer}>
+            {/* <View style={styles.infoCardRowContainer}>
               <AdhanCalculation />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '70%' }}>
+              <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
                     masjidDetails?.masjidAdhanConfig.adhanCalcConfig.name ?? ''
@@ -168,12 +206,35 @@ const MasjidDetails = ({
               </View>
               <GapView length={5} mode="horizontal" />
               <Tooltip content={adhanCalculations()} />
-            </View>
+            </View> */}
+            {masjidDetails?.website ? (
+              <View style={styles.infoCardRowContainer}>
+                <Web />
+                <GapView length={5} mode="horizontal" />
+                <View style={{ maxWidth: '80%' }}>
+                  <MyText
+                    text={masjidDetails?.website}
+                    size={16}
+                    textStyle={{ color: '#3E3E3E' }}
+                    lines={1}
+                  />
+                </View>
+                <GapView length={5} mode="horizontal" />
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      `https://${masjidDetails?.website as string}`,
+                    )
+                  }>
+                  <OpenLink width={18} height={18} />
+                </TouchableOpacity>
+              </View>
+            ) : null}
             <GapView length={5} />
-            <View style={styles.infoCardRowContainer}>
+            {/* <View style={styles.infoCardRowContainer}>
               <AdhanJuristic />
               <GapView length={5} mode="horizontal" />
-              <View style={{ maxWidth: '70%' }}>
+              <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
                     masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig
@@ -188,7 +249,30 @@ const MasjidDetails = ({
               <Tooltip
                 content={`This masjid uses ${masjidDetails?.masjidAdhanConfig?.adhanJuristicConfig?.name} fiqh for Asr time calculation.`}
               />
-            </View>
+            </View> */}
+            {masjidDetails?.phone ? (
+              <View style={styles.infoCardRowContainer}>
+                <Phone />
+                <GapView length={5} mode="horizontal" />
+                <View style={{ maxWidth: '80%' }}>
+                  <MyText
+                    text={parsePhoneNumber(
+                      masjidDetails?.phone,
+                    ).formatInternational()}
+                    size={16}
+                    textStyle={{ color: '#3E3E3E' }}
+                    lines={1}
+                  />
+                </View>
+                <GapView length={5} mode="horizontal" />
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(`tel:${masjidDetails?.phone}`)
+                  }>
+                  <OpenLink width={18} height={18} />
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
         </Card>
         <GapView length={15} />
@@ -202,7 +286,7 @@ const MasjidDetails = ({
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
         <JumuahTable
-          headings={['Salah', 'Khutba']}
+          headings={['Salah', 'Khutbah']}
           data={JummahTime as JummahTime}
           isMute={false}
         />
@@ -233,7 +317,7 @@ const MasjidDetails = ({
             <TextLabel label="Unsubscribe" textStyle={{ color: '#ffffff' }} />
           </TouchableOpacity>
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 };

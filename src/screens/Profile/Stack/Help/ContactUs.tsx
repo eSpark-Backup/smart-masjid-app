@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Animated, Platform } from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import { Theme, useTheme } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 
@@ -16,7 +16,8 @@ import {
 import { WINDOW_WIDTH } from '../../../../constants';
 import { helpStore } from '../../../../store/HelpStore';
 import { userStore } from '../../../../store/UserStore';
-import { supportRequestData } from '../../../../types';
+import { GlobalProps, supportRequestData } from '../../../../types';
+import { globalStore } from '../../../../store/GlobalStates';
 
 export default function ContactUsScreen({
   setFlag,
@@ -26,6 +27,7 @@ export default function ContactUsScreen({
   contentOpacity?: any;
 }) {
   const { colors }: Theme = useTheme();
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const reasons: any = useHookstate(helpStore.reasons).get();
   const userData: any = useHookstate(userStore.userData).get();
   const [description, setDescription] = useState('');
@@ -33,13 +35,15 @@ export default function ContactUsScreen({
   const [selectedReasonId, setSelectedReasonId] = useState<number | null>(null);
 
   const requestToSupport = async () => {
-    setLoading(true);
-    if (!userData?.id || selectedReasonId == null || description.length == 0) {
+    state.globalLoading.set(true);
+    // setLoading(true);
+    if (!userData?.id || selectedReasonId == null || description?.length == 0) {
       Toast.show({
         type: 'error',
         text2: 'Please fill given fields',
       });
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
       return;
     }
     const data: supportRequestData = {
@@ -50,7 +54,9 @@ export default function ContactUsScreen({
     await CreateSupportRequest(data);
     setDescription('');
     setSelectedReasonId(null);
-    setLoading(false);
+    state.globalLoading.set(false);
+    // setLoading(false);
+    setFlag('help');
   };
 
   return (
@@ -73,7 +79,7 @@ export default function ContactUsScreen({
         style={{
           alignItems: 'center',
         }}>
-        <OverlayLoader isShow={loading} />
+        {/* <OverlayLoader isShow={loading} /> */}
         <MyDropDown
           title={''}
           searchDisabled

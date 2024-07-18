@@ -46,7 +46,7 @@ export default function PossibleCauseErrorModal({
               style={styles.subHeading}
             />
             <GapView length={10} />
-            {causes.map((item: string, index: number) => (
+            {causes?.map((item: string, index: number) => (
               <View
                 key={index}
                 style={{

@@ -5,7 +5,7 @@ import { GapView, MyText } from '../index';
 import { DStatus } from '../../types';
 
 const DeviceStatus = ({ status = 'Offline' }: { status?: DStatus }) => {
-  return (
+  return status ? (
     <View
       style={{
         flexDirection: 'row',
@@ -19,13 +19,14 @@ const DeviceStatus = ({ status = 'Offline' }: { status?: DStatus }) => {
           height: 10,
           width: 10,
           borderRadius: 100,
-          backgroundColor: status == 'Online' ? '#1DF126' : '#FF6464',
+          backgroundColor:
+            status == 'Online' || status == 'Running' ? '#1DF126' : '#FF6464',
         }}
       />
       <GapView length={5} mode="horizontal" />
       <MyText text={status} textStyle={{ color: '#6E6E6E', fontSize: 16 }} />
     </View>
-  );
+  ) : null;
 };
 
 export default DeviceStatus;

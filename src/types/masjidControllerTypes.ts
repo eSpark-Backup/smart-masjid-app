@@ -24,7 +24,11 @@ export type AdhanConfig = {
   id: number;
   adhanCalcConfig: AdhanCalcConfig;
   adhanJuristicConfig: AdhanJuristicConfig;
-  adhanCustomConfig: AdhanCustomConfig;
+  fajrAngle: number;
+  maghribRule: string;
+  maghribValue: string;
+  ishaRule: string;
+  ishaValue: string;
   createdBy: string;
   createdDate: string;
   updatedBy: string;
@@ -182,11 +186,19 @@ export interface Salah {
   name: string;
   adhanTime: string;
   iqamaTime: string;
+  sunriseTime: string;
+  shurooqTime: string;
 }
 
 export interface SalahTimings {
   date: string;
   salah: Salah[];
+}
+export interface JumuahTimings {
+  date: string;
+  jumuah1?: string;
+  jumuah2?: string;
+  jumuah3?: string;
 }
 export interface AllSalahTimings {
   id: string;

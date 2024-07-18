@@ -18,8 +18,12 @@ import {
   DeviceReset,
   DeviceSvg,
   Heart,
+  LAN,
+  ResetDevice,
+  Streamer,
   Version,
   Wifi,
+  WifiManage,
 } from '../../../assets';
 import {
   GapView,
@@ -37,6 +41,7 @@ import { WINDOW_WIDTH } from '../../../constants';
 import { Device } from '../../../types/deviceControllerTypes';
 import {
   _checkDeviceTelemetry,
+  _rebootDevice,
   _resetDevice,
   _updateDevice,
   unSubscribeMasjid,
@@ -44,8 +49,11 @@ import {
 import {
   BottomNavigationParamList,
   DStatus,
+  GlobalProps,
   RootStackParamList,
 } from '../../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../../store/GlobalStates';
 
 type DeviceNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -56,35 +64,61 @@ const DeviceSetting = ({
   device,
   contentOpacity = 0,
   goBack,
+  isBtn,
 }: {
   device?: Device;
   contentOpacity: any;
   goBack?: () => void;
+  isBtn?: boolean;
 }) => {
   const theme: Theme = useTheme();
   const navigation = useNavigation<DeviceNavigationProps['navigation']>();
 
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const [isResetVisible, setIsResetVisible] = useState<boolean>(false);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [offlineErrors, setOfflineErrors] = useState<boolean>(false);
-  console.log('deive selectedx ??', device);
 
   const styles = useMemo(() => makeStyles(theme), []);
 
   const removeDevice = async () => {
-    setLoader(true);
+    state.globalLoading.set(true);
+    // setLoader(true);
     try {
       const res = await _resetDevice(device?.id.toString()!);
       console.log('res', res);
       if (res) {
-        setLoader(false);
+        state.globalLoading.set(false);
+        // setLoader(false);
         goBack?.();
+      } else {
+        state.globalLoading.set(false);
       }
     } catch (error) {
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
+      crashlytics().recordError(error as Error);
+      console.error(error);
+    }
+  };
+
+  const restartDevice = async () => {
+    state.globalLoading.set(true);
+    try {
+      const res = await _rebootDevice(device?.id.toString()!);
+      console.log('res', res);
+      if (res) {
+        state.globalLoading.set(false);
+        goBack?.();
+      } else {
+        state.globalLoading.set(false);
+      }
+    } catch (error) {
+      state.globalLoading.set(false);
       crashlytics().recordError(error as Error);
       console.error(error);
     }
@@ -93,20 +127,23 @@ const DeviceSetting = ({
   const updateDeviceName = async (text?: string, oldText?: string) => {
     console.log('text res', text, oldText);
     if (text !== oldText) {
-      setLoader(true);
+      state.globalLoading.set(true);
+      // setLoader(true);
       try {
         const res = await _updateDevice({
           ...device!,
           name: text ?? device?.name!,
         });
-        console.log('update res', res);
-        if (res) {
-          setLoader(false);
+        if (res == 200) {
+          state.globalLoading.set(false);
+          // setLoader(false);
           goBack?.();
+          setIsEditable(false);
         }
       } catch (error) {
         crashlytics().recordError(error as Error);
-        setLoader(false);
+        state.globalLoading.set(false);
+        // setLoader(false);
         console.error(error);
       }
     }
@@ -115,14 +152,16 @@ const DeviceSetting = ({
   const cancelSubscription = async () => {
     try {
       if (device?.deviceTelemetry.status === 'Online') {
-        setLoader(true);
+        state.globalLoading.set(true);
+        // setLoader(true);
         const res = await unSubscribeMasjid(
           device?.id?.toString()!,
           device?.masjid.id.toString()!,
         );
-        console.log('res', res);
+        console.log('unsub res', res);
         if (res) {
-          setLoader(false);
+          state.globalLoading.set(false);
+          // setLoader(false);
         }
       } else {
         Toast.show({
@@ -137,7 +176,7 @@ const DeviceSetting = ({
 
   return (
     <View>
-      <OverlayLoader isShow={loader} />
+      {/* <OverlayLoader isShow={loader} /> */}
       <ErrorModal
         visible={errorShow}
         message={
@@ -149,14 +188,16 @@ const DeviceSetting = ({
             label: 'Update Password',
             onPress: async () => {
               console.log('error', device);
-              setLoader(true);
+              state.globalLoading.set(true);
+              // setLoader(true);
               const isValid = await _checkDeviceTelemetry(
                 device?.id.toString() as string,
                 false,
               );
               if (isValid) {
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
                 goBack?.();
                 Toast.show({
                   text1: 'Success!',
@@ -168,23 +209,27 @@ const DeviceSetting = ({
                   from: 'SelectedDevice',
                   deviceData: device,
                   onlyPassword: true,
+                  isBtn: isBtn,
                 });
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
               }
             },
           },
           {
             label: 'Connect new Wi-Fi',
             onPress: async () => {
-              setLoader(true);
+              state.globalLoading.set(true);
+              // setLoader(true);
               const isValid = await _checkDeviceTelemetry(
                 device?.id.toString() as string,
                 false,
               );
               if (isValid) {
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
                 goBack?.();
                 Toast.show({
                   text1: 'Success!',
@@ -195,9 +240,11 @@ const DeviceSetting = ({
                 navigation.navigate('DSetup', {
                   from: 'SelectedDevice',
                   deviceData: device,
+                  isBtn: isBtn,
                 });
                 setErrorShow(false);
-                setLoader(false);
+                state.globalLoading.set(false);
+                // setLoader(false);
               }
             },
           },
@@ -225,14 +272,24 @@ const DeviceSetting = ({
       <TouchableWithoutFeedback onPress={() => setIsEditable(false)}>
         <View>
           <DeviceErrorBox
-            show={Boolean(
-              device?.deviceTelemetry?.status == 'Offline' ||
-                device?.deviceTelemetry?.status == 'Low battery',
-            )}
+            show={
+              device?.deviceType?.id == 3
+                ? Boolean(
+                    device?.deviceTelemetry?.status != 'Online' &&
+                      device?.deviceTelemetry?.streamer != 'Running',
+                  )
+                : Boolean(
+                    device?.deviceTelemetry?.status == 'Offline' ||
+                      device?.deviceTelemetry?.status == 'Low battery',
+                  )
+            }
+            icon={device?.deviceType?.id == 3 ? false : true}
             onClose={() => console.log('on Close Box', device)}
             message={
               device?.deviceTelemetry?.status == 'Low battery'
                 ? 'Device battery low. Please power on your device.'
+                : device?.deviceType?.id == 3
+                ? 'Looks like the Masjid Streamer might be Offline. Contact support@smartmasjid.app for help.'
                 : 'Looks like your device is offline. Tap here to see causes.'
             }
             onIconPress={() => setOfflineErrors(true)}
@@ -251,7 +308,11 @@ const DeviceSetting = ({
                 trademark
               />
               <DeviceStatus
-                status={device?.deviceTelemetry?.status as DStatus}
+                status={
+                  device?.deviceType?.id == 3
+                    ? (device?.deviceTelemetry?.streamer as DStatus)
+                    : (device?.deviceTelemetry?.status as DStatus)
+                }
               />
             </View>
             <GapView length={10} />
@@ -274,7 +335,6 @@ const DeviceSetting = ({
 
                         if (text?.length! > 0 && pattern.test(text as string)) {
                           updateDeviceName(text, device?.name);
-                          setIsEditable(false);
                         } else if (
                           text?.length! > 0 &&
                           !pattern.test(text as string)
@@ -291,13 +351,24 @@ const DeviceSetting = ({
                       },
                     },
                     {
-                      title: 'Battery',
-                      subtitle: device?.deviceTelemetry?.batteryLife.toString()
-                        ? device?.deviceTelemetry?.batteryLife.toString() + '%'
-                        : 'NaN',
-                      icon: <BatteryBar style={{ padding: 10, bottom: 2 }} />,
+                      title: device?.deviceType?.id == 3 ? '' : 'Battery',
+                      subtitle:
+                        device?.deviceType?.id == 3
+                          ? device?.deviceTelemetry?.streamer ?? 'null'
+                          : device?.deviceTelemetry?.batteryLife.toString()
+                          ? device?.deviceTelemetry?.batteryLife.toString() +
+                            '%'
+                          : 'NaN',
+                      icon:
+                        device?.deviceType?.id == 3 ? (
+                          <Streamer style={{ padding: 10, bottom: 2 }} />
+                        ) : (
+                          <BatteryBar style={{ padding: 10, bottom: 2 }} />
+                        ),
                       danger:
-                        device?.deviceTelemetry?.batteryLife! <= 15
+                        device?.deviceType?.id == 3
+                          ? false
+                          : device?.deviceTelemetry?.batteryLife! <= 15
                           ? true
                           : false,
                     },
@@ -310,12 +381,16 @@ const DeviceSetting = ({
                         ? 'No Subscription'
                         : 'No Masjid',
                       icon: <Heart style={{ padding: 10, bottom: 2 }} />,
-                      isDelete: device?.masjid?.name ? true : false,
+                      isDelete:
+                        device?.masjid?.name && device?.deviceType?.id == 1
+                          ? true
+                          : false,
                       onDelete: () => setIsResetVisible(true),
                       onPress:
                         device?.deviceType.id == 1
                           ? () => {
                               if (!device?.masjid?.id.toString()) {
+                                goBack?.();
                                 navigation.navigate('Search');
                                 return;
                               }
@@ -332,15 +407,29 @@ const DeviceSetting = ({
                   title: 'Advanced',
                   data: [
                     {
-                      title: 'Wifi',
-                      subtitle: device?.wifiSsid,
-                      icon: <Wifi style={{ padding: 10, bottom: 2 }} />,
+                      title:
+                        device?.deviceType?.id == 3 ? 'IP Address' : 'Wi-Fi',
+                      subtitle:
+                        device?.deviceType?.id == 3
+                          ? device?.ipAddress
+                          : device?.wifiSsid,
+                      icon:
+                        device?.deviceType?.id == 3 ? (
+                          <LAN />
+                        ) : (
+                          <Wifi style={{ padding: 10, bottom: 2 }} />
+                        ),
+                      editIcon: <WifiManage width={24} height={24} />,
                       isEditable:
-                        device?.deviceTelemetry?.status !== 'Offline'
+                        device?.deviceType?.id == 3
+                          ? false
+                          : device?.deviceTelemetry?.status !== 'Offline'
                           ? true
                           : false,
                       danger:
-                        device?.deviceTelemetry?.status !== 'Offline'
+                        device?.deviceType?.id == 3
+                          ? false
+                          : device?.deviceTelemetry?.status !== 'Offline'
                           ? false
                           : true,
                       onEditPress: () =>
@@ -361,12 +450,22 @@ const DeviceSetting = ({
                       icon: <DeviceObject style={{ padding: 10, bottom: 2 }} />,
                     },
                     {
-                      title: 'Factory Reset',
-                      subtitle: 'Reseting will erase all data',
+                      title:
+                        device?.deviceType?.id == 3
+                          ? 'Reboot'
+                          : 'Factory Reset',
+                      subtitle:
+                        device?.deviceType?.id == 3
+                          ? 'Rebooting will restart the device'
+                          : 'Reseting will erase all data',
                       // onPress: () => setIsVisible(true),
-                      icon: <DeviceReset style={{ padding: 10, bottom: 2 }} />,
-                      isReset: true,
-                      onReset: () => setIsVisible(true),
+                      icon: <ResetDevice style={{ padding: 10, bottom: 2 }} />,
+                      isReset: device?.deviceType?.id == 3 ? false : true,
+                      isReboot: device?.deviceType?.id == 3 ? true : false,
+                      onReset: () =>
+                        device?.deviceType?.id == 3
+                          ? setVisible(true)
+                          : setIsVisible(true),
                     },
                   ],
                 },
@@ -389,11 +488,24 @@ const DeviceSetting = ({
         }}
       />
       <LogoutModal
+        message="Are you sure you want to restart the device?"
+        visible={visible}
+        onAllowed={async () => {
+          await restartDevice();
+          setVisible(!visible);
+        }}
+        onClose={() => {
+          setVisible(!visible);
+          console.log('Cancelled');
+        }}
+      />
+      <LogoutModal
         message="Are you sure you want to cancel subscription?"
         visible={isResetVisible}
         onAllowed={async () => {
-          await cancelSubscription();
           setIsResetVisible(!isResetVisible);
+          await cancelSubscription();
+          goBack?.();
           console.log('Logged Out');
         }}
         onClose={() => {

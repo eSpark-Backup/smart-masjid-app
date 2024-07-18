@@ -9,13 +9,15 @@ import {
 import { Theme, useTheme } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 
-import { CautionDevice, Check, CheckSvg, CrossC } from '../../assets';
+import { CautionDevice, Check, CheckSvg, CrossC, OpenLink } from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import GapView from '../GapView';
 import MyTitle from '../MyTitle';
 import MyTextSubHeader from '../MyTextSubHeader';
 import { WINDOW_WIDTH } from '../../constants';
+import { _requestUserLocationPermission } from '../../utils/functions';
+import { Tooltip } from '..';
 
 export default function MyToast({
   heading,
@@ -94,34 +96,36 @@ export default function MyToast({
           <View
             style={{
               alignSelf: 'center',
-              marginTop: 20,
-              marginBottom: message ? 50 : 30,
+              marginTop: 30,
+              marginBottom: message || points?.length!! > 0 ? 50 : 40,
             }}>
             {isSuccess ? <CheckSvg /> : <CautionDevice />}
           </View>
-          <View
-            style={
-              center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
-            }>
-            {message && (
+          {message && (
+            <View
+              style={
+                center ? { alignItems: 'center' } : { alignItems: 'flex-start' }
+              }>
               <MyText
                 size={16}
-                text={message!}
+                text={message}
                 textStyle={{
                   color: isSuccess ? '#3E3E3E' : '#000000',
                   fontFamily: isSuccess ? 'Roboto-Regular' : 'Roboto-Medium',
                   fontSize: 16,
                 }}
               />
-            )}
-          </View>
+            </View>
+          )}
           {points?.length!! > 0 && (
             <>
               <GapView length={20} />
               <Points
                 data={points}
                 success={isSuccess}
-                notFound={title == 'Device not found'}
+                notFound={
+                  title == 'Device not found' && message != 'Issues Found'
+                }
               />
             </>
           )}
@@ -129,7 +133,7 @@ export default function MyToast({
           <View style={{ alignSelf: 'center' }}>
             <Rounded onPress={onPress} label={btnText!!} />
           </View>
-          <GapView />
+          <GapView length={20} />
           {onSkip && (
             <TouchableOpacity onPress={onSkip}>
               <MyText
@@ -166,6 +170,27 @@ const Points = ({
               size={16}
               textStyle={{ color: '#3e3e3e', fontSize: 16 }}
             />
+            {item == 'WiFi is working (2.4 Ghz only)' && (
+              <>
+                <GapView length={5} mode="horizontal" />
+                <Tooltip content="Please connect to 2.4Ghz network temporarily to setup your device." />
+              </>
+            )}
+            {item == 'Location permission denied' && (
+              <>
+                <GapView mode="horizontal" length={10} />
+                <TouchableOpacity
+                  onPress={_requestUserLocationPermission}
+                  style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <MyText
+                    text={'Enable'}
+                    size={16}
+                    textStyle={{ color: '#006870', fontSize: 16 }}
+                  />
+                  <OpenLink width={14} height={14} />
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </View>
       ))}

@@ -47,7 +47,7 @@ const RowItem = ({
       <View style={[styles.contentRow, { height: 40 }]}>
         <View
           style={{
-            width: '35%',
+            width: '30%',
           }}>
           <MyText text={item.name} size={16} />
         </View>
@@ -55,7 +55,7 @@ const RowItem = ({
           <MyText
             text={
               item.khutba
-                ? moment(item.khutba, 'HH:mm:ss').format('hh:mm')
+                ? moment(item.khutba, 'HH:mm:ss').format('h:mm A')
                 : 'unknown'
             }
             size={16}
@@ -64,11 +64,15 @@ const RowItem = ({
         {isMute ? (
           <View style={styles.contentIcon}>
             {subscribed ? (
-              <TouchableOpacity onPress={toggleSubscription}>
+              <TouchableOpacity
+                style={{ padding: 5 }}
+                onPress={toggleSubscription}>
                 <VolumUpGreen height={16} width={16} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={toggleSubscription}>
+              <TouchableOpacity
+                style={{ padding: 5 }}
+                onPress={toggleSubscription}>
                 <MuteSvg height={16} width={16} />
               </TouchableOpacity>
             )}
@@ -208,10 +212,18 @@ export default function JumuahTable({
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#F1F7F8',
+    backgroundColor: '#fff',
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   headerRow: {
     flexDirection: 'row',
@@ -219,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerCol: { width: '40%', alignItems: 'flex-start' },
   headerIcon: {
     alignItems: 'flex-start',
     justifyContent: 'center',

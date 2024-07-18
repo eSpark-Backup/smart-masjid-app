@@ -9,9 +9,15 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import { SubscribeMasjid } from '../../api/deviceController';
 import { LogoutModal, OverlayLoader } from '../../components';
 import { Wrapper } from '../../containers';
-import { BottomNavigationParamList, RootStackParamList } from '../../types';
+import {
+  BottomNavigationParamList,
+  GlobalProps,
+  RootStackParamList,
+} from '../../types';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { DeviceListing, MasjidDetails, SearchListing } from './Stacks';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
 
 type SearchNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -20,12 +26,14 @@ type SearchNavigationProps = NativeStackScreenProps<
 
 export default function Search() {
   const [step, setStep] = useState(0);
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const navigation = useNavigation<SearchNavigationProps['navigation']>();
   const [selectedMasjid, setSelectedMasjid] = useState<Masjid>();
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
+  const [location, setLocation] = useState<null | boolean>(null);
 
   useEffect(() => {
     if (isFocused) {
@@ -53,16 +61,21 @@ export default function Search() {
   const onSubscribe = async (deviceId: string, masjidId: string) => {
     try {
       console.log('deviceId', deviceId, 'masjidId', masjidId);
-      setLoading(true);
+      state.globalLoading.set(true);
+      // setLoading(true);
       const result = await SubscribeMasjid(deviceId, masjidId);
       if (result) {
         Toast.show({
           text2: 'Masjid Subscribed',
           type: 'success',
         });
+        state.globalLoading.set(false);
+        // setLoading(false);
         navigation.navigate('Home');
+      } else {
+        state.globalLoading.set(false);
+        // setLoading(false);
       }
-      setLoading(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -90,7 +103,7 @@ export default function Search() {
       {({ props }) => {
         return (
           <>
-            <OverlayLoader isShow={loading} />
+            {/* <OverlayLoader isShow={loading} /> */}
             <LogoutModal
               visible={showError}
               message="Please note that the selected mosque is located far from your current location. As a result, the prayer timings may differ significantly"
@@ -110,6 +123,8 @@ export default function Search() {
                   setSelectedMasjid(masjidDetails);
                 }}
                 setUserLocation={setUserLocation}
+                location={location}
+                setLocation={val => setLocation(val)}
               />
             )}
 
@@ -119,16 +134,17 @@ export default function Search() {
                 masjidDetails={selectedMasjid}
                 onSubscribe={() => {
                   // @ts-ignore
-                  const distance = getDistance(userLocation, {
-                    latitude: selectedMasjid?.location.coordinates[0],
-                    longitude: selectedMasjid?.location.coordinates[1],
-                  });
-                  // for converting meter into mile dividing distance by 1609
-                  if (distance / 1609 > 50) {
-                    setShowError(true);
-                  } else {
-                    setStep(2);
-                  }
+                  // const distance = getDistance(userLocation, {
+                  //   latitude: selectedMasjid?.location.coordinates[0],
+                  //   longitude: selectedMasjid?.location.coordinates[1],
+                  // });
+                  // // for converting meter into mile dividing distance by 1609
+                  // if (distance / 1609 > 50) {
+                  //   setShowError(true);
+                  // } else {
+                  //   setStep(2);
+                  // }
+                  setStep(2);
                 }}
               />
             )}

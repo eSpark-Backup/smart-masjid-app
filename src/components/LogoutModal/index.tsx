@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, View, Modal } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
 
-import { Joined } from '../Buttons';
+import { Joined, Rounded } from '../Buttons';
 import MyText from '../MyText';
 import GapView from '../GapView';
 
@@ -10,16 +10,22 @@ export default function LogoutModal({
   visible,
   onClose,
   onAllowed,
+  onPress,
   message = '',
   title1,
   title2,
+  singleBtn,
+  singleTitle,
 }: {
   visible: boolean;
   onClose?: () => void;
   onAllowed?: () => void;
+  onPress?: () => void;
   message: string;
   title1?: string;
   title2?: string;
+  singleBtn?: boolean;
+  singleTitle?: string;
 }): JSX.Element {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
@@ -36,13 +42,17 @@ export default function LogoutModal({
           <GapView length={40} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
           <GapView length={40} />
-          <Joined
-            title1={title1}
-            title2={title2}
-            activeButton="two"
-            onPress2={onAllowed}
-            onPress1={onClose}
-          />
+          {singleBtn ? (
+            <Rounded label={singleTitle ?? 'Done'} onPress={onPress} />
+          ) : (
+            <Joined
+              title1={title1}
+              title2={title2}
+              activeButton="two"
+              onPress2={onAllowed}
+              onPress1={onClose}
+            />
+          )}
         </View>
       </View>
     </Modal>

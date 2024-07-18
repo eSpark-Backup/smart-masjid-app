@@ -63,6 +63,9 @@ import {
   UserPermissions,
   UserToken,
 } from '../../types/userControllerApiResponse';
+import { useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
+import { api } from '../../api';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -77,6 +80,8 @@ export default function DeviceSetupScreen() {
   let telemetryInterval: number;
   const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
   const route: any = useRoute();
+  const devSetup = useHookstate(globalStore.devSetup);
+  const userSetup = useHookstate(userStore).get();
   const isFocused = useIsFocused();
   const [bleStatus, setBleStatus] = useState<boolean | undefined>();
   const [locationStatus, setlocationStatus] = useState<boolean | undefined>();
@@ -93,6 +98,7 @@ export default function DeviceSetupScreen() {
     new Map<Peripheral['id'], Peripheral>(),
   );
   const [disable, setDisable] = useState(false);
+  const [wifiError, setWifiError] = useState(false);
   const [connFlag, setConnFlag] = useState(true);
   const [toastContent, setToastContent] = useState<{
     title?: string;
@@ -100,6 +106,7 @@ export default function DeviceSetupScreen() {
     btnText?: string;
     onPress?: () => void;
     points?: string[];
+    isSuccess?: boolean;
   }>({
     title: undefined,
     message: undefined,
@@ -136,27 +143,36 @@ export default function DeviceSetupScreen() {
   };
 
   useEffect(() => {
-    // console.log('xxx', JSON.stringify(Array.from(iosScannedData.values())));
-  }, [iosScannedData.values()]);
+    if (devSetup.get()) {
+      navigation.navigate('DSetup', { from: 'Device' });
+      devSetup.set(false);
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   // console.log('xxx', JSON.stringify(Array.from(iosScannedData.values())));
+  // }, [iosScannedData.values()]);
 
   useEffect(() => {
-    const listeners = [
-      bleManagerEmitter.addListener(
-        'BleManagerDiscoverPeripheral',
-        peripheral => addOrUpdatePeripheral(peripheral),
-      ),
-      bleManagerEmitter.addListener('BleManagerStopScan', () =>
-        console.log('scan stopped'),
-      ),
-    ];
+    if (isFocused) {
+      const listeners = [
+        bleManagerEmitter.addListener(
+          'BleManagerDiscoverPeripheral',
+          peripheral => addOrUpdatePeripheral(peripheral),
+        ),
+        bleManagerEmitter.addListener('BleManagerStopScan', () =>
+          console.log('scan stopped'),
+        ),
+      ];
 
-    return () => {
-      console.debug('[app] main component unmounting. Removing listeners...');
-      for (const listener of listeners) {
-        listener.remove();
-      }
-    };
-  }, []);
+      return () => {
+        console.debug('[app] main component unmounting. Removing listeners...');
+        for (const listener of listeners) {
+          listener.remove();
+        }
+      };
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -199,7 +215,7 @@ export default function DeviceSetupScreen() {
         handleDeviceSetup();
       } else {
         setTimeout(() => {
-          updateDevice();
+          updateDevice('SERVER');
         }, 5000);
       }
     }
@@ -239,17 +255,24 @@ export default function DeviceSetupScreen() {
   }, [locationStatus, bleStatus]);
 
   useUpdateEffect(() => {
-    if (issues.length > 0) {
+    if (issues?.length > 0) {
       setStep(8);
       setToastContent(state => ({
         ...state,
-        title: 'Device setup error',
+        title: 'Device not found',
         message: 'Issues Found',
         onPress: () => {
-          setRetry(true);
-          setIssues([]);
+          if (wifiError) {
+            setStep(4);
+            setIssues([]);
+            setWifiError(false);
+          } else {
+            setRetry(true);
+            setIssues([]);
+          }
         },
         points: [...new Set(issues)],
+        isSuccess: false,
       }));
     }
   }, [issues]);
@@ -297,7 +320,11 @@ export default function DeviceSetupScreen() {
     console.log('parent?', route?.params?.from);
     switch (currStep) {
       case 2:
-        if (route?.params?.from === 'Device') setDisable(true);
+        if (route?.params?.from == 'SelectedDevice') {
+          setDisable(false);
+        } else {
+          setDisable(true);
+        }
         break;
       case 3:
         setDisable(true);
@@ -354,10 +381,13 @@ export default function DeviceSetupScreen() {
       const jsonData = JSON.parse(stringData as string);
       setDevInfo(state => ({ ...state, ...jsonData }));
 
+      console.log('devInfo before write process', devInfo);
+
       await _writeToDevice(
         devInfo,
         '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
         '6e400011-b5a3-f393-e0a9-e50e24dcca9e',
+        route.params?.isBtn,
       );
       const response = await _scanBleDevices(5);
       if (
@@ -383,27 +413,51 @@ export default function DeviceSetupScreen() {
         points: [
           'Device is powered on',
           'Phone is within range of the device',
-          'Device Light is yellow',
-          'WiFi is working',
+          'Device light is yellow',
+          'WiFi is working (2.4 Ghz only)',
+          'WiFi password entered is correct',
         ],
         onPress: () => {
           setRetry(true);
         },
+        isSuccess: true,
       }));
     }
   };
 
-  const updateDevice = async () => {
+  const updateDevice = async (from: 'BLE' | 'SERVER') => {
     try {
       console.log('devInfoxxxxxxxxx', devInfo);
-      const devRes: any = await _updateDevice({
-        ...route?.params?.deviceData,
-        wifiSsid: devInfo.ssid,
-        wifiPassword: devInfo.password,
-      });
-      if (devRes) {
+      let res: any;
+      if (from == 'SERVER') {
+        const updateWifiRes = await api.put(
+          'devices/' + route?.params?.deviceData.id + '/wifi',
+          {
+            wifiSsid: devInfo.ssid,
+            wifiPassword: devInfo.password,
+          },
+        );
+        console.log('updateWifiRes', updateWifiRes);
+        console.log('updateWifiRes.data', updateWifiRes.data);
+        res = updateWifiRes;
+      } else {
+        const devRes: any = await _updateDevice({
+          ...route?.params?.deviceData,
+          wifiSsid: devInfo.ssid,
+          wifiPassword: devInfo.password,
+        });
+        res = devRes;
+      }
+
+      console.log('reSSSSSSSS', res);
+
+      if (res) {
         telemetryInterval = setInterval(() => {
-          checkTelemetry(route?.params?.deviceData?.id.toString(), true); // check Telemetery for userDevice
+          checkTelemetry(
+            route?.params?.deviceData?.id.toString(),
+            true,
+            from == 'SERVER',
+          ); // check Telemetery for userDevice
         }, 10000);
       } else {
         setStep(8);
@@ -468,7 +522,7 @@ export default function DeviceSetupScreen() {
           }
         } else {
           setTimeout(() => {
-            updateDevice();
+            updateDevice('BLE');
           }, 5000);
         }
       }
@@ -499,7 +553,11 @@ export default function DeviceSetupScreen() {
   };
 
   let count = 0;
-  const checkTelemetry = async (deviceId: string, checkTime?: boolean) => {
+  const checkTelemetry = async (
+    deviceId: string,
+    checkTime?: boolean,
+    update?: boolean,
+  ) => {
     // function should not run more than 3 times
     if (count >= 3) {
       count = 0;
@@ -515,20 +573,43 @@ export default function DeviceSetupScreen() {
           if (checkTime) {
             console.log('kas', res);
             const isValid = validateUpdatedTime(res?.updatedTime);
-            isValid
-              ? setStep(7)
-              : (setStep(8),
-                setToastContent({
-                  title: undefined,
-                  message: undefined,
-                  btnText: undefined,
-                  onPress: () => {
-                    // navigation.navigate('HomeBottomTab', {
-                    //   screen: 'Device',
-                    // });
-                    setStep(4);
-                  },
-                }));
+            if (isValid) {
+              setStep(7);
+              if (update) {
+                const devRes: any = await _updateDevice({
+                  ...route?.params?.deviceData,
+                  wifiSsid: devInfo.ssid,
+                  wifiPassword: devInfo.password,
+                });
+              }
+            } else {
+              setStep(8);
+              setToastContent({
+                title: undefined,
+                message: undefined,
+                btnText: undefined,
+                onPress: () => {
+                  // navigation.navigate('HomeBottomTab', {
+                  //   screen: 'Device',
+                  // });
+                  setStep(4);
+                },
+              });
+            }
+            // isValid
+            //   ? setStep(7)
+            //   : (setStep(8),
+            //     setToastContent({
+            //       title: undefined,
+            //       message: undefined,
+            //       btnText: undefined,
+            //       onPress: () => {
+            //         // navigation.navigate('HomeBottomTab', {
+            //         //   screen: 'Device',
+            //         // });
+            //         setStep(4);
+            //       },
+            //     }));
           } else {
             setStep(7); // successfully device added and found it out as well
           }
@@ -554,12 +635,14 @@ export default function DeviceSetupScreen() {
         points: [
           'Device is powered on',
           'Phone is within range of the device',
-          'Device Light is yellow',
-          'WiFi is working',
+          'Device light is yellow',
+          'WiFi is working (2.4 Ghz only)',
+          'WiFi password entered is correct',
         ],
         onPress: () => {
           setRetry(true);
         },
+        isSuccess: true,
       }));
       const res = await _resetDevice(deviceId);
       console.log('kia mila delte pr', res);
@@ -618,12 +701,14 @@ export default function DeviceSetupScreen() {
           const isFound = !newArr?.some(item =>
             macAdd
               ? Platform.OS == 'ios'
-                ? bytesToString(item.advertising?.manufacturerData?.bytes) ===
-                  macAdd
+                ? item.advertising?.manufacturerData?.bytes == undefined
+                  ? false
+                  : bytesToString(item.advertising?.manufacturerData?.bytes) ===
+                    macAdd
                 : item.id === macAdd
               : true,
           );
-          if (issues.length === 0) {
+          if (issues?.length === 0) {
             if (newArr?.length === 0 || isFound) {
               setStep(8);
               setToastContent(state => ({
@@ -633,16 +718,30 @@ export default function DeviceSetupScreen() {
                 points: [
                   'Device is powered on',
                   'Phone is within range of the device',
-                  'Device Light is yellow',
-                  'WiFi is working',
+                  'Device light is yellow',
                 ],
                 onPress: () => {
                   setRetry(true);
                 },
+                isSuccess: true,
               }));
             } else {
               console.log('====== step 2 jana chahta ha', iosScannedData);
               setStep(2);
+              setToastContent(state => ({
+                ...state,
+                title: 'Device not found',
+                message: 'Please Check',
+                points: [
+                  'Device is powered on',
+                  'Phone is within range of the device',
+                  'Device light is yellow',
+                ],
+                onPress: () => {
+                  setRetry(true);
+                },
+                isSuccess: true,
+              }));
             }
           }
         }, 100);
@@ -687,8 +786,19 @@ export default function DeviceSetupScreen() {
       return navigation.navigate('HomeBottomTab', { screen: 'Home' });
     }
   };
-
-  console.log('Deviceinfo', devInfo);
+  const successHandleSkip = () => {
+    if (
+      route.params?.from == 'SelectedDevice' ||
+      route.params?.from == 'Device'
+    ) {
+      return navigation.navigate('HomeBottomTab', {
+        screen: 'Device',
+        params: { from: 'BtnDev' },
+      });
+    } else {
+      return navigation.navigate('HomeBottomTab', { screen: 'Home' });
+    }
+  };
 
   return (
     <Wrapper
@@ -719,6 +829,7 @@ export default function DeviceSetupScreen() {
                 }
                 selectedDeviceData={route?.params?.deviceData}
                 autoSelect={route?.params?.from == 'SelectedDevice'}
+                fromMasjidDevices={route.params?.isBtn}
               />
               // <View style={{ backgroundColor: 'pink', flex: 1 }} />
             )}
@@ -739,11 +850,14 @@ export default function DeviceSetupScreen() {
                 setSSID={(value: string) =>
                   setDevInfo(state => ({ ...state, ssid: value }))
                 }
-                setIssues={val =>
+                setIssues={val => {
+                  if (val != 'Wifi SSID not found') {
+                    setWifiError(true);
+                  }
                   setIssues(state => {
                     return [...state, val];
-                  })
-                }
+                  });
+                }}
                 setStep={(value: number) => setStep(value)}
                 currentWifiSSID={route?.params?.deviceData?.wifiSsid}
                 autoSelect={route?.params?.onlyPassword}
@@ -753,7 +867,13 @@ export default function DeviceSetupScreen() {
               <PasswordForm
                 contentOpacity={props.contentOpacity}
                 setPass={(value: string) =>
-                  setDevInfo(state => ({ ...state, password: value }))
+                  route.params?.isBtn
+                    ? setDevInfo(state => ({
+                        ...state,
+                        masjid_id: userSetup.userData?.masjid?.id.toString(),
+                        password: value,
+                      }))
+                    : setDevInfo(state => ({ ...state, password: value }))
                 }
                 ssid={devInfo?.ssid}
                 setStep={(value: number) => setStep(value)}
@@ -772,31 +892,38 @@ export default function DeviceSetupScreen() {
                 contentOpacity={props.contentOpacity}
                 heading="Device Setup"
                 isSuccess={true}
-                onSkip={!route.params?.isBtn ? handleSkip : undefined}
+                onSkip={
+                  route.params?.from == 'Device'
+                    ? route.params?.isBtn
+                      ? undefined
+                      : successHandleSkip
+                    : undefined
+                }
                 btnText={
-                  route.params?.isBtn || route.params?.from === 'SelectedDevice'
-                    ? 'View Device'
-                    : 'Search Masjid'
+                  route.params?.from == 'Device'
+                    ? route.params?.isBtn
+                      ? 'View Device'
+                      : 'Search Masjid'
+                    : 'Done'
                 }
                 onPress={() => {
-                  if (userStore.currentRegisterUser.get()) {
-                    userStore.userData.set(userStore.currentRegisterUser.get());
-                  }
                   navigation.navigate('HomeBottomTab', {
                     screen:
-                      route.params?.isBtn ||
-                      route.params?.from === 'SelectedDevice'
-                        ? 'Device'
-                        : 'Search',
+                      route.params?.from == 'Device'
+                        ? route.params?.isBtn
+                          ? 'Device'
+                          : 'Search'
+                        : 'Device',
+                    params: { from: 'BtnDev' },
                   });
                 }}
                 title="Device connected successfully"
                 message={
-                  route.params?.isBtn
-                    ? ''
-                    : route.params?.from == 'SelectedDevice'
-                    ? ''
-                    : 'Let’s subscribe to a masjid now.' + masjidSetupText
+                  route.params?.from == 'Device'
+                    ? route.params?.isBtn
+                      ? ''
+                      : 'Let’s subscribe to a masjid now.'
+                    : ''
                 }
                 center
               />
@@ -807,7 +934,7 @@ export default function DeviceSetupScreen() {
                 heading="Device Setup"
                 titleSize={16}
                 onSkip={handleSkip}
-                isSuccess={false}
+                isSuccess={toastContent.isSuccess ?? true}
                 btnText={toastContent.btnText ?? 'Try Again'}
                 onPress={toastContent.onPress}
                 title={toastContent.title ?? 'Device setup error'}
@@ -816,8 +943,9 @@ export default function DeviceSetupScreen() {
                   toastContent.points ?? [
                     'Device is powered on',
                     'Phone is within range of the device',
-                    'Device Light is yellow',
-                    'WiFi is working',
+                    'Device light is yellow',
+                    'WiFi is working (2.4 Ghz only)',
+                    'WiFi password entered is correct',
                   ]
                 }
               />

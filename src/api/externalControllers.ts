@@ -38,6 +38,7 @@ export const GetCountryCodes = async () => {
  */
 export const SendOTP = async (email?: string, phone?: string) => {
   try {
+    console.log('data.email data.phone', email, phone);
     const result: any = await xApi.post(`/external/auth/otp/send`, {
       email: email ?? '',
       phone: phone ?? '',
@@ -150,12 +151,15 @@ export const LoginUser = async (email: string, phone: string, otp: string) => {
         api.setHeaders({
           Authorization: `Bearer ${token?.data?.token}`,
         });
+        console.log('userData got', result.data);
+
         userStore.userData.set(result.data);
-        crashlytics().setAttributes({
-          id: result.data?.id.toString(),
-          email: result.data?.email,
-          phone: result.data?.phone,
-        });
+        crashlytics().setUserId(result.data?.id.toString()),
+          crashlytics().setAttributes({
+            id: result.data?.id.toString(),
+            email: result.data?.email,
+            phone: result.data?.phone,
+          });
         setDataInLocalStorage('user', JSON.stringify(result.data));
         setDataInLocalStorage('token', JSON.stringify(token?.data?.token));
         console.log('token', JSON.stringify(token?.data?.token));

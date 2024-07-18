@@ -78,7 +78,10 @@ export default function MyDropdown({
   };
 
   return (
-    <View>
+    <View
+      style={{
+        backgroundColor: '#f8fbfb',
+      }}>
       <TouchableOpacity
         onPress={openDropDown}
         style={{ ...styles.container, paddingHorizontal: containerPadding }}
@@ -105,19 +108,21 @@ export default function MyDropdown({
             borderWidth: 1,
             borderColor: '#9E9F9F',
             borderRadius: 12,
-            marginTop: 8,
+            // marginTop: 8,
             width: width,
-            height: Platform.OS == 'ios' ? 40 : undefined,
+            // height: Platform.OS == 'ios' ? 40 : undefined,
+            // backgroundColor: 'red',
             fontFamily: 'Roboto-Regular',
           }}
         />
         {show ? (
           <TouchableOpacity
             style={{
-              bottom: 17,
               right: title ? 35 : 15,
               position: 'absolute',
               zIndex: 1,
+              height: 50,
+              justifyContent: 'center',
             }}
             onPress={openDropDown}>
             <ArrowUp />
@@ -125,13 +130,14 @@ export default function MyDropdown({
         ) : (
           <TouchableOpacity
             style={{
-              bottom: 17,
               right: title ? 35 : 15,
               position: 'absolute',
               zIndex: 1,
+              height: 50,
+              justifyContent: 'center',
             }}
             onPress={openDropDown}>
-            <ArrowDown onPress={openDropDown} />
+            <ArrowDown />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
@@ -144,7 +150,7 @@ export default function MyDropdown({
               borderColor: '#9E9F9F',
               borderRadius: 12,
               width: width ?? WINDOW_WIDTH - 45,
-              marginTop: 5,
+              marginTop: 15,
               alignSelf: 'center',
             }}
             keyboardShouldPersistTaps="handled"
@@ -181,6 +187,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 8,
   },
   listItemContainer: {},
 });

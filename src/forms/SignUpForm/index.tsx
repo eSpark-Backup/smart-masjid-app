@@ -40,7 +40,7 @@ export default function SignUpForm({
       </View>
       <GapView />
       <View style={{ alignItems: 'center' }}>
-        <MyTextSubHeader text="Great! Let’s get your account created" />
+        <MyTextSubHeader text="Enter your email to get started" />
         <GapView length={40} />
         <Formik
           initialValues={{ email: '' }}

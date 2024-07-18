@@ -10,6 +10,10 @@ import { GapView, MasjidListCard, MyTitle } from '../../../components';
 import { AllSalahTimings, Masjid } from '../../../types/masjidControllerTypes';
 import { getSalahTimingsOfMasjid } from '../../../api/masjidController';
 import { WINDOW_WIDTH } from '../../../constants';
+import { Text } from 'react-native-animatable';
+import { useHookstate } from '@hookstate/core';
+import { userStore } from '../../../store/UserStore';
+import { GetMonthlySchedule } from '../../../api/userController';
 
 export default function MasjidListing({
   data,
@@ -23,25 +27,26 @@ export default function MasjidListing({
   onPress: (data: Masjid) => void;
 }) {
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
   const [allTimes, setAllTimes] = useState<AllSalahTimings[]>([]);
+  const schedule = useHookstate(userStore.monthlySchedule);
 
   useEffect(() => {
-    setLoading(false);
     getSalahTimings(data);
   }, [data]);
 
   const getSalahTimings = (data: Masjid[]) => {
     try {
-      data.map(
-        item =>
-          getSalahTimingsOfMasjid(item?.id.toString() ?? '').then(data => {
-            let dat = [...allTimes];
-            dat.push({ id: item?.id.toString(), salahs: data! });
-            setAllTimes(dat);
-          }),
-        setLoading(false),
-      );
+      let dat: AllSalahTimings[] = [];
+      data?.map(async item => {
+        const salahRes = await getSalahTimingsOfMasjid(
+          item?.id.toString() ?? '',
+          moment().format('YYYY-MM-DD'),
+        );
+        dat.push({ id: item?.id.toString(), salahs: salahRes! });
+        if (dat?.length == data?.length) {
+          setAllTimes(dat);
+        }
+      });
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
@@ -83,6 +88,19 @@ export default function MasjidListing({
     return time;
   };
 
+  // console.log('allTimes', JSON.stringify(allTimes));
+  const getScheduleData = async (masjidId: number, item: any) => {
+    onPress(item);
+    const res = await GetMonthlySchedule(masjidId);
+    if (res) {
+      schedule.set(res);
+      setStep(1);
+    } else {
+      schedule.set(null);
+      setStep(1);
+    }
+  };
+
   return (
     <View>
       <View
@@ -107,8 +125,7 @@ export default function MasjidListing({
             <MasjidListCard
               key={index}
               onPress={() => {
-                setStep(1);
-                onPress(item);
+                getScheduleData(item.id, item);
               }}
               masjidName={item.name ?? ''}
               masjidLogo={item.logo ? { uri: item.logo } : undefined}

@@ -15,6 +15,10 @@ import {
 } from '../../components';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../constants';
 import { _requestUserLocationPermission } from '../../utils/functions';
+import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
+import { globalStore } from '../../store/GlobalStates';
+import { State, useHookstate } from '@hookstate/core';
+import { GlobalProps } from '../../types';
 
 export default function WifiSelectForm({
   setStep,
@@ -32,6 +36,7 @@ export default function WifiSelectForm({
   setIssues: (val: string) => void;
 }) {
   const { colors } = useTheme();
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(true);
   const rightChild = (
@@ -43,6 +48,9 @@ export default function WifiSelectForm({
   );
 
   useEffect(() => {
+    if (Platform.OS == 'android') {
+      state.globalLoading.set(true);
+    }
     checkLocation();
   }, []);
 
@@ -56,21 +64,44 @@ export default function WifiSelectForm({
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           getWifiList();
         } else {
-          _requestUserLocationPermission();
+          state.globalLoading.set(false);
+          // _requestUserLocationPermission();
           setIssues('Location permission denied');
         }
       } else {
-        const ssid = await WifiManager.getCurrentWifiSSID();
-        console.log('ios ke ssid bta', ssid);
-        if (currentWifiSSID == ssid && autoSelect) {
-          setSSID(ssid);
-          setStep(5);
-        } else if (!autoSelect) {
-          setSSID(ssid);
-          setStep(5);
-        } else {
-          setIssues('Wifi SSID not found');
-        }
+        checkMultiple([
+          PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        ]).then(async statuses => {
+          console.log(statuses[PERMISSIONS.IOS.LOCATION_ALWAYS]);
+          if (
+            statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] == 'granted' ||
+            statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
+          ) {
+            const ssid = await WifiManager.getCurrentWifiSSID();
+            // const frequency = await WifiManager.getFrequency();
+            console.log('ios ke ssid bta', ssid);
+            // console.log('ios ke ssid ki frequency bta', frequency);
+            // if (frequency >= 5000) {
+            //   setIssues(
+            //     'It looks like you are connected to a 5Ghz network (SSID name). Please connect to 2.4Ghz network temporarily to setup your device',
+            //   );
+            //   return;
+            // }
+            if (currentWifiSSID == ssid && autoSelect) {
+              setSSID(ssid);
+              setStep(5);
+            } else if (!autoSelect) {
+              setSSID(ssid);
+              setStep(5);
+            } else {
+              setIssues('Wifi SSID not found');
+            }
+          } else {
+            // _requestUserLocationPermission();
+            setIssues('Location permission denied');
+          }
+        });
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
@@ -82,16 +113,18 @@ export default function WifiSelectForm({
     try {
       const res = await WifiManager.loadWifiList();
       console.log('All Wifis', res);
-      setLoading(false);
-      const removeHidden = res.filter(
+      state.globalLoading.set(false);
+      // setLoading(false);
+      const remove5G = res.filter(item => item?.frequency < 5000);
+      const removeHidden = remove5G.filter(
         item => !item.SSID.includes('(hidden SSID)'),
       );
       const uniqueSsid = Array.from(
-        new Set(removeHidden.map(item => item.SSID)),
-      ).map(item2 => {
+        new Set(removeHidden?.map(item => item.SSID)),
+      )?.map(item2 => {
         return removeHidden.find(item3 => item3.SSID === item2);
       });
-      const newArr = uniqueSsid.map(item => ({
+      const newArr = uniqueSsid?.map(item => ({
         ...item,
         title: item?.SSID,
         rightChild: rightChild,
@@ -109,7 +142,7 @@ export default function WifiSelectForm({
             setSSID(item?.SSID);
             setStep(5);
           } else {
-            setData(newArr);
+            setIssues('Wifi SSID not found');
           }
         });
       } else {
@@ -125,7 +158,7 @@ export default function WifiSelectForm({
     if (data?.length > 0) {
       return (
         <>
-          <OverlayLoader noBg={true} isShow={loading} />
+          {/* <OverlayLoader noBg={true} isShow={loading} /> */}
           <View style={{ alignItems: 'center' }}>
             <View
               style={{
@@ -160,7 +193,7 @@ export default function WifiSelectForm({
     } else {
       return (
         <>
-          <OverlayLoader noBg={true} isShow={true} />
+          {/* <OverlayLoader noBg={true} isShow={loading} /> */}
           <View
             style={{
               height: WINDOW_HEIGHT,
@@ -192,7 +225,11 @@ export default function WifiSelectForm({
                   fontFamily: 'Roboto-Regular',
                   top: 0,
                 }}
-                text={loading ? 'Checking Wifi List' : "No Wifi's Found"}
+                text={
+                  state.globalLoading.get()
+                    ? 'Checking Wifi List'
+                    : "No Wifi's Found"
+                }
               />
               <GapView length={WINDOW_HEIGHT / 3.5} />
             </View>

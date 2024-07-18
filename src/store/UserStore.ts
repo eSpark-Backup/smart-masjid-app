@@ -7,4 +7,5 @@ export const userStore = hookstate<UserStoreProps>({
   token: null,
   currentRegisterUser: null,
   userRoles: [],
+  monthlySchedule: null,
 });

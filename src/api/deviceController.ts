@@ -18,9 +18,12 @@ import { LogoutUser } from './userController';
 
 export const GetUserDevices = async (userId: string) => {
   try {
+    console.log('GetUserDevices chala', userId);
     const result: any = await api.get(`/devices/user/${userId}`);
+
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
+      return result.data;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
@@ -30,6 +33,8 @@ export const GetUserDevices = async (userId: string) => {
       });
     }
   } catch (error) {
+    console.log('errr', error);
+
     crashlytics().recordError(error as Error);
   }
 };
@@ -339,9 +344,10 @@ export async function _updateDevice(
         text2: 'Device details updated successfully',
         type: 'success',
       });
-      if (res.data) return res.data;
+      if (res.data) return res.status;
     } else if (res.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return res.status;
     } else {
       Toast.show({
         text2: res?.data?.message ?? 'Something went wrong',
@@ -350,6 +356,7 @@ export async function _updateDevice(
         visibilityTime: 10000,
       });
       console.log('Problem status when device save', res.problem);
+      return res.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -376,6 +383,27 @@ export async function _resetDevice(deviceId: string) {
     const res = await api.delete<any>(`devices/${deviceId}/reset`);
     if (res?.ok) {
       console.log('Deleted Success', Boolean(res.data));
+      return true;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when device exists problems', error);
+    return false;
+  }
+}
+
+export async function _rebootDevice(deviceId: string) {
+  console.log('Rebooting Device now =>', deviceId);
+  try {
+    const res = await api.post<any>(`devices/${deviceId}/reboot`);
+    if (res?.ok) {
+      console.log('Reboot Success', Boolean(res.data));
       return true;
     } else if (res.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');

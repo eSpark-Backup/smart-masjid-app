@@ -1,13 +1,31 @@
-import React from 'react';
-import { StyleSheet, View, Animated, Platform } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  KeyboardAvoidingView,
+} from 'react-native';
 
-import { SalahTimingsSVG } from '../../../../../assets';
+import {
+  HistoryBox,
+  IqamaSvg,
+  IqamaTimingsSVG,
+  JummaTimingsSVG,
+  MonthlyScheduleSVG,
+  SalahTimingsSVG,
+  SujudSvg,
+} from '../../../../../assets';
 import {
   GapView,
   MyTitle,
   ProfileSectionlist,
 } from '../../../../../components';
 import { WINDOW_WIDTH } from '../../../../../constants';
+import { GetMonthlySchedule } from '../../../../../api/userController';
+import { useHookstate } from '@hookstate/core';
+import { masjidStore } from '../../../../../store/MasjidStore';
+import { userStore } from '../../../../../store/UserStore';
 
 export default function SalahSettings({
   setFlag,
@@ -16,6 +34,22 @@ export default function SalahSettings({
   setFlag: (value: string) => void;
   contentOpacity?: any;
 }) {
+  const userData = useHookstate(userStore.userData).get();
+  const schedule = useHookstate(userStore.monthlySchedule);
+
+  useEffect(() => {
+    getScheduleData();
+  }, []);
+
+  const getScheduleData = async () => {
+    const res = await GetMonthlySchedule(userData?.masjid.id!);
+    if (res) {
+      schedule.set(res);
+    } else {
+      schedule.set(null);
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -28,7 +62,7 @@ export default function SalahSettings({
               : -WINDOW_WIDTH / 1.9 / 3,
         }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Salah Settings" />
+          <MyTitle text="Salah Timings" />
         </Animated.View>
       </View>
       <GapView />
@@ -36,17 +70,22 @@ export default function SalahSettings({
         <ProfileSectionlist
           data={[
             {
-              title: 'Salah Settings',
+              title: 'Salah Timings',
               data: [
                 {
                   title: 'Iqama Timings',
-                  icon: <SalahTimingsSVG />,
+                  icon: <IqamaSvg width={25} height={25} />,
                   onPress: () => setFlag('iTime'),
                 },
                 {
                   title: 'Jumuah Timings',
-                  icon: <SalahTimingsSVG />,
+                  icon: <JummaTimingsSVG />,
                   onPress: () => setFlag('jTime'),
+                },
+                {
+                  title: 'Monthly Schedule',
+                  icon: <MonthlyScheduleSVG />,
+                  onPress: () => setFlag('Hist'),
                 },
               ],
             },

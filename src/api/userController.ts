@@ -1,7 +1,7 @@
 import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
 
-import { api } from '.';
+import { api, xApi } from '.';
 import {
   RequestRegisterPhone,
   UserResponse,
@@ -137,6 +137,8 @@ export const LogoutUser = async (userId: string, saveEmail?: boolean) => {
         'lastLoggedInEmail',
         userStore.userData.get()?.email,
       );
+    } else {
+      await removeDatafromLocalStorage('lastLoggedInEmail');
     }
     await removeDatafromLocalStorage('user');
     userStore.userData.set(null);
@@ -159,6 +161,7 @@ export const DeleteUser = async (userId: string) => {
     console.log('res=>>>>', res);
 
     if (res.ok) {
+      await removeDatafromLocalStorage('lastLoggedInEmail');
       await removeDatafromLocalStorage('user');
       userStore.userData.set(null);
     } else if (res.status == 401) {
@@ -196,26 +199,70 @@ export const UpdateUser = async (
     email?: string;
     phone?: string;
   },
+  otp?: string,
 ) => {
   try {
     const result: any = await api.put<UserResponse>(`/users/${id}`, data);
+
     if (result.data && result.status == 200) {
-      userStore.userData.set(result.data);
-      await setDataInLocalStorage('user', JSON.stringify(result.data));
-      Toast.show({
-        text2: 'User Updated Successfully',
-        type: 'success',
-      });
+      console.log('update user result', otp);
+      if (otp) {
+        const token: any = await xApi.post(`/external/auth/token/create`, {
+          application: 'MOBILE',
+          userId: result.data.id,
+          lastOTPVerified: otp,
+        });
+        if (token?.data?.token == null || token?.data?.token == '') {
+          Toast.show({
+            text2:
+              'Some error occurred during account setup, please try logging in again',
+            type: 'error',
+          });
+          return 201;
+        } else {
+          userStore.token.set(token?.data?.token);
+          api.setHeaders({
+            Authorization: `Bearer ${token?.data?.token}`,
+          });
+          userStore.userData.set(result.data);
+          await setDataInLocalStorage('user', JSON.stringify(result.data));
+          await setDataInLocalStorage(
+            'token',
+            JSON.stringify(token?.data?.token),
+          );
+          console.log('token', JSON.stringify(token?.data?.token));
+          Toast.show({
+            text2: 'User Updated Successfully',
+            type: 'success',
+          });
+          return result.status;
+        }
+      } else {
+        userStore.userData.set(result.data);
+        await setDataInLocalStorage('user', JSON.stringify(result.data));
+        Toast.show({
+          text2: 'User Updated Successfully',
+          type: 'success',
+        });
+        return result.status;
+      }
+      // userStore.userData.set(result.data);
+      // await setDataInLocalStorage('user', JSON.stringify(result.data));
+      // Toast.show({
+      //   text2: 'User Updated Successfully',
+      //   type: 'success',
+      // });
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message,
         type: 'error',
         visibilityTime: 10000,
       });
+      return result.status;
     }
-    return result.data;
   } catch (error) {
     crashlytics().recordError(error as Error);
     console.log('error UpdateUser', error, 'Request', data);
@@ -263,7 +310,7 @@ export const DeleteAdminFromMasjid = async (
     const result: any = await api.delete(`/users/${userId}/masjid/${masjidId}`);
     if (result.status === 200) {
       Toast.show({
-        text2: 'Admin removed from the masjid',
+        text2: 'User successfully removed from Masjid',
         type: 'success',
       });
       GetMasjidAdmins(masjidId);
@@ -328,9 +375,7 @@ export const AddAdminIntoMasjid = async (
  */
 export const GetUserTypes = async () => {
   try {
-    console.log('usertypes result');
     const result: any = await api.get(`/users/type?category=masjid`);
-    console.log('usertypes results', result);
 
     if (result.status === 200) {
       userStore.userRoles.set(result.data);
@@ -361,13 +406,107 @@ export const GetUser = async (
   lastName: string = '',
 ) => {
   try {
-    console.log('usertypes result');
     const result: any = await api.get(
       `/users?email=${email}&phone=${phone}&firstName=${firstName}&lastName=${lastName}`,
     );
     console.log('user results', result);
     if (result.status === 200) {
       return result.data[0];
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+/**
+ * Get a Monthly Schedule by using masjidId, month or year.
+ *
+ * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
+ */
+export const GetMonthlySchedule = async (masjidId: number) => {
+  try {
+    console.log('masjidId masjidId masjidId', masjidId);
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const result: any = await api.get(
+      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}&month=${month}&year=${year}`,
+    );
+    console.log('schedule results', result);
+    if (result.status === 200) {
+      return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Publish a Monthly Schedule by using masjidId, month or year.
+ *
+ * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
+ */
+export const PublishMonthlySchedule = async (masjidId: number) => {
+  try {
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const result: any = await api.post(
+      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}`,
+      {
+        month: month,
+        year: year,
+      },
+    );
+    console.log('publish schedule results', result.data);
+    if (result.status === 200) {
+      return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result.data?.message,
+        type: 'error',
+        autoHide: true,
+        visibilityTime: 10000,
+      });
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Update Published a Monthly Schedule by using masjidId, month or year.
+ *
+ * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
+ */
+export const UpdatePublishedMonthlySchedule = async (
+  masjidId: number,
+  scheduleId: number,
+) => {
+  try {
+    const result: any = await api.put(
+      `/masjid/{masjidId}/monthly-schedule/{scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
+    );
+    console.log('update published schedule results', result.data);
+    if (result.status === 200) {
+      return result.data;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {

@@ -2,6 +2,7 @@ import { DStatus } from '.';
 
 export interface Device {
   id: number;
+  ipAddress: string;
   macAddress: string;
   deviceType: {
     id: number;
@@ -16,6 +17,7 @@ export interface Device {
   deviceTelemetry: {
     id: number;
     status: DStatus;
+    streamer: string;
     batteryLife: number;
     updatedTime: string;
   };

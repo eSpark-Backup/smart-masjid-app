@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { Wrapper } from '../../containers';
@@ -13,7 +13,7 @@ import {
   PersonalInfoForm,
   AddPhoneForm,
 } from './UserForms';
-import { RootStackParamList } from '../../types';
+import { GlobalProps, RootStackParamList } from '../../types';
 import { MyToast, OverlayLoader, SLoader } from '../../components';
 import {
   RegisterUserPhone,
@@ -39,8 +39,11 @@ import { userStore } from '../../store/UserStore';
 type Props = NativeStackScreenProps<RootStackParamList, 'USetup'>;
 
 export default function UserSetupScreen() {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const navigation = useNavigation<Props['navigation']>();
   const phoneId = useHookstate(globalStore.phoneId).get();
+  const devSetup = useHookstate(globalStore.devSetup);
+  const userData = useHookstate(userStore.userData);
   const isDeviceRegistered = useHookstate(globalStore.isDeviceRegistered).get();
   const fcmToken = useHookstate(globalStore.fcmToken).get();
   const [activeFlow, setActiveFlow] = useState('login');
@@ -93,11 +96,32 @@ export default function UserSetupScreen() {
       );
       console.log('res', res);
       if (res?.id && phoneId) {
-        await RegisterUserPhone(
+        const registerPhoneRes = await RegisterUserPhone(
           { deviceId: phoneId, fcmToken: fcmToken as string },
           res?.id.toString(),
         );
-        setStep(8);
+        if (registerPhoneRes?.ok) {
+          const login: any = await UpdateUserLogin(phoneId, res?.id);
+          if (login?.ok) {
+            setStep(8); //TODO: Change it later
+          } else {
+            setStep(6);
+            Toast.show({
+              text2: login?.message ?? 'Something went wrong',
+              type: 'error',
+              autoHide: true,
+              visibilityTime: 10000,
+            });
+          }
+        } else {
+          setStep(6);
+          Toast.show({
+            text2: registerPhoneRes?.message ?? 'Something went wrong',
+            type: 'error',
+            autoHide: true,
+            visibilityTime: 10000,
+          });
+        }
       } else {
         setStep(6);
         Toast.show({
@@ -130,13 +154,26 @@ export default function UserSetupScreen() {
   const onLogin = async (email: string, phone: string, OTPvalue: string) => {
     try {
       const res: UserResponse = await LoginUser(email, phone, OTPvalue);
+      console.log(
+        'res?.id phoneId checkUserDeviceExistWithOutFCM checkUserDeviceExist',
+        res?.id,
+        phoneId,
+        checkUserDeviceExist(res?.userPhone, 'dev'),
+        checkUserDeviceExist(res?.userPhone, 'devAndFcm'),
+      );
       if (
         res?.id &&
         phoneId &&
         checkUserDeviceExist(res?.userPhone, 'devAndFcm')
       ) {
-        navigation.navigate('HomeBottomTab'); //TODO: Change it later
-        setLoader(false);
+        const login: any = await UpdateUserLogin(phoneId, res?.id);
+        if (login?.ok) {
+          navigation.navigate('HomeBottomTab'); //TODO: Change it later
+          state.globalLoading.set(false);
+        } else {
+          state.globalLoading.set(false);
+          // setLoader(false);
+        }
       } else if (
         res?.id &&
         phoneId &&
@@ -151,10 +188,12 @@ export default function UserSetupScreen() {
           if (login?.ok) {
             navigation.navigate('HomeBottomTab'); //TODO: Change it later
           } else {
-            setLoader(false);
+            state.globalLoading.set(false);
+            // setLoader(false);
           }
         } else {
-          setLoader(false);
+          state.globalLoading.set(false);
+          // setLoader(false);
         }
       } else if (
         res?.id &&
@@ -171,13 +210,16 @@ export default function UserSetupScreen() {
           if (login?.ok) {
             navigation.navigate('HomeBottomTab'); //TODO: Change it later
           } else {
-            setLoader(false);
+            state.globalLoading.set(false);
+            // setLoader(false);
           }
         } else {
-          setLoader(false);
+          state.globalLoading.set(false);
+          // setLoader(false);
         }
       } else {
-        setLoader(false);
+        state.globalLoading.set(false);
+        // setLoader(false);
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -190,7 +232,8 @@ export default function UserSetupScreen() {
     type?: string,
   ) => {
     try {
-      setLoader(true);
+      state.globalLoading.set(true);
+      // setLoader(true);
       const res: any = await CheckUserExists(email ?? '', phone ?? '');
       if (type == 'signup') {
         if (res?.id) {
@@ -225,15 +268,18 @@ export default function UserSetupScreen() {
           });
         }
       }
-      setLoader(false);
+      state.globalLoading.set(false);
+      // setLoader(false);
     } catch (e) {
       crashlytics().recordError(e as Error);
     }
   };
 
+  console.log('data', data);
+
   return (
     <>
-      <OverlayLoader isShow={loader} />
+      {/* <OverlayLoader isShow={loader} /> */}
       <Wrapper
         bgImageSpacer={false}
         showBack={step == 1 ? false : true}
@@ -276,7 +322,8 @@ export default function UserSetupScreen() {
                   userEmail={data.email}
                   userPhone={data.phone}
                   setStep={async (value: string) => {
-                    setLoader(true);
+                    state.globalLoading.set(true);
+                    // setLoader(true);
                     const isVerified = await ValidateOTP(
                       value,
                       data.email ?? '',
@@ -287,7 +334,8 @@ export default function UserSetupScreen() {
                       if (activeFlow == 'signup') {
                         setStep(4);
                         setOTP(value);
-                        setLoader(false);
+                        state.globalLoading.set(false);
+                        // setLoader(false);
                       } else {
                         setOTP(value);
                         onLogin(
@@ -297,7 +345,8 @@ export default function UserSetupScreen() {
                         );
                       }
                     } else {
-                      setLoader(false);
+                      state.globalLoading.set(false);
+                      // setLoader(false);
                     }
                   }}
                   goBack={() =>
@@ -311,8 +360,20 @@ export default function UserSetupScreen() {
               {step == 4 && (
                 <AddPhoneForm
                   contentOpacity={props.contentOpacity}
-                  setStep={(value: number, values: any) => {
-                    setStep(value);
+                  setStep={async (value: number, values: any) => {
+                    if (value == 5) {
+                      console.log('phoneNumber', values);
+                      const result = await SendOTP('', values.phone);
+                      if (result) {
+                        if (values.phone) {
+                          setData({ ...data, phone: values.phone ?? '' });
+                        }
+                        setStep(value);
+                      }
+                    } else {
+                      setData({ ...data, phone: '' });
+                      setStep(value);
+                    }
                   }}
                 />
               )}
@@ -323,7 +384,8 @@ export default function UserSetupScreen() {
                   userPhone={data.phone}
                   goBack={() => setStep(4)}
                   setStep={async (value: string) => {
-                    setLoader(true);
+                    state.globalLoading.set(true);
+                    // setLoader(true);
                     const isVerified = await ValidateOTP(
                       value,
                       data.email ?? '',
@@ -332,9 +394,14 @@ export default function UserSetupScreen() {
                     console.log('isVerified', isVerified);
                     if (isVerified) {
                       setStep(6);
-                      setLoader(false);
+                      state.globalLoading.set(false);
+                      // setLoader(false);
                     }
-                    setLoader(false);
+                    state.globalLoading.set(false);
+                    // setLoader(false);
+                  }}
+                  onResend={async () => {
+                    await SendOTP('', data.phone ?? '');
                   }}
                 />
               )}
@@ -368,9 +435,9 @@ export default function UserSetupScreen() {
                   heading="Create Account"
                   contentOpacity={props.contentOpacity}
                   isSuccess={true}
-                  onPress={() => navigation.navigate('DSetup')}
-                  onSkip={async () => {
-                    userStore.userData.set(
+                  onPress={() => {
+                    devSetup.set(true);
+                    userData.set(
                       JSON.parse(
                         JSON.stringify(userStore.currentRegisterUser.get()),
                       ),
@@ -379,7 +446,17 @@ export default function UserSetupScreen() {
                       'user',
                       JSON.stringify(userStore.currentRegisterUser.get()),
                     );
-                    // navigation.navigate('HomeBottomTab');
+                  }}
+                  onSkip={async () => {
+                    userData.set(
+                      JSON.parse(
+                        JSON.stringify(userStore.currentRegisterUser.get()),
+                      ),
+                    );
+                    setDataInLocalStorage(
+                      'user',
+                      JSON.stringify(userStore.currentRegisterUser.get()),
+                    );
                   }}
                   btnText={'Connect Device'}
                   title="Account setup complete"
