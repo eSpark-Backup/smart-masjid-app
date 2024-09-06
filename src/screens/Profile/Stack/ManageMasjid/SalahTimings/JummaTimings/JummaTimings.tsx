@@ -155,7 +155,15 @@ export default function JummaTimings({
   const contentToRender = () => {
     return !state.globalLoading.get() ? (
       currentData ? (
-        <TimeTableCard date={currentData?.date} data={currentData?.data} />
+        <TimeTableCard
+          showEdit={currentData?.date == moment().format('YYYY-MM-DD')}
+          onEdit={() => {
+            selectedJumma!(currentData);
+            setFlag('jEdit');
+          }}
+          date={currentData?.date}
+          data={currentData?.data}
+        />
       ) : (
         <MyText
           textStyle={{ textAlign: 'center', marginVertical: 10 }}
@@ -209,6 +217,7 @@ export default function JummaTimings({
             data={data}
             renderItem={({ item }) => (
               <TimeTableCard
+                showEdit={true}
                 onEdit={() => {
                   selectedJumma!(item);
                   setFlag('jEdit');

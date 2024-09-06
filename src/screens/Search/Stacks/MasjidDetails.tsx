@@ -190,7 +190,7 @@ const MasjidDetails = ({
                 <NavigationSvg />
               </TouchableOpacity>
             </View>
-            <GapView length={5} />
+
             {/* <View style={styles.infoCardRowContainer}>
               <AdhanCalculation />
               <GapView length={5} mode="horizontal" />
@@ -208,29 +208,32 @@ const MasjidDetails = ({
               <Tooltip content={adhanCalculations()} />
             </View> */}
             {masjidDetails?.website ? (
-              <View style={styles.infoCardRowContainer}>
-                <Web />
-                <GapView length={5} mode="horizontal" />
-                <View style={{ maxWidth: '80%' }}>
-                  <MyText
-                    text={masjidDetails?.website}
-                    size={16}
-                    textStyle={{ color: '#3E3E3E' }}
-                    lines={1}
-                  />
+              <>
+                <GapView length={5} />
+
+                <View style={styles.infoCardRowContainer}>
+                  <Web />
+                  <GapView length={5} mode="horizontal" />
+                  <View style={{ maxWidth: '80%' }}>
+                    <MyText
+                      text={masjidDetails?.website}
+                      size={16}
+                      textStyle={{ color: '#3E3E3E' }}
+                      lines={1}
+                    />
+                  </View>
+                  <GapView length={5} mode="horizontal" />
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL(
+                        `https://${masjidDetails?.website as string}`,
+                      )
+                    }>
+                    <OpenLink width={18} height={18} />
+                  </TouchableOpacity>
                 </View>
-                <GapView length={5} mode="horizontal" />
-                <TouchableOpacity
-                  onPress={() =>
-                    Linking.openURL(
-                      `https://${masjidDetails?.website as string}`,
-                    )
-                  }>
-                  <OpenLink width={18} height={18} />
-                </TouchableOpacity>
-              </View>
+              </>
             ) : null}
-            <GapView length={5} />
             {/* <View style={styles.infoCardRowContainer}>
               <AdhanJuristic />
               <GapView length={5} mode="horizontal" />
@@ -251,27 +254,31 @@ const MasjidDetails = ({
               />
             </View> */}
             {masjidDetails?.phone ? (
-              <View style={styles.infoCardRowContainer}>
-                <Phone />
-                <GapView length={5} mode="horizontal" />
-                <View style={{ maxWidth: '80%' }}>
-                  <MyText
-                    text={parsePhoneNumber(
-                      masjidDetails?.phone,
-                    ).formatInternational()}
-                    size={16}
-                    textStyle={{ color: '#3E3E3E' }}
-                    lines={1}
-                  />
+              <>
+                <GapView length={5} />
+
+                <View style={styles.infoCardRowContainer}>
+                  <Phone />
+                  <GapView length={5} mode="horizontal" />
+                  <View style={{ maxWidth: '80%' }}>
+                    <MyText
+                      text={parsePhoneNumber(
+                        masjidDetails?.phone,
+                      ).formatInternational()}
+                      size={16}
+                      textStyle={{ color: '#3E3E3E' }}
+                      lines={1}
+                    />
+                  </View>
+                  <GapView length={5} mode="horizontal" />
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL(`tel:${masjidDetails?.phone}`)
+                    }>
+                    <OpenLink width={18} height={18} />
+                  </TouchableOpacity>
                 </View>
-                <GapView length={5} mode="horizontal" />
-                <TouchableOpacity
-                  onPress={() =>
-                    Linking.openURL(`tel:${masjidDetails?.phone}`)
-                  }>
-                  <OpenLink width={18} height={18} />
-                </TouchableOpacity>
-              </View>
+              </>
             ) : null}
           </View>
         </Card>

@@ -171,7 +171,7 @@ export default function Schedule({
     <View style={{ flex: 1, alignItems: 'center' }}>
       <LogoutModal
         visible={prompt2}
-        message={`Monthly Schedule sent successfully.\nWould you like to download the PDF as well?`}
+        message={`Monthly Schedule sent successfully.\n\nWould you like to download the PDF as well?`}
         onAllowed={() => {
           setPrompt2(false);
           isPermitted();
@@ -180,7 +180,7 @@ export default function Schedule({
       />
       <LogoutModal
         visible={downloadPrompt}
-        message={`Monthly Schedule downloaded successfully.\nWould you like to view the PDF as well?`}
+        message={`Monthly Schedule downloaded successfully.\n\nWould you like to view the PDF as well?`}
         onAllowed={() => {
           FileViewer.open(filePath, {
             onDismiss() {
@@ -232,7 +232,7 @@ export default function Schedule({
               .date(1)
               .toDate()}
             onDateChange={onDateChange}
-            dateFormat={'Monthly'}
+            dateFormat={'FullMonth'}
           />
           <View
             style={{

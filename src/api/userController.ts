@@ -431,13 +431,19 @@ export const GetUser = async (
  *
  * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
  */
-export const GetMonthlySchedule = async (masjidId: number) => {
+export const GetMonthlySchedule = async (
+  masjidId: number,
+  selectedMonth?: number,
+  selectedYear?: number,
+) => {
   try {
     console.log('masjidId masjidId masjidId', masjidId);
     const month = new Date().getMonth() + 1;
     const year = new Date().getFullYear();
     const result: any = await api.get(
-      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}&month=${month}&year=${year}`,
+      `/masjid/${masjidId}/monthly-schedule?month=${
+        selectedMonth ?? month
+      }&year=${selectedYear ?? year}`,
     );
     console.log('schedule results', result);
     if (result.status === 200) {

@@ -80,29 +80,17 @@ function HomeBottomTab() {
   }, []);
 
   const getCountryCode = async () => {
-    const getIPAPI = create({
-      baseURL: 'https://icanhazip.com',
-    });
     const getIPInfoAPI = create({
-      baseURL: 'https://get.geojs.io/v1/ip/country',
+      baseURL: 'https://get.geojs.io/v1/ip/',
     });
-    const IPRes = await getIPAPI.get<any>('/');
-    console.log('IPRes>>>', IPRes);
-    const IP = IPRes.data.trim();
-    // const IP = IPRes.data.replace(/(\r\n|\n|\r)/gm, '');
-    if (IPRes.ok) {
-      const IPInfoRes = await getIPInfoAPI.get<{ country: string }>(
-        `/${IP}` + '.json',
-      );
-      console.log('IPInfoRes>>>', IPInfoRes);
 
-      if (IPInfoRes.ok) {
-        countryCode.set(IPInfoRes.data?.country as string);
-      } else {
-        const codeRes = await DeviceCountry.getCountryCode();
-        countryCode.set(codeRes.code.toUpperCase());
-        console.log('codeRescodeRes', codeRes);
-      }
+    const IPInfoRes = await getIPInfoAPI.get<{ country: string }>(
+      'country.json',
+    );
+    console.log('IPInfoRes>>>', IPInfoRes);
+
+    if (IPInfoRes.ok) {
+      countryCode.set(IPInfoRes.data?.country as string);
     } else {
       const codeRes = await DeviceCountry.getCountryCode();
       countryCode.set(codeRes.code.toUpperCase());

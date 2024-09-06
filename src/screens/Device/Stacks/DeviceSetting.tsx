@@ -174,6 +174,15 @@ const DeviceSetting = ({
     }
   };
 
+  console.log(
+    'device?.deviceTelemetry?.status',
+    device?.deviceTelemetry?.status,
+  );
+  console.log(
+    'device?.deviceTelemetry?.streamer',
+    device?.deviceTelemetry?.streamer,
+  );
+
   return (
     <View>
       {/* <OverlayLoader isShow={loader} /> */}
@@ -274,9 +283,9 @@ const DeviceSetting = ({
           <DeviceErrorBox
             show={
               device?.deviceType?.id == 3
-                ? Boolean(
-                    device?.deviceTelemetry?.status != 'Online' &&
-                      device?.deviceTelemetry?.streamer != 'Running',
+                ? !Boolean(
+                    device?.deviceTelemetry?.streamer == null ||
+                      device?.deviceTelemetry?.streamer == 'Running',
                   )
                 : Boolean(
                     device?.deviceTelemetry?.status == 'Offline' ||

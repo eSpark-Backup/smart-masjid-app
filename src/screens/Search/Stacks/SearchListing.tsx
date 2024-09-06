@@ -33,6 +33,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { State, useHookstate } from '@hookstate/core';
 import { globalStore } from '../../../store/GlobalStates';
 import { GlobalProps } from '../../../types';
+import { err } from 'react-native-svg/lib/typescript/xml';
 
 const SearchListing = ({
   onPress,
@@ -86,7 +87,6 @@ const SearchListing = ({
               status['ios.permission.LOCATION_WHEN_IN_USE'] == 'granted') &&
             locationStatus
           ) {
-            console.log('chala2');
             onCurrentLocationPress();
             setMessage('');
           } else if (
@@ -131,7 +131,6 @@ const SearchListing = ({
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED && locationStatus) {
-          console.log('chala2');
           onCurrentLocationPress();
           setMessage('');
         } else if (

@@ -18,11 +18,13 @@ const TimeTableCard = ({
   date = '',
   deleteBtn,
   onEdit,
+  showEdit,
   onDelete,
 }: {
   data: TimeTableData[];
   date: string;
   deleteBtn?: boolean;
+  showEdit?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
 }) => {
@@ -44,7 +46,7 @@ const TimeTableCard = ({
                 </TouchableOpacity>
               ) : null}
               <GapView length={5} mode="horizontal" />
-              {onEdit ? (
+              {showEdit ? (
                 <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
                   <EditPencil />
                 </TouchableOpacity>

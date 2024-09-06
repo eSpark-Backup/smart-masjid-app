@@ -28,7 +28,7 @@ export default function MyDatePicker({
   minimumDate?: Date | undefined;
   maximumDate?: Date | undefined;
   showLabel?: boolean;
-  dateFormat?: 'Monthly' | 'FullDate';
+  dateFormat?: 'FullMonth' | 'Monthly' | 'FullDate';
   hideChevs?: boolean;
 }) {
   const [date, setDate] = useState<any>(new Date());
@@ -158,7 +158,9 @@ export default function MyDatePicker({
             onPress={() => setShow(true)}>
             <MyTextSubHeader
               text={
-                dateFormat == 'Monthly'
+                dateFormat == 'FullMonth'
+                  ? moment(date)?.format('MMMM, YYYY')
+                  : dateFormat == 'Monthly'
                   ? moment(date)?.format('MMM, YYYY')
                   : moment(date)?.format('MMM-DD, YYYY')
               }

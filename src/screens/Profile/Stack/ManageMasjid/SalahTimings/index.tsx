@@ -37,9 +37,9 @@ export default function SalahSettings({
   const userData = useHookstate(userStore.userData).get();
   const schedule = useHookstate(userStore.monthlySchedule);
 
-  useEffect(() => {
-    getScheduleData();
-  }, []);
+  // useEffect(() => {
+  //   getScheduleData();
+  // }, []);
 
   const getScheduleData = async () => {
     const res = await GetMonthlySchedule(userData?.masjid.id!);

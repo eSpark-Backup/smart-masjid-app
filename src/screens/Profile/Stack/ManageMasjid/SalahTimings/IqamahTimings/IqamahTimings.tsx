@@ -226,6 +226,7 @@ export default function IqamahTimings({
               data={data}
               renderItem={({ item }) => (
                 <TimeTableCard
+                  showEdit={true}
                   onEdit={() => {
                     const ind = iqamahTimings?.findIndex(e => e.id == item.id);
                     selectedIqamah(iqamahTimings![ind!]);

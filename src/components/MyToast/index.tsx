@@ -173,7 +173,9 @@ const Points = ({
             {item == 'WiFi is working (2.4 Ghz only)' && (
               <>
                 <GapView length={5} mode="horizontal" />
-                <Tooltip content="Please connect to 2.4Ghz network temporarily to setup your device." />
+                <Tooltip
+                  content={`Device only supports  2.4 Ghz WiFi network for longer range. 5 Ghz WiFi networks are not supported (usually have "5G" on the network name)`}
+                />
               </>
             )}
             {item == 'Location permission denied' && (
