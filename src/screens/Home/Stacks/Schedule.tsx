@@ -180,7 +180,7 @@ export default function Schedule({
       />
       <LogoutModal
         visible={downloadPrompt}
-        message={`Monthly Schedule downloaded successfully.\n\nWould you like to view the PDF as well?`}
+        message={`Monthly Schedule downloaded successfully.\n\nWould you like to view the downloaded PDF?`}
         onAllowed={() => {
           FileViewer.open(filePath, {
             onDismiss() {

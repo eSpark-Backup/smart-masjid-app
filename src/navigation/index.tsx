@@ -32,6 +32,7 @@ import {
 import { api } from '../api';
 import { subJummas, SubscriptionList } from '../types/masjidControllerTypes';
 import { masjidStore } from '../store/MasjidStore';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -182,30 +183,31 @@ export default function App() {
 
   if (checkedId !== null) {
     return (
-      <NavigationContainer theme={MyLightTheme}>
-        <Stack.Navigator
-          initialRouteName={checkedId ? 'USetup' : 'Welcome'}
-          screenOptions={{
-            headerShown: false,
-            animation: 'fade',
-          }}>
-          {!userData.get()?.id ? (
-            <Stack.Group>
-              {!checkedId ? (
-                <>
-                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                  <Stack.Screen name="USetup" component={UserSetupScreen} />
-                </>
-              ) : (
-                <>
-                  <Stack.Screen name="USetup" component={UserSetupScreen} />
-                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                </>
-              )}
-            </Stack.Group>
-          ) : (
-            <Stack.Group>
-              {/* {state.devSetup.get() ? (
+      <GestureHandlerRootView>
+        <NavigationContainer theme={MyLightTheme}>
+          <Stack.Navigator
+            initialRouteName={checkedId ? 'USetup' : 'Welcome'}
+            screenOptions={{
+              headerShown: false,
+              animation: 'fade',
+            }}>
+            {!userData.get()?.id ? (
+              <Stack.Group>
+                {!checkedId ? (
+                  <>
+                    <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                    <Stack.Screen name="USetup" component={UserSetupScreen} />
+                  </>
+                ) : (
+                  <>
+                    <Stack.Screen name="USetup" component={UserSetupScreen} />
+                    <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                  </>
+                )}
+              </Stack.Group>
+            ) : (
+              <Stack.Group>
+                {/* {state.devSetup.get() ? (
                 <>
                   <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
                   <Stack.Screen
@@ -222,22 +224,23 @@ export default function App() {
                   <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
                 </>
               )} */}
-              <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
-            </Stack.Group>
-          )}
-        </Stack.Navigator>
-        <Toast
-          config={toastConfig}
-          topOffset={StatusBar.currentHeight}
-          visibilityTime={5000}
-        />
-        <OverlayLoader
-          loaderColor={'rgb(0, 104, 112)'}
-          isShow={Boolean(state.globalLoading.get())}
-        />
-        {/* <BlurBackground show={true} /> */}
-      </NavigationContainer>
+                <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
+                <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+              </Stack.Group>
+            )}
+          </Stack.Navigator>
+          <Toast
+            config={toastConfig}
+            topOffset={StatusBar.currentHeight}
+            visibilityTime={5000}
+          />
+          <OverlayLoader
+            loaderColor={'rgb(0, 104, 112)'}
+            isShow={Boolean(state.globalLoading.get())}
+          />
+          {/* <BlurBackground show={true} /> */}
+        </NavigationContainer>
+      </GestureHandlerRootView>
     );
   } else {
     return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;

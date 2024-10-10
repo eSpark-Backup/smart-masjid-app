@@ -53,6 +53,8 @@ interface MyInputProps {
   value?: string;
   error?: string;
   isSecure?: boolean;
+  secureInput?: boolean;
+  onEyePress?: () => void;
   disabled?: boolean;
   selectMode?: boolean;
   phoneCodeContainerStyle?: ViewStyle;
@@ -80,6 +82,8 @@ export default function MyInput(props: MyInputProps) {
     value,
     error,
     isSecure,
+    secureInput,
+    onEyePress,
     disabled,
     selectMode,
     phoneCodeContainerStyle,
@@ -294,6 +298,18 @@ export default function MyInput(props: MyInputProps) {
             />
           )}
         </View>
+        {secureInput && (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={{ alignSelf: 'center', right: 20, position: 'absolute' }}
+            onPress={onEyePress}>
+            <MI
+              name={isSecure ? 'visibility' : 'visibility-off'}
+              style={{}}
+              size={20}
+            />
+          </TouchableOpacity>
+        )}
         {searchBar && (
           <>
             <MI

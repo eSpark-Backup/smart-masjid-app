@@ -191,6 +191,8 @@ const SearchListing = ({
   const locationAdapterPressed = async () => {
     try {
       const enable = await systemSetting.isLocationEnabled();
+      console.log('loacation enable', enable);
+
       checkLocation(enable, true);
       if (!enable && !locationStatus) {
         setMasjidList([]);
@@ -215,7 +217,7 @@ const SearchListing = ({
   }
 
   useEffect(() => {
-    if (location == null) {
+    if (location != null) {
       _startLocationCheck(_handleGPSProviderEvent);
       checkLocationAdapter();
       return () => {
@@ -263,6 +265,7 @@ const SearchListing = ({
   };
 
   const onCurrentLocationPress = () => {
+    console.log('Yaha aya');
     Geolocation.getCurrentPosition(info => {
       setUserLocation?.(info.coords);
       onSearch(
@@ -341,10 +344,10 @@ const SearchListing = ({
               isShowBtn={false}
               message2={
                 zipCode?.length > 0 && zipCode != 'Your Location'
-                  ? 'No masjid found for the zip code'
+                  ? 'No Smart Masjid found for the Zip Code entered.'
                   : locationStatus
                   ? 'No masjid found near you'
-                  : 'Enter Zip Code to search masjid near you'
+                  : 'No Smart Masjid found near your Location. Try searching with Zip Code'
               }
             />
           }

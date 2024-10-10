@@ -359,28 +359,28 @@ const DeviceSetting = ({
                         }
                       },
                     },
-                    {
-                      title: device?.deviceType?.id == 3 ? '' : 'Battery',
-                      subtitle:
-                        device?.deviceType?.id == 3
-                          ? device?.deviceTelemetry?.streamer ?? 'null'
-                          : device?.deviceTelemetry?.batteryLife.toString()
-                          ? device?.deviceTelemetry?.batteryLife.toString() +
-                            '%'
-                          : 'NaN',
-                      icon:
-                        device?.deviceType?.id == 3 ? (
-                          <Streamer style={{ padding: 10, bottom: 2 }} />
-                        ) : (
-                          <BatteryBar style={{ padding: 10, bottom: 2 }} />
-                        ),
-                      danger:
-                        device?.deviceType?.id == 3
-                          ? false
-                          : device?.deviceTelemetry?.batteryLife! <= 15
-                          ? true
-                          : false,
-                    },
+                    // {
+                    //   title: device?.deviceType?.id == 3 ? '' : 'Battery',
+                    //   subtitle:
+                    //     device?.deviceType?.id == 3
+                    //       ? device?.deviceTelemetry?.streamer ?? 'null'
+                    //       : device?.deviceTelemetry?.batteryLife.toString()
+                    //       ? device?.deviceTelemetry?.batteryLife.toString() +
+                    //         '%'
+                    //       : 'NaN',
+                    //   icon:
+                    //     device?.deviceType?.id == 3 ? (
+                    //       <Streamer style={{ padding: 10, bottom: 2 }} />
+                    //     ) : (
+                    //       <BatteryBar style={{ padding: 10, bottom: 2 }} />
+                    //     ),
+                    //   danger:
+                    //     device?.deviceType?.id == 3
+                    //       ? false
+                    //       : device?.deviceTelemetry?.batteryLife! <= 15
+                    //       ? true
+                    //       : false,
+                    // },
                     {
                       title:
                         device?.deviceType?.id == 1 ? 'Subscription' : 'Masjid',

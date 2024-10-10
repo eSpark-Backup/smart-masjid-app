@@ -80,7 +80,7 @@ export default function DeviceCard({
                   status={
                     deviceData?.deviceType.id == 3
                       ? deviceData?.deviceTelemetry?.streamer == null
-                        ? ('' as DStatus)
+                        ? null
                         : (deviceData?.deviceTelemetry?.streamer as DStatus)
                       : deviceData?.deviceTelemetry?.status
                   }

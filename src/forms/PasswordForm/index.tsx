@@ -41,6 +41,7 @@ export default function PasswordForm({
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [loading, setLoading] = useState(false);
+  const [secInp, setSecInp] = useState(true);
 
   const connectToWifi = async (
     {
@@ -59,6 +60,7 @@ export default function PasswordForm({
         const res = await WifiManager.connectToProtectedSSID(
           ssid,
           password,
+          false,
           false,
         );
         await WifiManager.disconnect();
@@ -159,10 +161,12 @@ export default function PasswordForm({
           {({ handleChange, handleSubmit, values, errors, touched }) => (
             <View style={{ alignItems: 'center' }}>
               <MyInput
+                secureInput
+                isSecure={secInp}
+                onEyePress={() => setSecInp(!secInp)}
                 placeholder="Password"
                 onChangeText={handleChange('password')}
                 value={values.password}
-                isSecure={true}
               />
               {errors.password && touched.password && (
                 <MyText

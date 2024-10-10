@@ -191,14 +191,14 @@ export default function JummaTimings({
           </Animated.View>
         </View>
         <GapView />
-        <View style={{ paddingHorizontal: 15 }}>
+        <View>
           {/* <OverlayLoader isShow={loading} /> */}
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingHorizontal: 10,
+              paddingHorizontal: 25,
               paddingBottom: 5,
             }}>
             <MyTextSubHeader text="Current" />
@@ -210,7 +210,7 @@ export default function JummaTimings({
           </View>
           {contentToRender()}
           <View
-            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
+            style={{ paddingHorizontal: 25, paddingTop: 10, paddingBottom: 5 }}>
             <MyTextSubHeader text="Upcoming" />
           </View>
           <FlatList

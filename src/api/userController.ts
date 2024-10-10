@@ -473,7 +473,7 @@ export const PublishMonthlySchedule = async (masjidId: number) => {
     const month = new Date().getMonth() + 1;
     const year = new Date().getFullYear();
     const result: any = await api.post(
-      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}`,
+      `/masjid/${masjidId}/monthly-schedule?masjidId=${masjidId}`,
       {
         month: month,
         year: year,
