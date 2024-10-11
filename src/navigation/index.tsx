@@ -13,6 +13,8 @@ import jwtDecode from 'jwt-decode';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import crashlytics from '@react-native-firebase/crashlytics';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import NetInfo from '@react-native-community/netinfo';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
@@ -32,7 +34,7 @@ import {
 import { api } from '../api';
 import { subJummas, SubscriptionList } from '../types/masjidControllerTypes';
 import { masjidStore } from '../store/MasjidStore';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import NoInternetModal from '../components/NoInternetModal';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,6 +81,14 @@ export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isInternetReachable);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     handleDeviceIdCheck();
@@ -238,7 +248,8 @@ export default function App() {
             loaderColor={'rgb(0, 104, 112)'}
             isShow={Boolean(state.globalLoading.get())}
           />
-          {/* <BlurBackground show={true} /> */}
+          <BlurBackground show={isConnected == false} />
+          <NoInternetModal isVisible={isConnected == false} />
         </NavigationContainer>
       </GestureHandlerRootView>
     );

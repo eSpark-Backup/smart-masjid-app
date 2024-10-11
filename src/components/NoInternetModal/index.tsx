@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View, StatusBar } from 'react-native';
+import { StyleSheet, View, StatusBar, BackHandler } from 'react-native';
 
 import MyText from '../MyText';
 import { Theme, useTheme } from '@react-navigation/native';
 
-export default function NoInternetModal(isVisible: boolean) {
+export default function NoInternetModal({ isVisible }: { isVisible: boolean }) {
   const { colors }: Theme = useTheme();
 
   const inputRef: any = useRef();
@@ -18,33 +18,42 @@ export default function NoInternetModal(isVisible: boolean) {
     onFocusHandler();
   }, []);
 
-  return (
-    <>
-      <StatusBar backgroundColor={'#000000'} />
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => true,
+    );
+    return () => backHandler.remove();
+  }, []);
 
+  return (
+    <View
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: isVisible ? 'flex' : 'none',
+      }}>
+      <StatusBar backgroundColor={'transparent'} />
       <View
         style={{
           width: '100%',
           alignItems: 'center',
           padding: 5,
         }}>
-        {/* <TouchableOpacity onPress={closeModal}>
-            <FA name="close" size={moderateVerticalScale(25)} />
-          </TouchableOpacity> */}
         <MyText
           textStyle={{ fontFamily: 'Poppins-Bold', color: colors.primary }}
-          size={26}
+          size={32}
           text={'Whoops!!'}
         />
-        {/* <TouchableOpacity onPress={closeModal}>
-            <FA name="refresh" size={moderateVerticalScale(25)} />
-          </TouchableOpacity> */}
       </View>
       <View style={{ alignItems: 'center', marginVertical: 5 }}>
-        <MyText text={'Slow or no internet connection'} />
-        <MyText text={'Please check your internet connection'} />
+        <MyText size={16} text={`You're not connected to the Internet.`} />
+        <MyText size={16} text={'Please try again when you are online.'} />
       </View>
-    </>
+    </View>
   );
 }
 

@@ -169,10 +169,12 @@ const MasjidDetails = ({
               <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
-                    (masjidDetails?.address1 ?? '') +
-                    (', ' + masjidDetails?.city ?? '') +
-                    (' ' + masjidDetails?.state ?? '') +
-                    (' ' + masjidDetails?.zip ?? '')
+                    (masjidDetails?.address1
+                      ? masjidDetails?.address1 + ', '
+                      : '') +
+                    (masjidDetails?.city ? masjidDetails?.city + ' ' : '') +
+                    (masjidDetails?.state ? masjidDetails?.state + ' ' : '') +
+                    (masjidDetails?.zip ?? '')
                   }
                   size={16}
                   textStyle={{ color: '#3E3E3E' }}

@@ -34,6 +34,8 @@ export default function Search() {
   const [showError, setShowError] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [location, setLocation] = useState<null | boolean>(null);
+  const [searchedMasjids, setSearchedMasjids] = useState<Masjid[]>([]);
+  const [searchedText, setSearchedText] = useState<string>('');
 
   useEffect(() => {
     if (isFocused) {
@@ -125,6 +127,10 @@ export default function Search() {
                 setUserLocation={setUserLocation}
                 location={location}
                 setLocation={val => setLocation(val)}
+                searchedMasjids={searchedMasjids}
+                setSearchedMasjids={masjids => setSearchedMasjids(masjids)}
+                searchedText={searchedText}
+                setSearchedText={text => setSearchedText(text)}
               />
             )}
 

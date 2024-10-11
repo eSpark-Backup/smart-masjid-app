@@ -41,17 +41,25 @@ const SearchListing = ({
   contentOpacity = 0,
   setLocation,
   location,
+  searchedMasjids,
+  setSearchedMasjids,
+  searchedText,
+  setSearchedText,
 }: {
   onPress?: (masjidDetail: Masjid) => void;
   setUserLocation?: (e: any) => void;
   contentOpacity: any;
   setLocation?: (val: boolean) => void;
   location?: boolean | null;
+  searchedMasjids: Masjid[];
+  setSearchedMasjids: (masjids: Masjid[]) => void;
+  searchedText: string;
+  setSearchedText: (text: string) => void;
 }) => {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const isFocused = useIsFocused();
-  const [masjidList, setMasjidList] = useState<Masjid[]>([]);
-  const [zipCode, setZipCode] = useState('');
+  const [masjidList, setMasjidList] = useState<Masjid[]>(searchedMasjids);
+  const [zipCode, setZipCode] = useState(searchedText);
   const [loader, setLoader] = useState(false);
   const [locationStatus, setlocationStatus] = useState(false);
   const [message, setMessage] = useState('');
@@ -182,6 +190,7 @@ const SearchListing = ({
       checkLocation(enable);
       if (!enable && !locationStatus) {
         setMasjidList([]);
+        setSearchedMasjids([]);
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -191,11 +200,10 @@ const SearchListing = ({
   const locationAdapterPressed = async () => {
     try {
       const enable = await systemSetting.isLocationEnabled();
-      console.log('loacation enable', enable);
-
       checkLocation(enable, true);
       if (!enable && !locationStatus) {
         setMasjidList([]);
+        setSearchedMasjids([]);
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -206,8 +214,10 @@ const SearchListing = ({
     if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
       setlocationStatus(false);
       setMasjidList([]);
+      setSearchedMasjids([]);
       if (zipCode == 'Your Location') {
         setZipCode('');
+        setSearchedText('');
         setLocation!(false);
       }
     } else {
@@ -215,9 +225,9 @@ const SearchListing = ({
       console.log('check');
     }
   }
-
+  console.log('location', location);
   useEffect(() => {
-    if (location != null) {
+    if (location == null) {
       _startLocationCheck(_handleGPSProviderEvent);
       checkLocationAdapter();
       return () => {
@@ -229,6 +239,7 @@ const SearchListing = ({
   useEffect(() => {
     if (message != '') {
       setMasjidList([]);
+      setSearchedMasjids([]);
     }
   }, [message]);
 
@@ -242,6 +253,7 @@ const SearchListing = ({
     // setLoader(true);
     if (zipCode != 'Your Location') {
       setZipCode(zipCode);
+      setSearchedText(zipCode);
       const res: any = await SearchMasjidByLocation(
         zipCode,
         lat,
@@ -250,8 +262,10 @@ const SearchListing = ({
       );
       if (res?.length > 0) {
         setMasjidList(res);
+        setSearchedMasjids(res);
       } else {
         setMasjidList([]);
+        setSearchedMasjids([]);
       }
       setMessage('');
       state.globalLoading.set(false);
@@ -274,6 +288,7 @@ const SearchListing = ({
         info.coords.longitude.toString(),
       );
       setZipCode('Your Location');
+      setSearchedText('Your Location');
       setLocation!(true);
       setMessage('');
       // Search by geo-location (reverse geo-code)
@@ -310,6 +325,7 @@ const SearchListing = ({
               onFocus={() => {
                 if (zipCode == 'Your Location') {
                   setZipCode('');
+                  setSearchedText('');
                   setLocation!(false);
                 }
               }}
