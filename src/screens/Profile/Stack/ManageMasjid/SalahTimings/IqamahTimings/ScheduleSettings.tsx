@@ -80,11 +80,13 @@ export default function ScheduleSettings({
           id: 3,
           title: 'PDF',
           val: monthlySchedule?.url
-            ? moment()
-                .month(monthlySchedule?.month! - 1)
-                .format('MMMM') +
+            ? monthlySchedule?.year
+              ? moment()
+                  .month(monthlySchedule?.month! - 1)
+                  .format('MMMM') +
                 ' ' +
-                monthlySchedule?.year ?? 'March 2024'
+                monthlySchedule?.year
+              : 'March 2024'
             : 'Not found',
         },
         {

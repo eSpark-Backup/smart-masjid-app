@@ -222,8 +222,6 @@ export default function DeviceSetupScreen() {
     handleShowBack(step);
   }, [step]);
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
     checkStatus();
     _startLocationCheck(_handleGPSProviderEvent);

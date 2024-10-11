@@ -48,7 +48,7 @@ export default function MyDatePicker({
 
   const nextDate = () => {
     const newDate =
-      dateFormat == 'Monthly'
+      dateFormat == 'Monthly' || 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).add(1, 'month'))
         : // @ts-ignore
@@ -59,7 +59,7 @@ export default function MyDatePicker({
 
   const prevDate = () => {
     const newDate =
-      dateFormat == 'Monthly'
+      dateFormat == 'Monthly' || 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).subtract(1, 'month'))
         : // @ts-ignore
@@ -159,7 +159,7 @@ export default function MyDatePicker({
             <MyTextSubHeader
               text={
                 dateFormat == 'FullMonth'
-                  ? moment(date)?.format('MMMM, YYYY')
+                  ? moment(date)?.format('MMMM YYYY')
                   : dateFormat == 'Monthly'
                   ? moment(date)?.format('MMM, YYYY')
                   : moment(date)?.format('MMM-DD, YYYY')
