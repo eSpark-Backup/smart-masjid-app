@@ -39,7 +39,11 @@ import {
   GlobalProps,
 } from '../../../../types';
 import { OtpForm } from '../../ProfileForms';
-import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
+import {
+  CheckUserExists,
+  SendOTP,
+  ValidateOTP,
+} from '../../../../api/externalControllers';
 import { deviceStore } from '../../../../store/DeviceStore';
 import { GetUserDevices } from '../../../../api/deviceController';
 import { globalStore } from '../../../../store/GlobalStates';
@@ -380,6 +384,21 @@ export default function ManageAccount({
                       const activeKey = displayData.find(
                         val => val.editable,
                       )?.key;
+                      if (activeKey == 'email') {
+                        const userExists: any = await CheckUserExists(
+                          email,
+                          '',
+                        );
+                        if (userExists?.id) {
+                          Toast.show({
+                            text2: 'User Already Exist',
+                            type: 'error',
+                            visibilityTime: 10000,
+                          });
+                          state.globalLoading.set(false);
+                          return;
+                        }
+                      }
                       if (activeKey == 'phone') {
                         const isValidPhone = await isValidPhoneNumber(
                           phoneNo,
