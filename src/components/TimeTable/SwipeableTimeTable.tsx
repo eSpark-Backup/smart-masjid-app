@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { MuteSvg, VolumUpGreen } from '../../assets';
+import { CheckCircle, MuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { IPrayerTimeForPeriod } from '../../types';
 import GapView from '../GapView';
@@ -19,6 +19,7 @@ import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import Tooltip from '../Tooltip';
 import {
+  AdhanLog,
   SalahTimings,
   SubscriptionList,
 } from '../../types/masjidControllerTypes';
@@ -37,21 +38,25 @@ const RowItem = ({
   subscribed,
   subscriptionData,
   setSubscriptions,
+  adhanCalled,
 }: {
   item: { name: string; adhan: string; Iqama: string };
   isMute: boolean;
   subscribed?: boolean;
   subscriptionData?: SubscriptionList;
   setSubscriptions: (id: string, adhanName: string) => void;
+  adhanCalled?: boolean;
 }) => {
   const toggleSubscription = () => {
     setSubscriptions(subscriptionData?.id.toString() as string, item.name);
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.9}>
-      <View style={[styles.contentRow, { height: 40 }]}>
+    <View>
+      <View style={[styles.contentRow, { paddingLeft: 5, height: 40 }]}>
         <View style={styles.contentCol}>
+          <CheckCircle color={adhanCalled ? '#1DF126' : '#9E9F9F'} />
+          <GapView mode="horizontal" length={5} />
           <MyText text={item.name} size={16} />
         </View>
         <View
@@ -100,7 +105,7 @@ const RowItem = ({
           </View>
         )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -123,6 +128,7 @@ export default function SwipeableTimeTable({
   setLoading,
   deviceGetsOnline,
   loading,
+  adhanLog,
 }: {
   data: SalahTimings[];
   subscriptions: SubscriptionList[];
@@ -142,6 +148,7 @@ export default function SwipeableTimeTable({
   setLoading: (val: boolean) => void;
   deviceGetsOnline?: () => void;
   loading?: boolean;
+  adhanLog?: AdhanLog | null;
 }) {
   const [currentItem, setCurrentItem] = useState<IPrayerTimeForPeriod | null>(
     data?.length > 0 ? data[0] : null,
@@ -234,6 +241,24 @@ export default function SwipeableTimeTable({
     [],
   );
 
+  const checkCalledAdhan = (adhanName: string) => {
+    switch (adhanName) {
+      case 'fajr':
+        return adhanLog?.fajrCalled == 'Y' ? true : false;
+      case 'dhuhr':
+        return adhanLog?.dhuhrCalled == 'Y' ? true : false;
+      case 'asr':
+        return adhanLog?.asrCalled == 'Y' ? true : false;
+      case 'maghrib':
+        return adhanLog?.maghribCalled == 'Y' ? true : false;
+      case 'isha':
+        return adhanLog?.ishaCalled == 'Y' ? true : false;
+
+      default:
+        break;
+    }
+  };
+
   const renderItem = ({
     item,
     index,
@@ -260,6 +285,7 @@ export default function SwipeableTimeTable({
                 item => item.subscriptionType.name == data?.name.toUpperCase(),
               )}
               setSubscriptions={updateSubscriptions}
+              adhanCalled={checkCalledAdhan(data?.name.toLowerCase())}
             />
           ))}
           {/* {item?.salah?.map((data, i) =>
@@ -329,28 +355,28 @@ export default function SwipeableTimeTable({
     }
   };
 
-  const validateUpdatedTime = async (mins?: number): Promise<boolean> => {
-    const res = await _checkDeviceTelemetry(deviceInfo.id.toString(), true);
-    if (res) {
-      const utcDateString = res.updatedTime; // get a date/time
-      const timeNow = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // format the current time to the same format
-      const utcTimeNow = moment.utc(timeNow);
-      const differenceInMinutes = Math.abs(
-        moment(utcDateString).diff(moment(utcTimeNow), 'minutes'),
-      ); // check the difference in minutes: number
-      console.log(
-        'updatedTime:',
-        utcDateString,
-        '\n',
-        'timeNow:',
-        utcTimeNow,
-        '\n',
-        'Difference in Time:',
-        differenceInMinutes,
-      );
-      return differenceInMinutes < mins! ?? 2 ? true : false; //* The time should be lesser then the value
-    } else return false;
-  };
+  // const validateUpdatedTime = async (mins?: number): Promise<boolean> => {
+  //   const res = await _checkDeviceTelemetry(deviceInfo.id.toString(), true);
+  //   if (res) {
+  //     const utcDateString = res.updatedTime; // get a date/time
+  //     const timeNow = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // format the current time to the same format
+  //     const utcTimeNow = moment.utc(timeNow);
+  //     const differenceInMinutes = Math.abs(
+  //       moment(utcDateString).diff(moment(utcTimeNow), 'minutes'),
+  //     ); // check the difference in minutes: number
+  //     console.log(
+  //       'updatedTime:',
+  //       utcDateString,
+  //       '\n',
+  //       'timeNow:',
+  //       utcTimeNow,
+  //       '\n',
+  //       'Difference in Time:',
+  //       differenceInMinutes,
+  //     );
+  //     return differenceInMinutes < mins! ?? 2 ? true : false; //* The time should be lesser then the value
+  //   } else return false;
+  // };
 
   return (
     <>
@@ -528,7 +554,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '22%', alignItems: 'flex-start' },
+  contentCol: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: '22%',
+    alignItems: 'center',
+  },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

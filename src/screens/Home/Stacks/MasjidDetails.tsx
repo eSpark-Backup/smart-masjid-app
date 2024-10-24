@@ -33,6 +33,7 @@ import {
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
 import {
+  AdhanLog,
   JummahTime,
   Masjid,
   SalahTimings,
@@ -47,6 +48,7 @@ import { masjidStore } from '../../../store/MasjidStore';
 import { Device } from '../../../types/deviceControllerTypes';
 import { useMasjid } from '../../../utils/hooks';
 import {
+  GetAdhanLog,
   GetMasjidCurrentJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
@@ -79,6 +81,7 @@ export default function MasjidDetails({
   const devices = useHookstate(masjidStore.connectedDevices).get();
   const [loading, setLoading] = useState<boolean>(false);
   const [subs, setSubs] = useState<SubscriptionList[]>([]);
+  const [logs, setLogs] = useState<AdhanLog | null>(null);
   const connectedDevices = useMemo(() => devices, [devices]);
   const [salahTime, setSalahTime] = useState<SalahTimings[]>([]);
   const [currentDevice, setCurrentDevice] = useState<Device>();
@@ -94,6 +97,7 @@ export default function MasjidDetails({
 
   useEffect(() => {
     if (isFocused) {
+      getAdhanLogs();
       getSalahTimes();
     }
   }, [isFocused]);
@@ -131,6 +135,20 @@ export default function MasjidDetails({
     try {
       await getDeviceSubscriptions(id).then(data => {
         setSubs(data);
+      });
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+      state.globalLoading.set(false);
+    }
+  };
+
+  const getAdhanLogs = async () => {
+    try {
+      await GetAdhanLog(
+        selectedMasjid?.id.toString() ?? '',
+        moment().format('YYYY-MM-DD').toString(),
+      ).then(data => {
+        setLogs(data);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -224,6 +242,7 @@ export default function MasjidDetails({
           }}
           deviceGetsOnline={getSalahTimes}
           loading={state.globalLoading.get()}
+          adhanLog={logs}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />

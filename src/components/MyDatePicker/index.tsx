@@ -46,9 +46,11 @@ export default function MyDatePicker({
     onDateChange(currentDate);
   };
 
+  console.log('dateFormat', dateFormat);
+
   const nextDate = () => {
     const newDate =
-      dateFormat == 'Monthly' || 'FullMonth'
+      dateFormat == 'Monthly' || dateFormat == 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).add(1, 'month'))
         : // @ts-ignore
@@ -59,7 +61,7 @@ export default function MyDatePicker({
 
   const prevDate = () => {
     const newDate =
-      dateFormat == 'Monthly' || 'FullMonth'
+      dateFormat == 'Monthly' || dateFormat == 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).subtract(1, 'month'))
         : // @ts-ignore

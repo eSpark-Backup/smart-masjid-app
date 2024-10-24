@@ -59,6 +59,7 @@ export { default as Web } from './vectors/web.svg';
 export { default as ButtonIcon } from './vectors/ButtonIcon.svg';
 export { default as Calendar } from './vectors/Calendar.svg';
 export { default as PlusCircle } from './vectors/plus-circle.svg';
+export { default as CheckCircle } from './vectors/check-circle.svg';
 export { default as InfoCircle } from './vectors/InfoCircle.svg';
 export { default as AdhanButton } from './vectors/AdhanButton.svg';
 export { default as SyncSvg } from './vectors/Sync.svg';
