@@ -1,17 +1,20 @@
 import React from 'react';
 import { View, Modal, ActivityIndicator } from 'react-native';
 import { Theme, useTheme } from '@react-navigation/native';
+import MyText from '../MyText';
 
 const OverlayLoader = ({
   isShow = false,
   hideLoader = false,
   loaderColor = null,
   noBg = false,
+  msg,
 }: {
   isShow: boolean;
   hideLoader?: boolean;
   loaderColor?: string | null;
   noBg?: boolean;
+  msg?: string;
 }) => {
   const { colors }: Theme = useTheme();
   return (
@@ -29,6 +32,7 @@ const OverlayLoader = ({
             color={loaderColor ?? colors.primary}
           />
         )}
+        {msg && <MyText size={16} text={msg} />}
       </View>
     </Modal>
   );

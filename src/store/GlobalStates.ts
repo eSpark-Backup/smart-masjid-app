@@ -7,5 +7,6 @@ export const globalStore = hookstate<GlobalProps>({
   isDeviceRegistered: false,
   devSetup: false,
   globalLoading: false,
+  globalLoadingMsg: '',
   countryCode: null,
 });

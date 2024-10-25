@@ -116,9 +116,7 @@ export default function Device({ contentOpacity = 0 }: any) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [step, setStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>('1');
-  const [showLoader, setshowLoader] = useState<boolean>(false);
   const [selectedDevice, setSelectedDevice] = useState<DeviceType>();
-  const [clear, setClear] = useState(false);
   const user = useHookstate(userStore?.userData)?.get();
   const USER_TOKEN: any = useHookstate(userStore?.token)?.get();
   const devices: any = useHookstate(deviceStore?.devices)?.get();
@@ -279,14 +277,15 @@ export default function Device({ contentOpacity = 0 }: any) {
                 </View>
               </View>
             )}
-            {step == 1 && (
-              <DeviceSetting
-                contentOpacity={props.contentOpacity}
-                device={selectedDevice}
-                goBack={() => setStep(0)}
-                isBtn={activeTab == '1' ? false : true}
-              />
-            )}
+
+            <DeviceSetting
+              contentOpacity={props.contentOpacity}
+              device={selectedDevice}
+              goBack={() => setStep(0)}
+              isBtn={activeTab == '1' ? false : true}
+              step={step}
+              scrVisible={step == 1}
+            />
           </>
         );
       }}

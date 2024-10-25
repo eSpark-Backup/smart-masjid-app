@@ -46,7 +46,7 @@ export default function NoInternetModal({ isVisible }: { isVisible: boolean }) {
         <MyText
           textStyle={{ fontFamily: 'Poppins-Bold', color: colors.primary }}
           size={32}
-          text={'Whoops!!'}
+          text={'Whoops!'}
         />
       </View>
       <View style={{ alignItems: 'center', marginVertical: 5 }}>

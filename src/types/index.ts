@@ -41,6 +41,7 @@ export type GlobalProps = {
   isDeviceRegistered?: boolean;
   devSetup?: boolean;
   globalLoading?: boolean;
+  globalLoadingMsg?: string;
   countryCode: string | null;
 };
 

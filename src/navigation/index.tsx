@@ -247,6 +247,7 @@ export default function App() {
           <OverlayLoader
             loaderColor={'rgb(0, 104, 112)'}
             isShow={Boolean(state.globalLoading.get())}
+            msg={state.globalLoadingMsg.get()}
           />
           <BlurBackground show={isConnected == false} />
           <NoInternetModal isVisible={isConnected == false} />
