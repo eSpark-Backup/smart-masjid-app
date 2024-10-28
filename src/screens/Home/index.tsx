@@ -76,10 +76,15 @@ export const ListEmptyComponent = ({
           />
         </TouchableOpacity>
       ) : (
-        <MyText
-          text={message2}
-          textStyle={{ textAlign: 'center', fontSize: 16 }}
-        />
+        <View style={{ width: '80%' }}>
+          <MyText
+            text={message2}
+            textStyle={{
+              textAlign: 'center',
+              fontSize: 16,
+            }}
+          />
+        </View>
       )}
 
       <GapView length={40} />

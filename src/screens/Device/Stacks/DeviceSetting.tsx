@@ -5,6 +5,7 @@ import {
   Animated,
   Platform,
   TouchableWithoutFeedback,
+  BackHandler,
 } from 'react-native';
 import {
   Theme,
@@ -51,6 +52,7 @@ import {
   getDeviceUpdateLogs,
   getFirmwareUpdates,
   unSubscribeMasjid,
+  updateDeviceFirmware,
 } from '../../../api/deviceController';
 import {
   BottomNavigationParamList,
@@ -102,12 +104,16 @@ const DeviceSetting = ({
     if (step == 0) {
       console.log('current 0', step);
       clearInterval(checkUpdateRef.current);
+    } else {
+      checkUpdateRef.current = setInterval(() => {
+        getUpdateLogs();
+      }, 30000);
     }
   }, [step]);
 
   useEffect(() => {
     getUpdateLogs();
-  }, []);
+  }, [device]);
 
   const removeDevice = async () => {
     state.globalLoading.set(true);
@@ -192,27 +198,35 @@ const DeviceSetting = ({
 
   const getUpdateLogs = async () => {
     try {
+      console.log('getUpdateLogs deviceId', device?.id);
       const logRes: DeviceLogType | null | false = await getDeviceUpdateLogs(
-        device?.id?.toString()!,
+        device?.id!,
       );
+      console.log('logRes', logRes);
+
       if (logRes) {
         if (logRes.status == 'I') {
           state.globalLoading.set(true);
           state.globalLoadingMsg.set(`Device update in progress...`);
         } else {
           state.globalLoading.set(false);
+          state.globalLoadingMsg.set(``);
+          clearInterval(checkUpdateRef.current);
           if (device?.deviceTelemetry.status == 'Online') {
             getFirmwareUpdate();
           }
         }
       } else if (logRes == null) {
         state.globalLoading.set(false);
+        state.globalLoadingMsg.set(``);
+        clearInterval(checkUpdateRef.current);
         if (device?.deviceTelemetry.status == 'Online') {
           getFirmwareUpdate();
         }
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
+      clearInterval(checkUpdateRef.current);
     }
   };
 
@@ -231,6 +245,24 @@ const DeviceSetting = ({
     }
   };
 
+  const UpdateFirmware = async () => {
+    console.log('UpdateFirmware', device?.id);
+    try {
+      const updateRes: DeviceFirmwareType = await updateDeviceFirmware(
+        device?.id.toString()!,
+      );
+      console.log('UpdateFirmware Res', updateRes);
+      if (updateRes) {
+        setUpdateShow(false);
+        checkUpdateRef.current = setInterval(() => {
+          getUpdateLogs();
+        }, 30000);
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
+
   console.log('device?.', device?.deviceTelemetry.status);
   console.log(
     'device?.deviceTelemetry?.streamer',
@@ -243,6 +275,7 @@ const DeviceSetting = ({
         {/* <OverlayLoader isShow={loader} /> */}
         <ErrorModal
           visible={errorShow}
+          title={'Wi-Fi Error'}
           message={
             'Looks like your device is offline, what would you like to do ?'
           }
@@ -310,6 +343,7 @@ const DeviceSetting = ({
         />
         <ErrorModal
           visible={updateShow}
+          title={'Firmaware Error'}
           message={
             'Please make sure your device is online before installing the latest firmware.'
           }
@@ -320,6 +354,7 @@ const DeviceSetting = ({
           options={[
             {
               label: 'Update Firmware',
+              onPress: UpdateFirmware,
             },
           ]}
         />
@@ -526,7 +561,7 @@ const DeviceSetting = ({
                         title: 'Firmware Version',
                         subtitle: 'Version ' + device?.firmwareVersion,
                         danger: updateAvailable,
-                        onDangerPress: () => setErrorShow(true),
+                        onDangerPress: () => setUpdateShow(true),
                         icon: <Version style={{ padding: 10, bottom: 2 }} />,
                       },
                       {

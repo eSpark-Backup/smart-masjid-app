@@ -167,6 +167,8 @@ export default function Device({ contentOpacity = 0 }: any) {
 
   const onBackPress = () => {
     if (step != 0) {
+      state.globalLoading.set(false);
+      state.globalLoadingMsg.set(``);
       setStep(step - 1);
     } else {
       navigation.goBack();

@@ -15,6 +15,7 @@ export default function ErrorModal({
   message2,
   options,
   wifiError,
+  title,
 }: {
   visible: boolean;
   onClose?: () => void;
@@ -25,6 +26,7 @@ export default function ErrorModal({
   message: string;
   message2?: string;
   wifiError?: boolean;
+  title: string;
 }): JSX.Element {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
@@ -51,7 +53,7 @@ export default function ErrorModal({
             }}>
             <CloseIcon width={30} height={30} />
           </TouchableOpacity>
-          <MyText text="Wi-Fi Error" textStyle={styles.label} size={16} />
+          <MyText text={title} textStyle={styles.label} size={16} />
           <GapView length={10} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
           <GapView length={10} />

@@ -188,7 +188,7 @@ const SearchListing = ({
     try {
       const enable = await systemSetting.isLocationEnabled();
       checkLocation(enable);
-      if (!enable && !locationStatus) {
+      if (!enable && !locationStatus && searchedMasjids.length < 1) {
         setMasjidList([]);
         setSearchedMasjids([]);
       }
@@ -204,6 +204,7 @@ const SearchListing = ({
       if (!enable && !locationStatus) {
         setMasjidList([]);
         setSearchedMasjids([]);
+        setZipCode('');
       }
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -236,12 +237,14 @@ const SearchListing = ({
     }
   }, [locationStatus]);
 
-  useEffect(() => {
-    if (message != '') {
-      setMasjidList([]);
-      setSearchedMasjids([]);
-    }
-  }, [message]);
+  console.log('searchedMasjids.length', searchedMasjids.length);
+
+  // useEffect(() => {
+  //   if (message != '' && searchedMasjids.length < 1) {
+  //     setMasjidList([]);
+  //     setSearchedMasjids([]);
+  //   }
+  // }, [message]);
 
   console.log(
     'state.countryCode.get() as string,',
@@ -362,8 +365,8 @@ const SearchListing = ({
                 zipCode?.length > 0 && zipCode != 'Your Location'
                   ? 'No Smart Masjid found for the Zip Code entered.'
                   : locationStatus
-                  ? 'No masjid found near you'
-                  : 'No Smart Masjid found near your Location. Try searching with Zip Code'
+                  ? 'No Smart Masjid found near your Location. Try searching with Zip Code'
+                  : 'Location services are turned off. Try searching with Zip Code'
               }
             />
           }

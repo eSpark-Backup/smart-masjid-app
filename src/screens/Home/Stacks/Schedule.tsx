@@ -191,15 +191,6 @@ export default function Schedule({
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <LogoutModal
-        visible={prompt2}
-        message={`Monthly Schedule sent successfully.\n\nWould you like to download the PDF as well?`}
-        onAllowed={() => {
-          setPrompt2(false);
-          isPermitted();
-        }}
-        onClose={() => setPrompt2(false)}
-      />
-      <LogoutModal
         visible={downloadPrompt}
         message={`Monthly Schedule downloaded successfully.\n\nWould you like to view the downloaded PDF?`}
         onAllowed={() => {
@@ -209,9 +200,11 @@ export default function Schedule({
             },
           })
             .then(() => {
+              setDownloadPrompt(false);
               // success
             })
             .catch(error => {
+              setDownloadPrompt(false);
               // error
               console.log('err view error', error);
             });
