@@ -236,8 +236,12 @@ const DeviceSetting = ({
         device?.deviceType?.id.toString()!,
       );
       if (updateRes) {
+        console.log('updateRes.version', updateRes.version);
+        console.log('device?.firmwareVersion', device?.firmwareVersion);
         if (updateRes.version > device?.firmwareVersion!) {
           setUpdateAvailable(true);
+        } else {
+          setUpdateAvailable(false);
         }
       }
     } catch (e) {
@@ -343,7 +347,7 @@ const DeviceSetting = ({
         />
         <ErrorModal
           visible={updateShow}
-          title={'Firmaware Error'}
+          title={'Firmware Update'}
           message={
             'Please make sure your device is online before installing the latest firmware.'
           }
@@ -559,7 +563,7 @@ const DeviceSetting = ({
                       },
                       {
                         title: 'Firmware Version',
-                        subtitle: 'Version ' + device?.firmwareVersion,
+                        subtitle: device?.firmwareVersion,
                         danger: updateAvailable,
                         onDangerPress: () => setUpdateShow(true),
                         icon: <Version style={{ padding: 10, bottom: 2 }} />,

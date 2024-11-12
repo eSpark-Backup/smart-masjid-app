@@ -272,10 +272,10 @@ export const GetAdhanLog = async (masjidId: string, date?: string) => {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
       return null;
     } else {
-      Toast.show({
-        text2: result?.data?.message ?? 'Something went wrong',
-        type: 'error',
-      });
+      // Toast.show({
+      //   text2: result?.data?.message ?? 'Something went wrong',
+      //   type: 'error',
+      // });
       return null;
     }
   } catch (error) {

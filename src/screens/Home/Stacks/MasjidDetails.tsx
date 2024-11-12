@@ -25,9 +25,7 @@ import {
   MyTextSubHeader,
   MyTitle,
   OutlineDeviceContainer,
-  OverlayLoader,
   SwipeableTimeTable,
-  TextLabel,
   Tooltip,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
@@ -105,7 +103,9 @@ export default function MasjidDetails({
   const getSalahTimes = async () => {
     try {
       state.globalLoading.set(true);
-      // setLoading(true);
+
+      setLoading(true);
+
       await GetMasjidDevicesForUser(
         userData?.id?.toString() ?? '',
         selectedMasjid?.id.toString(),
@@ -122,12 +122,15 @@ export default function MasjidDetails({
         'WEEK',
       ).then(data => {
         setSalahTime(data as SalahTimings[]);
-        state.globalLoading.set(false);
-        // setLoading(false);
+        setLoading(false);
+        setTimeout(() => {
+          state.globalLoading.set(false);
+        }, 100);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
       state.globalLoading.set(false);
+      setLoading(false);
     }
   };
 
@@ -158,7 +161,6 @@ export default function MasjidDetails({
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <OverlayLoader isShow={loading} noBg={false} /> */}
       <View
         style={{
           alignSelf: 'center',
@@ -238,10 +240,10 @@ export default function MasjidDetails({
           setSubscriptions={setSubs}
           setLoading={val => {
             state.globalLoading.set(val);
-            // setLoading(val);
+            setLoading(val);
           }}
           deviceGetsOnline={getSalahTimes}
-          loading={state.globalLoading.get()}
+          loading={loading}
           adhanLog={logs}
         />
         <GapView length={15} />
@@ -259,7 +261,7 @@ export default function MasjidDetails({
           data={JummahTime as JummahTime}
           setLoading={val => {
             state.globalLoading.set(val);
-            // setLoading(val);
+            setLoading(val);
           }}
         />
         <GapView length={15} />
