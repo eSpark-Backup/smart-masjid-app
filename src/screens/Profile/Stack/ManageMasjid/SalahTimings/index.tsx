@@ -85,7 +85,7 @@ export default function SalahSettings({
                 {
                   title: 'Monthly Schedule',
                   icon: <MonthlyScheduleSVG />,
-                  onPress: () => setFlag('Hist'),
+                  onPress: () => setFlag('HistSett'),
                 },
               ],
             },

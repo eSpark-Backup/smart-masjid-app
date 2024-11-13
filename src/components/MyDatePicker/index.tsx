@@ -140,7 +140,7 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          {!hideChevs && (
+          {!hideChevs ? (
             <TouchableOpacity
               disabled={!moment(date).isAfter(minimumDate)}
               onPress={prevDate}>
@@ -152,6 +152,8 @@ export default function MyDatePicker({
                 size={24}
               />
             </TouchableOpacity>
+          ) : (
+            <GapView length={24} />
           )}
           <GapView length={10} mode="horizontal" />
           <TouchableOpacity
@@ -169,7 +171,7 @@ export default function MyDatePicker({
             />
           </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          {!hideChevs && (
+          {!hideChevs ? (
             <TouchableOpacity
               disabled={!moment(date).isBefore(maximumDate)}
               onPress={nextDate}>
@@ -183,6 +185,8 @@ export default function MyDatePicker({
                 size={24}
               />
             </TouchableOpacity>
+          ) : (
+            <GapView length={24} />
           )}
         </View>
       </>

@@ -264,10 +264,19 @@ export default function Schedule({
           </View>
         </View>
         {adhaTime?.length < 1 && !state.globalLoading.get() ? (
-          <MyText
-            textStyle={{ textAlign: 'center', marginVertical: 10 }}
-            text="Monthly Schedule not published yet!"
-          />
+          <View
+            style={{
+              flex: 0.8,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <MyText
+              textStyle={{
+                textAlign: 'center',
+              }}
+              text="Monthly Schedule not published yet!"
+            />
+          </View>
         ) : (
           <TimeSheet
             data={convertResponseToData(adhaTime) ?? []}

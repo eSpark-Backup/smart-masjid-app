@@ -45,7 +45,7 @@ const RowItem = ({
   subscribed?: boolean;
   subscriptionData?: SubscriptionList;
   setSubscriptions: (id: string, adhanName: string) => void;
-  adhanCalled?: boolean;
+  adhanCalled?: { called: boolean; time: string | null };
 }) => {
   const toggleSubscription = () => {
     setSubscriptions(subscriptionData?.id.toString() as string, item.name);
@@ -53,15 +53,29 @@ const RowItem = ({
 
   return (
     <View>
-      <View style={[styles.contentRow, { paddingLeft: 5, height: 40 }]}>
+      <View style={[styles.contentRow, { height: 40 }]}>
         <View style={styles.contentCol}>
-          <CheckCircle color={adhanCalled ? '#1DF126' : '#9E9F9F'} />
+          <Tooltip
+            icon={
+              <CheckCircle
+                color={adhanCalled?.called ? '#1DF126' : '#9E9F9F'}
+              />
+            }
+            content={
+              adhanCalled?.time
+                ? `Adhan Called at ${moment(
+                    adhanCalled?.time,
+                    'HH:mm:ss',
+                  ).format('h:mm A')}`
+                : 'Adhan not called'
+            }
+          />
           <GapView mode="horizontal" length={5} />
           <MyText text={item.name} size={16} />
         </View>
         <View
           style={{
-            width: '28%',
+            width: '30%',
             alignItems: 'center',
           }}>
           <MyText
@@ -75,7 +89,7 @@ const RowItem = ({
         </View>
         <View
           style={{
-            width: '32%',
+            width: '30%',
             alignItems: 'center',
           }}>
           <MyText
@@ -91,13 +105,13 @@ const RowItem = ({
           <View style={styles.contentIcon}>
             {subscribed ? (
               <TouchableOpacity
-                style={{ padding: 5 }}
+                style={{ paddingLeft: 5 }}
                 onPress={toggleSubscription}>
                 <VolumUpGreen height={16} width={16} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                style={{ padding: 5 }}
+                style={{ paddingLeft: 5 }}
                 onPress={toggleSubscription}>
                 <MuteSvg height={16} width={16} />
               </TouchableOpacity>
@@ -244,16 +258,25 @@ export default function SwipeableTimeTable({
   const checkCalledAdhan = (adhanName: string) => {
     switch (adhanName) {
       case 'fajr':
-        return adhanLog?.fajrCalled == 'Y' ? true : false;
+        return adhanLog?.fajrCalled == 'Y'
+          ? { called: true, time: adhanLog.fajrCalledTime }
+          : { called: false, time: null };
       case 'dhuhr':
-        return adhanLog?.dhuhrCalled == 'Y' ? true : false;
+        return adhanLog?.dhuhrCalled == 'Y'
+          ? { called: true, time: adhanLog.dhuhrCalledTime }
+          : { called: false, time: null };
       case 'asr':
-        return adhanLog?.asrCalled == 'Y' ? true : false;
+        return adhanLog?.asrCalled == 'Y'
+          ? { called: true, time: adhanLog.asrCalledTime }
+          : { called: false, time: null };
       case 'maghrib':
-        return adhanLog?.maghribCalled == 'Y' ? true : false;
+        return adhanLog?.maghribCalled == 'Y'
+          ? { called: true, time: adhanLog.maghribCalledTime }
+          : { called: false, time: null };
       case 'isha':
-        return adhanLog?.ishaCalled == 'Y' ? true : false;
-
+        return adhanLog?.ishaCalled == 'Y'
+          ? { called: true, time: adhanLog.ishaCalledTime }
+          : { called: false, time: null };
       default:
         break;
     }
@@ -402,8 +425,17 @@ export default function SwipeableTimeTable({
           <GapView length={15} />
         </>
         <View style={styles.headerRow}>
-          {headings?.map(value => (
-            <View key={value} style={styles.headerCol}>
+          {headings?.map((value, index) => (
+            <View
+              key={value}
+              style={[
+                styles.headerCol,
+                {
+                  width: index == 0 ? '28%' : '30%',
+                  alignItems: index == 0 ? 'flex-start' : 'center',
+                  paddingLeft: index == 0 ? 5 : undefined,
+                },
+              ]}>
               <MyText
                 text={value}
                 size={16}
@@ -417,7 +449,7 @@ export default function SwipeableTimeTable({
           {isMute && !isInfo && <View style={styles.headerIcon} />}
           {isEdit && !isInfo && <View style={styles.headerIcon} />}
           {isInfo && (
-            <View style={{ right: 10 }}>
+            <View style={styles.headerIcon}>
               <Tooltip
                 position="top"
                 content="You can subscribe to Adhan here. Adhan will play on your device when called at your masjid."
@@ -536,7 +568,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerCol: { width: '28%', alignItems: 'center' },
   headerIcon: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -557,7 +589,7 @@ const styles = StyleSheet.create({
   contentCol: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    width: '22%',
+    width: '28%',
     alignItems: 'center',
   },
   contentIcon: {

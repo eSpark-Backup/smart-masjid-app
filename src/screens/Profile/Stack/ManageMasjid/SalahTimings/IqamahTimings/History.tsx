@@ -259,37 +259,34 @@ export default function History({
             width: WINDOW_WIDTH,
           }}>
           <MyDatePicker
-            minimumDate={moment().startOf('month').date(2).toDate()}
-            maximumDate={moment().add(4, 'month').date(1).toDate()}
             disablePicker
             type="standard"
-            // currentDate={currentDate.getMonth}
+            hideChevs
             currentDate={moment()
               .year(currentDate.getFullYear())
               .month(currentDate.getMonth())
               .date(1)
               .toDate()}
-            onDateChange={onDateChange}
             dateFormat={'Monthly'}
           />
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               right: 20,
               flexDirection: 'row',
             }}>
-            {/* <TouchableOpacity onPress={() => setPrompt1(true)}>
+            <TouchableOpacity onPress={() => setPrompt1(true)}>
               <Mail />
             </TouchableOpacity>
             <GapView mode="horizontal" />
             <TouchableOpacity onPress={isPermitted}>
               <Download />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <GapView mode="horizontal" />
             <TouchableOpacity onPress={getScheduleData}>
               <Publish />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
         {adhaTime?.length < 1 && !state.globalLoading.get() ? (
           <MyText

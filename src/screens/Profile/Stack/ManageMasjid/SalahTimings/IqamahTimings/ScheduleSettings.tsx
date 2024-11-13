@@ -13,6 +13,7 @@ import moment from 'moment';
 import {
   GetJummahHistory,
   generatePDf,
+  getSalahTimingsOfMasjid,
 } from '../../../../../../api/masjidController';
 import {
   GapView,
@@ -26,16 +27,22 @@ import {
 } from '../../../../../../components';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { userStore } from '../../../../../../store/UserStore';
-import { JummahTime } from '../../../../../../types/masjidControllerTypes';
+import {
+  JummahTime,
+  SalahTimings,
+} from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import {
+  GetMonthlySchedule,
   PublishMonthlySchedule,
   UpdatePublishedMonthlySchedule,
 } from '../../../../../../api/userController';
 import { GlobalProps } from '../../../../../../types';
 import { globalStore } from '../../../../../../store/GlobalStates';
 import { OpenLink } from '../../../../../../assets';
+import MyDatePicker from '../../../../../../components/MyDatePicker';
+import { ScheduleResponse } from '../../../../../../types/userControllerApiResponse';
 
 export default function ScheduleSettings({
   setFlag,
@@ -52,11 +59,21 @@ export default function ScheduleSettings({
   const [emailPrompt, setEmailPrompt] = useState(false);
   const [successPrompt, setSuccessPrompt] = useState(false);
   const [displayData, setdisplayData] = useState<any>(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [monthSchedule, setMonthSchedule] = useState<ScheduleResponse | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (monthlySchedule && !displayData) {
-      console.log('monthlySchedule');
+    getScheduleData();
+  }, []);
 
+  const updateMonthlySchInfo = (
+    monthlySchedule: ScheduleResponse | null,
+    date?: Date,
+  ) => {
+    if (monthlySchedule) {
+      setMonthSchedule(monthlySchedule);
       setdisplayData([
         {
           id: 0,
@@ -71,11 +88,6 @@ export default function ScheduleSettings({
           title: 'Year',
           val: monthlySchedule?.year ?? '2023',
         },
-        // {
-        //   id: 2,
-        //   title: 'Is Published',
-        //   val: 'Yes',
-        // },
         {
           id: 3,
           title: 'PDF',
@@ -102,12 +114,74 @@ export default function ScheduleSettings({
             : '-',
         },
       ]);
+    } else {
+      setMonthSchedule(null);
+      setdisplayData([
+        {
+          id: 0,
+          title: 'Month',
+          val: moment().month(date?.getMonth()!).format('MMMM') ?? 'March',
+        },
+        {
+          id: 1,
+          title: 'Year',
+          val: date?.getFullYear() ?? '2023',
+        },
+        {
+          id: 3,
+          title: 'PDF',
+          val: 'Not found',
+        },
+        {
+          id: 4,
+          title: 'Published Date',
+          val: '-',
+        },
+        {
+          id: 5,
+          title: 'Updated Date',
+          val: '-',
+        },
+      ]);
     }
-  }, [monthlySchedule]);
+  };
+
+  const getScheduleData = async (date?: Date) => {
+    state.globalLoading.set(true);
+    const res = await GetMonthlySchedule(
+      userData?.masjid.id!,
+      date ? date.getMonth() + 1 : currentDate.getMonth() + 1,
+      date ? date.getFullYear() : currentDate.getFullYear(),
+    );
+    if (res) {
+      state.globalLoading.set(false);
+      updateMonthlySchInfo(res);
+    } else {
+      state.globalLoading.set(false);
+      updateMonthlySchInfo(null, date);
+    }
+  };
+
+  const onDateChange = async (e: Date) => {
+    setCurrentDate(e);
+    state.globalLoading.set(true);
+    getScheduleData(e);
+    // getSalahTimingsOfMasjid(
+    //   userData?.masjid?.id.toString() as string,
+    //   moment(e).startOf('month').format('YYYY-MM-DD') as string,
+    //   'MONTH',
+    // ).then((timings: SalahTimings[] | undefined) => {
+    //   // convertTimings(timings);
+    //   state.globalLoading.set(false);
+    // });
+  };
 
   const onPublishSchedule = async () => {
     state.globalLoading.set(true);
-    const res = await PublishMonthlySchedule(userData?.masjid?.id!);
+    const res = await PublishMonthlySchedule(
+      userData?.masjid?.id!,
+      currentDate,
+    );
     if (res) {
       schedule.set(res);
       state.globalLoading.set(false);
@@ -115,11 +189,12 @@ export default function ScheduleSettings({
       state.globalLoading.set(false);
     }
   };
+
   const onUpdatePublishedSchedule = async () => {
     state.globalLoading.set(true);
     const res = await UpdatePublishedMonthlySchedule(
       userData?.masjid?.id!,
-      monthlySchedule?.id!,
+      monthSchedule?.id!,
     );
     if (res) {
       schedule.set(res);
@@ -135,7 +210,7 @@ export default function ScheduleSettings({
     state.globalLoading.set(true);
     const res = await generatePDf(
       userData?.masjid?.id!,
-      monthlySchedule?.id!,
+      monthSchedule?.id!,
       email?.length < 1 ? [userData?.email!] : [userData?.email!, email],
     );
     if (res) {
@@ -146,10 +221,18 @@ export default function ScheduleSettings({
     }
   };
 
-  // console.log('monthlySchedule?.updatedDate', monthlySchedule?.updatedDate);
+  console.log(
+    'monthlySchedule',
+    moment().month(currentDate.getMonth()).format('M'),
+  );
 
   return (
-    <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
+    <View
+      style={{
+        flex: 1,
+        marginTop: 0,
+        alignItems: 'center',
+      }}>
       <MyModal
         visible={emailPrompt}
         onSend={email => sendPDFtoEmail(email)}
@@ -179,77 +262,86 @@ export default function ScheduleSettings({
 
       <View>
         <GapView />
-        {monthlySchedule ? (
-          displayData?.map((item: any) => (
-            <View
-              key={item.id}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: WINDOW_WIDTH - 30,
-                alignSelf: 'center',
-                padding: 10,
-                alignItems: 'center',
-              }}>
-              <MyText
-                text={item.title}
-                size={16}
-                textStyle={{
-                  marginRight: 10,
-                }}
-              />
-              <TouchableOpacity
-                onPress={
-                  item.id == 3 && item.val != 'Not found'
-                    ? () => Linking.openURL(monthlySchedule?.url)
-                    : undefined
-                }
-                style={{ flexDirection: 'row' }}
-                activeOpacity={
-                  item.id == 3 && item.val != 'Not found' ? 0.5 : 1
-                }>
-                <MyText
-                  text={item.val.toString()}
-                  textStyle={{
-                    fontSize: 14,
-                    color:
-                      item.id == 3 && item.val != 'Not found'
-                        ? '#0097A3'
-                        : '#6E6E6E',
-                    textAlign: 'right',
-                    textDecorationLine:
-                      item.id == 3 && item.val != 'Not found'
-                        ? 'underline'
-                        : 'none',
-                  }}
-                  lines={1}
-                />
-                {item.id == 3 && item.val != 'Not found' && (
-                  <>
-                    <GapView length={5} mode="horizontal" />
-                    <OpenLink width={18} height={18} />
-                  </>
-                )}
-              </TouchableOpacity>
-            </View>
-          ))
-        ) : (
-          <View>
+        <MyDatePicker
+          minimumDate={moment().startOf('month').date(2).toDate()}
+          maximumDate={moment().add(4, 'month').date(1).toDate()}
+          disablePicker
+          type="standard"
+          // currentDate={currentDate.getMonth}
+          currentDate={moment()
+            .year(currentDate.getFullYear())
+            .month(currentDate.getMonth())
+            .date(1)
+            .toDate()}
+          onDateChange={onDateChange}
+          dateFormat={'Monthly'}
+        />
+        {displayData?.map((item: any) => (
+          <View
+            key={item.id}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: WINDOW_WIDTH - 30,
+              alignSelf: 'center',
+              padding: 10,
+              alignItems: 'center',
+            }}>
             <MyText
-              textStyle={{ textAlign: 'center', marginVertical: 10 }}
-              text="Monthly schedule not published!"
+              text={item.title}
+              size={16}
+              textStyle={{
+                marginRight: 10,
+              }}
             />
+            <TouchableOpacity
+              onPress={
+                item.id == 3 && item.val != 'Not found'
+                  ? () => Linking.openURL(monthSchedule?.url!)
+                  : undefined
+              }
+              style={{ flexDirection: 'row' }}
+              activeOpacity={item.id == 3 && item.val != 'Not found' ? 0.5 : 1}>
+              <MyText
+                text={item.val.toString()}
+                textStyle={{
+                  fontSize: 14,
+                  color:
+                    item.id == 3 && item.val != 'Not found'
+                      ? '#0097A3'
+                      : '#6E6E6E',
+                  textAlign: 'right',
+                  textDecorationLine:
+                    item.id == 3 && item.val != 'Not found'
+                      ? 'underline'
+                      : 'none',
+                }}
+                lines={1}
+              />
+              {item.id == 3 && item.val != 'Not found' && (
+                <>
+                  <GapView length={5} mode="horizontal" />
+                  <OpenLink width={18} height={18} />
+                </>
+              )}
+            </TouchableOpacity>
           </View>
-        )}
+        ))}
       </View>
       <GapView />
       <Rounded
-        label={monthlySchedule ? 'Update' : 'Publish'}
-        onPress={
-          monthlySchedule ? onUpdatePublishedSchedule : onPublishSchedule
-        }
+        label={monthSchedule ? 'Update' : 'Publish'}
+        onPress={monthSchedule ? onUpdatePublishedSchedule : onPublishSchedule}
       />
-      {monthlySchedule && monthlySchedule?.url && (
+      <>
+        <GapView />
+        <Rounded
+          label="View Schedule"
+          onPress={() => setFlag('Hist')}
+          outlined
+        />
+      </>
+      {monthSchedule && monthSchedule?.url && (
         <>
           <GapView />
           <Rounded

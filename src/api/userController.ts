@@ -12,6 +12,7 @@ import {
   setDataInLocalStorage,
 } from '../utils/functions';
 import { globalStore } from '../store/GlobalStates';
+import moment from 'moment';
 
 /**
  * Update user's login status on the server.
@@ -468,10 +469,12 @@ export const GetMonthlySchedule = async (
  *
  * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
  */
-export const PublishMonthlySchedule = async (masjidId: number) => {
+export const PublishMonthlySchedule = async (masjidId: number, date: Date) => {
   try {
-    const month = new Date().getMonth() + 1;
-    const year = new Date().getFullYear();
+    const month = date
+      ? moment().month(date.getMonth()).format('M')
+      : moment().month(new Date().getMonth()).format('M');
+    const year = date ? date.getFullYear() : new Date().getFullYear();
     const result: any = await api.post(
       `/masjid/${masjidId}/monthly-schedule?masjidId=${masjidId}`,
       {
