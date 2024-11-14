@@ -223,7 +223,11 @@ export default function MasjidDetails({
           <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
           {monthlyScheduleData && (
             <TouchableOpacity activeOpacity={0.5} onPress={() => setStep(2)}>
-              <Calendar style={{ color: '#006870', right: 15 }} />
+              <Calendar
+                width={22}
+                height={22}
+                style={{ color: '#006870', right: 15 }}
+              />
             </TouchableOpacity>
           )}
         </View>

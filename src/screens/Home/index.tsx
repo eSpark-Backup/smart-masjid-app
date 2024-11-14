@@ -125,7 +125,6 @@ export default function Home() {
               uniqueObj?.push(obj as any);
             }
           });
-          console.log('kiya mila', uniqueObj);
           setUniqueObjects(uniqueObj);
           if (step == 0 && uniqueObj?.length == 1 && uniqueObj != null) {
             if (typeof uniqueObj?.[0] == 'object') {

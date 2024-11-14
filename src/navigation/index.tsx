@@ -95,6 +95,17 @@ export default function App() {
     getSubscribedJummas();
   }, [userData]);
 
+  useEffect(() => {
+    if (userData.get()) {
+      crashlytics().setUserId(userData.get()?.id.toString()!);
+      crashlytics().setAttributes({
+        id: userData.get()?.id.toString()!,
+        email: userData.get()?.email!,
+        phone: userData.get()?.phone!,
+      });
+    }
+  }, [userData]);
+
   const getSubscribedJummas = () => {
     let jummas: subJummas;
     try {

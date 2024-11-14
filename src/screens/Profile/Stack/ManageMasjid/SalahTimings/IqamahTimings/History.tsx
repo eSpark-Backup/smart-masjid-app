@@ -4,7 +4,6 @@ import {
   View,
   Animated,
   Platform,
-  TouchableOpacity,
   PermissionsAndroid,
 } from 'react-native';
 import { State, useHookstate } from '@hookstate/core';
@@ -32,7 +31,6 @@ import {
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
-import { Publish } from '../../../../../../assets';
 import { globalStore } from '../../../../../../store/GlobalStates';
 import { GlobalProps } from '../../../../../../types';
 import { GetMonthlySchedule } from '../../../../../../api/userController';
@@ -41,10 +39,12 @@ export default function History({
   contentOpacity = 0,
   setFlag,
   masjidId,
+  currDate,
 }: {
   contentOpacity?: any;
   setFlag: (value: string) => void;
   masjidId?: number;
+  currDate: Date;
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
@@ -53,7 +53,6 @@ export default function History({
 
   const [adhaTime, setAdhaTime] = useState([]);
   const [jummaTime, setJummaTime] = useState<JumuahTimings[] | []>([]);
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [downloadPrompt, setDownloadPrompt] = useState(false);
   const [prompt2, setPrompt2] = useState(false);
   const [filePath, setFilePath] = useState('');
@@ -62,43 +61,19 @@ export default function History({
     state.globalLoading.set(true);
     getSalahTimingsOfMasjid(
       masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
-      moment().startOf('month').format('YYYY-MM-DD'),
+      moment(currDate).startOf('month').format('YYYY-MM-DD'),
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
       getJummahTimingsOfMasjid(
         masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
-        moment().startOf('month').format('YYYY-MM-DD'),
+        moment(currDate).startOf('month').format('YYYY-MM-DD'),
       ).then((timings: JumuahTimings[] | undefined) => {
         setJummaTime(timings!);
         state.globalLoading.set(false);
       });
     });
   }, []);
-
-  const onDateChange = (e: Date) => {
-    setCurrentDate(e);
-    state.globalLoading.set(true);
-    getSalahTimingsOfMasjid(
-      userData?.masjid?.id.toString() as string,
-      moment(e).startOf('month').format('YYYY-MM-DD') as string,
-      'MONTH',
-    ).then((timings: SalahTimings[] | undefined) => {
-      convertTimings(timings);
-      state.globalLoading.set(false);
-    });
-
-    // const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
-    //   return value.date == moment(e).format('YYYY-MM-DD');
-    // });
-
-    // if (currentIndex != -1) {
-    //   slider.current?.scrollToIndex({
-    //     index: currentIndex,
-    //     animated: true,
-    //   });
-    // }
-  };
 
   const convertTimings = (timings: SalahTimings[] | undefined) => {
     let adhanTiming: any = timings?.map(item => {
@@ -186,8 +161,8 @@ export default function History({
   const getScheduleData = async () => {
     const res = await GetMonthlySchedule(
       userData?.masjid.id!,
-      currentDate.getMonth() + 1,
-      currentDate.getFullYear(),
+      currDate.getMonth() + 1,
+      currDate.getFullYear(),
     );
     if (res) {
       schedule.set(res);
@@ -263,8 +238,8 @@ export default function History({
             type="standard"
             hideChevs
             currentDate={moment()
-              .year(currentDate.getFullYear())
-              .month(currentDate.getMonth())
+              .year(currDate.getFullYear())
+              .month(currDate.getMonth())
               .date(1)
               .toDate()}
             dateFormat={'Monthly'}

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 
-import { MuteSvg, VolumUpGreen } from '../../assets';
+import { MuteSvg, UnMuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
@@ -67,13 +67,13 @@ const RowItem = ({
               <TouchableOpacity
                 style={{ padding: 5 }}
                 onPress={toggleSubscription}>
-                <VolumUpGreen height={16} width={16} />
+                <UnMuteSvg color={'#006870'} height={16} width={16} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 style={{ padding: 5 }}
                 onPress={toggleSubscription}>
-                <MuteSvg height={16} width={16} />
+                <MuteSvg color={'#006870'} height={16} width={16} />
               </TouchableOpacity>
             )}
           </View>

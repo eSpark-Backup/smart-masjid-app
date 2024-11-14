@@ -43,6 +43,7 @@ import { WINDOW_WIDTH } from '../../constants';
 import { GetUserTypes } from '../../api/userController';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { getCountry } from 'react-native-localize';
+import { date } from 'yup';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -76,6 +77,7 @@ export default function Profile() {
   const [user, setUser] = useState<UserResponse | null>();
   const [clear, setClear] = useState(false);
   const isFocused = useIsFocused();
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const titles: Titles = {
     mAcc: 'Manage Account',
@@ -219,12 +221,14 @@ export default function Profile() {
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
               masjidId={route?.params?.masjidId}
+              currDate={currentDate}
             />
           ),
           HistSett: (
             <ScheduleSettings
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
+              setCurrDate={setCurrentDate}
             />
           ),
           iEdit: (

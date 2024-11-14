@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   GetJummahHistory,
@@ -47,9 +48,11 @@ import { ScheduleResponse } from '../../../../../../types/userControllerApiRespo
 export default function ScheduleSettings({
   setFlag,
   contentOpacity = 0,
+  setCurrDate,
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
+  setCurrDate: (date: Date) => void;
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
@@ -183,7 +186,7 @@ export default function ScheduleSettings({
       currentDate,
     );
     if (res) {
-      schedule.set(res);
+      updateMonthlySchInfo(res);
       state.globalLoading.set(false);
     } else {
       state.globalLoading.set(false);
@@ -337,7 +340,21 @@ export default function ScheduleSettings({
         <GapView />
         <Rounded
           label="View Schedule"
-          onPress={() => setFlag('Hist')}
+          onPress={() => {
+            setCurrDate(currentDate);
+            setFlag('Hist');
+          }}
+          outlined
+        />
+      </>
+      <>
+        <GapView />
+        <Rounded
+          disabled={!crashlytics().isCrashlyticsCollectionEnabled}
+          label="Crash App"
+          onPress={() => {
+            crashlytics().crash();
+          }}
           outlined
         />
       </>

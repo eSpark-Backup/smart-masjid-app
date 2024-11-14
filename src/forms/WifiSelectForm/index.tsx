@@ -150,6 +150,7 @@ export default function WifiSelectForm({
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
+      state.globalLoading.set(false);
       console.log('Cannot get wifiList', error);
     }
   };

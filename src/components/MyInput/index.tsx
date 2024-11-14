@@ -301,7 +301,14 @@ export default function MyInput(props: MyInputProps) {
         {secureInput && (
           <TouchableOpacity
             activeOpacity={0.6}
-            style={{ alignSelf: 'center', right: 20, position: 'absolute' }}
+            style={{
+              alignSelf: 'center',
+              right: 5,
+              position: 'absolute',
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              // backgroundColor: 'red',
+            }}
             onPress={onEyePress}>
             <MI
               name={isSecure ? 'visibility' : 'visibility-off'}

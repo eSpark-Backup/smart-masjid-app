@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { CheckCircle, MuteSvg, VolumUpGreen } from '../../assets';
+import { CheckCircle, MuteSvg, UnMuteSvg, VolumUpGreen } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { IPrayerTimeForPeriod } from '../../types';
 import GapView from '../GapView';
@@ -58,6 +58,8 @@ const RowItem = ({
           <Tooltip
             icon={
               <CheckCircle
+                width={16}
+                height={16}
                 color={adhanCalled?.called ? '#1DF126' : '#9E9F9F'}
               />
             }
@@ -107,13 +109,13 @@ const RowItem = ({
               <TouchableOpacity
                 style={{ paddingLeft: 5 }}
                 onPress={toggleSubscription}>
-                <VolumUpGreen height={16} width={16} />
+                <UnMuteSvg color={'#006870'} height={16} width={16} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 style={{ paddingLeft: 5 }}
                 onPress={toggleSubscription}>
-                <MuteSvg height={16} width={16} />
+                <MuteSvg color={'#006870'} height={16} width={16} />
               </TouchableOpacity>
             )}
           </View>

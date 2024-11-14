@@ -5,7 +5,7 @@ import II from 'react-native-vector-icons/Ionicons';
 import { Theme, useTheme } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import { Calendar } from '../../assets';
+import { Calendar, Chevron_Left, Chevron_Right } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyTextSubHeader from '../MyTextSubHeader';
@@ -144,12 +144,19 @@ export default function MyDatePicker({
             <TouchableOpacity
               disabled={!moment(date).isAfter(minimumDate)}
               onPress={prevDate}>
-              <II
+              {/* <II
                 color={
                   moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
                 }
                 name="md-chevron-back"
                 size={24}
+              /> */}
+              <Chevron_Left
+                color={
+                  moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
+                }
+                width={18}
+                height={18}
               />
             </TouchableOpacity>
           ) : (
@@ -175,7 +182,7 @@ export default function MyDatePicker({
             <TouchableOpacity
               disabled={!moment(date).isBefore(maximumDate)}
               onPress={nextDate}>
-              <II
+              {/* <II
                 color={
                   moment(date).isBefore(maximumDate)
                     ? colors.primary
@@ -183,6 +190,15 @@ export default function MyDatePicker({
                 }
                 name="md-chevron-forward"
                 size={24}
+              /> */}
+              <Chevron_Right
+                color={
+                  moment(date).isBefore(maximumDate)
+                    ? colors.primary
+                    : '#bdbdbd'
+                }
+                width={18}
+                height={18}
               />
             </TouchableOpacity>
           ) : (

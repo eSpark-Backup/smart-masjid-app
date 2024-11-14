@@ -28,8 +28,8 @@ export default function MyTooltip({
   iconColor = '#006870',
   bgColor = '#fff',
   position = 'top',
-  iconHeight = 22,
-  iconWidth = 22,
+  iconHeight = 18,
+  iconWidth = 18,
   icon,
 }: CustomTooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -72,7 +72,8 @@ export default function MyTooltip({
               onPress={() => {
                 setIsVisible(!isVisible);
               }}
-              style={{ color: iconColor }}
+              // style={{ color: iconColor }}
+              color={iconColor}
             />
           )}
         </TouchableOpacity>
