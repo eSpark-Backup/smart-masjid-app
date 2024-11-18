@@ -115,7 +115,7 @@ export default function MyDatePicker({
           )}
           <MyText text={moment(date)?.format('MM/DD/YYYY')} />
           <GapView length={10} mode="horizontal" />
-          <Calendar style={{ color: '#006870' }} />
+          <Calendar width={22} height={22} style={{ color: '#006870' }} />
         </TouchableOpacity>
       </>
     );

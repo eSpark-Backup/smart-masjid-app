@@ -628,7 +628,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = smart_masjid/smart_masjid.entitlements;
 				CURRENT_PROJECT_VERSION = 14;
-				DEVELOPMENT_TEAM = T79PT33JYU;
+				DEVELOPMENT_TEAM = 3AYZAZT347;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = smart_masjid/Info.plist;
@@ -659,7 +659,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = smart_masjid/smart_masjid.entitlements;
 				CURRENT_PROJECT_VERSION = 14;
-				DEVELOPMENT_TEAM = T79PT33JYU;
+				DEVELOPMENT_TEAM = 3AYZAZT347;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = smart_masjid/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

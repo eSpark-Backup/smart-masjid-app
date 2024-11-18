@@ -16,7 +16,7 @@ import {
   GetMasjidAdmins,
   LogoutUser,
 } from '../../../../api/userController';
-import { AddIcon, Delete, ProfileDummy } from '../../../../assets';
+import { AddIcon, DeleteSvg, ProfileDummy } from '../../../../assets';
 import {
   GapView,
   LogoutModal,
@@ -191,7 +191,7 @@ const UserCard = ({
                 item.firstName + item.lastName,
               )
             }>
-            <Delete />
+            <DeleteSvg width={22} height={22} color={'#006870'} />
           </TouchableOpacity>
         </TouchableOpacity>
       </Card>

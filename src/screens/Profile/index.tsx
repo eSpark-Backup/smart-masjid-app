@@ -11,9 +11,9 @@ import { useHookstate } from '@hookstate/core';
 import {
   AccountGear,
   Help,
-  IqamaTimingsSVG,
   MasjidGear,
   ProfileDummy,
+  SalahTimingsSvg,
 } from '../../assets';
 import { GapView, MyTitle, ProfileSectionlist } from '../../components';
 import { Wrapper } from '../../containers';
@@ -364,14 +364,16 @@ function UserInformation({
               data: [
                 {
                   title: 'Manage Account',
-                  icon: <AccountGear />,
+                  icon: (
+                    <AccountGear width={28} height={24} color={'#9E9F9F'} />
+                  ),
                   onPress: () => {
                     setFlag('mAcc');
                   },
                 },
                 {
                   title: 'Manage Masjid',
-                  icon: <MasjidGear />,
+                  icon: <MasjidGear width={28} height={28} color={'#9E9F9F'} />,
                   onPress: () => setFlag('mMas'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID',
@@ -379,7 +381,9 @@ function UserInformation({
                 },
                 {
                   title: 'Salah Timings',
-                  icon: <IqamaTimingsSVG />,
+                  icon: (
+                    <SalahTimingsSvg width={28} height={28} color={'#9E9F9F'} />
+                  ),
                   onPress: () => setFlag('sTime'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID_SALAH_TIMINGS',
@@ -391,7 +395,7 @@ function UserInformation({
           footerData={[
             {
               title: 'Help',
-              icon: <Help />,
+              icon: <Help width={24} height={24} color={'#006870'} />,
               onPress: () => setFlag('help'),
             },
           ]}

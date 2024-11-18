@@ -104,7 +104,8 @@ export default function HelpScreen({
           <TouchableOpacity
             style={{ flexDirection: 'row' }}
             onPress={() => setFlag('cUs')}>
-            <ContactUs />
+            <ContactUs width={22} height={22} color={'#006870'} />
+            <GapView length={5} mode="horizontal" />
             <MyText
               size={16}
               text={`Contact us`}

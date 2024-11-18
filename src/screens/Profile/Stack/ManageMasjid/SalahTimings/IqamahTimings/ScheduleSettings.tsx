@@ -303,7 +303,7 @@ export default function ScheduleSettings({
                   ? () => Linking.openURL(monthSchedule?.url!)
                   : undefined
               }
-              style={{ flexDirection: 'row' }}
+              style={{ flexDirection: 'row', alignItems: 'center' }}
               activeOpacity={item.id == 3 && item.val != 'Not found' ? 0.5 : 1}>
               <MyText
                 text={item.val.toString()}
@@ -324,7 +324,7 @@ export default function ScheduleSettings({
               {item.id == 3 && item.val != 'Not found' && (
                 <>
                   <GapView length={5} mode="horizontal" />
-                  <OpenLink width={18} height={18} />
+                  <OpenLink width={15} height={15} color={'#006870'} />
                 </>
               )}
             </TouchableOpacity>

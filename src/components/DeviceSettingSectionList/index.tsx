@@ -91,8 +91,8 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               disabled={Boolean(!item?.onPress)}
               onPress={item?.onPress}
               style={styles.row}>
-              <View style={styles.leftIcon}>{item?.icon}</View>
-              <GapView mode="horizontal" length={15} />
+              {/* <View style={styles.leftIcon}>{item?.icon}</View> */}
+              {/* <GapView mode="horizontal" length={15} /> */}
               <View>
                 <View>
                   <MyText text={item?.title as string} size={16} />
@@ -128,13 +128,15 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               }>
               {item?.isReset && <DeviceReset />}
               {item?.isReboot && <Restart />}
-              {item?.isDelete && <DeleteSvg />}
+              {item?.isDelete && (
+                <DeleteSvg width={22} height={22} color={'#006870'} />
+              )}
               {item?.rightArrow && <Chevron_Right />}
               {item?.isEditable ? (
                 item?.editIcon ? (
                   item?.editIcon
                 ) : (
-                  <EditSquare width={24} height={24} />
+                  <EditSquare width={22} height={22} color={'#006870'} />
                 )
               ) : null}
               {item?.danger && <Caution />}
@@ -152,11 +154,12 @@ const SectionCard = ({ item }: { item: DataProp }) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               alignSelf: 'center',
+              paddingRight: 5,
             }}>
-            <Card width={WINDOW_WIDTH - 90} noShadow>
+            <Card width={WINDOW_WIDTH - 190} noShadow>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <GapView mode="horizontal" />
-                {item?.icon}
+                {/* <GapView mode="horizontal" />
+                {item?.icon} */}
                 <GapView mode="horizontal" />
                 <MyInput
                   isMAccont
@@ -165,12 +168,11 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                   placeholder={item?.title as string}
                   onChangeText={(value: string) => setDName(value)}
                   value={item?.subtitle}
+                  inputStyle={{ width: WINDOW_WIDTH - 100 }}
                 />
               </View>
             </Card>
-            <TouchableOpacity
-              style={{ marginHorizontal: 5 }}
-              onPress={() => item?.onDoneEdit?.(dName)}>
+            <TouchableOpacity onPress={() => item?.onDoneEdit?.(dName)}>
               <CheckSvg width={35} height={35} />
             </TouchableOpacity>
           </View>

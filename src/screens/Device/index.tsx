@@ -94,7 +94,7 @@ const AddDevice = ({ isBtn }: { isBtn?: boolean }) => {
           }
           style={styles.AddDeviceContainer}>
           <View style={{ alignItems: 'center' }}>
-            <PlusSvg style={{ color: theme.colors.primary }} />
+            <PlusSvg width={26} height={26} color={theme.colors.primary} />
             <GapView length={10} />
             <TextLabel
               label="Add Device"

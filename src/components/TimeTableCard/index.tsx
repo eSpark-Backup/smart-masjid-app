@@ -2,7 +2,7 @@ import { TouchableOpacity, View } from 'react-native';
 import React from 'react';
 
 import { Card } from '../../containers';
-import { Calendar, Delete, EditPencil } from '../../assets';
+import { Calendar, Delete, DeleteSvg, EditPencil } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyDivider from '../MyDivider';
@@ -35,14 +35,14 @@ const TimeTableCard = ({
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Calendar style={{ color: '#6E6E6E' }} />
-              <GapView length={5} />
+              <Calendar width={20} height={20} style={{ color: '#6E6E6E' }} />
+              <GapView mode="horizontal" length={5} />
               <MyText text={date} size={12} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               {deleteBtn ? (
                 <TouchableOpacity activeOpacity={0.5} onPress={onDelete}>
-                  <Delete />
+                  <DeleteSvg width={20} height={20} color={'#006870'} />
                 </TouchableOpacity>
               ) : null}
               <GapView length={5} mode="horizontal" />
