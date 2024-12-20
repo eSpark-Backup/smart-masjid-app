@@ -115,6 +115,29 @@ const DeviceSetting = ({
     getUpdateLogs();
   }, [device]);
 
+  useEffect(() => {
+    console.log('state.globalLoading.get()', state.globalLoading.get());
+    console.log('state.globalLoadingMsg.get()', state.globalLoadingMsg.get());
+    if (state.globalLoading.get() == false && state.globalLoadingMsg.get()) {
+      goBack?.();
+    }
+  }, [state.globalLoading]);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
+  const backAction = () => {
+    goBack?.();
+    return true;
+  };
+
   const removeDevice = async () => {
     state.globalLoading.set(true);
     try {
@@ -267,7 +290,8 @@ const DeviceSetting = ({
     }
   };
 
-  console.log('device?.', device?.deviceTelemetry.status);
+  console.log('device Update', updateAvailable);
+  console.log('device?.', device?.deviceTelemetry?.status);
   console.log(
     'device?.deviceTelemetry?.streamer',
     device?.deviceTelemetry?.streamer,
@@ -279,6 +303,7 @@ const DeviceSetting = ({
         {/* <OverlayLoader isShow={loader} /> */}
         <ErrorModal
           visible={errorShow}
+          wifiError
           title={'Wi-Fi Error'}
           message={
             'Looks like your device is offline, what would you like to do ?'
@@ -404,12 +429,14 @@ const DeviceSetting = ({
                   ? 'Device battery low. Please power on your device.'
                   : device?.deviceType?.id == 3
                   ? 'Looks like the Masjid Streamer might be Offline. Contact support@smartmasjid.app for help.'
-                  : updateAvailable
-                  ? `There's a new firmware version for your device. Tap here to update.`
-                  : 'Looks like your device is offline. Tap here to see causes.'
+                  : device?.deviceTelemetry?.status == 'Offline'
+                  ? 'Looks like your device is offline. Tap here to see causes.'
+                  : `There's a new firmware version for your device. Tap here to update.`
               }
               onIconPress={() =>
-                updateAvailable ? setUpdateShow(true) : setOfflineErrors(true)
+                device?.deviceTelemetry?.status == 'Offline'
+                  ? setOfflineErrors(true)
+                  : setUpdateShow(true)
               }
             />
             <PossibleCauseErrorModal
@@ -541,7 +568,13 @@ const DeviceSetting = ({
                           ) : (
                             <Wifi style={{ padding: 10, bottom: 2 }} />
                           ),
-                        editIcon: <WifiManage width={24} height={24} />,
+                        editIcon: (
+                          <WifiManage
+                            width={24}
+                            height={24}
+                            color={'#006870'}
+                          />
+                        ),
                         isEditable:
                           device?.deviceType?.id == 3
                             ? false

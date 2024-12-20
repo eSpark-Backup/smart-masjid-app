@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { CheckCircle, MuteSvg, UnMuteSvg, VolumUpGreen } from '../../assets';
+import { CheckCircle, MuteSvg, UnMuteSvg } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { IPrayerTimeForPeriod } from '../../types';
 import GapView from '../GapView';
@@ -103,22 +103,24 @@ const RowItem = ({
             size={16}
           />
         </View>
-        {isMute && (
-          <View style={styles.contentIcon}>
-            {subscribed ? (
-              <TouchableOpacity
-                style={{ paddingLeft: 5 }}
-                onPress={toggleSubscription}>
-                <UnMuteSvg color={'#006870'} height={16} width={16} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={{ paddingLeft: 5 }}
-                onPress={toggleSubscription}>
-                <MuteSvg color={'#006870'} height={16} width={16} />
-              </TouchableOpacity>
-            )}
-          </View>
+        {isMute && subscribed ? (
+          <TouchableOpacity
+            style={{
+              ...styles.contentIcon,
+              paddingLeft: 5,
+            }}
+            onPress={toggleSubscription}>
+            <UnMuteSvg color={'#006870'} height={16} width={16} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              ...styles.contentIcon,
+              paddingLeft: 5,
+            }}
+            onPress={toggleSubscription}>
+            <MuteSvg color={'#006870'} height={16} width={16} />
+          </TouchableOpacity>
         )}
       </View>
     </View>
@@ -173,7 +175,9 @@ export default function SwipeableTimeTable({
   const slider = useRef<FlatList>(null);
 
   useEffect(() => {
-    useLayoutAnimation(500);
+    if (loading == false && data.length > 0) {
+      useLayoutAnimation(500);
+    }
   }, [loading]);
 
   const updateSubscriptions = async (id: string, adhanName: string) => {
@@ -515,27 +519,43 @@ export default function SwipeableTimeTable({
           data[currInd]?.salah?.map((data, i) =>
             data?.sunriseTime ? (
               <View key={i} style={[styles.contentRow, { height: 40 }]}>
-                <View style={styles.contentCol}>
-                  <MyText text={'Sunrise'} size={16} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '47%',
+                  }}>
+                  <View>
+                    <MyText text={'Sunrise'} size={16} />
+                  </View>
+                  <View>
+                    <MyText
+                      text={moment(data.sunriseTime, 'HH:mm:ss').format(
+                        'h:mm A',
+                      )}
+                      size={16}
+                    />
+                  </View>
                 </View>
                 <View
                   style={{
-                    width: '28%',
+                    flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '47%',
                   }}>
-                  <MyText
-                    text={moment(data.sunriseTime, 'HH:mm:ss').format('h:mm A')}
-                    size={16}
-                  />
-                </View>
-                <View style={styles.contentCol}>
-                  <MyText text={'Shurooq'} size={16} />
-                </View>
-                <View style={{ ...styles.contentIcon, width: undefined }}>
-                  <MyText
-                    text={moment(data.shurooqTime, 'HH:mm:ss').format('h:mm A')}
-                    size={16}
-                  />
+                  <View>
+                    <MyText text={'Shurooq'} size={16} />
+                  </View>
+                  <View>
+                    <MyText
+                      text={moment(data.shurooqTime, 'HH:mm:ss').format(
+                        'h:mm A',
+                      )}
+                      size={16}
+                    />
+                  </View>
                 </View>
               </View>
             ) : null,

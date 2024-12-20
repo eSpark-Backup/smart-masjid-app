@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 
-import { MuteSvg, UnMuteSvg, VolumUpGreen } from '../../assets';
+import { MuteSvg, UnMuteSvg } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';

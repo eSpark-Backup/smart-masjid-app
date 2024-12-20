@@ -511,7 +511,7 @@ export const UpdatePublishedMonthlySchedule = async (
 ) => {
   try {
     const result: any = await api.put(
-      `/masjid/{masjidId}/monthly-schedule/{scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
+      `/masjid/${masjidId}/monthly-schedule/{scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
     );
     console.log('update published schedule results', result.data);
     if (result.status === 200) {

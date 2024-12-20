@@ -215,7 +215,7 @@ export default function IqamahTimings({
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => setFlag('iAdd')}>
-                <PlusCircle />
+                <PlusCircle width={20} height={20} color={'#006870'} />
               </TouchableOpacity>
               {/* <GapView mode="horizontal" />
               <TouchableOpacity

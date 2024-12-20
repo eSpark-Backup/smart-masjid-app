@@ -44,7 +44,7 @@ export default function NoInternetModal({ isVisible }: { isVisible: boolean }) {
           padding: 5,
         }}>
         <MyText
-          textStyle={{ fontFamily: 'Poppins-Bold', color: colors.primary }}
+          textStyle={{ fontFamily: 'Palatino-Bold', color: colors.primary }}
           size={32}
           text={'Whoops!'}
         />

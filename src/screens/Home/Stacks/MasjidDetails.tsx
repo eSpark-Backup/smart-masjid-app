@@ -14,9 +14,9 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import { State, useHookstate } from '@hookstate/core';
-import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import moment from 'moment';
 
 import {
   GapView,
@@ -50,10 +50,9 @@ import {
   GetMasjidCurrentJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
-import moment from 'moment';
 import { globalStore } from '../../../store/GlobalStates';
 import { BottomNavigationParamList, GlobalProps } from '../../../types';
-import { Calendar } from '../../../assets';
+import { MonthlyScheduleSvg } from '../../../assets';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -71,8 +70,6 @@ export default function MasjidDetails({
   contentOpacity: any;
   isSingle?: boolean;
 }) {
-  const { colors }: Theme = useTheme();
-  const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const userData = useHookstate(userStore.userData).get();
   const monthlyScheduleData = useHookstate(userStore.monthlySchedule).get();
   const state: State<GlobalProps> = useHookstate(globalStore);
@@ -123,9 +120,7 @@ export default function MasjidDetails({
       ).then(data => {
         setSalahTime(data as SalahTimings[]);
         setLoading(false);
-        setTimeout(() => {
-          state.globalLoading.set(false);
-        }, 100);
+        state.globalLoading.set(false);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
@@ -222,11 +217,14 @@ export default function MasjidDetails({
           }}>
           <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
           {monthlyScheduleData && (
-            <TouchableOpacity activeOpacity={0.5} onPress={() => setStep(2)}>
-              <Calendar
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => setStep(2)}
+              style={{ right: 15 }}>
+              <MonthlyScheduleSvg
                 width={22}
                 height={22}
-                style={{ color: '#006870', right: 15 }}
+                style={{ color: '#006870' }}
               />
             </TouchableOpacity>
           )}

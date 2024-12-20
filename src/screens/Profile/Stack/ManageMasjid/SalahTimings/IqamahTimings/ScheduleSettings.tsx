@@ -224,10 +224,7 @@ export default function ScheduleSettings({
     }
   };
 
-  console.log(
-    'monthlySchedule',
-    moment().month(currentDate.getMonth()).format('M'),
-  );
+  console.log('monthlySchedule', monthSchedule);
 
   return (
     <View
@@ -279,95 +276,106 @@ export default function ScheduleSettings({
           onDateChange={onDateChange}
           dateFormat={'Monthly'}
         />
-        {displayData?.map((item: any) => (
+        {monthSchedule ? (
+          displayData?.map((item: any) => (
+            <View
+              key={item.id}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: WINDOW_WIDTH - 30,
+                alignSelf: 'center',
+                padding: 10,
+                alignItems: 'center',
+              }}>
+              <MyText
+                text={item.title}
+                size={16}
+                textStyle={{
+                  marginRight: 10,
+                }}
+              />
+              <TouchableOpacity
+                onPress={
+                  item.id == 3 && item.val != 'Not found'
+                    ? () => Linking.openURL(monthSchedule?.url!)
+                    : undefined
+                }
+                style={{ flexDirection: 'row', alignItems: 'center' }}
+                activeOpacity={
+                  item.id == 3 && item.val != 'Not found' ? 0.5 : 1
+                }>
+                <MyText
+                  text={item.val.toString()}
+                  textStyle={{
+                    fontSize: 14,
+                    color:
+                      item.id == 3 && item.val != 'Not found'
+                        ? '#0097A3'
+                        : '#6E6E6E',
+                    textAlign: 'right',
+                    textDecorationLine:
+                      item.id == 3 && item.val != 'Not found'
+                        ? 'underline'
+                        : 'none',
+                  }}
+                  lines={1}
+                />
+                {item.id == 3 && item.val != 'Not found' && (
+                  <>
+                    <GapView length={5} mode="horizontal" />
+                    <OpenLink width={15} height={15} color={'#006870'} />
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
           <View
-            key={item.id}
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: WINDOW_WIDTH - 30,
-              alignSelf: 'center',
-              padding: 10,
+              height: '50%',
               alignItems: 'center',
+              justifyContent: 'center',
             }}>
             <MyText
-              text={item.title}
-              size={16}
               textStyle={{
-                marginRight: 10,
+                textAlign: 'center',
               }}
+              text="Monthly Schedule not published yet!"
             />
-            <TouchableOpacity
-              onPress={
-                item.id == 3 && item.val != 'Not found'
-                  ? () => Linking.openURL(monthSchedule?.url!)
-                  : undefined
-              }
-              style={{ flexDirection: 'row', alignItems: 'center' }}
-              activeOpacity={item.id == 3 && item.val != 'Not found' ? 0.5 : 1}>
-              <MyText
-                text={item.val.toString()}
-                textStyle={{
-                  fontSize: 14,
-                  color:
-                    item.id == 3 && item.val != 'Not found'
-                      ? '#0097A3'
-                      : '#6E6E6E',
-                  textAlign: 'right',
-                  textDecorationLine:
-                    item.id == 3 && item.val != 'Not found'
-                      ? 'underline'
-                      : 'none',
-                }}
-                lines={1}
-              />
-              {item.id == 3 && item.val != 'Not found' && (
-                <>
-                  <GapView length={5} mode="horizontal" />
-                  <OpenLink width={15} height={15} color={'#006870'} />
-                </>
-              )}
-            </TouchableOpacity>
           </View>
-        ))}
-      </View>
-      <GapView />
-      <Rounded
-        label={monthSchedule ? 'Update' : 'Publish'}
-        onPress={monthSchedule ? onUpdatePublishedSchedule : onPublishSchedule}
-      />
-      <>
-        <GapView />
-        <Rounded
-          label="View Schedule"
-          onPress={() => {
-            setCurrDate(currentDate);
-            setFlag('Hist');
-          }}
-          outlined
-        />
-      </>
-      <>
-        <GapView />
-        <Rounded
-          disabled={!crashlytics().isCrashlyticsCollectionEnabled}
-          label="Crash App"
-          onPress={() => {
-            crashlytics().crash();
-          }}
-          outlined
-        />
-      </>
-      {monthSchedule && monthSchedule?.url && (
-        <>
+        )}
+        <View style={{ alignItems: 'center' }}>
           <GapView />
           <Rounded
-            label="Email PDF Copy"
-            onPress={() => setEmailPrompt(true)}
-            outlined
+            label={monthSchedule ? 'Update' : 'Publish'}
+            onPress={
+              monthSchedule ? onUpdatePublishedSchedule : onPublishSchedule
+            }
           />
-        </>
-      )}
+          <>
+            <GapView />
+            <Rounded
+              label="View Schedule"
+              onPress={() => {
+                setCurrDate(currentDate);
+                setFlag('Hist');
+              }}
+              outlined
+            />
+          </>
+          {monthSchedule && monthSchedule?.url && (
+            <>
+              <GapView />
+              <Rounded
+                label="Email PDF Copy"
+                onPress={() => setEmailPrompt(true)}
+                outlined
+              />
+            </>
+          )}
+        </View>
+      </View>
     </View>
   );
 }

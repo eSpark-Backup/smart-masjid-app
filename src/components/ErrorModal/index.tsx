@@ -55,7 +55,11 @@ export default function ErrorModal({
           </TouchableOpacity>
           <MyText text={title} textStyle={styles.label} size={16} />
           <GapView length={10} />
-          <MyText text={message} textStyle={styles.bodyText} size={16} />
+          <MyText
+            text={message}
+            textStyle={{ ...styles.bodyText, paddingBottom: 10 }}
+            size={16}
+          />
           <GapView length={10} />
           {!wifiError && message2 && (
             <MyText text={message2} textStyle={styles.bodyText} size={16} />
@@ -80,7 +84,12 @@ export default function ErrorModal({
             </View>
           )}
           {wifiError && (
-            <View style={{ flexDirection: 'row', ...styles.bodyText }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                ...styles.bodyText,
+                paddingBottom: 0,
+              }}>
               <MyText size={16} text=" and " textStyle={styles.text} />
               <MyText
                 size={16}
@@ -91,6 +100,15 @@ export default function ErrorModal({
                 size={16}
                 text=" ) before taking any action."
                 textStyle={styles.text}
+              />
+            </View>
+          )}
+          {wifiError && (
+            <View style={{ flexDirection: 'row', ...styles.bodyText }}>
+              <MyText
+                size={16}
+                text="When Device light is blinking yellow continue with below action."
+                textStyle={{ ...styles.text, textAlign: 'center' }}
               />
             </View>
           )}

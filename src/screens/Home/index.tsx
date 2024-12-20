@@ -183,7 +183,13 @@ export default function Home() {
 
   return (
     <Wrapper
-      showBack={step == 0 ? false : uniqueObjects?.length == 1 ? false : true}
+      showBack={
+        step == 0
+          ? false
+          : uniqueObjects?.length == 1 && step == 1
+          ? false
+          : true
+      }
       onBackPress={onBackPress}
       showFooter={false}
       title={'Masjid Subscriptions'}

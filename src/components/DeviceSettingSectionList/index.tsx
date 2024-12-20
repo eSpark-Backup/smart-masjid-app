@@ -10,6 +10,7 @@ import {
   EditLight,
   EditSquare,
   Restart,
+  Unsubscribe,
 } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { Card } from '../../containers';
@@ -126,10 +127,14 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                   ? item?.onEditPress
                   : undefined
               }>
-              {item?.isReset && <DeviceReset />}
-              {item?.isReboot && <Restart />}
+              {item?.isReset && (
+                <DeviceReset width={24} height={24} color={'#006870'} />
+              )}
+              {item?.isReboot && (
+                <Restart width={22} height={22} color={'#006870'} />
+              )}
               {item?.isDelete && (
-                <DeleteSvg width={22} height={22} color={'#006870'} />
+                <Unsubscribe width={22} height={22} color={'#006870'} />
               )}
               {item?.rightArrow && <Chevron_Right />}
               {item?.isEditable ? (
@@ -139,7 +144,9 @@ const SectionCard = ({ item }: { item: DataProp }) => {
                   <EditSquare width={22} height={22} color={'#006870'} />
                 )
               ) : null}
-              {item?.danger && <Caution />}
+              {item?.danger && (
+                <Caution width={22} height={22} color={'#FF6464'} />
+              )}
             </TouchableOpacity>
           </View>
           <GapView />

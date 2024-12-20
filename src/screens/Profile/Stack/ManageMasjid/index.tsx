@@ -89,7 +89,9 @@ export default function ManageMasjid({
                     }${masjidInfo?.address2 ? masjidInfo.address2 : ' '} ${
                       masjidInfo?.city ?? ''
                     } ${masjidInfo?.state ?? ''} ${masjidInfo?.zip ?? ''}`,
-                    icon: <LocationSvg width={18} height={18} />,
+                    icon: (
+                      <LocationSvg width={18} height={18} color={'#9E9F9F'} />
+                    ),
                     hidden:
                       !masjidInfo?.address1 &&
                       !masjidInfo?.address2 &&
@@ -99,12 +101,12 @@ export default function ManageMasjid({
                   },
                   {
                     title: masjidInfo?.website ?? '',
-                    icon: <Web width={18} height={18} />,
+                    icon: <Web width={18} height={18} color={'#9E9F9F'} />,
                     hidden: !masjidInfo?.website,
                   },
                   {
                     title: masjidInfo?.email ?? '',
-                    icon: <Email width={18} height={18} />,
+                    icon: <Email width={18} height={18} color={'#9E9F9F'} />,
                     hidden: !masjidInfo?.email,
                   },
                   {
@@ -113,12 +115,12 @@ export default function ManageMasjid({
                           masjidInfo?.phone,
                         ).formatInternational()
                       : '',
-                    icon: <Phone width={18} height={18} />,
+                    icon: <Phone width={18} height={18} color={'#9E9F9F'} />,
                     hidden: !masjidInfo?.phone,
                   },
                   {
                     title: masjidInfo?.timezone ?? '',
-                    icon: <Earth width={18} height={18} />,
+                    icon: <Earth width={18} height={18} color={'#9E9F9F'} />,
                     hidden: !masjidInfo?.timezone,
                   },
                 ],
@@ -148,12 +150,14 @@ export default function ManageMasjid({
               data: [
                 {
                   title: 'Adhan Settings',
-                  icon: <AdhanSettingSvg width={25} height={25} />,
+                  icon: (
+                    <AdhanSettingSvg width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => setFlag('aSet'),
                 },
                 {
                   title: 'Manage Users',
-                  icon: <ManageUser />,
+                  icon: <ManageUser width={25} height={25} color={'#9E9F9F'} />,
                   onPress: () => setFlag('mUsers'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID_USERS',

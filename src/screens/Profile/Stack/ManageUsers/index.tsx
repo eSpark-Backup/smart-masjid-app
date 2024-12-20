@@ -16,7 +16,7 @@ import {
   GetMasjidAdmins,
   LogoutUser,
 } from '../../../../api/userController';
-import { AddIcon, DeleteSvg, ProfileDummy } from '../../../../assets';
+import { DeleteSvg, PlusSvg, ProfileDummy } from '../../../../assets';
 import {
   GapView,
   LogoutModal,
@@ -221,7 +221,7 @@ const AddUserBtn = ({ onPress }: any) => {
           }}
         />
         <GapView mode="horizontal" />
-        <AddIcon />
+        <PlusSvg width={15} height={15} color={'#006870'} />
       </TouchableOpacity>
     </View>
   );

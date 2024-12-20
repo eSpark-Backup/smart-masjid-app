@@ -62,6 +62,7 @@ export default function PasswordForm({
           password,
           false,
           false,
+          15,
         );
         await WifiManager.disconnect();
         const isForget = await WifiManager.isRemoveWifiNetwork(ssid);
@@ -89,7 +90,13 @@ export default function PasswordForm({
       } else {
         const res = await WifiManager.disconnectFromSSID(ssid);
         console.log('res', res);
-        WifiManager.connectToProtectedSSID(ssid, password, false, false).then(
+        WifiManager.connectToProtectedSSID(
+          ssid,
+          password,
+          false,
+          false,
+          15,
+        ).then(
           a => {
             console.log('Connected successfully!', a);
             state.globalLoading.set(false);

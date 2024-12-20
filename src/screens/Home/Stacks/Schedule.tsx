@@ -256,9 +256,9 @@ export default function Schedule({
             <GapView mode="horizontal" />
             <TouchableOpacity onPress={() => isPermitted()}>
               {noMonthlyData == null && monthlyScheduleData?.url ? (
-                <Download />
+                <Download width={22} height={22} color={'#006870'} />
               ) : noMonthlyData == false ? (
-                <Download />
+                <Download width={22} height={22} color={'#006870'} />
               ) : null}
             </TouchableOpacity>
           </View>

@@ -12,7 +12,7 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Peripheral } from 'react-native-ble-manager';
+import BleManager, { Peripheral } from 'react-native-ble-manager';
 import jwtDecode from 'jwt-decode';
 import crashlytics from '@react-native-firebase/crashlytics';
 
@@ -218,6 +218,8 @@ export default function DeviceSetupScreen() {
           updateDevice('SERVER');
         }, 5000);
       }
+    } else if (step == 8) {
+      checkAndDisconnect();
     }
     handleShowBack(step);
   }, [step]);
@@ -274,6 +276,18 @@ export default function DeviceSetupScreen() {
       }));
     }
   }, [issues]);
+
+  async function checkAndDisconnect() {
+    console.log('check huwa???');
+
+    const peripheralsArray = await BleManager.getConnectedPeripherals([]);
+    if (peripheralsArray.length > 0) {
+      _disconnectBleDevice(
+        devInfo,
+        route?.params?.deviceData?.deviceTelemetry?.status === 'Online',
+      );
+    }
+  }
 
   function _handleGPSProviderEvent(e: any) {
     if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {

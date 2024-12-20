@@ -2,7 +2,7 @@ import { TouchableOpacity, View } from 'react-native';
 import React from 'react';
 
 import { Card } from '../../containers';
-import { Calendar, Delete, DeleteSvg, EditPencil } from '../../assets';
+import { Calendar, DeleteSvg, EditPencil } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyDivider from '../MyDivider';
@@ -48,7 +48,7 @@ const TimeTableCard = ({
               <GapView length={5} mode="horizontal" />
               {showEdit ? (
                 <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
-                  <EditPencil />
+                  <EditPencil width={18} height={18} color={'#006870'} />
                 </TouchableOpacity>
               ) : null}
             </View>

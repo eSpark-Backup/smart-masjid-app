@@ -18,7 +18,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
-import { Location, SearchWhite } from '../../assets';
+import { EyeClose, EyeOpen, Location, SearchWhite } from '../../assets';
 import GapView from '../GapView';
 import { CountryPickerModal } from '..';
 import { externalStore } from '../../store/ExternalStore';
@@ -310,11 +310,11 @@ export default function MyInput(props: MyInputProps) {
               // backgroundColor: 'red',
             }}
             onPress={onEyePress}>
-            <MI
-              name={isSecure ? 'visibility' : 'visibility-off'}
-              style={{}}
-              size={20}
-            />
+            {isSecure ? (
+              <EyeOpen width={20} height={20} color={'#000'} />
+            ) : (
+              <EyeClose width={20} height={20} color={'#000'} />
+            )}
           </TouchableOpacity>
         )}
         {searchBar && (

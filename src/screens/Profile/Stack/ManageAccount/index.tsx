@@ -82,25 +82,25 @@ export default function ManageAccount({
   const [displayData, setDisplayingData] = useState([
     {
       title: 'First Name',
-      icon: <ProfileUser />,
+      icon: <ProfileUser width={22} height={22} color={'#9E9F9F'} />,
       key: 'firstName',
       editable: false,
     },
     {
       title: 'Last Name',
-      icon: <ProfileUser />,
+      icon: <ProfileUser width={22} height={22} color={'#9E9F9F'} />,
       key: 'lastName',
       editable: false,
     },
     {
       title: 'Email',
-      icon: <Email />,
+      icon: <Email width={22} height={22} color={'#9E9F9F'} />,
       key: 'email',
       editable: false,
     },
     {
       title: 'Phone',
-      icon: <Phone />,
+      icon: <Phone width={22} height={22} color={'#9E9F9F'} />,
       key: 'phone',
       editable: false,
     },

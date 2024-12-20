@@ -205,7 +205,7 @@ export default function JummaTimings({
             <TouchableOpacity
               activeOpacity={0.5}
               onPress={() => setFlag('jAdd')}>
-              <PlusCircle />
+              <PlusCircle width={20} height={20} color={'#006870'} />
             </TouchableOpacity>
           </View>
           {contentToRender()}

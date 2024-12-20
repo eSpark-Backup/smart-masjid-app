@@ -5,14 +5,17 @@ import MyText from '../MyText';
 import GapView from '../GapView';
 import BlurBackground from '../BlurBackground';
 import { BlurView } from '@react-native-community/blur';
+import { Rounded } from '../Buttons';
 
 const OverlayLoader = ({
+  onBtnPress,
   isShow = false,
   hideLoader = false,
   loaderColor = null,
   noBg = false,
   msg,
 }: {
+  onBtnPress?: () => void;
   isShow: boolean;
   hideLoader?: boolean;
   loaderColor?: string | null;
@@ -43,6 +46,17 @@ const OverlayLoader = ({
         <View style={{ zIndex: 1 }}>
           <GapView length={20} />
           <MyText size={16} text={msg} />
+        </View>
+      )}
+      {msg && (
+        <View style={{ zIndex: 1 }}>
+          <GapView length={20} />
+          <Rounded
+            onPress={onBtnPress}
+            disabled={false}
+            label="Go Back"
+            width={140}
+          />
         </View>
       )}
       {msg ? (

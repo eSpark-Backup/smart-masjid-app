@@ -26,7 +26,8 @@ export default function Header({
       }}>
       {showBack && (
         <TouchableOpacity style={{ width: 30 }} onPress={onBackPress}>
-          <ArrowLeft />
+          <ArrowLeft color={'#fff'} width={24} height={24} />
+          {/* <ArrowLeft /> */}
         </TouchableOpacity>
       )}
     </View>

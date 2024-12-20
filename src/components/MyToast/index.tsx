@@ -9,7 +9,13 @@ import {
 import { Theme, useTheme } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 
-import { CautionDevice, Check, CheckSvg, CrossC, OpenLink } from '../../assets';
+import {
+  CautionDevice,
+  CheckCircle,
+  CheckSvg,
+  CrossC,
+  OpenLink,
+} from '../../assets';
 import { Rounded } from '../Buttons';
 import MyText from '../MyText';
 import GapView from '../GapView';
@@ -163,7 +169,13 @@ const Points = ({
       {data?.map((item: string, index: number) => (
         <View key={index + item}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {success ? <Check /> : notFound ? <Check /> : <CrossC />}
+            {success ? (
+              <CheckCircle width={14} height={14} color={'#9E9F9F'} />
+            ) : notFound ? (
+              <CheckCircle width={14} height={14} color={'#9E9F9F'} />
+            ) : (
+              <CrossC width={14} height={14} color={'#9E9F9F'} />
+            )}
             <GapView length={10} mode="horizontal" />
             <MyText
               text={item}
@@ -189,7 +201,7 @@ const Points = ({
                     size={16}
                     textStyle={{ color: '#006870', fontSize: 16 }}
                   />
-                  <OpenLink width={14} height={14} />
+                  <OpenLink width={14} height={14} color={'#006870'} />
                 </TouchableOpacity>
               </>
             )}

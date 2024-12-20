@@ -259,6 +259,11 @@ export default function App() {
             loaderColor={'rgb(0, 104, 112)'}
             isShow={Boolean(state.globalLoading.get())}
             msg={state.globalLoadingMsg.get()}
+            onBtnPress={() =>
+              Boolean(state.globalLoading.get()) == true
+                ? state.globalLoading.set(false)
+                : state.globalLoading.set(true)
+            }
           />
           <BlurBackground show={isConnected == false} />
           <NoInternetModal isVisible={isConnected == false} />

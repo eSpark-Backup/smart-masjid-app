@@ -10,7 +10,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import moment from 'moment';
 
-import { MuteSvg, VolumUpGreen } from '../../assets';
+import { MuteSvg, UnMuteSvg } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
@@ -143,12 +143,14 @@ const RowItem = ({
                 onPress={() => setToggleMute(!toggleMute)}
                 height={16}
                 width={16}
+                color={'#006870'}
               />
             ) : (
-              <VolumUpGreen
+              <UnMuteSvg
                 onPress={() => setToggleMute(!toggleMute)}
                 height={16}
                 width={16}
+                color={'#006870'}
               />
             )}
           </View>

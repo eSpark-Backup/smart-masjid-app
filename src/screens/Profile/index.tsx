@@ -365,7 +365,7 @@ function UserInformation({
                 {
                   title: 'Manage Account',
                   icon: (
-                    <AccountGear width={28} height={24} color={'#9E9F9F'} />
+                    <AccountGear width={25} height={25} color={'#9E9F9F'} />
                   ),
                   onPress: () => {
                     setFlag('mAcc');
@@ -373,7 +373,7 @@ function UserInformation({
                 },
                 {
                   title: 'Manage Masjid',
-                  icon: <MasjidGear width={28} height={28} color={'#9E9F9F'} />,
+                  icon: <MasjidGear width={25} height={25} color={'#9E9F9F'} />,
                   onPress: () => setFlag('mMas'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID',
@@ -382,7 +382,7 @@ function UserInformation({
                 {
                   title: 'Salah Timings',
                   icon: (
-                    <SalahTimingsSvg width={28} height={28} color={'#9E9F9F'} />
+                    <SalahTimingsSvg width={25} height={25} color={'#9E9F9F'} />
                   ),
                   onPress: () => setFlag('sTime'),
                   hidden: !userData?.userType?.permissions?.some(

@@ -164,7 +164,7 @@ const MasjidDetails = ({
               style={{
                 ...styles.infoCardRowContainer,
               }}>
-              <LocationSvg />
+              <LocationSvg width={18} height={18} color={'#9E9F9F'} />
               <GapView length={5} mode="horizontal" />
               <View style={{ maxWidth: '80%' }}>
                 <MyText
@@ -189,7 +189,7 @@ const MasjidDetails = ({
                     masjidDetails?.location?.coordinates[1].toString() ?? '',
                   );
                 }}>
-                <NavigationSvg />
+                <NavigationSvg width={18} height={18} color={'#006870'} />
               </TouchableOpacity>
             </View>
 
@@ -214,7 +214,7 @@ const MasjidDetails = ({
                 <GapView length={5} />
 
                 <View style={styles.infoCardRowContainer}>
-                  <Web />
+                  <Web width={18} height={18} color={'#9E9F9F'} />
                   <GapView length={5} mode="horizontal" />
                   <View style={{ maxWidth: '80%' }}>
                     <MyText
@@ -231,7 +231,7 @@ const MasjidDetails = ({
                         `https://${masjidDetails?.website as string}`,
                       )
                     }>
-                    <OpenLink width={18} height={18} />
+                    <OpenLink width={18} height={18} color={'#006870'} />
                   </TouchableOpacity>
                 </View>
               </>
@@ -260,7 +260,7 @@ const MasjidDetails = ({
                 <GapView length={5} />
 
                 <View style={styles.infoCardRowContainer}>
-                  <Phone />
+                  <Phone width={18} height={18} color={'#9E9F9F'} />
                   <GapView length={5} mode="horizontal" />
                   <View style={{ maxWidth: '80%' }}>
                     <MyText
@@ -277,7 +277,7 @@ const MasjidDetails = ({
                     onPress={() =>
                       Linking.openURL(`tel:${masjidDetails?.phone}`)
                     }>
-                    <OpenLink width={18} height={18} />
+                    <OpenLink width={18} height={18} color={'#006870'} />
                   </TouchableOpacity>
                 </View>
               </>
