@@ -82,6 +82,7 @@ export default function DeviceSetupScreen() {
   const route: any = useRoute();
   const devSetup = useHookstate(globalStore.devSetup);
   const userSetup = useHookstate(userStore).get();
+  const state = useHookstate(globalStore);
   const isFocused = useIsFocused();
   const [bleStatus, setBleStatus] = useState<boolean | undefined>();
   const [locationStatus, setlocationStatus] = useState<boolean | undefined>();
@@ -155,6 +156,7 @@ export default function DeviceSetupScreen() {
 
   useEffect(() => {
     if (isFocused) {
+      state.hideNetError.set(true);
       const listeners = [
         bleManagerEmitter.addListener(
           'BleManagerDiscoverPeripheral',
@@ -181,6 +183,7 @@ export default function DeviceSetupScreen() {
     );
     return () => {
       backHandler.remove();
+      state.hideNetError.set(false);
       if (
         !toastContentRef.current?.some(
           (item: string) => item === 'Bluetooth permission denied',
@@ -218,7 +221,7 @@ export default function DeviceSetupScreen() {
           updateDevice('SERVER');
         }, 5000);
       }
-    } else if (step == 8) {
+    } else if (step == 8 && locationStatus && bleStatus) {
       checkAndDisconnect();
     }
     handleShowBack(step);

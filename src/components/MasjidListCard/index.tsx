@@ -102,27 +102,26 @@ export default function MasjidListCard(
                 <View
                   style={{
                     ...styles.row,
-                    width: '95%',
+                    width: '100%',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
                     // flexWrap: 'wrap',
                   }}>
                   <View style={styles.row}>
                     <MyText text={namazName ?? '--'} />
                   </View>
-                  <GapView mode="horizontal" length={30} />
                   <View style={styles.row}>
                     <AdhanSettingSvg height={16} width={16} color={'#9E9F9F'} />
-                    <GapView mode="horizontal" length={5} />
+                    <GapView mode="horizontal" length={2.5} />
                     <MyText
                       text={
                         azanTime != 'Invalid date' ? (azanTime as string) : '--'
                       }
                     />
                   </View>
-                  <GapView mode="horizontal" length={30} />
                   <View style={styles.row}>
-                    <TimeCircleSvg height={14} width={14} color={'#9E9F9F'} />
-                    <GapView mode="horizontal" length={5} />
+                    <TimeCircleSvg height={13} width={13} color={'#9E9F9F'} />
+                    <GapView mode="horizontal" length={2.5} />
                     <MyText
                       text={
                         namazTime != 'Invalid date'
@@ -131,46 +130,40 @@ export default function MasjidListCard(
                       }
                     />
                   </View>
-                  <GapView mode="horizontal" length={5} />
                 </View>
               ) : (
                 <View
                   style={{
                     ...styles.row,
-                    width: '95%',
+                    width: '100%',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}>
                   <View style={styles.row}>
-                    <Sunrise height={14} width={14} color={'#9E9F9F'} />
-                    <GapView mode="horizontal" length={5} />
                     <MyText text={'Sunrise'} />
-                  </View>
-                  <GapView mode="horizontal" length={10} />
-                  <View style={styles.row}>
-                    <MyText
-                      text={
-                        sunShurooqTime.Sunrise != 'Invalid date'
-                          ? (sunShurooqTime.Sunrise as string)
-                          : '--'
-                      }
-                    />
-                  </View>
-                  <GapView mode="horizontal" length={15} />
-                  <View style={styles.row}>
-                    <Shurooq height={14} width={14} color={'#9E9F9F'} />
                     <GapView mode="horizontal" length={5} />
-                    <MyText text={'Shurooq'} />
+                    <View style={styles.row}>
+                      <MyText
+                        text={
+                          sunShurooqTime.Sunrise != 'Invalid date'
+                            ? (sunShurooqTime.Sunrise as string)
+                            : '--'
+                        }
+                      />
+                    </View>
                   </View>
-                  <GapView mode="horizontal" length={10} />
                   <View style={styles.row}>
-                    <MyText
-                      text={
-                        sunShurooqTime.Shurooq != 'Invalid date'
-                          ? (sunShurooqTime.Shurooq as string)
-                          : '--'
-                      }
-                    />
+                    <MyText text={'Shurooq'} />
+                    <GapView mode="horizontal" length={5} />
+                    <View style={styles.row}>
+                      <MyText
+                        text={
+                          sunShurooqTime.Shurooq != 'Invalid date'
+                            ? (sunShurooqTime.Shurooq as string)
+                            : '--'
+                        }
+                      />
+                    </View>
                   </View>
                 </View>
               )}

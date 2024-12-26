@@ -71,7 +71,7 @@
     "react-native-toast-message": "^2.1.6",
     "react-native-vector-icons": "^9.2.0",
     "react-native-walkthrough-tooltip": "^1.5.0",
-    "react-native-wifi-reborn": "^4.11.0",
+    "react-native-wifi-reborn": "^4.13.0",
     "yup": "^1.0.2"
   },
   "reactNativePermissionsIOS": [

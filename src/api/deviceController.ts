@@ -568,8 +568,9 @@ export async function getFirmwareUpdates(deviceTypeid: string) {
 export async function updateDeviceFirmware(deviceId: string) {
   try {
     const res = await api.post<any>(`/devices/${deviceId}/update-firmware`);
+
     if (res?.ok) {
-      return res.data[0];
+      return res.data;
     } else if (res.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
       return false;

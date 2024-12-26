@@ -116,9 +116,8 @@ const DeviceSetting = ({
   }, [device]);
 
   useEffect(() => {
-    console.log('state.globalLoading.get()', state.globalLoading.get());
-    console.log('state.globalLoadingMsg.get()', state.globalLoadingMsg.get());
     if (state.globalLoading.get() == false && state.globalLoadingMsg.get()) {
+      state.globalLoadingMsg.set(``);
       goBack?.();
     }
   }, [state.globalLoading]);
@@ -273,14 +272,13 @@ const DeviceSetting = ({
   };
 
   const UpdateFirmware = async () => {
-    console.log('UpdateFirmware', device?.id);
     try {
       const updateRes: DeviceFirmwareType = await updateDeviceFirmware(
         device?.id.toString()!,
       );
-      console.log('UpdateFirmware Res', updateRes);
       if (updateRes) {
         setUpdateShow(false);
+        getUpdateLogs();
         checkUpdateRef.current = setInterval(() => {
           getUpdateLogs();
         }, 30000);
@@ -289,13 +287,6 @@ const DeviceSetting = ({
       crashlytics().recordError(e as Error);
     }
   };
-
-  console.log('device Update', updateAvailable);
-  console.log('device?.', device?.deviceTelemetry?.status);
-  console.log(
-    'device?.deviceTelemetry?.streamer',
-    device?.deviceTelemetry?.streamer,
-  );
 
   return (
     scrVisible && (
@@ -597,7 +588,9 @@ const DeviceSetting = ({
                       {
                         title: 'Firmware Version',
                         subtitle: device?.firmwareVersion,
-                        danger: updateAvailable,
+                        danger:
+                          device?.deviceTelemetry?.status !== 'Offline' &&
+                          updateAvailable,
                         onDangerPress: () => setUpdateShow(true),
                         icon: <Version style={{ padding: 10, bottom: 2 }} />,
                       },

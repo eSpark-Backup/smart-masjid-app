@@ -265,8 +265,14 @@ export default function App() {
                 : state.globalLoading.set(true)
             }
           />
-          <BlurBackground show={isConnected == false} />
-          <NoInternetModal isVisible={isConnected == false} />
+          <BlurBackground
+            show={isConnected == false && state.hideNetError.get() == false}
+          />
+          <NoInternetModal
+            isVisible={
+              isConnected == false && state.hideNetError.get() == false
+            }
+          />
         </NavigationContainer>
       </GestureHandlerRootView>
     );

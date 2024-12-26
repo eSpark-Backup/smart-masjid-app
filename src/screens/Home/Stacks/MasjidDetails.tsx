@@ -119,8 +119,10 @@ export default function MasjidDetails({
         'WEEK',
       ).then(data => {
         setSalahTime(data as SalahTimings[]);
-        setLoading(false);
-        state.globalLoading.set(false);
+        setTimeout(() => {
+          setLoading(false);
+          state.globalLoading.set(false);
+        }, 10);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);

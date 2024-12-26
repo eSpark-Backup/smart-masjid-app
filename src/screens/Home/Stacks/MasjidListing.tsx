@@ -66,7 +66,7 @@ export default function MasjidListing({
     let time = moment(
       currTimes?.salah[currInd < 0 ? 0 : currInd]?.adhanTime,
       'hh:mm:ss',
-    ).format('hh:mm');
+    ).format('hh:mm A');
 
     if (type == 'name') {
       return name;
@@ -89,7 +89,7 @@ export default function MasjidListing({
     let time = moment(
       currTimes?.salah[currInd < 0 ? 0 : currInd]?.iqamaTime,
       'hh:mm:ss',
-    ).format('hh:mm');
+    ).format('hh:mm A');
     return time;
   };
 
@@ -122,11 +122,11 @@ export default function MasjidListing({
         Sunrise: moment(
           currTimes?.salah[currInd < 0 ? 0 : currInd]?.sunriseTime,
           'hh:mm:ss',
-        ).format('hh:mm'),
+        ).format('hh:mm A'),
         Shurooq: moment(
           currTimes?.salah[currInd < 0 ? 0 : currInd]?.shurooqTime,
           'hh:mm:ss',
-        ).format('hh:mm'),
+        ).format('hh:mm A'),
       };
     }
     return time;

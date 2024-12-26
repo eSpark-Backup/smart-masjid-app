@@ -252,8 +252,8 @@ export default function ManageAccount({
                         paddingVertical: 10,
                       }}>
                       <View style={{ flexDirection: 'row' }}>
-                        {val.icon}
-                        <GapView mode="horizontal" />
+                        {/* {val.icon} */}
+                        {/* <GapView mode="horizontal" /> */}
                         <MyText text={val.title} textStyle={{ fontSize: 16 }} />
                       </View>
                       <View>
@@ -278,18 +278,22 @@ export default function ManageAccount({
                         width: WINDOW_WIDTH - 60,
                         alignSelf: 'center',
                       }}>
-                      <Card noShadow>
+                      <Card noShadow style={{ width: '100%' }}>
                         {val.key != 'phone' ? (
                           <View
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
                               backgroundColor: '#f8fbfb',
+                              alignSelf: 'center',
                             }}>
-                            <GapView mode="horizontal" />
-                            {val.icon}
-                            <GapView mode="horizontal" />
+                            {/* <GapView mode="horizontal" /> */}
+                            {/* {val.icon}
+                            <GapView mode="horizontal" /> */}
                             <MyInput
+                              inputStyle={{
+                                width: WINDOW_WIDTH - 60,
+                              }}
                               onBlur={() => console.log('clear Selection krdo')}
                               onFocus={() => console.log('Focused')}
                               maxLength={
@@ -312,11 +316,15 @@ export default function ManageAccount({
                               flexDirection: 'row',
                               alignItems: 'center',
                               backgroundColor: '#f8fbfb',
+                              alignSelf: 'center',
                             }}>
-                            <GapView mode="horizontal" />
-                            {val.icon}
-                            <GapView mode="horizontal" />
+                            {/* <GapView mode="horizontal" /> */}
+                            {/* {val.icon}
+                            <GapView mode="horizontal" /> */}
                             <MyInput
+                              inputStyle={{
+                                width: WINDOW_WIDTH - 140,
+                              }}
                               maxLength={10}
                               placeholder="Phone"
                               isMAccont

@@ -175,10 +175,10 @@ export default function SwipeableTimeTable({
   const slider = useRef<FlatList>(null);
 
   useEffect(() => {
-    if (loading == false && data.length > 0) {
+    if (data.length > 0) {
       useLayoutAnimation(500);
     }
-  }, [loading]);
+  }, [data]);
 
   const updateSubscriptions = async (id: string, adhanName: string) => {
     setLoading(true);

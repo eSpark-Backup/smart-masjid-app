@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
-import WifiManager from 'react-native-wifi-reborn';
+import WifiManager, {
+  ConnectToProtectedSSIDParams,
+} from 'react-native-wifi-reborn';
 import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -57,13 +59,13 @@ export default function PasswordForm({
     // setLoading(true);
     try {
       if (Platform.OS == 'android') {
-        const res = await WifiManager.connectToProtectedSSID(
+        const options: ConnectToProtectedSSIDParams = {
           ssid,
           password,
-          false,
-          false,
-          15,
-        );
+          isWEP: false,
+          isHidden: false,
+        };
+        const res = await WifiManager.connectToProtectedWifiSSID(options);
         await WifiManager.disconnect();
         const isForget = await WifiManager.isRemoveWifiNetwork(ssid);
         if (isForget) {
@@ -75,28 +77,16 @@ export default function PasswordForm({
         } else {
           console.log('Failed to forgot', isForget);
         }
-        // Wifi.connectToNetwork({ ssid, password })
-        //   .then(() => {
-        //     console.log('Connected Successfully', res);
-        //     setLoading(false);
-        //     setStep(6);
-        //     clear();
-        //   })
-        //   .catch((error: any) => {
-        //     console.error(error);
-        //     crashlytics().recordError(error as Error);
-        //     setLoading(false);
-        //   });
       } else {
         const res = await WifiManager.disconnectFromSSID(ssid);
         console.log('res', res);
-        WifiManager.connectToProtectedSSID(
+        const options: ConnectToProtectedSSIDParams = {
           ssid,
           password,
-          false,
-          false,
-          15,
-        ).then(
+          isWEP: false,
+          isHidden: false,
+        };
+        WifiManager.connectToProtectedWifiSSID(options).then(
           a => {
             console.log('Connected successfully!', a);
             state.globalLoading.set(false);
