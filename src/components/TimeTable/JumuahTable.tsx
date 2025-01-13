@@ -47,7 +47,7 @@ const RowItem = ({
       <View style={[styles.contentRow, { height: 40 }]}>
         <View
           style={{
-            width: '30%',
+            width: '40%',
           }}>
           <MyText text={item.name} size={16} />
         </View>
@@ -61,6 +61,7 @@ const RowItem = ({
             size={16}
           />
         </View>
+        <View style={{ width: '10%' }} />
         {isMute ? (
           <View style={styles.contentIcon}>
             {subscribed ? (
@@ -142,8 +143,14 @@ export default function JumuahTable({
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        {headings?.map(value => (
-          <View key={value} style={styles.headerCol}>
+        {headings?.map((value, index) => (
+          <View
+            key={value}
+            style={{
+              ...styles.headerCol,
+              width: index == 1 ? '30%' : '40%',
+              alignItems: index == 1 ? 'center' : 'flex-start',
+            }}>
             <MyText
               text={value}
               size={16}
@@ -154,7 +161,8 @@ export default function JumuahTable({
             />
           </View>
         ))}
-        <View style={styles.headerIcon}></View>
+        <View style={{ width: '10%' }} />
+        <View style={styles.headerIcon} />
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
@@ -231,7 +239,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '40%', alignItems: 'flex-start' },
+  headerCol: { width: '30%' },
   headerIcon: {
     alignItems: 'flex-start',
     justifyContent: 'center',
@@ -249,7 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30%', alignItems: 'flex-start' },
+  contentCol: { width: '30%', alignItems: 'center' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

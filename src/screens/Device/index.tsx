@@ -321,7 +321,7 @@ const makeStyles = (theme: Theme) => {
       width: 8,
       borderWidth: 0.7,
       borderRadius: 10,
-      backgroundColor: '#1DF126',
+      backgroundColor: '#17c01e',
     },
   });
 };

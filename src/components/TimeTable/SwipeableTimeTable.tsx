@@ -60,7 +60,7 @@ const RowItem = ({
               <CheckCircle
                 width={16}
                 height={16}
-                color={adhanCalled?.called ? '#1DF126' : '#9E9F9F'}
+                color={adhanCalled?.called ? '#17c01e' : '#9E9F9F'}
               />
             }
             content={

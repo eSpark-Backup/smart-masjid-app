@@ -6,6 +6,7 @@ export { default as HeaderAndroidBackgroundImage } from './images/AndroidHeader.
 export { default as HeaderAndroidBackgroundImageUp } from './images/AndroidUpHeader.png';
 //* gifs
 export { default as DeviceLoaderGif } from './animations/deviceLoader.gif';
+export { default as DevLoaderGif } from './animations/devLoader.gif';
 export { default as SL } from './animations/simpleLoader.gif';
 
 //* images/svg

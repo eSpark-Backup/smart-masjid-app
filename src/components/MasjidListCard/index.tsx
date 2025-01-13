@@ -9,6 +9,7 @@ import { FastImageProps } from 'react-native-fast-image';
 
 import {
   AdhanSettingSvg,
+  IqamaTimingsSvg,
   LocationSvg,
   MasjidSample,
   Shurooq,
@@ -104,12 +105,12 @@ export default function MasjidListCard(
                     ...styles.row,
                     width: '100%',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
                     // flexWrap: 'wrap',
                   }}>
                   <View style={styles.row}>
                     <MyText text={namazName ?? '--'} />
                   </View>
+                  <GapView mode="horizontal" />
                   <View style={styles.row}>
                     <AdhanSettingSvg height={16} width={16} color={'#9E9F9F'} />
                     <GapView mode="horizontal" length={2.5} />
@@ -119,8 +120,9 @@ export default function MasjidListCard(
                       }
                     />
                   </View>
+                  <GapView mode="horizontal" />
                   <View style={styles.row}>
-                    <TimeCircleSvg height={13} width={13} color={'#9E9F9F'} />
+                    <IqamaTimingsSvg height={13} width={13} color={'#9E9F9F'} />
                     <GapView mode="horizontal" length={2.5} />
                     <MyText
                       text={

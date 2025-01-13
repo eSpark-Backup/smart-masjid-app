@@ -21,7 +21,7 @@ const DeviceStatus = ({ status = 'Offline' }: { status?: DStatus }) => {
           borderRadius: 100,
           backgroundColor:
             status == null || status == 'Running' || status == 'Online'
-              ? '#1DF126'
+              ? '#17c01e'
               : '#FF6464',
         }}
       />

@@ -84,8 +84,6 @@ export default function MasjidListing({
       return time1 >= time2;
     });
 
-    console.log('currInd', currInd);
-
     let time = moment(
       currTimes?.salah[currInd < 0 ? 0 : currInd]?.iqamaTime,
       'hh:mm:ss',
@@ -100,8 +98,6 @@ export default function MasjidListing({
       let time1 = item?.sunriseTime?.toString().slice(0, 5);
       let time2 = item?.shurooqTime?.toString().slice(0, 5);
       let currTime = moment().format('HH:mm');
-      console.log('sunriseTime1', time1);
-      console.log('time2', time2);
       if (time1 >= currTime) {
         return true;
       } else if (time2 >= currTime) {
@@ -110,7 +106,6 @@ export default function MasjidListing({
         return false;
       }
     });
-    console.log('currInd', currInd);
     let currTime = moment().format('HH:mm');
     let fajrTime = moment(
       currTimes?.salah[currInd < 0 ? 0 : currInd]?.adhanTime,

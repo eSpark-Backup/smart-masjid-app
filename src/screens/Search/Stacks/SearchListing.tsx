@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   View,
@@ -6,6 +6,8 @@ import {
   Platform,
   Animated,
   AppState,
+  AppStateStatus,
+  PermissionStatus,
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -34,6 +36,7 @@ import { State, useHookstate } from '@hookstate/core';
 import { globalStore } from '../../../store/GlobalStates';
 import { GlobalProps } from '../../../types';
 import { err } from 'react-native-svg/lib/typescript/xml';
+import { useUpdateEffect } from '../../../utils';
 
 const SearchListing = ({
   onPress,
@@ -63,26 +66,57 @@ const SearchListing = ({
   const [loader, setLoader] = useState(false);
   const [locationStatus, setlocationStatus] = useState(false);
   const [message, setMessage] = useState('');
+  const [ApState, setApState] = useState<AppStateStatus>(AppState.currentState);
+  const appState = useRef<AppStateStatus>(AppState.currentState);
+
+  const checkLocationSetting = async () => {
+    const enable = await systemSetting.isLocationEnabled();
+    checkLocation(enable, false);
+  };
+
+  const requestLocationSetting = async () => {
+    const enable = await systemSetting.isLocationEnabled();
+    checkLocation(enable, false, true);
+  };
 
   useEffect(() => {
-    if (isFocused) {
-      const subscription = AppState.addEventListener(
-        'change',
-        async appState => {
-          if (appState == 'active') {
-            const enable = await systemSetting.isLocationEnabled();
-            checkLocation(enable, false);
-          }
-        },
-      );
+    console.log('chala kiaaaaaa', ApState);
 
-      return () => {
-        subscription.remove();
-      };
+    if (isFocused && ApState == 'active') {
+      requestLocationSetting();
     }
   }, [isFocused]);
 
-  const checkLocation = async (locationStatus: boolean, pressed?: boolean) => {
+  useEffect(() => {
+    console.log('chala kiaaaaaa2', ApState);
+
+    if (ApState == 'active') {
+      checkLocationSetting();
+    }
+  }, [ApState]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+      }
+      setApState(nextAppState);
+      console.log('AppState', appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const checkLocation = async (
+    locationStatus: boolean,
+    pressed?: boolean,
+    requested?: boolean,
+  ) => {
     try {
       if (Platform.OS == 'ios') {
         await requestMultiple([
@@ -135,15 +169,37 @@ const SearchListing = ({
           }
         });
       } else {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        let granted: PermissionStatus | boolean | null = null;
+        if (requested) {
+          granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
+        } else {
+          granted = await PermissionsAndroid.check(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
+        }
+
+        console.log(
+          'request | grant | location',
+          requested,
+          granted,
+          locationStatus,
         );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED && locationStatus) {
+
+        if (
+          (granted === PermissionsAndroid.RESULTS.GRANTED &&
+            requested == true &&
+            locationStatus) ||
+          (granted === true && !requested && locationStatus)
+        ) {
           onCurrentLocationPress();
           setMessage('');
         } else if (
-          granted != PermissionsAndroid.RESULTS.GRANTED &&
-          locationStatus == false
+          (granted != PermissionsAndroid.RESULTS.GRANTED &&
+            requested == true &&
+            locationStatus == false) ||
+          (granted != true && !requested && locationStatus == false)
         ) {
           if (pressed) {
             Toast.show({

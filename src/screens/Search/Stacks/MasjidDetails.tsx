@@ -140,7 +140,6 @@ const MasjidDetails = ({
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      {/* <OverlayLoader isShow={loading} noBg={false} /> */}
       <View
         style={{
           alignSelf: 'center',
@@ -231,7 +230,7 @@ const MasjidDetails = ({
                         `https://${masjidDetails?.website as string}`,
                       )
                     }>
-                    <OpenLink width={18} height={18} color={'#006870'} />
+                    <OpenLink width={16} height={16} color={'#006870'} />
                   </TouchableOpacity>
                 </View>
               </>
@@ -258,7 +257,6 @@ const MasjidDetails = ({
             {masjidDetails?.phone ? (
               <>
                 <GapView length={5} />
-
                 <View style={styles.infoCardRowContainer}>
                   <Phone width={18} height={18} color={'#9E9F9F'} />
                   <GapView length={5} mode="horizontal" />
@@ -277,7 +275,7 @@ const MasjidDetails = ({
                     onPress={() =>
                       Linking.openURL(`tel:${masjidDetails?.phone}`)
                     }>
-                    <OpenLink width={18} height={18} color={'#006870'} />
+                    <OpenLink width={16} height={16} color={'#006870'} />
                   </TouchableOpacity>
                 </View>
               </>
@@ -300,7 +298,6 @@ const MasjidDetails = ({
           isMute={false}
         />
         <GapView length={15} />
-
         {!subscribe ? (
           <View style={{ alignItems: 'center' }}>
             <Rounded
