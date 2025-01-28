@@ -5,7 +5,7 @@ import { Theme, useTheme } from '@react-navigation/native';
 import MyText from '../MyText';
 import GapView from '../GapView';
 import MyTextSubHeader from '../MyTextSubHeader';
-import { Check, CloseIcon } from '../../assets';
+import { CheckCircle, CloseIcon } from '../../assets';
 
 export default function PossibleCauseErrorModal({
   visible,
@@ -54,7 +54,12 @@ export default function PossibleCauseErrorModal({
                   justifyContent: 'center',
                   paddingVertical: 5,
                 }}>
-                <Check style={{ marginTop: 2 }} width={14} height={14} />
+                <CheckCircle
+                  style={{ marginTop: 2 }}
+                  width={14}
+                  height={14}
+                  color={'#9E9F9F'}
+                />
                 <MyText text={item} textStyle={styles.content} size={12} />
               </View>
             ))}

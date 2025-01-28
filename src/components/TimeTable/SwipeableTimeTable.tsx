@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { MuteSvg, VolumUpGreen } from '../../assets';
+import { CheckCircle, MuteSvg, UnMuteSvg } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import { IPrayerTimeForPeriod } from '../../types';
 import GapView from '../GapView';
@@ -19,6 +19,7 @@ import MyDivider from '../MyDivider';
 import MyText from '../MyText';
 import Tooltip from '../Tooltip';
 import {
+  AdhanLog,
   SalahTimings,
   SubscriptionList,
 } from '../../types/masjidControllerTypes';
@@ -37,26 +38,46 @@ const RowItem = ({
   subscribed,
   subscriptionData,
   setSubscriptions,
+  adhanCalled,
 }: {
   item: { name: string; adhan: string; Iqama: string };
   isMute: boolean;
   subscribed?: boolean;
   subscriptionData?: SubscriptionList;
   setSubscriptions: (id: string, adhanName: string) => void;
+  adhanCalled?: { called: boolean; time: string | null };
 }) => {
   const toggleSubscription = () => {
     setSubscriptions(subscriptionData?.id.toString() as string, item.name);
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.9}>
+    <View>
       <View style={[styles.contentRow, { height: 40 }]}>
         <View style={styles.contentCol}>
+          <Tooltip
+            icon={
+              <CheckCircle
+                width={16}
+                height={16}
+                color={adhanCalled?.called ? '#17c01e' : '#9E9F9F'}
+              />
+            }
+            content={
+              adhanCalled?.time
+                ? `Adhan Called at ${moment(
+                    adhanCalled?.time,
+                    'HH:mm:ss',
+                  ).format('h:mm A')}`
+                : 'Adhan not called'
+            }
+          />
+          <GapView mode="horizontal" length={5} />
           <MyText text={item.name} size={16} />
         </View>
         <View
           style={{
-            width: '28%',
+            width: '30%',
             alignItems: 'center',
           }}>
           <MyText
@@ -70,7 +91,7 @@ const RowItem = ({
         </View>
         <View
           style={{
-            width: '32%',
+            width: '30%',
             alignItems: 'center',
           }}>
           <MyText
@@ -82,25 +103,27 @@ const RowItem = ({
             size={16}
           />
         </View>
-        {isMute && (
-          <View style={styles.contentIcon}>
-            {subscribed ? (
-              <TouchableOpacity
-                style={{ padding: 5 }}
-                onPress={toggleSubscription}>
-                <VolumUpGreen height={16} width={16} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={{ padding: 5 }}
-                onPress={toggleSubscription}>
-                <MuteSvg height={16} width={16} />
-              </TouchableOpacity>
-            )}
-          </View>
+        {isMute && subscribed ? (
+          <TouchableOpacity
+            style={{
+              ...styles.contentIcon,
+              paddingLeft: 5,
+            }}
+            onPress={toggleSubscription}>
+            <UnMuteSvg color={'#006870'} height={16} width={16} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              ...styles.contentIcon,
+              paddingLeft: 5,
+            }}
+            onPress={toggleSubscription}>
+            <MuteSvg color={'#006870'} height={16} width={16} />
+          </TouchableOpacity>
         )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -123,6 +146,7 @@ export default function SwipeableTimeTable({
   setLoading,
   deviceGetsOnline,
   loading,
+  adhanLog,
 }: {
   data: SalahTimings[];
   subscriptions: SubscriptionList[];
@@ -142,6 +166,7 @@ export default function SwipeableTimeTable({
   setLoading: (val: boolean) => void;
   deviceGetsOnline?: () => void;
   loading?: boolean;
+  adhanLog?: AdhanLog | null;
 }) {
   const [currentItem, setCurrentItem] = useState<IPrayerTimeForPeriod | null>(
     data?.length > 0 ? data[0] : null,
@@ -150,8 +175,10 @@ export default function SwipeableTimeTable({
   const slider = useRef<FlatList>(null);
 
   useEffect(() => {
-    useLayoutAnimation(500);
-  }, [loading]);
+    if (data.length > 0) {
+      useLayoutAnimation(500);
+    }
+  }, [data]);
 
   const updateSubscriptions = async (id: string, adhanName: string) => {
     setLoading(true);
@@ -234,6 +261,33 @@ export default function SwipeableTimeTable({
     [],
   );
 
+  const checkCalledAdhan = (adhanName: string) => {
+    switch (adhanName) {
+      case 'fajr':
+        return adhanLog?.fajrCalled == 'Y'
+          ? { called: true, time: adhanLog.fajrCalledTime }
+          : { called: false, time: null };
+      case 'dhuhr':
+        return adhanLog?.dhuhrCalled == 'Y'
+          ? { called: true, time: adhanLog.dhuhrCalledTime }
+          : { called: false, time: null };
+      case 'asr':
+        return adhanLog?.asrCalled == 'Y'
+          ? { called: true, time: adhanLog.asrCalledTime }
+          : { called: false, time: null };
+      case 'maghrib':
+        return adhanLog?.maghribCalled == 'Y'
+          ? { called: true, time: adhanLog.maghribCalledTime }
+          : { called: false, time: null };
+      case 'isha':
+        return adhanLog?.ishaCalled == 'Y'
+          ? { called: true, time: adhanLog.ishaCalledTime }
+          : { called: false, time: null };
+      default:
+        break;
+    }
+  };
+
   const renderItem = ({
     item,
     index,
@@ -260,6 +314,7 @@ export default function SwipeableTimeTable({
                 item => item.subscriptionType.name == data?.name.toUpperCase(),
               )}
               setSubscriptions={updateSubscriptions}
+              adhanCalled={checkCalledAdhan(data?.name.toLowerCase())}
             />
           ))}
           {/* {item?.salah?.map((data, i) =>
@@ -329,28 +384,28 @@ export default function SwipeableTimeTable({
     }
   };
 
-  const validateUpdatedTime = async (mins?: number): Promise<boolean> => {
-    const res = await _checkDeviceTelemetry(deviceInfo.id.toString(), true);
-    if (res) {
-      const utcDateString = res.updatedTime; // get a date/time
-      const timeNow = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // format the current time to the same format
-      const utcTimeNow = moment.utc(timeNow);
-      const differenceInMinutes = Math.abs(
-        moment(utcDateString).diff(moment(utcTimeNow), 'minutes'),
-      ); // check the difference in minutes: number
-      console.log(
-        'updatedTime:',
-        utcDateString,
-        '\n',
-        'timeNow:',
-        utcTimeNow,
-        '\n',
-        'Difference in Time:',
-        differenceInMinutes,
-      );
-      return differenceInMinutes < mins! ?? 2 ? true : false; //* The time should be lesser then the value
-    } else return false;
-  };
+  // const validateUpdatedTime = async (mins?: number): Promise<boolean> => {
+  //   const res = await _checkDeviceTelemetry(deviceInfo.id.toString(), true);
+  //   if (res) {
+  //     const utcDateString = res.updatedTime; // get a date/time
+  //     const timeNow = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // format the current time to the same format
+  //     const utcTimeNow = moment.utc(timeNow);
+  //     const differenceInMinutes = Math.abs(
+  //       moment(utcDateString).diff(moment(utcTimeNow), 'minutes'),
+  //     ); // check the difference in minutes: number
+  //     console.log(
+  //       'updatedTime:',
+  //       utcDateString,
+  //       '\n',
+  //       'timeNow:',
+  //       utcTimeNow,
+  //       '\n',
+  //       'Difference in Time:',
+  //       differenceInMinutes,
+  //     );
+  //     return differenceInMinutes < mins! ?? 2 ? true : false; //* The time should be lesser then the value
+  //   } else return false;
+  // };
 
   return (
     <>
@@ -376,8 +431,17 @@ export default function SwipeableTimeTable({
           <GapView length={15} />
         </>
         <View style={styles.headerRow}>
-          {headings?.map(value => (
-            <View key={value} style={styles.headerCol}>
+          {headings?.map((value, index) => (
+            <View
+              key={value}
+              style={[
+                styles.headerCol,
+                {
+                  width: index == 0 ? '28%' : '30%',
+                  alignItems: index == 0 ? 'flex-start' : 'center',
+                  paddingLeft: index == 0 ? 5 : undefined,
+                },
+              ]}>
               <MyText
                 text={value}
                 size={16}
@@ -391,7 +455,7 @@ export default function SwipeableTimeTable({
           {isMute && !isInfo && <View style={styles.headerIcon} />}
           {isEdit && !isInfo && <View style={styles.headerIcon} />}
           {isInfo && (
-            <View style={{ right: 10 }}>
+            <View style={styles.headerIcon}>
               <Tooltip
                 position="top"
                 content="You can subscribe to Adhan here. Adhan will play on your device when called at your masjid."
@@ -455,27 +519,43 @@ export default function SwipeableTimeTable({
           data[currInd]?.salah?.map((data, i) =>
             data?.sunriseTime ? (
               <View key={i} style={[styles.contentRow, { height: 40 }]}>
-                <View style={styles.contentCol}>
-                  <MyText text={'Sunrise'} size={16} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '47%',
+                  }}>
+                  <View>
+                    <MyText text={'Sunrise'} size={16} />
+                  </View>
+                  <View>
+                    <MyText
+                      text={moment(data.sunriseTime, 'HH:mm:ss').format(
+                        'h:mm A',
+                      )}
+                      size={16}
+                    />
+                  </View>
                 </View>
                 <View
                   style={{
-                    width: '28%',
+                    flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '47%',
                   }}>
-                  <MyText
-                    text={moment(data.sunriseTime, 'HH:mm:ss').format('h:mm A')}
-                    size={16}
-                  />
-                </View>
-                <View style={styles.contentCol}>
-                  <MyText text={'Shurooq'} size={16} />
-                </View>
-                <View style={{ ...styles.contentIcon, width: undefined }}>
-                  <MyText
-                    text={moment(data.shurooqTime, 'HH:mm:ss').format('h:mm A')}
-                    size={16}
-                  />
+                  <View>
+                    <MyText text={'Shurooq'} size={16} />
+                  </View>
+                  <View>
+                    <MyText
+                      text={moment(data.shurooqTime, 'HH:mm:ss').format(
+                        'h:mm A',
+                      )}
+                      size={16}
+                    />
+                  </View>
                 </View>
               </View>
             ) : null,
@@ -510,7 +590,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerCol: { width: '28%', alignItems: 'center' },
   headerIcon: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -528,7 +608,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '22%', alignItems: 'flex-start' },
+  contentCol: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: '28%',
+    alignItems: 'center',
+  },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

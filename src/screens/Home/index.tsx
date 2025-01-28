@@ -76,10 +76,15 @@ export const ListEmptyComponent = ({
           />
         </TouchableOpacity>
       ) : (
-        <MyText
-          text={message2}
-          textStyle={{ textAlign: 'center', fontSize: 16 }}
-        />
+        <View style={{ width: '80%' }}>
+          <MyText
+            text={message2}
+            textStyle={{
+              textAlign: 'center',
+              fontSize: 16,
+            }}
+          />
+        </View>
       )}
 
       <GapView length={40} />
@@ -120,7 +125,6 @@ export default function Home() {
               uniqueObj?.push(obj as any);
             }
           });
-          console.log('kiya mila', uniqueObj);
           setUniqueObjects(uniqueObj);
           if (step == 0 && uniqueObj?.length == 1 && uniqueObj != null) {
             if (typeof uniqueObj?.[0] == 'object') {
@@ -179,7 +183,13 @@ export default function Home() {
 
   return (
     <Wrapper
-      showBack={step == 0 ? false : uniqueObjects?.length == 1 ? false : true}
+      showBack={
+        step == 0
+          ? false
+          : uniqueObjects?.length == 1 && step == 1
+          ? false
+          : true
+      }
       onBackPress={onBackPress}
       showFooter={false}
       title={'Masjid Subscriptions'}

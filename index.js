@@ -3,9 +3,10 @@
  */
 import 'react-native-gesture-handler';
 import { AppRegistry, LogBox, Text, TextInput } from 'react-native';
-import { enableLatestRenderer } from 'react-native-maps';
+import MapView, { enableLatestRenderer } from 'react-native-maps';
 
 import App from './src/navigation';
+// import App from './App';
 import { name as appName } from './app.json';
 import { _requestUserNotificationPermission } from './src/utils/functions';
 
@@ -28,5 +29,5 @@ if (TextInput.defaultProps) {
 }
 
 _requestUserNotificationPermission();
-enableLatestRenderer();
+// enableLatestRenderer();
 AppRegistry.registerComponent(appName, () => App);

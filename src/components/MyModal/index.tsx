@@ -59,12 +59,12 @@ export default function MyModal({
         style={styles.main}>
         <TouchableOpacity activeOpacity={1} style={styles.body}>
           <MyText text="Confirm" textStyle={styles.label} size={16} />
-          <GapView length={40} />
+          <GapView length={30} />
           <MyText text={message} textStyle={styles.bodyText} size={16} />
 
           {showInput ? (
             <>
-              <GapView />
+              <GapView length={20} />
               <MyInput
                 placeholder="Email"
                 inputStyle={{ width: WINDOW_WIDTH - 80 }}

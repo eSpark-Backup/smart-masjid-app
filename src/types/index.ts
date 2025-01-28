@@ -41,6 +41,8 @@ export type GlobalProps = {
   isDeviceRegistered?: boolean;
   devSetup?: boolean;
   globalLoading?: boolean;
+  hideNetError?: boolean;
+  globalLoadingMsg?: string;
   countryCode: string | null;
 };
 
@@ -71,7 +73,7 @@ export type DeviceStoreProps = {
   masjidDevices: Device[];
 };
 
-export type DStatus = 'Online' | 'Offline' | 'Low battery' | 'Running';
+export type DStatus = null | 'Online' | 'Offline' | 'Low battery' | 'Running';
 
 export type HelpStoreProps = {
   FAQs: FAQ[];

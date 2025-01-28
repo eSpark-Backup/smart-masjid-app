@@ -254,6 +254,36 @@ export const GetAdhanTimings = async (
 };
 
 /**
+ * Get the Adhan timings for a masjid by date and save them to masjidStore.
+ *
+ * @param masjidId - The ID of the masjid for which to retrieve Adhan timings.
+ * @param date - The date for which to retrieve Adhan timings (optional).
+ * @param range - The range for retrieving Adhan timings (optional).
+ * @returns get adhan timings of masjid by date and save to masjidStore
+ */
+export const GetAdhanLog = async (masjidId: string, date?: string) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/adhan/log`, {
+      date: date,
+    });
+    if (result.status == 200) {
+      return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return null;
+    } else {
+      // Toast.show({
+      //   text2: result?.data?.message ?? 'Something went wrong',
+      //   type: 'error',
+      // });
+      return null;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
  * Get the Jummah configuration for a masjid and save it to masjidStore.
  *
  * @param masjidId - The ID of the masjid for which to retrieve the Jummah configuration.

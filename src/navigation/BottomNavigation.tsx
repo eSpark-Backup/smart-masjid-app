@@ -9,6 +9,7 @@ import DeviceCountry from 'react-native-device-country';
 import { Home, Search, Device, Profile } from '../screens';
 import {
   DeviceActiveNew,
+  DevicesSvg,
   DeviceUnactiveNew,
   HomeActiveSvg,
   HomeSvg,
@@ -29,27 +30,27 @@ const TabIcon = (screen: string, isFocused: boolean) => {
   switch (screen) {
     case 'Home':
       if (isFocused) {
-        return <HomeActiveSvg height={26} width={26} />;
+        return <HomeSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <HomeSvg height={26} width={26} />;
+        return <HomeSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     case 'Search':
       if (isFocused) {
-        return <SearchActiveSvg height={26} width={26} />;
+        return <SearchSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <SearchSvg height={26} width={26} />;
+        return <SearchSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     case 'Device':
       if (isFocused) {
-        return <DeviceActiveNew height={26} width={26} />;
+        return <DevicesSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <DeviceUnactiveNew height={26} width={26} />;
+        return <DevicesSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     case 'Profile':
       if (isFocused) {
-        return <ProfileActiveSvg />;
+        return <ProfileSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <ProfileSvg />;
+        return <ProfileSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     default:
       break;
@@ -80,29 +81,15 @@ function HomeBottomTab() {
   }, []);
 
   const getCountryCode = async () => {
-    const getIPAPI = create({
-      baseURL: 'https://icanhazip.com',
-    });
     const getIPInfoAPI = create({
-      baseURL: 'https://get.geojs.io/v1/ip/country',
+      baseURL: 'https://get.geojs.io/v1/ip/',
     });
-    const IPRes = await getIPAPI.get<any>('/');
-    console.log('IPRes>>>', IPRes);
-    const IP = IPRes.data.trim();
-    // const IP = IPRes.data.replace(/(\r\n|\n|\r)/gm, '');
-    if (IPRes.ok) {
-      const IPInfoRes = await getIPInfoAPI.get<{ country: string }>(
-        `/${IP}` + '.json',
-      );
-      console.log('IPInfoRes>>>', IPInfoRes);
 
-      if (IPInfoRes.ok) {
-        countryCode.set(IPInfoRes.data?.country as string);
-      } else {
-        const codeRes = await DeviceCountry.getCountryCode();
-        countryCode.set(codeRes.code.toUpperCase());
-        console.log('codeRescodeRes', codeRes);
-      }
+    const IPInfoRes = await getIPInfoAPI.get<{ country: string }>(
+      'country.json',
+    );
+    if (IPInfoRes.ok) {
+      countryCode.set(IPInfoRes.data?.country as string);
     } else {
       const codeRes = await DeviceCountry.getCountryCode();
       countryCode.set(codeRes.code.toUpperCase());

@@ -4,7 +4,7 @@ import { Peripheral } from 'react-native-ble-manager';
 import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
 
-import { AdhanButton, DeviceSvg } from '../../assets';
+import { ButtonIcon, DeviceSvg } from '../../assets';
 import {
   ButtonListing,
   GapView,
@@ -96,7 +96,7 @@ export default function DeviceSelectForm({
         console.log('admin nhi button nhi');
         return {
           ...item,
-          leftIcon: <DeviceSvg />,
+          leftIcon: <DeviceSvg height={24} width={24} color={'#9E9F9F'} />,
           title: 'Bilal Smart Speaker',
           onPress: () => {
             console.log('selected macId', item?.id);
@@ -114,7 +114,11 @@ export default function DeviceSelectForm({
       console.log('admin hai button hai');
       return {
         ...item,
-        leftIcon: isBtn ? <AdhanButton /> : <DeviceSvg />,
+        leftIcon: isBtn ? (
+          <ButtonIcon height={24} width={24} color={'#9E9F9F'} />
+        ) : (
+          <DeviceSvg height={24} width={24} color={'#9E9F9F'} />
+        ),
         title: isBtn ? 'Smart Masjid Adhan Button' : 'Bilal Smart Speaker',
         onPress: () => {
           console.log('selected macId', item?.id);

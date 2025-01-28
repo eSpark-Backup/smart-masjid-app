@@ -140,7 +140,6 @@ const MasjidDetails = ({
 
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      {/* <OverlayLoader isShow={loading} noBg={false} /> */}
       <View
         style={{
           alignSelf: 'center',
@@ -164,15 +163,17 @@ const MasjidDetails = ({
               style={{
                 ...styles.infoCardRowContainer,
               }}>
-              <LocationSvg />
+              <LocationSvg width={18} height={18} color={'#9E9F9F'} />
               <GapView length={5} mode="horizontal" />
               <View style={{ maxWidth: '80%' }}>
                 <MyText
                   text={
-                    (masjidDetails?.address1 ?? '') +
-                    (', ' + masjidDetails?.city ?? '') +
-                    (' ' + masjidDetails?.state ?? '') +
-                    (' ' + masjidDetails?.zip ?? '')
+                    (masjidDetails?.address1
+                      ? masjidDetails?.address1 + ', '
+                      : '') +
+                    (masjidDetails?.city ? masjidDetails?.city + ' ' : '') +
+                    (masjidDetails?.state ? masjidDetails?.state + ' ' : '') +
+                    (masjidDetails?.zip ?? '')
                   }
                   size={16}
                   textStyle={{ color: '#3E3E3E' }}
@@ -187,10 +188,10 @@ const MasjidDetails = ({
                     masjidDetails?.location?.coordinates[1].toString() ?? '',
                   );
                 }}>
-                <NavigationSvg />
+                <NavigationSvg width={18} height={18} color={'#006870'} />
               </TouchableOpacity>
             </View>
-            <GapView length={5} />
+
             {/* <View style={styles.infoCardRowContainer}>
               <AdhanCalculation />
               <GapView length={5} mode="horizontal" />
@@ -208,29 +209,32 @@ const MasjidDetails = ({
               <Tooltip content={adhanCalculations()} />
             </View> */}
             {masjidDetails?.website ? (
-              <View style={styles.infoCardRowContainer}>
-                <Web />
-                <GapView length={5} mode="horizontal" />
-                <View style={{ maxWidth: '80%' }}>
-                  <MyText
-                    text={masjidDetails?.website}
-                    size={16}
-                    textStyle={{ color: '#3E3E3E' }}
-                    lines={1}
-                  />
+              <>
+                <GapView length={5} />
+
+                <View style={styles.infoCardRowContainer}>
+                  <Web width={18} height={18} color={'#9E9F9F'} />
+                  <GapView length={5} mode="horizontal" />
+                  <View style={{ maxWidth: '80%' }}>
+                    <MyText
+                      text={masjidDetails?.website}
+                      size={16}
+                      textStyle={{ color: '#3E3E3E' }}
+                      lines={1}
+                    />
+                  </View>
+                  <GapView length={5} mode="horizontal" />
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL(
+                        `https://${masjidDetails?.website as string}`,
+                      )
+                    }>
+                    <OpenLink width={16} height={16} color={'#006870'} />
+                  </TouchableOpacity>
                 </View>
-                <GapView length={5} mode="horizontal" />
-                <TouchableOpacity
-                  onPress={() =>
-                    Linking.openURL(
-                      `https://${masjidDetails?.website as string}`,
-                    )
-                  }>
-                  <OpenLink width={18} height={18} />
-                </TouchableOpacity>
-              </View>
+              </>
             ) : null}
-            <GapView length={5} />
             {/* <View style={styles.infoCardRowContainer}>
               <AdhanJuristic />
               <GapView length={5} mode="horizontal" />
@@ -251,27 +255,30 @@ const MasjidDetails = ({
               />
             </View> */}
             {masjidDetails?.phone ? (
-              <View style={styles.infoCardRowContainer}>
-                <Phone />
-                <GapView length={5} mode="horizontal" />
-                <View style={{ maxWidth: '80%' }}>
-                  <MyText
-                    text={parsePhoneNumber(
-                      masjidDetails?.phone,
-                    ).formatInternational()}
-                    size={16}
-                    textStyle={{ color: '#3E3E3E' }}
-                    lines={1}
-                  />
+              <>
+                <GapView length={5} />
+                <View style={styles.infoCardRowContainer}>
+                  <Phone width={18} height={18} color={'#9E9F9F'} />
+                  <GapView length={5} mode="horizontal" />
+                  <View style={{ maxWidth: '80%' }}>
+                    <MyText
+                      text={parsePhoneNumber(
+                        masjidDetails?.phone,
+                      ).formatInternational()}
+                      size={16}
+                      textStyle={{ color: '#3E3E3E' }}
+                      lines={1}
+                    />
+                  </View>
+                  <GapView length={5} mode="horizontal" />
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL(`tel:${masjidDetails?.phone}`)
+                    }>
+                    <OpenLink width={16} height={16} color={'#006870'} />
+                  </TouchableOpacity>
                 </View>
-                <GapView length={5} mode="horizontal" />
-                <TouchableOpacity
-                  onPress={() =>
-                    Linking.openURL(`tel:${masjidDetails?.phone}`)
-                  }>
-                  <OpenLink width={18} height={18} />
-                </TouchableOpacity>
-              </View>
+              </>
             ) : null}
           </View>
         </Card>
@@ -291,7 +298,6 @@ const MasjidDetails = ({
           isMute={false}
         />
         <GapView length={15} />
-
         {!subscribe ? (
           <View style={{ alignItems: 'center' }}>
             <Rounded

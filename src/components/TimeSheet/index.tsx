@@ -36,16 +36,17 @@ export default function TimeSheet({
 
   const renderTable = ({ item, index }: { item: string; index: number }) => {
     return (
-      <View key={index}>
+      <View key={index} style={{ paddingBottom: 5 }}>
         {item == 'Date' ? (
           <View
             style={{
+              overflow: 'visible',
               backgroundColor: colors.primary,
               paddingHorizontal: 8,
               paddingVertical: 5,
               borderColor: '#9E9F9F',
-              borderBottomColor: colors.primary,
               borderWidth: 0.25,
+              borderBottomColor: 'transparent',
             }}>
             <MyText
               text=" "
@@ -106,10 +107,10 @@ export default function TimeSheet({
                     backgroundColor: colors.primary,
                     paddingHorizontal: 8,
                     paddingVertical: 5,
-                    borderColor: '#9E9F9F',
                     borderWidth: 0.25,
+                    borderColor: '#9E9F9F',
                     borderTopColor:
-                      head?.heading == 'Date' ? colors.primary : undefined,
+                      head?.heading == 'Date' ? 'transparent' : '#9E9F9F',
                   }}>
                   <MyText
                     text={
@@ -128,14 +129,16 @@ export default function TimeSheet({
                     }}
                   />
                 </View>
-                {head?.values?.map((val: string | null, index: number) => (
+                {head?.values?.map((val: string | null, vIndex: number) => (
                   <View
-                    key={index}
+                    key={vIndex}
                     style={{
                       paddingHorizontal: 8,
                       paddingVertical: 5,
                       borderColor: '#9E9F9F',
-                      borderWidth: 0.25,
+                      borderLeftWidth: index == 0 ? 0.25 : 0,
+                      borderRightWidth: 0.25,
+                      borderBottomWidth: 0.25,
                     }}>
                     <MyText
                       text={val ?? ''}
@@ -163,7 +166,7 @@ export default function TimeSheet({
     index: number;
   }) => {
     return (
-      <View key={index}>
+      <View key={index} style={{ paddingBottom: 5 }}>
         {item == 'Date' ? (
           <View
             style={{
@@ -203,15 +206,16 @@ export default function TimeSheet({
           </View>
         ) : null}
         <View style={{}}>
-          {jummaData?.map((data: JumuahTimings, index: number) => (
-            <View key={index}>
+          {jummaData?.map((data: JumuahTimings, dIndex: number) => (
+            <View key={dIndex}>
               <View
-                key={index}
                 style={{
                   paddingHorizontal: 8,
                   paddingVertical: 5,
                   borderColor: '#9E9F9F',
-                  borderWidth: 0.25,
+                  borderLeftWidth: index == 0 ? 0.25 : 0,
+                  borderRightWidth: 0.25,
+                  borderBottomWidth: 0.25,
                 }}>
                 <MyText
                   text={
@@ -250,7 +254,6 @@ export default function TimeSheet({
       {data?.length > 0 ? (
         <FlatList
           horizontal
-          style={{ paddingVertical: 5 }}
           showsHorizontalScrollIndicator={false}
           data={mainData ?? []}
           ListHeaderComponent={<GapView mode="horizontal" />}
@@ -262,7 +265,6 @@ export default function TimeSheet({
       {jummaData?.length > 0 ? (
         <FlatList
           horizontal
-          style={{ paddingVertical: 5 }}
           showsHorizontalScrollIndicator={false}
           data={jummaHeadings ?? []}
           ListHeaderComponent={<GapView mode="horizontal" />}

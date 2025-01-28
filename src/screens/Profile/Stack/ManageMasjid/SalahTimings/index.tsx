@@ -1,20 +1,10 @@
-import React, { useEffect } from 'react';
-import {
-  StyleSheet,
-  View,
-  Animated,
-  Platform,
-  KeyboardAvoidingView,
-} from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
 
 import {
-  HistoryBox,
-  IqamaSvg,
-  IqamaTimingsSVG,
-  JummaTimingsSVG,
-  MonthlyScheduleSVG,
-  SalahTimingsSVG,
-  SujudSvg,
+  IqamaTimingsSvg,
+  JummaTimingsSvg,
+  MonthlyScheduleSvg,
 } from '../../../../../assets';
 import {
   GapView,
@@ -37,9 +27,9 @@ export default function SalahSettings({
   const userData = useHookstate(userStore.userData).get();
   const schedule = useHookstate(userStore.monthlySchedule);
 
-  useEffect(() => {
-    getScheduleData();
-  }, []);
+  // useEffect(() => {
+  //   getScheduleData();
+  // }, []);
 
   const getScheduleData = async () => {
     const res = await GetMonthlySchedule(userData?.masjid.id!);
@@ -74,18 +64,28 @@ export default function SalahSettings({
               data: [
                 {
                   title: 'Iqama Timings',
-                  icon: <IqamaSvg width={25} height={25} />,
+                  icon: (
+                    <IqamaTimingsSvg width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => setFlag('iTime'),
                 },
                 {
                   title: 'Jumuah Timings',
-                  icon: <JummaTimingsSVG />,
+                  icon: (
+                    <JummaTimingsSvg width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => setFlag('jTime'),
                 },
                 {
                   title: 'Monthly Schedule',
-                  icon: <MonthlyScheduleSVG />,
-                  onPress: () => setFlag('Hist'),
+                  icon: (
+                    <MonthlyScheduleSvg
+                      width={25}
+                      height={25}
+                      color={'#9E9F9F'}
+                    />
+                  ),
+                  onPress: () => setFlag('HistSett'),
                 },
               ],
             },

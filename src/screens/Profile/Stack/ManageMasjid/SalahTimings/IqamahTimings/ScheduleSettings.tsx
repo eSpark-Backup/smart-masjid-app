@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import {
   GetJummahHistory,
   generatePDf,
+  getSalahTimingsOfMasjid,
 } from '../../../../../../api/masjidController';
 import {
   GapView,
@@ -26,23 +28,31 @@ import {
 } from '../../../../../../components';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { userStore } from '../../../../../../store/UserStore';
-import { JummahTime } from '../../../../../../types/masjidControllerTypes';
+import {
+  JummahTime,
+  SalahTimings,
+} from '../../../../../../types/masjidControllerTypes';
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import {
+  GetMonthlySchedule,
   PublishMonthlySchedule,
   UpdatePublishedMonthlySchedule,
 } from '../../../../../../api/userController';
 import { GlobalProps } from '../../../../../../types';
 import { globalStore } from '../../../../../../store/GlobalStates';
 import { OpenLink } from '../../../../../../assets';
+import MyDatePicker from '../../../../../../components/MyDatePicker';
+import { ScheduleResponse } from '../../../../../../types/userControllerApiResponse';
 
 export default function ScheduleSettings({
   setFlag,
   contentOpacity = 0,
+  setCurrDate,
 }: {
   setFlag: (value: string) => void;
   contentOpacity?: any;
+  setCurrDate: (date: Date) => void;
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
@@ -52,11 +62,21 @@ export default function ScheduleSettings({
   const [emailPrompt, setEmailPrompt] = useState(false);
   const [successPrompt, setSuccessPrompt] = useState(false);
   const [displayData, setdisplayData] = useState<any>(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [monthSchedule, setMonthSchedule] = useState<ScheduleResponse | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (monthlySchedule && !displayData) {
-      console.log('monthlySchedule');
+    getScheduleData();
+  }, []);
 
+  const updateMonthlySchInfo = (
+    monthlySchedule: ScheduleResponse | null,
+    date?: Date,
+  ) => {
+    if (monthlySchedule) {
+      setMonthSchedule(monthlySchedule);
       setdisplayData([
         {
           id: 0,
@@ -71,20 +91,17 @@ export default function ScheduleSettings({
           title: 'Year',
           val: monthlySchedule?.year ?? '2023',
         },
-        // {
-        //   id: 2,
-        //   title: 'Is Published',
-        //   val: 'Yes',
-        // },
         {
           id: 3,
           title: 'PDF',
           val: monthlySchedule?.url
-            ? moment()
-                .month(monthlySchedule?.month! - 1)
-                .format('MMMM') +
+            ? monthlySchedule?.year
+              ? moment()
+                  .month(monthlySchedule?.month! - 1)
+                  .format('MMMM') +
                 ' ' +
-                monthlySchedule?.year ?? 'March 2024'
+                monthlySchedule?.year
+              : 'March 2024'
             : 'Not found',
         },
         {
@@ -100,24 +117,87 @@ export default function ScheduleSettings({
             : '-',
         },
       ]);
+    } else {
+      setMonthSchedule(null);
+      setdisplayData([
+        {
+          id: 0,
+          title: 'Month',
+          val: moment().month(date?.getMonth()!).format('MMMM') ?? 'March',
+        },
+        {
+          id: 1,
+          title: 'Year',
+          val: date?.getFullYear() ?? '2023',
+        },
+        {
+          id: 3,
+          title: 'PDF',
+          val: 'Not found',
+        },
+        {
+          id: 4,
+          title: 'Published Date',
+          val: '-',
+        },
+        {
+          id: 5,
+          title: 'Updated Date',
+          val: '-',
+        },
+      ]);
     }
-  }, [monthlySchedule]);
+  };
+
+  const getScheduleData = async (date?: Date) => {
+    state.globalLoading.set(true);
+    const res = await GetMonthlySchedule(
+      userData?.masjid.id!,
+      date ? date.getMonth() + 1 : currentDate.getMonth() + 1,
+      date ? date.getFullYear() : currentDate.getFullYear(),
+    );
+    if (res) {
+      state.globalLoading.set(false);
+      updateMonthlySchInfo(res);
+    } else {
+      state.globalLoading.set(false);
+      updateMonthlySchInfo(null, date);
+    }
+  };
+
+  const onDateChange = async (e: Date) => {
+    setCurrentDate(e);
+    state.globalLoading.set(true);
+    getScheduleData(e);
+    // getSalahTimingsOfMasjid(
+    //   userData?.masjid?.id.toString() as string,
+    //   moment(e).startOf('month').format('YYYY-MM-DD') as string,
+    //   'MONTH',
+    // ).then((timings: SalahTimings[] | undefined) => {
+    //   // convertTimings(timings);
+    //   state.globalLoading.set(false);
+    // });
+  };
 
   const onPublishSchedule = async () => {
     state.globalLoading.set(true);
-    const res = await PublishMonthlySchedule(userData?.masjid?.id!);
+    const res = await PublishMonthlySchedule(
+      userData?.masjid?.id!,
+      currentDate,
+    );
     if (res) {
-      schedule.set(res);
+      updateMonthlySchInfo(res);
       state.globalLoading.set(false);
     } else {
       state.globalLoading.set(false);
     }
   };
+
   const onUpdatePublishedSchedule = async () => {
     state.globalLoading.set(true);
     const res = await UpdatePublishedMonthlySchedule(
       userData?.masjid?.id!,
-      monthlySchedule?.id!,
+      monthSchedule?.id!,
     );
     if (res) {
       schedule.set(res);
@@ -133,7 +213,7 @@ export default function ScheduleSettings({
     state.globalLoading.set(true);
     const res = await generatePDf(
       userData?.masjid?.id!,
-      monthlySchedule?.id!,
+      monthSchedule?.id!,
       email?.length < 1 ? [userData?.email!] : [userData?.email!, email],
     );
     if (res) {
@@ -144,10 +224,15 @@ export default function ScheduleSettings({
     }
   };
 
-  // console.log('monthlySchedule?.updatedDate', monthlySchedule?.updatedDate);
+  console.log('monthlySchedule', monthSchedule);
 
   return (
-    <View style={{ flex: 1, marginTop: 0, alignItems: 'center' }}>
+    <View
+      style={{
+        flex: 1,
+        marginTop: 0,
+        alignItems: 'center',
+      }}>
       <MyModal
         visible={emailPrompt}
         onSend={email => sendPDFtoEmail(email)}
@@ -177,7 +262,21 @@ export default function ScheduleSettings({
 
       <View>
         <GapView />
-        {monthlySchedule ? (
+        <MyDatePicker
+          minimumDate={moment().startOf('month').date(2).toDate()}
+          maximumDate={moment().add(4, 'month').date(1).toDate()}
+          disablePicker
+          type="standard"
+          // currentDate={currentDate.getMonth}
+          currentDate={moment()
+            .year(currentDate.getFullYear())
+            .month(currentDate.getMonth())
+            .date(1)
+            .toDate()}
+          onDateChange={onDateChange}
+          dateFormat={'Monthly'}
+        />
+        {monthSchedule ? (
           displayData?.map((item: any) => (
             <View
               key={item.id}
@@ -199,10 +298,10 @@ export default function ScheduleSettings({
               <TouchableOpacity
                 onPress={
                   item.id == 3 && item.val != 'Not found'
-                    ? () => Linking.openURL(monthlySchedule?.url)
+                    ? () => Linking.openURL(monthSchedule?.url!)
                     : undefined
                 }
-                style={{ flexDirection: 'row' }}
+                style={{ flexDirection: 'row', alignItems: 'center' }}
                 activeOpacity={
                   item.id == 3 && item.val != 'Not found' ? 0.5 : 1
                 }>
@@ -225,38 +324,58 @@ export default function ScheduleSettings({
                 {item.id == 3 && item.val != 'Not found' && (
                   <>
                     <GapView length={5} mode="horizontal" />
-                    <OpenLink width={18} height={18} />
+                    <OpenLink width={15} height={15} color={'#006870'} />
                   </>
                 )}
               </TouchableOpacity>
             </View>
           ))
         ) : (
-          <View>
+          <View
+            style={{
+              height: '50%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
             <MyText
-              textStyle={{ textAlign: 'center', marginVertical: 10 }}
-              text="Monthly schedule not published!"
+              textStyle={{
+                textAlign: 'center',
+              }}
+              text="Monthly Schedule not published yet!"
             />
           </View>
         )}
-      </View>
-      <GapView />
-      <Rounded
-        label={monthlySchedule ? 'Update' : 'Publish'}
-        onPress={
-          monthlySchedule ? onUpdatePublishedSchedule : onPublishSchedule
-        }
-      />
-      {monthlySchedule && monthlySchedule?.url && (
-        <>
+        <View style={{ alignItems: 'center' }}>
           <GapView />
           <Rounded
-            label="Email PDF Copy"
-            onPress={() => setEmailPrompt(true)}
-            outlined
+            label={monthSchedule ? 'Update' : 'Publish'}
+            onPress={
+              monthSchedule ? onUpdatePublishedSchedule : onPublishSchedule
+            }
           />
-        </>
-      )}
+          <>
+            <GapView />
+            <Rounded
+              label="View Schedule"
+              onPress={() => {
+                setCurrDate(currentDate);
+                setFlag('Hist');
+              }}
+              outlined
+            />
+          </>
+          {monthSchedule && monthSchedule?.url && (
+            <>
+              <GapView />
+              <Rounded
+                label="Email PDF Copy"
+                onPress={() => setEmailPrompt(true)}
+                outlined
+              />
+            </>
+          )}
+        </View>
+      </View>
     </View>
   );
 }

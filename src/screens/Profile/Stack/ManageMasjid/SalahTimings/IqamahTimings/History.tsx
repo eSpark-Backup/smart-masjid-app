@@ -4,7 +4,6 @@ import {
   View,
   Animated,
   Platform,
-  TouchableOpacity,
   PermissionsAndroid,
 } from 'react-native';
 import { State, useHookstate } from '@hookstate/core';
@@ -32,25 +31,28 @@ import {
 import { convertResponseToData } from '../../../../../../utils/functions';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
-import { Publish } from '../../../../../../assets';
 import { globalStore } from '../../../../../../store/GlobalStates';
 import { GlobalProps } from '../../../../../../types';
+import { GetMonthlySchedule } from '../../../../../../api/userController';
 
 export default function History({
   contentOpacity = 0,
   setFlag,
   masjidId,
+  currDate,
 }: {
   contentOpacity?: any;
   setFlag: (value: string) => void;
   masjidId?: number;
+  currDate: Date;
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const monthlyScheduleData = useHookstate(userStore.monthlySchedule).get();
+  const schedule = useHookstate(userStore.monthlySchedule);
+
   const [adhaTime, setAdhaTime] = useState([]);
   const [jummaTime, setJummaTime] = useState<JumuahTimings[] | []>([]);
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [downloadPrompt, setDownloadPrompt] = useState(false);
   const [prompt2, setPrompt2] = useState(false);
   const [filePath, setFilePath] = useState('');
@@ -59,43 +61,19 @@ export default function History({
     state.globalLoading.set(true);
     getSalahTimingsOfMasjid(
       masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
-      moment().startOf('month').format('YYYY-MM-DD'),
+      moment(currDate).startOf('month').format('YYYY-MM-DD'),
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
       convertTimings(timings);
       getJummahTimingsOfMasjid(
         masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
-        moment().startOf('month').format('YYYY-MM-DD'),
+        moment(currDate).startOf('month').format('YYYY-MM-DD'),
       ).then((timings: JumuahTimings[] | undefined) => {
         setJummaTime(timings!);
         state.globalLoading.set(false);
       });
     });
   }, []);
-
-  const onDateChange = (e: Date) => {
-    setCurrentDate(e);
-    state.globalLoading.set(true);
-    getSalahTimingsOfMasjid(
-      userData?.masjid?.id.toString() as string,
-      moment(e).startOf('month').format('YYYY-MM-DD') as string,
-      'MONTH',
-    ).then((timings: SalahTimings[] | undefined) => {
-      convertTimings(timings);
-      state.globalLoading.set(false);
-    });
-
-    // const currentIndex = data.findIndex((value: IPrayerTimeForPeriod) => {
-    //   return value.date == moment(e).format('YYYY-MM-DD');
-    // });
-
-    // if (currentIndex != -1) {
-    //   slider.current?.scrollToIndex({
-    //     index: currentIndex,
-    //     animated: true,
-    //   });
-    // }
-  };
 
   const convertTimings = (timings: SalahTimings[] | undefined) => {
     let adhanTiming: any = timings?.map(item => {
@@ -180,11 +158,26 @@ export default function History({
       });
   };
 
+  const getScheduleData = async () => {
+    const res = await GetMonthlySchedule(
+      userData?.masjid.id!,
+      currDate.getMonth() + 1,
+      currDate.getFullYear(),
+    );
+    if (res) {
+      schedule.set(res);
+      setFlag('HistSett');
+    } else {
+      schedule.set(null);
+      setFlag('HistSett');
+    }
+  };
+
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <LogoutModal
         visible={prompt2}
-        message={`Monthly Schedule sent successfully.\nWould you like to download the PDF as well?`}
+        message={`Monthly Schedule sent successfully.\n\nWould you like to download the PDF as well?`}
         onAllowed={() => {
           setPrompt2(false);
           isPermitted();
@@ -193,7 +186,7 @@ export default function History({
       />
       <LogoutModal
         visible={downloadPrompt}
-        message={`Monthly Schedule downloaded successfully.\nWould you like to view the PDF as well?`}
+        message={`Monthly Schedule downloaded successfully.\n\nWould you like to view the downloaded PDF?`}
         onAllowed={() => {
           FileViewer.open(filePath, {
             onDismiss() {
@@ -241,37 +234,34 @@ export default function History({
             width: WINDOW_WIDTH,
           }}>
           <MyDatePicker
-            minimumDate={moment().startOf('month').date(2).toDate()}
-            maximumDate={moment().add(4, 'month').date(1).toDate()}
             disablePicker
             type="standard"
-            // currentDate={currentDate.getMonth}
+            hideChevs
             currentDate={moment()
-              .year(currentDate.getFullYear())
-              .month(currentDate.getMonth())
+              .year(currDate.getFullYear())
+              .month(currDate.getMonth())
               .date(1)
               .toDate()}
-            onDateChange={onDateChange}
             dateFormat={'Monthly'}
           />
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               right: 20,
               flexDirection: 'row',
             }}>
-            {/* <TouchableOpacity onPress={() => setPrompt1(true)}>
+            <TouchableOpacity onPress={() => setPrompt1(true)}>
               <Mail />
             </TouchableOpacity>
             <GapView mode="horizontal" />
             <TouchableOpacity onPress={isPermitted}>
               <Download />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <GapView mode="horizontal" />
-            <TouchableOpacity onPress={() => setFlag('HistSett')}>
+            <TouchableOpacity onPress={getScheduleData}>
               <Publish />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
         {adhaTime?.length < 1 && !state.globalLoading.get() ? (
           <MyText

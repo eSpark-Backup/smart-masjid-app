@@ -11,9 +11,9 @@ import { useHookstate } from '@hookstate/core';
 import {
   AccountGear,
   Help,
-  IqamaTimingsSVG,
   MasjidGear,
   ProfileDummy,
+  SalahTimingsSvg,
 } from '../../assets';
 import { GapView, MyTitle, ProfileSectionlist } from '../../components';
 import { Wrapper } from '../../containers';
@@ -43,6 +43,7 @@ import { WINDOW_WIDTH } from '../../constants';
 import { GetUserTypes } from '../../api/userController';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { getCountry } from 'react-native-localize';
+import { date } from 'yup';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -76,6 +77,7 @@ export default function Profile() {
   const [user, setUser] = useState<UserResponse | null>();
   const [clear, setClear] = useState(false);
   const isFocused = useIsFocused();
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const titles: Titles = {
     mAcc: 'Manage Account',
@@ -109,8 +111,8 @@ export default function Profile() {
     iTime: () => setFlag('sTime'),
     jTime: () => setFlag('sTime'),
     iEdit: () => setFlag('iTime'),
-    Hist: () => setFlag('sTime'),
-    HistSett: () => setFlag('Hist'),
+    Hist: () => setFlag('HistSett'),
+    HistSett: () => setFlag('sTime'),
     iAdd: () => setFlag('iTime'),
     jEdit: () => setFlag('jTime'),
     jAdd: () => setFlag('jTime'),
@@ -219,12 +221,14 @@ export default function Profile() {
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
               masjidId={route?.params?.masjidId}
+              currDate={currentDate}
             />
           ),
           HistSett: (
             <ScheduleSettings
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
+              setCurrDate={setCurrentDate}
             />
           ),
           iEdit: (
@@ -360,14 +364,16 @@ function UserInformation({
               data: [
                 {
                   title: 'Manage Account',
-                  icon: <AccountGear />,
+                  icon: (
+                    <AccountGear width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => {
                     setFlag('mAcc');
                   },
                 },
                 {
                   title: 'Manage Masjid',
-                  icon: <MasjidGear />,
+                  icon: <MasjidGear width={25} height={25} color={'#9E9F9F'} />,
                   onPress: () => setFlag('mMas'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID',
@@ -375,7 +381,9 @@ function UserInformation({
                 },
                 {
                   title: 'Salah Timings',
-                  icon: <IqamaTimingsSVG />,
+                  icon: (
+                    <SalahTimingsSvg width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => setFlag('sTime'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID_SALAH_TIMINGS',
@@ -387,7 +395,7 @@ function UserInformation({
           footerData={[
             {
               title: 'Help',
-              icon: <Help />,
+              icon: <Help width={24} height={24} color={'#006870'} />,
               onPress: () => setFlag('help'),
             },
           ]}

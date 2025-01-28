@@ -39,7 +39,11 @@ import {
   GlobalProps,
 } from '../../../../types';
 import { OtpForm } from '../../ProfileForms';
-import { SendOTP, ValidateOTP } from '../../../../api/externalControllers';
+import {
+  CheckUserExists,
+  SendOTP,
+  ValidateOTP,
+} from '../../../../api/externalControllers';
 import { deviceStore } from '../../../../store/DeviceStore';
 import { GetUserDevices } from '../../../../api/deviceController';
 import { globalStore } from '../../../../store/GlobalStates';
@@ -78,25 +82,25 @@ export default function ManageAccount({
   const [displayData, setDisplayingData] = useState([
     {
       title: 'First Name',
-      icon: <ProfileUser />,
+      icon: <ProfileUser width={22} height={22} color={'#9E9F9F'} />,
       key: 'firstName',
       editable: false,
     },
     {
       title: 'Last Name',
-      icon: <ProfileUser />,
+      icon: <ProfileUser width={22} height={22} color={'#9E9F9F'} />,
       key: 'lastName',
       editable: false,
     },
     {
       title: 'Email',
-      icon: <Email />,
+      icon: <Email width={22} height={22} color={'#9E9F9F'} />,
       key: 'email',
       editable: false,
     },
     {
       title: 'Phone',
-      icon: <Phone />,
+      icon: <Phone width={22} height={22} color={'#9E9F9F'} />,
       key: 'phone',
       editable: false,
     },
@@ -248,8 +252,8 @@ export default function ManageAccount({
                         paddingVertical: 10,
                       }}>
                       <View style={{ flexDirection: 'row' }}>
-                        {val.icon}
-                        <GapView mode="horizontal" />
+                        {/* {val.icon} */}
+                        {/* <GapView mode="horizontal" /> */}
                         <MyText text={val.title} textStyle={{ fontSize: 16 }} />
                       </View>
                       <View>
@@ -274,18 +278,22 @@ export default function ManageAccount({
                         width: WINDOW_WIDTH - 60,
                         alignSelf: 'center',
                       }}>
-                      <Card noShadow>
+                      <Card noShadow style={{ width: '100%' }}>
                         {val.key != 'phone' ? (
                           <View
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
                               backgroundColor: '#f8fbfb',
+                              alignSelf: 'center',
                             }}>
-                            <GapView mode="horizontal" />
-                            {val.icon}
-                            <GapView mode="horizontal" />
+                            {/* <GapView mode="horizontal" /> */}
+                            {/* {val.icon}
+                            <GapView mode="horizontal" /> */}
                             <MyInput
+                              inputStyle={{
+                                width: WINDOW_WIDTH - 60,
+                              }}
                               onBlur={() => console.log('clear Selection krdo')}
                               onFocus={() => console.log('Focused')}
                               maxLength={
@@ -308,11 +316,15 @@ export default function ManageAccount({
                               flexDirection: 'row',
                               alignItems: 'center',
                               backgroundColor: '#f8fbfb',
+                              alignSelf: 'center',
                             }}>
-                            <GapView mode="horizontal" />
-                            {val.icon}
-                            <GapView mode="horizontal" />
+                            {/* <GapView mode="horizontal" /> */}
+                            {/* {val.icon}
+                            <GapView mode="horizontal" /> */}
                             <MyInput
+                              inputStyle={{
+                                width: WINDOW_WIDTH - 140,
+                              }}
                               maxLength={10}
                               placeholder="Phone"
                               isMAccont
@@ -380,6 +392,21 @@ export default function ManageAccount({
                       const activeKey = displayData.find(
                         val => val.editable,
                       )?.key;
+                      if (activeKey == 'email') {
+                        const userExists: any = await CheckUserExists(
+                          email,
+                          '',
+                        );
+                        if (userExists?.id) {
+                          Toast.show({
+                            text2: 'User Already Exist',
+                            type: 'error',
+                            visibilityTime: 10000,
+                          });
+                          state.globalLoading.set(false);
+                          return;
+                        }
+                      }
                       if (activeKey == 'phone') {
                         const isValidPhone = await isValidPhoneNumber(
                           phoneNo,

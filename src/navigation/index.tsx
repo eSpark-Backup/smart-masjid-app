@@ -13,6 +13,8 @@ import jwtDecode from 'jwt-decode';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import crashlytics from '@react-native-firebase/crashlytics';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import NetInfo from '@react-native-community/netinfo';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
@@ -32,6 +34,7 @@ import {
 import { api } from '../api';
 import { subJummas, SubscriptionList } from '../types/masjidControllerTypes';
 import { masjidStore } from '../store/MasjidStore';
+import NoInternetModal from '../components/NoInternetModal';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -78,10 +81,29 @@ export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isInternetReachable);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     handleDeviceIdCheck();
     getSubscribedJummas();
+  }, [userData]);
+
+  useEffect(() => {
+    if (userData.get()) {
+      crashlytics().setUserId(userData.get()?.id.toString()!);
+      crashlytics().setAttributes({
+        id: userData.get()?.id.toString()!,
+        email: userData.get()?.email!,
+        phone: userData.get()?.phone!,
+      });
+    }
   }, [userData]);
 
   const getSubscribedJummas = () => {
@@ -182,30 +204,31 @@ export default function App() {
 
   if (checkedId !== null) {
     return (
-      <NavigationContainer theme={MyLightTheme}>
-        <Stack.Navigator
-          initialRouteName={checkedId ? 'USetup' : 'Welcome'}
-          screenOptions={{
-            headerShown: false,
-            animation: 'fade',
-          }}>
-          {!userData.get()?.id ? (
-            <Stack.Group>
-              {!checkedId ? (
-                <>
-                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                  <Stack.Screen name="USetup" component={UserSetupScreen} />
-                </>
-              ) : (
-                <>
-                  <Stack.Screen name="USetup" component={UserSetupScreen} />
-                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                </>
-              )}
-            </Stack.Group>
-          ) : (
-            <Stack.Group>
-              {/* {state.devSetup.get() ? (
+      <GestureHandlerRootView>
+        <NavigationContainer theme={MyLightTheme}>
+          <Stack.Navigator
+            initialRouteName={checkedId ? 'USetup' : 'Welcome'}
+            screenOptions={{
+              headerShown: false,
+              animation: 'fade',
+            }}>
+            {!userData.get()?.id ? (
+              <Stack.Group>
+                {!checkedId ? (
+                  <>
+                    <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                    <Stack.Screen name="USetup" component={UserSetupScreen} />
+                  </>
+                ) : (
+                  <>
+                    <Stack.Screen name="USetup" component={UserSetupScreen} />
+                    <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                  </>
+                )}
+              </Stack.Group>
+            ) : (
+              <Stack.Group>
+                {/* {state.devSetup.get() ? (
                 <>
                   <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
                   <Stack.Screen
@@ -222,22 +245,36 @@ export default function App() {
                   <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
                 </>
               )} */}
-              <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
-            </Stack.Group>
-          )}
-        </Stack.Navigator>
-        <Toast
-          config={toastConfig}
-          topOffset={StatusBar.currentHeight}
-          visibilityTime={5000}
-        />
-        <OverlayLoader
-          loaderColor={'rgb(0, 104, 112)'}
-          isShow={Boolean(state.globalLoading.get())}
-        />
-        {/* <BlurBackground show={true} /> */}
-      </NavigationContainer>
+                <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
+                <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+              </Stack.Group>
+            )}
+          </Stack.Navigator>
+          <Toast
+            config={toastConfig}
+            topOffset={StatusBar.currentHeight}
+            visibilityTime={5000}
+          />
+          <OverlayLoader
+            loaderColor={'rgb(0, 104, 112)'}
+            isShow={Boolean(state.globalLoading.get())}
+            msg={state.globalLoadingMsg.get()}
+            onBtnPress={() =>
+              Boolean(state.globalLoading.get()) == true
+                ? state.globalLoading.set(false)
+                : state.globalLoading.set(true)
+            }
+          />
+          <BlurBackground
+            show={isConnected == false && state.hideNetError.get() == false}
+          />
+          <NoInternetModal
+            isVisible={
+              isConnected == false && state.hideNetError.get() == false
+            }
+          />
+        </NavigationContainer>
+      </GestureHandlerRootView>
     );
   } else {
     return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;

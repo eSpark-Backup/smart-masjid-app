@@ -163,8 +163,8 @@ export async function _disconnectBleDevice(
       const peripheralsArray = await BleManager.getConnectedPeripherals([]);
       console.log('Connected peripherals: ' + JSON.stringify(peripheralsArray));
 
-      const dev: Peripheral | undefined = peripheralsArray.find(item =>
-        item.name?.includes('MYESP'),
+      const dev: Peripheral | undefined = peripheralsArray.find(
+        item => item.name?.includes('SMSPK') || item.name?.includes('SMBTN'),
       );
 
       if (dev) {

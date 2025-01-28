@@ -154,7 +154,16 @@ export default function IqamahTimings({
 
   const contentToRender = () => {
     return currentData != null ? (
-      <TimeTableCard date={currentData?.date} data={currentData?.data} />
+      <TimeTableCard
+        showEdit={currentData?.date == moment().format('YYYY-MM-DD')}
+        onEdit={() => {
+          const ind = iqamahTimings?.findIndex(e => e.id == currentData.id);
+          selectedIqamah(iqamahTimings![ind!]);
+          setFlag('iEdit');
+        }}
+        date={currentData?.date}
+        data={currentData?.data}
+      />
     ) : state.globalLoading.get() ? null : (
       <MyText
         textStyle={{ textAlign: 'center', marginVertical: 10 }}
@@ -191,14 +200,14 @@ export default function IqamahTimings({
           </Animated.View>
         </View>
         <GapView />
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
+        <ScrollView>
           {/* <OverlayLoader isShow={loading} /> */}
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingHorizontal: 10,
+              paddingHorizontal: 25,
               paddingBottom: 5,
             }}>
             <MyTextSubHeader text="Current" />
@@ -206,7 +215,7 @@ export default function IqamahTimings({
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => setFlag('iAdd')}>
-                <PlusCircle />
+                <PlusCircle width={20} height={20} color={'#006870'} />
               </TouchableOpacity>
               {/* <GapView mode="horizontal" />
               <TouchableOpacity
@@ -218,7 +227,7 @@ export default function IqamahTimings({
           </View>
           {contentToRender()}
           <View
-            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
+            style={{ paddingHorizontal: 25, paddingTop: 10, paddingBottom: 5 }}>
             <MyTextSubHeader text="Upcoming" />
           </View>
           {state.globalLoading.get() ? null : (
@@ -226,6 +235,7 @@ export default function IqamahTimings({
               data={data}
               renderItem={({ item }) => (
                 <TimeTableCard
+                  showEdit={true}
                   onEdit={() => {
                     const ind = iqamahTimings?.findIndex(e => e.id == item.id);
                     selectedIqamah(iqamahTimings![ind!]);

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 import MyText from '../MyText';
-import { InfoRed } from '../../assets';
+import { InfoCircle, InfoRed } from '../../assets';
 import { Platform } from 'react-native';
 
 export default function DeviceErrorBox({
@@ -35,7 +35,13 @@ export default function DeviceErrorBox({
               icon == true &&
               message !== 'Device battery low. Please power on your device.' ? (
                 <TouchableOpacity onPress={onIconPress}>
-                  <InfoRed style={{ bottom: Platform.OS == 'ios' ? -2 : -5 }} />
+                  {/* <InfoRed style={{ bottom: Platform.OS == 'ios' ? -2 : -5 }} /> */}
+                  <InfoCircle
+                    width={18}
+                    height={18}
+                    color={'#DC3545'}
+                    style={{ bottom: Platform.OS == 'ios' ? 0 : -3 }}
+                  />
                 </TouchableOpacity>
               ) : undefined
             }

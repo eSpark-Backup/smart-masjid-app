@@ -1,7 +1,13 @@
 import React from 'react';
 import { View, Animated, Platform } from 'react-native';
 
-import { Email, PeoplesSvg, Phone, ProfileUser } from '../../../../assets';
+import {
+  Email,
+  ManageUser,
+  PeoplesSvg,
+  Phone,
+  ProfileUser,
+} from '../../../../assets';
 import { GapView, MyTitle, ProfileSectionlist } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
@@ -44,13 +50,15 @@ export default function ViewUsers({
                 {
                   title: 'Full Name',
                   value: user?.firstName + ' ' + user?.lastName,
-                  icon: <ProfileUser />,
+                  icon: (
+                    <ProfileUser width={22} height={22} color={'#9E9F9F'} />
+                  ),
                   onPress: () => console.log('no effect'),
                 },
                 {
                   title: 'Email',
                   value: user?.email ?? '-',
-                  icon: <Email />,
+                  icon: <Email width={22} height={22} color={'#9E9F9F'} />,
                   onPress: () => console.log('no effect'),
                 },
                 {
@@ -58,13 +66,13 @@ export default function ViewUsers({
                   value: user?.phone!
                     ? parsePhoneNumber(user?.phone!).formatInternational()
                     : '-',
-                  icon: <Phone />,
+                  icon: <Phone width={22} height={22} color={'#9E9F9F'} />,
                   onPress: () => console.log('no effect'),
                 },
                 {
                   title: 'Role',
                   value: user?.userType.name ?? '-',
-                  icon: <PeoplesSvg />,
+                  icon: <ManageUser width={22} height={22} color={'#9E9F9F'} />,
                   onPress: () => console.log('no effect'),
                 },
               ],

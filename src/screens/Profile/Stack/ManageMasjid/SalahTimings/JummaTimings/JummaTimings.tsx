@@ -155,7 +155,15 @@ export default function JummaTimings({
   const contentToRender = () => {
     return !state.globalLoading.get() ? (
       currentData ? (
-        <TimeTableCard date={currentData?.date} data={currentData?.data} />
+        <TimeTableCard
+          showEdit={currentData?.date == moment().format('YYYY-MM-DD')}
+          onEdit={() => {
+            selectedJumma!(currentData);
+            setFlag('jEdit');
+          }}
+          date={currentData?.date}
+          data={currentData?.data}
+        />
       ) : (
         <MyText
           textStyle={{ textAlign: 'center', marginVertical: 10 }}
@@ -183,32 +191,33 @@ export default function JummaTimings({
           </Animated.View>
         </View>
         <GapView />
-        <View style={{ paddingHorizontal: 15 }}>
+        <View>
           {/* <OverlayLoader isShow={loading} /> */}
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingHorizontal: 10,
+              paddingHorizontal: 25,
               paddingBottom: 5,
             }}>
             <MyTextSubHeader text="Current" />
             <TouchableOpacity
               activeOpacity={0.5}
               onPress={() => setFlag('jAdd')}>
-              <PlusCircle />
+              <PlusCircle width={20} height={20} color={'#006870'} />
             </TouchableOpacity>
           </View>
           {contentToRender()}
           <View
-            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
+            style={{ paddingHorizontal: 25, paddingTop: 10, paddingBottom: 5 }}>
             <MyTextSubHeader text="Upcoming" />
           </View>
           <FlatList
             data={data}
             renderItem={({ item }) => (
               <TimeTableCard
+                showEdit={true}
                 onEdit={() => {
                   selectedJumma!(item);
                   setFlag('jEdit');

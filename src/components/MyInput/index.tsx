@@ -18,7 +18,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 
 import { CountryFlags, WINDOW_WIDTH } from '../../constants';
 import MyText from '../MyText';
-import { SearchWhite } from '../../assets';
+import { EyeClose, EyeOpen, Location, SearchWhite } from '../../assets';
 import GapView from '../GapView';
 import { CountryPickerModal } from '..';
 import { externalStore } from '../../store/ExternalStore';
@@ -53,6 +53,8 @@ interface MyInputProps {
   value?: string;
   error?: string;
   isSecure?: boolean;
+  secureInput?: boolean;
+  onEyePress?: () => void;
   disabled?: boolean;
   selectMode?: boolean;
   phoneCodeContainerStyle?: ViewStyle;
@@ -80,6 +82,8 @@ export default function MyInput(props: MyInputProps) {
     value,
     error,
     isSecure,
+    secureInput,
+    onEyePress,
     disabled,
     selectMode,
     phoneCodeContainerStyle,
@@ -294,9 +298,28 @@ export default function MyInput(props: MyInputProps) {
             />
           )}
         </View>
+        {secureInput && (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={{
+              alignSelf: 'center',
+              right: 5,
+              position: 'absolute',
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              // backgroundColor: 'red',
+            }}
+            onPress={onEyePress}>
+            {isSecure ? (
+              <EyeOpen width={20} height={20} color={'#000'} />
+            ) : (
+              <EyeClose width={20} height={20} color={'#000'} />
+            )}
+          </TouchableOpacity>
+        )}
         {searchBar && (
           <>
-            <MI
+            {/* <MI
               name="my-location"
               style={{
                 alignSelf: 'center',
@@ -306,12 +329,26 @@ export default function MyInput(props: MyInputProps) {
               }}
               onPress={onCurrentLocationPress}
               size={20}
-            />
+            /> */}
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={{
+                alignSelf: 'center',
+                right: 70,
+                position: 'absolute',
+              }}
+              onPress={onCurrentLocationPress}>
+              <Location
+                color={!locationPermission ? '#d0d0d0' : theme.colors.primary}
+                width={20}
+                height={20}
+              />
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onSearch?.(text ?? '')}
               activeOpacity={0.9}
               style={[styles.searchBarContainer]}>
-              <SearchWhite />
+              <SearchWhite color={'white'} width={25} height={25} />
             </TouchableOpacity>
           </>
         )}

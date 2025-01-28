@@ -12,7 +12,10 @@ export default function ErrorModal({
   visible,
   onClose,
   message = '',
+  message2,
   options,
+  wifiError,
+  title,
 }: {
   visible: boolean;
   onClose?: () => void;
@@ -21,6 +24,9 @@ export default function ErrorModal({
     onPress?: () => void;
   }[];
   message: string;
+  message2?: string;
+  wifiError?: boolean;
+  title: string;
 }): JSX.Element {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), []);
@@ -47,40 +53,65 @@ export default function ErrorModal({
             }}>
             <CloseIcon width={30} height={30} />
           </TouchableOpacity>
-          <MyText text="Wi-Fi Error" textStyle={styles.label} size={16} />
+          <MyText text={title} textStyle={styles.label} size={16} />
           <GapView length={10} />
-          <MyText text={message} textStyle={styles.bodyText} size={16} />
+          <MyText
+            text={message}
+            textStyle={{ ...styles.bodyText, paddingBottom: 10 }}
+            size={16}
+          />
           <GapView length={10} />
-          <View
-            style={{
-              flexDirection: 'row',
-              ...styles.bodyText,
-              paddingBottom: 0,
-            }}>
-            <MyText
-              text={'Note: Restart your Device ( '}
-              textStyle={styles.text}
-              size={16}
-            />
-            <MyText
-              size={16}
-              text="Power Off"
-              textStyle={{ fontFamily: 'Roboto-Bold' }}
-            />
-          </View>
-          <View style={{ flexDirection: 'row', ...styles.bodyText }}>
-            <MyText size={16} text=" and " textStyle={styles.text} />
-            <MyText
-              size={16}
-              text="Power On"
-              textStyle={{ fontFamily: 'Roboto-Bold' }}
-            />
-            <MyText
-              size={16}
-              text=" ) before taking any action."
-              textStyle={styles.text}
-            />
-          </View>
+          {!wifiError && message2 && (
+            <MyText text={message2} textStyle={styles.bodyText} size={16} />
+          )}
+          {wifiError && (
+            <View
+              style={{
+                flexDirection: 'row',
+                ...styles.bodyText,
+                paddingBottom: 0,
+              }}>
+              <MyText
+                text={'Note: Restart your Device ( '}
+                textStyle={styles.text}
+                size={16}
+              />
+              <MyText
+                size={16}
+                text="Power Off"
+                textStyle={{ fontFamily: 'Roboto-Bold' }}
+              />
+            </View>
+          )}
+          {wifiError && (
+            <View
+              style={{
+                flexDirection: 'row',
+                ...styles.bodyText,
+                paddingBottom: 0,
+              }}>
+              <MyText size={16} text=" and " textStyle={styles.text} />
+              <MyText
+                size={16}
+                text="Power On"
+                textStyle={{ fontFamily: 'Roboto-Bold' }}
+              />
+              <MyText
+                size={16}
+                text=" ) before taking any action."
+                textStyle={styles.text}
+              />
+            </View>
+          )}
+          {wifiError && (
+            <View style={{ flexDirection: 'row', ...styles.bodyText }}>
+              <MyText
+                size={16}
+                text="When Device light is blinking yellow continue with below action."
+                textStyle={{ ...styles.text, textAlign: 'center' }}
+              />
+            </View>
+          )}
           <GapView length={20} />
           {options?.map(item => (
             <View key={item.label}>

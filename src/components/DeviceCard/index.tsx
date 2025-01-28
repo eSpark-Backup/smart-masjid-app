@@ -53,20 +53,28 @@ export default function DeviceCard({
                 }}
               />
               {deviceData?.deviceType.id == 3 ? (
-                <Image
-                  source={StreamerMic}
-                  style={{ width: 50, height: 50, tintColor: '#9E9F9F' }}
+                // <Image
+                //   source={StreamerMic}
+                //   style={{ width: 50, height: 50, tintColor: '#9E9F9F' }}
+                // />
+                <StreamerMic
+                  height={50}
+                  width={50}
+                  color={'#9E9F9F'}
+                  style={{ alignSelf: 'center' }}
                 />
               ) : deviceData?.deviceType?.modelNumber.includes('SBB') ? (
                 <ButtonIcon
                   height={50}
                   width={50}
+                  color={'#9E9F9F'}
                   style={{ alignSelf: 'center' }}
                 />
               ) : (
                 <DeviceSvg
                   height={50}
                   width={50}
+                  color={'#9E9F9F'}
                   style={{ alignSelf: 'center' }}
                 />
               )}
@@ -80,7 +88,7 @@ export default function DeviceCard({
                   status={
                     deviceData?.deviceType.id == 3
                       ? deviceData?.deviceTelemetry?.streamer == null
-                        ? ('' as DStatus)
+                        ? null
                         : (deviceData?.deviceTelemetry?.streamer as DStatus)
                       : deviceData?.deviceTelemetry?.status
                   }
@@ -114,6 +122,6 @@ const styles = StyleSheet.create({
     width: 8,
     borderWidth: 0.7,
     borderRadius: 10,
-    backgroundColor: '#1DF126',
+    backgroundColor: '#17c01e',
   },
 });

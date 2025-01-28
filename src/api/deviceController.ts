@@ -506,3 +506,81 @@ export async function removeSubscription(
     return false;
   }
 }
+
+/**
+ * @description Used to check is there any update in progress or not.
+ * @param deviceId - The ID of the device.
+ * @returns A `Promise` that resolves to a `DeviceInfo` object if successful, or `false` if there was an error.
+ */
+
+export async function getDeviceUpdateLogs(deviceId: number) {
+  try {
+    const res = await api.get<any>(`/devices/${deviceId}/log?fetchLatest=true`);
+    if (res?.ok) {
+      return res.data[0];
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device subscriptions problems', error);
+    return false;
+  }
+}
+
+/**
+ * @description Get device's updated firmware.
+ * @param deviceTypeid - The Type ID of the device.
+ * @returns A `Promise` that resolves to a `DeviceFirmwareType` object if successful, or `false` if there was an error.
+ */
+
+export async function getFirmwareUpdates(deviceTypeid: string) {
+  try {
+    const res = await api.get<any>(`/devices/firmware?fetchLatest=true`, {
+      deviceType: deviceTypeid,
+    });
+    if (res?.ok) {
+      return res.data[0];
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device firmware problems', error);
+    return false;
+  }
+}
+
+/**
+ * @description Update device's firmware.
+ * @param deviceId - The ID of the device.
+ * @returns A `Promise` that resolves to a `DeviceFirmwareType` object if successful, or `false` if there was an error.
+ */
+
+export async function updateDeviceFirmware(deviceId: string) {
+  try {
+    const res = await api.post<any>(`/devices/${deviceId}/update-firmware`);
+
+    if (res?.ok) {
+      return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device subscriptions problems', error);
+    return false;
+  }
+}

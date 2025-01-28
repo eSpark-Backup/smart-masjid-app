@@ -35,6 +35,21 @@ export type AdhanConfig = {
   updatedDate: string;
 };
 
+export type AdhanLog = {
+  id: number;
+  date: string;
+  fajrCalled: 'Y' | 'N';
+  dhuhrCalled: 'Y' | 'N';
+  asrCalled: 'Y' | 'N';
+  maghribCalled: 'Y' | 'N';
+  ishaCalled: 'Y' | 'N';
+  fajrCalledTime: null | string;
+  dhuhrCalledTime: null | string;
+  asrCalledTime: null | string;
+  maghribCalledTime: null | string;
+  ishaCalledTime: null | string;
+};
+
 export type IqamahTime = {
   id?: number;
   type: string;

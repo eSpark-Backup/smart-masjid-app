@@ -14,6 +14,7 @@ import { Text } from 'react-native-animatable';
 import { useHookstate } from '@hookstate/core';
 import { userStore } from '../../../store/UserStore';
 import { GetMonthlySchedule } from '../../../api/userController';
+import { Shurooq, Sunrise } from '../../../assets';
 
 export default function MasjidListing({
   data,
@@ -42,6 +43,7 @@ export default function MasjidListing({
           item?.id.toString() ?? '',
           moment().format('YYYY-MM-DD'),
         );
+
         dat.push({ id: item?.id.toString(), salahs: salahRes! });
         if (dat?.length == data?.length) {
           setAllTimes(dat);
@@ -64,7 +66,7 @@ export default function MasjidListing({
     let time = moment(
       currTimes?.salah[currInd < 0 ? 0 : currInd]?.adhanTime,
       'hh:mm:ss',
-    ).format('hh:mm');
+    ).format('hh:mm A');
 
     if (type == 'name') {
       return name;
@@ -81,10 +83,47 @@ export default function MasjidListing({
       let time2 = moment().format('HH:mm');
       return time1 >= time2;
     });
+
     let time = moment(
       currTimes?.salah[currInd < 0 ? 0 : currInd]?.iqamaTime,
       'hh:mm:ss',
+    ).format('hh:mm A');
+    return time;
+  };
+
+  const getSunriseShurooqTime = (id: string) => {
+    let masjidInd = allTimes?.findIndex(item => item?.id == id);
+    let currTimes = allTimes[masjidInd]?.salahs[0];
+    let currInd = currTimes?.salah.findIndex(item => {
+      let time1 = item?.sunriseTime?.toString().slice(0, 5);
+      let time2 = item?.shurooqTime?.toString().slice(0, 5);
+      let currTime = moment().format('HH:mm');
+      if (time1 >= currTime) {
+        return true;
+      } else if (time2 >= currTime) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    let currTime = moment().format('HH:mm');
+    let fajrTime = moment(
+      currTimes?.salah[currInd < 0 ? 0 : currInd]?.adhanTime,
+      'hh:mm:ss',
     ).format('hh:mm');
+    let time = undefined;
+    if (currInd > -1 && currTime > fajrTime) {
+      time = {
+        Sunrise: moment(
+          currTimes?.salah[currInd < 0 ? 0 : currInd]?.sunriseTime,
+          'hh:mm:ss',
+        ).format('hh:mm A'),
+        Shurooq: moment(
+          currTimes?.salah[currInd < 0 ? 0 : currInd]?.shurooqTime,
+          'hh:mm:ss',
+        ).format('hh:mm A'),
+      };
+    }
     return time;
   };
 
@@ -132,6 +171,7 @@ export default function MasjidListing({
               namazName={getAzanNameTime(item.id.toString(), 'name')}
               azanTime={getAzanNameTime(item.id.toString())}
               namazTime={getIqamaTime(item.id.toString())}
+              sunShurooqTime={getSunriseShurooqTime(item.id.toString())}
             />
           );
         }}

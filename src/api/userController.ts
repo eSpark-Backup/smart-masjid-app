@@ -12,6 +12,7 @@ import {
   setDataInLocalStorage,
 } from '../utils/functions';
 import { globalStore } from '../store/GlobalStates';
+import moment from 'moment';
 
 /**
  * Update user's login status on the server.
@@ -431,13 +432,19 @@ export const GetUser = async (
  *
  * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
  */
-export const GetMonthlySchedule = async (masjidId: number) => {
+export const GetMonthlySchedule = async (
+  masjidId: number,
+  selectedMonth?: number,
+  selectedYear?: number,
+) => {
   try {
     console.log('masjidId masjidId masjidId', masjidId);
     const month = new Date().getMonth() + 1;
     const year = new Date().getFullYear();
     const result: any = await api.get(
-      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}&month=${month}&year=${year}`,
+      `/masjid/${masjidId}/monthly-schedule?month=${
+        selectedMonth ?? month
+      }&year=${selectedYear ?? year}`,
     );
     console.log('schedule results', result);
     if (result.status === 200) {
@@ -462,12 +469,14 @@ export const GetMonthlySchedule = async (masjidId: number) => {
  *
  * @returns A promise that resolves when the data is retrieved successfully & returns the data otherwise displays an error message.
  */
-export const PublishMonthlySchedule = async (masjidId: number) => {
+export const PublishMonthlySchedule = async (masjidId: number, date: Date) => {
   try {
-    const month = new Date().getMonth() + 1;
-    const year = new Date().getFullYear();
+    const month = date
+      ? moment().month(date.getMonth()).format('M')
+      : moment().month(new Date().getMonth()).format('M');
+    const year = date ? date.getFullYear() : new Date().getFullYear();
     const result: any = await api.post(
-      `/masjid/{masjidId}/monthly-schedule?masjidId=${masjidId}`,
+      `/masjid/${masjidId}/monthly-schedule?masjidId=${masjidId}`,
       {
         month: month,
         year: year,
@@ -502,7 +511,7 @@ export const UpdatePublishedMonthlySchedule = async (
 ) => {
   try {
     const result: any = await api.put(
-      `/masjid/{masjidId}/monthly-schedule/{scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
+      `/masjid/${masjidId}/monthly-schedule/{scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
     );
     console.log('update published schedule results', result.data);
     if (result.status === 200) {

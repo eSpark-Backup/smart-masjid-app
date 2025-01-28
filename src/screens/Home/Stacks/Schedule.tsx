@@ -35,6 +35,7 @@ import { WINDOW_WIDTH } from '../../../constants';
 import { Download } from '../../../assets';
 import { globalStore } from '../../../store/GlobalStates';
 import { GlobalProps } from '../../../types';
+import { GetMonthlySchedule } from '../../../api/userController';
 
 export default function Schedule({
   contentOpacity = 0,
@@ -46,6 +47,7 @@ export default function Schedule({
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const monthlyScheduleData = useHookstate(userStore.monthlySchedule).get();
+  const [noMonthlyData, setNoMonthlyData] = useState<boolean | null>(null);
   const [adhaTime, setAdhaTime] = useState([]);
   const [jummaTime, setJummaTime] = useState<JumuahTimings[] | []>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -71,17 +73,36 @@ export default function Schedule({
     });
   }, []);
 
-  const onDateChange = (e: Date) => {
-    setCurrentDate(e);
+  const onDateChange = async (e: Date) => {
     state.globalLoading.set(true);
-    getSalahTimingsOfMasjid(
-      userData?.masjid?.id.toString() as string,
-      moment(e).startOf('month').format('YYYY-MM-DD') as string,
-      'MONTH',
-    ).then((timings: SalahTimings[] | undefined) => {
-      convertTimings(timings);
+    setCurrentDate(e);
+    const getScheduleInfo = await GetMonthlySchedule(
+      userData?.masjid?.id as number,
+      moment(e).month() + 1,
+      moment(e).year(),
+    );
+    if (getScheduleInfo) {
+      getSalahTimingsOfMasjid(
+        userData?.masjid?.id.toString() as string,
+        moment(e).startOf('month').format('YYYY-MM-DD') as string,
+        'MONTH',
+      ).then((timings: SalahTimings[] | undefined) => {
+        convertTimings(timings);
+        getJummahTimingsOfMasjid(
+          masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
+          moment().startOf('month').format('YYYY-MM-DD'),
+        ).then((timings: JumuahTimings[] | undefined) => {
+          setJummaTime(timings!);
+          setNoMonthlyData(false);
+          state.globalLoading.set(false);
+        });
+      });
+    } else {
+      setAdhaTime([]);
+      setJummaTime([]);
+      setNoMonthlyData(true);
       state.globalLoading.set(false);
-    });
+    }
   };
 
   const convertTimings = (timings: SalahTimings[] | undefined) => {
@@ -170,17 +191,8 @@ export default function Schedule({
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <LogoutModal
-        visible={prompt2}
-        message={`Monthly Schedule sent successfully.\nWould you like to download the PDF as well?`}
-        onAllowed={() => {
-          setPrompt2(false);
-          isPermitted();
-        }}
-        onClose={() => setPrompt2(false)}
-      />
-      <LogoutModal
         visible={downloadPrompt}
-        message={`Monthly Schedule downloaded successfully.\nWould you like to view the PDF as well?`}
+        message={`Monthly Schedule downloaded successfully.\n\nWould you like to view the downloaded PDF?`}
         onAllowed={() => {
           FileViewer.open(filePath, {
             onDismiss() {
@@ -188,9 +200,11 @@ export default function Schedule({
             },
           })
             .then(() => {
+              setDownloadPrompt(false);
               // success
             })
             .catch(error => {
+              setDownloadPrompt(false);
               // error
               console.log('err view error', error);
             });
@@ -225,14 +239,13 @@ export default function Schedule({
             maximumDate={moment().add(4, 'month').date(1).toDate()}
             disablePicker
             type="standard"
-            hideChevs={true}
             currentDate={moment()
               .year(currentDate.getFullYear())
               .month(currentDate.getMonth())
               .date(1)
               .toDate()}
             onDateChange={onDateChange}
-            dateFormat={'Monthly'}
+            dateFormat={'FullMonth'}
           />
           <View
             style={{
@@ -242,15 +255,28 @@ export default function Schedule({
             }}>
             <GapView mode="horizontal" />
             <TouchableOpacity onPress={() => isPermitted()}>
-              {monthlyScheduleData?.url ? <Download /> : null}
+              {noMonthlyData == null && monthlyScheduleData?.url ? (
+                <Download width={22} height={22} color={'#006870'} />
+              ) : noMonthlyData == false ? (
+                <Download width={22} height={22} color={'#006870'} />
+              ) : null}
             </TouchableOpacity>
           </View>
         </View>
         {adhaTime?.length < 1 && !state.globalLoading.get() ? (
-          <MyText
-            textStyle={{ textAlign: 'center', marginVertical: 10 }}
-            text="No schedule of current month to show!"
-          />
+          <View
+            style={{
+              flex: 0.8,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <MyText
+              textStyle={{
+                textAlign: 'center',
+              }}
+              text="Monthly Schedule not published yet!"
+            />
+          </View>
         ) : (
           <TimeSheet
             data={convertResponseToData(adhaTime) ?? []}

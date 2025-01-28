@@ -39,7 +39,7 @@ const DeviceListItem = ({
             justifyContent: 'space-between',
           }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <DeviceSvg height={24} width={24} />
+            <DeviceSvg height={24} width={24} color={'#9E9F9F'} />
             <GapView length={10} mode="horizontal" />
             <View style={{ alignItems: 'flex-start' }}>
               <TextLabel

@@ -5,7 +5,7 @@ import II from 'react-native-vector-icons/Ionicons';
 import { Theme, useTheme } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import { Calendar } from '../../assets';
+import { Calendar, Chevron_Left, Chevron_Right } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyTextSubHeader from '../MyTextSubHeader';
@@ -28,7 +28,7 @@ export default function MyDatePicker({
   minimumDate?: Date | undefined;
   maximumDate?: Date | undefined;
   showLabel?: boolean;
-  dateFormat?: 'Monthly' | 'FullDate';
+  dateFormat?: 'FullMonth' | 'Monthly' | 'FullDate';
   hideChevs?: boolean;
 }) {
   const [date, setDate] = useState<any>(new Date());
@@ -46,9 +46,11 @@ export default function MyDatePicker({
     onDateChange(currentDate);
   };
 
+  console.log('dateFormat', dateFormat);
+
   const nextDate = () => {
     const newDate =
-      dateFormat == 'Monthly'
+      dateFormat == 'Monthly' || dateFormat == 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).add(1, 'month'))
         : // @ts-ignore
@@ -59,7 +61,7 @@ export default function MyDatePicker({
 
   const prevDate = () => {
     const newDate =
-      dateFormat == 'Monthly'
+      dateFormat == 'Monthly' || dateFormat == 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).subtract(1, 'month'))
         : // @ts-ignore
@@ -113,7 +115,7 @@ export default function MyDatePicker({
           )}
           <MyText text={moment(date)?.format('MM/DD/YYYY')} />
           <GapView length={10} mode="horizontal" />
-          <Calendar style={{ color: '#006870' }} />
+          <Calendar width={22} height={22} style={{ color: '#006870' }} />
         </TouchableOpacity>
       </>
     );
@@ -138,18 +140,27 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          {!hideChevs && (
+          {!hideChevs ? (
             <TouchableOpacity
               disabled={!moment(date).isAfter(minimumDate)}
               onPress={prevDate}>
-              <II
+              {/* <II
                 color={
                   moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
                 }
                 name="md-chevron-back"
                 size={24}
+              /> */}
+              <Chevron_Left
+                color={
+                  moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
+                }
+                width={18}
+                height={18}
               />
             </TouchableOpacity>
+          ) : (
+            <GapView length={24} />
           )}
           <GapView length={10} mode="horizontal" />
           <TouchableOpacity
@@ -158,18 +169,20 @@ export default function MyDatePicker({
             onPress={() => setShow(true)}>
             <MyTextSubHeader
               text={
-                dateFormat == 'Monthly'
+                dateFormat == 'FullMonth'
+                  ? moment(date)?.format('MMMM YYYY')
+                  : dateFormat == 'Monthly'
                   ? moment(date)?.format('MMM, YYYY')
                   : moment(date)?.format('MMM-DD, YYYY')
               }
             />
           </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          {!hideChevs && (
+          {!hideChevs ? (
             <TouchableOpacity
               disabled={!moment(date).isBefore(maximumDate)}
               onPress={nextDate}>
-              <II
+              {/* <II
                 color={
                   moment(date).isBefore(maximumDate)
                     ? colors.primary
@@ -177,8 +190,19 @@ export default function MyDatePicker({
                 }
                 name="md-chevron-forward"
                 size={24}
+              /> */}
+              <Chevron_Right
+                color={
+                  moment(date).isBefore(maximumDate)
+                    ? colors.primary
+                    : '#bdbdbd'
+                }
+                width={18}
+                height={18}
               />
             </TouchableOpacity>
+          ) : (
+            <GapView length={24} />
           )}
         </View>
       </>

@@ -20,6 +20,7 @@
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/datetimepicker": "^6.7.5",
     "@react-native-community/geolocation": "^3.0.6",
+    "@react-native-community/netinfo": "^11.4.1",
     "@react-native-firebase/app": "^18.4.0",
     "@react-native-firebase/crashlytics": "^18.4.0",
     "@react-native-firebase/messaging": "^18.4.0",
@@ -55,7 +56,7 @@
     "react-native-gesture-handler": "^2.9.0",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-localize": "^3.1.0",
-    "react-native-maps": "^1.4.0",
+    "react-native-maps": "1.15.3",
     "react-native-modal-datetime-picker": "^14.0.1",
     "react-native-neomorph-shadows": "^1.1.2",
     "react-native-outline-input": "^1.0.8",
@@ -70,7 +71,7 @@
     "react-native-toast-message": "^2.1.6",
     "react-native-vector-icons": "^9.2.0",
     "react-native-walkthrough-tooltip": "^1.5.0",
-    "react-native-wifi-reborn": "^4.11.0",
+    "react-native-wifi-reborn": "^4.13.0",
     "yup": "^1.0.2"
   },
   "reactNativePermissionsIOS": [
