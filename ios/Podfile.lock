@@ -552,7 +552,7 @@ PODS:
     - React-Core
   - RNVectorIcons (9.2.0):
     - React-Core
-  - RNWifi (4.13.0):
+  - RNWifi (4.13.4):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -880,7 +880,7 @@ SPEC CHECKSUMS:
   RNScreens: 80369e822c4f123c3f076c9ea4141991c17770f9
   RNSVG: af3907ac5d4fa26a862b75a16d8f15bc74f2ceda
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
-  RNWifi: 89e8d602c782b6e0a4e4ecca3e26b62c9c6b5dab
+  RNWifi: 3de7502a3c7bb7fed62879fc6aa22e53af59a24c
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   Yoga: 5b0304b3dbef2b52e078052138e23a19c7dacaef

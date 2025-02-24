@@ -50,15 +50,11 @@ export default function ViewUsers({
                 {
                   title: 'Full Name',
                   value: user?.firstName + ' ' + user?.lastName,
-                  icon: (
-                    <ProfileUser width={22} height={22} color={'#9E9F9F'} />
-                  ),
                   onPress: () => console.log('no effect'),
                 },
                 {
                   title: 'Email',
                   value: user?.email ?? '-',
-                  icon: <Email width={22} height={22} color={'#9E9F9F'} />,
                   onPress: () => console.log('no effect'),
                 },
                 {
@@ -66,13 +62,11 @@ export default function ViewUsers({
                   value: user?.phone!
                     ? parsePhoneNumber(user?.phone!).formatInternational()
                     : '-',
-                  icon: <Phone width={22} height={22} color={'#9E9F9F'} />,
                   onPress: () => console.log('no effect'),
                 },
                 {
                   title: 'Role',
                   value: user?.userType.name ?? '-',
-                  icon: <ManageUser width={22} height={22} color={'#9E9F9F'} />,
                   onPress: () => console.log('no effect'),
                 },
               ],

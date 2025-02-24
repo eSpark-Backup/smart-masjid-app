@@ -138,7 +138,7 @@ export default function MasjidListCard(
                   style={{
                     ...styles.row,
                     width: '100%',
-                    justifyContent: 'space-between',
+                    // justifyContent: 'space-around',
                     alignItems: 'center',
                   }}>
                   <View style={styles.row}>
@@ -154,6 +154,7 @@ export default function MasjidListCard(
                       />
                     </View>
                   </View>
+                  <GapView mode="horizontal" length={15} />
                   <View style={styles.row}>
                     <MyText text={'Shurooq'} />
                     <GapView mode="horizontal" length={5} />

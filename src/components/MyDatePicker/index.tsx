@@ -5,7 +5,12 @@ import II from 'react-native-vector-icons/Ionicons';
 import { Theme, useTheme } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import { Calendar, Chevron_Left, Chevron_Right } from '../../assets';
+import {
+  Calendar,
+  Chevron_Left,
+  Chevron_Right,
+  MonthlyScheduleSvg,
+} from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyTextSubHeader from '../MyTextSubHeader';
@@ -115,7 +120,11 @@ export default function MyDatePicker({
           )}
           <MyText text={moment(date)?.format('MM/DD/YYYY')} />
           <GapView length={10} mode="horizontal" />
-          <Calendar width={22} height={22} style={{ color: '#006870' }} />
+          <MonthlyScheduleSvg
+            width={22}
+            height={22}
+            style={{ color: '#006870' }}
+          />
         </TouchableOpacity>
       </>
     );

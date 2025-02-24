@@ -442,7 +442,7 @@ async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
       const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
       if (!isPhoneValid.isValid) {
         Toast.show({
-          text2: 'Phone number is not valid',
+          text2: 'Phone number is not yeh valid',
           type: 'error',
           visibilityTime: 10000,
         });

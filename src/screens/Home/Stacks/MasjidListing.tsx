@@ -58,7 +58,7 @@ export default function MasjidListing({
     let masjidInd = allTimes?.findIndex(item => item?.id == id);
     let currTimes = allTimes[masjidInd]?.salahs[0];
     let currInd = currTimes?.salah.findIndex(item => {
-      let time1 = item?.adhanTime?.toString().slice(0, 5);
+      let time1 = item?.iqamaTime?.toString().slice(0, 5);
       let time2 = moment().format('HH:mm');
       return time1 >= time2;
     });
@@ -79,7 +79,7 @@ export default function MasjidListing({
     let masjidInd = allTimes?.findIndex(item => item?.id == id);
     let currTimes = allTimes[masjidInd]?.salahs[0];
     let currInd = currTimes?.salah.findIndex(item => {
-      let time1 = item?.adhanTime?.toString().slice(0, 5);
+      let time1 = item?.iqamaTime?.toString().slice(0, 5);
       let time2 = moment().format('HH:mm');
       return time1 >= time2;
     });
@@ -108,7 +108,7 @@ export default function MasjidListing({
     });
     let currTime = moment().format('HH:mm');
     let fajrTime = moment(
-      currTimes?.salah[currInd < 0 ? 0 : currInd]?.adhanTime,
+      currTimes?.salah[currInd < 0 ? 0 : currInd]?.iqamaTime,
       'hh:mm:ss',
     ).format('hh:mm');
     let time = undefined;

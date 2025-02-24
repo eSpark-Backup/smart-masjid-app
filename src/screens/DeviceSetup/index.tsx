@@ -21,6 +21,11 @@ import RNSettings from 'react-native-settings';
 //@ts-ignore
 import { bytesToString } from 'convert-string';
 import moment from 'moment';
+import {
+  fetch,
+  NetInfoState,
+  NetInfoStateType,
+} from '@react-native-community/netinfo';
 
 import { userStore } from '../../store/UserStore';
 import { Wrapper } from '../../containers';
@@ -204,9 +209,7 @@ export default function DeviceSetupScreen() {
 
   useEffect(() => {
     if (retry) {
-      setStep(1);
-      setConnFlag(true);
-      handlePermissions();
+      checkStatus();
       setRetry(false);
     }
   }, [retry]);
@@ -229,40 +232,47 @@ export default function DeviceSetupScreen() {
 
   useEffect(() => {
     checkStatus();
-    _startLocationCheck(_handleGPSProviderEvent);
-    if (route?.params?.deviceData?.deviceTelemetry?.status != 'Online') {
-      _startCheckBle(_handleBleStateEvent);
-    }
-    return () => {
-      _stopLocationCheck();
-    };
+    // _startLocationCheck(_handleGPSProviderEvent);
+    // if (
+    //   route?.params?.deviceData?.deviceTelemetry?.status != undefined &&
+    //   route?.params?.deviceData?.deviceTelemetry?.status != 'Online'
+    // ) {
+    //   _startCheckBle(_handleBleStateEvent);
+    // }
+    // return () => {
+    //   _stopLocationCheck();
+    // };
   }, [isFocused]);
 
-  useUpdateEffect(() => {
-    if (locationStatus && bleStatus) {
-      setIssues([]);
-    }
-    if (locationStatus === false) {
-      setIssues(state => {
-        return [...state, 'Location is turned off'];
-      });
-    }
-    if (
-      bleStatus === false &&
-      route?.params?.deviceData?.deviceTelemetry?.status != 'Online'
-    ) {
-      setIssues(state => {
-        return [...state, 'Bluetooth is turned off'];
-      });
-    }
-  }, [locationStatus, bleStatus]);
+  // useUpdateEffect(() => {
+  //   console.log('internettype', InternetType);
+  //   console.log('bleStatus btao', bleStatus);
+  //   console.log('locationStatus btao', locationStatus);
+
+  //   if (locationStatus && bleStatus) {
+  //     setIssues([]);
+  //   }
+  //   if (locationStatus === false) {
+  //     setIssues(state => {
+  //       return [...state, 'Location is turned off'];
+  //     });
+  //   }
+  //   if (
+  //     bleStatus === false &&
+  //     route?.params?.deviceData?.deviceTelemetry?.status != 'Online'
+  //   ) {
+  //     setIssues(state => {
+  //       return [...state, 'Bluetooth is turned off'];
+  //     });
+  //   }
+  // }, [locationStatus, bleStatus]);
 
   useUpdateEffect(() => {
     if (issues?.length > 0) {
       setStep(8);
       setToastContent(state => ({
         ...state,
-        title: 'Device not found',
+        title: 'Device setup error',
         message: 'Issues Found',
         onPress: () => {
           if (wifiError) {
@@ -312,7 +322,7 @@ export default function DeviceSetupScreen() {
 
   const checkStatus = async () => {
     try {
-      const ble = Platform.OS == 'ios' ? true : await _checkBleStatus();
+      const ble = await _checkBleStatus();
       const loc = await _checkLocationStatus();
       setBleStatus(ble);
       setlocationStatus(loc);
@@ -673,12 +683,21 @@ export default function DeviceSetupScreen() {
     }
   };
 
+  const checkNetwork = async () => {
+    const fetchType = await fetch();
+    return fetchType.type;
+  };
+
   const handlePermissions = async (ble?: boolean, location?: boolean) => {
     try {
+      const internetType = await checkNetwork();
       const status = await _requestBlePermissions();
       const bleCheck = ble ?? bleStatus;
       const locationCheck = location ?? locationStatus;
+
       console.log('Permission of Ble Status', status);
+      console.log('Permission of locationCheck Status', locationCheck);
+      console.log('Permission of bleCheck Status', bleCheck);
       if (!status) {
         // setStep(8);
         // setToastContent({
@@ -693,7 +712,7 @@ export default function DeviceSetupScreen() {
           return [...state, 'Bluetooth permission denied'];
         });
       }
-      if (bleCheck && locationCheck && status) {
+      if (bleCheck && locationCheck && status && internetType != 'cellular') {
         await _startBluetooth();
         setTimeout(async () => {
           const res = await _scanBleDevices();
@@ -761,10 +780,16 @@ export default function DeviceSetupScreen() {
           }
         }, 100);
       } else {
-        console.log('location off ha? ', locationStatus);
-        console.log('ble off ha? ', bleStatus);
-        if (locationStatus === false) {
-          if (bleStatus) {
+        console.log('location off ha? ', locationCheck);
+        console.log('ble off ha? ', bleCheck);
+        if (internetType === 'cellular') {
+          setIssues(state => [
+            ...state,
+            'Please connect your phone to a WiFi Network',
+          ]);
+        }
+        if (locationCheck === false) {
+          if (bleCheck) {
             setIssues(state => {
               return [
                 ...state.filter(item => item !== 'Bluetooth is turned off'),
@@ -774,8 +799,10 @@ export default function DeviceSetupScreen() {
           console.log('chala location xxxx');
           setIssues(state => [...state, 'Location is turned off']);
         }
-        if (bleStatus === false) {
-          if (locationStatus) {
+        if (bleCheck === false) {
+          console.log('chala');
+
+          if (locationCheck) {
             console.log('chala bluetooth yyyyyy');
             setIssues(state => {
               return [

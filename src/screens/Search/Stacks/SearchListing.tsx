@@ -422,7 +422,7 @@ const SearchListing = ({
                   ? 'No Smart Masjid found for the Zip Code entered.'
                   : locationStatus
                   ? 'No Smart Masjid found near your Location. Try searching with Zip Code'
-                  : 'Location services are turned off. Try searching with Zip Code'
+                  : 'Location turned off. Try searching with Zip Code'
               }
             />
           }

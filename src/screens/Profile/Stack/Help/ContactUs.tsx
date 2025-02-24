@@ -98,6 +98,8 @@ export default function ContactUsScreen({
           inputStyle={{
             width: WINDOW_WIDTH - 30,
             textAlignVertical: 'top',
+            height: 100,
+            paddingTop: 10,
           }}
           onChangeText={setDescription}
         />
