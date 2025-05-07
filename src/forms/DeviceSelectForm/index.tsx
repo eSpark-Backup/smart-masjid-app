@@ -53,22 +53,24 @@ export default function DeviceSelectForm({
   };
 
   async function handleDeviceCheck(item: Peripheral) {
+    console.log('device item ', item);
+
     state.globalLoading.set(true);
     // setLoading(true);
     try {
       console.log('try mein aya');
-      const res = await _checkDeviceExists(
+      const deviceMacaddr =
         Platform.OS == 'ios'
           ? ((await getIOSMacAdd(item as Peripheral)) as unknown as string)
-          : (item?.id as string),
-      );
+          : (item?.id as string);
+      const res = await _checkDeviceExists(deviceMacaddr);
       console.log('res', Boolean(res), item.id);
       if (!Boolean(res)) {
         setStep(3);
         setDevMacId?.(item.id);
       } else {
         Toast.show({
-          text2: 'Device Already Exists',
+          text2: 'Device Already Exists ' + `[${deviceMacaddr}]`,
           type: 'error',
           autoHide: true,
           visibilityTime: 10000,

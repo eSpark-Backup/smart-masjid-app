@@ -324,13 +324,21 @@ export default function DeviceSetupScreen() {
     try {
       const ble = await _checkBleStatus();
       const loc = await _checkLocationStatus();
+      const internetType = await checkNetwork();
       setBleStatus(ble);
       setlocationStatus(loc);
       if (
         route?.params?.from === 'SelectedDevice' &&
         route?.params?.deviceData?.deviceTelemetry?.status == 'Online'
       ) {
-        setStep(4);
+        if (internetType === 'cellular') {
+          setIssues(state => [
+            ...state,
+            'Please connect your phone to a WiFi Network',
+          ]);
+        } else {
+          setStep(4);
+        }
       } else {
         setStep(1); //todo: first 6 then 1
         setConnFlag(true);

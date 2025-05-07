@@ -112,10 +112,10 @@ export default function WifiSelectForm({
   const getWifiList = async () => {
     try {
       const res = await WifiManager.loadWifiList();
-      console.log('All Wifis', res);
+      const sortedList = [...res].sort((a, b) => b.level - a.level);
       state.globalLoading.set(false);
       // setLoading(false);
-      const remove5G = res.filter(item => item?.frequency < 5000);
+      const remove5G = sortedList.filter(item => item?.frequency < 5000);
       const removeHidden = remove5G.filter(
         item => !item.SSID.includes('(hidden SSID)'),
       );

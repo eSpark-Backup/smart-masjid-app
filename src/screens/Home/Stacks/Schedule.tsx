@@ -93,7 +93,7 @@ export default function Schedule({
         convertTimings(timings);
         getJummahTimingsOfMasjid(
           masjidId?.toString() as string,
-          moment().startOf('month').format('YYYY-MM-DD'),
+          moment(e).startOf('month').format('YYYY-MM-DD'),
         ).then((timings: JumuahTimings[] | undefined) => {
           setJummaTime(timings!);
           setNoMonthlyData(false);

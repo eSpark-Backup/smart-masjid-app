@@ -75,7 +75,7 @@ export default function MasjidListCard(
           }}>
           <MyText
             text={masjidName ?? 'Masjid Ar - Rahman'}
-            size={14}
+            size={isSearch ? 14 : 16}
             textStyle={{
               //  fontWeight: '500',
               fontFamily: 'Roboto-Medium',
@@ -108,13 +108,14 @@ export default function MasjidListCard(
                     // flexWrap: 'wrap',
                   }}>
                   <View style={styles.row}>
-                    <MyText text={namazName ?? '--'} />
+                    <MyText size={16} text={namazName ?? '--'} />
                   </View>
                   <GapView mode="horizontal" />
                   <View style={styles.row}>
                     <AdhanSettingSvg height={16} width={16} color={'#9E9F9F'} />
                     <GapView mode="horizontal" length={2.5} />
                     <MyText
+                      size={16}
                       text={
                         azanTime != 'Invalid date' ? (azanTime as string) : '--'
                       }
@@ -125,6 +126,7 @@ export default function MasjidListCard(
                     <IqamaTimingsSvg height={13} width={13} color={'#9E9F9F'} />
                     <GapView mode="horizontal" length={2.5} />
                     <MyText
+                      size={16}
                       text={
                         namazTime != 'Invalid date'
                           ? (namazTime as string)
@@ -142,10 +144,11 @@ export default function MasjidListCard(
                     alignItems: 'center',
                   }}>
                   <View style={styles.row}>
-                    <MyText text={'Sunrise'} />
+                    <MyText size={16} text={'Sunrise'} />
                     <GapView mode="horizontal" length={5} />
                     <View style={styles.row}>
                       <MyText
+                        size={16}
                         text={
                           sunShurooqTime.Sunrise != 'Invalid date'
                             ? (sunShurooqTime.Sunrise as string)
@@ -156,10 +159,11 @@ export default function MasjidListCard(
                   </View>
                   <GapView mode="horizontal" length={15} />
                   <View style={styles.row}>
-                    <MyText text={'Shurooq'} />
+                    <MyText size={16} text={'Shurooq'} />
                     <GapView mode="horizontal" length={5} />
                     <View style={styles.row}>
                       <MyText
+                        size={16}
                         text={
                           sunShurooqTime.Shurooq != 'Invalid date'
                             ? (sunShurooqTime.Shurooq as string)
@@ -174,7 +178,7 @@ export default function MasjidListCard(
           )}
         </View>
         <GapView length={10} mode="horizontal" />
-        <View>
+        {/* <View>
           {masjidLogo ? (
             <CachedImage
               source={masjidLogo as ImageSource}
@@ -188,7 +192,7 @@ export default function MasjidListCard(
           ) : (
             <MasjidSample />
           )}
-        </View>
+        </View> */}
       </TouchableOpacity>
     </Card>
   );
