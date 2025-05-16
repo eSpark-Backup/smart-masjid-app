@@ -178,21 +178,23 @@ export default function MasjidListCard(
           )}
         </View>
         <GapView length={10} mode="horizontal" />
-        {/* <View>
-          {masjidLogo ? (
-            <CachedImage
-              source={masjidLogo as ImageSource}
-              resizeMode="contain"
-              style={
-                !isSearch
-                  ? styles.imageStyle
-                  : { height: 61, width: 61, borderRadius: 6 }
-              }
-            />
-          ) : (
-            <MasjidSample />
-          )}
-        </View> */}
+        {isSearch ? (
+          <View>
+            {masjidLogo ? (
+              <CachedImage
+                source={masjidLogo as ImageSource}
+                resizeMode="contain"
+                style={
+                  !isSearch
+                    ? styles.imageStyle
+                    : { height: 61, width: 61, borderRadius: 6 }
+                }
+              />
+            ) : (
+              <MasjidSample />
+            )}
+          </View>
+        ) : null}
       </TouchableOpacity>
     </Card>
   );

@@ -81,19 +81,10 @@ const SearchListing = ({
 
   useEffect(() => {
     console.log('chala kiaaaaaa', ApState);
-
     if (isFocused && ApState == 'active') {
       requestLocationSetting();
     }
-  }, [isFocused]);
-
-  useEffect(() => {
-    console.log('chala kiaaaaaa2', ApState);
-
-    if (ApState == 'active') {
-      checkLocationSetting();
-    }
-  }, [ApState]);
+  }, [isFocused, ApState]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {

@@ -162,7 +162,9 @@ export default function MyInput(props: MyInputProps) {
   };
 
   useEffect(() => {
-    checkLocation();
+    if (searchBar) {
+      checkLocation();
+    }
   }, [checkLocation, searchBar]);
 
   const handleTextChange = (newText: string) => {

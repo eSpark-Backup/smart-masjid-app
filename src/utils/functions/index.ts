@@ -244,6 +244,108 @@ async function _requestBlePermissions(): Promise<Boolean> {
 
 /**
  *
+ * @description Used to requestLocPermissions for Location for scanning devices
+ * @returns null
+ */
+async function _requestLocPermissions() {
+  checkMultiple([
+    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    PERMISSIONS.IOS.LOCATION_ALWAYS,
+    PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  ]).then(statuses => {
+    if (
+      statuses[
+        (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+      ] != 'granted'
+    ) {
+      requestMultiple([
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      ]);
+    }
+  });
+}
+
+/**
+ *
+ * @description Used to requestLocPermissions for Location for scanning devices
+ * @returns Promise<Boolean>
+ */
+const requestLocation = async (): Promise<Boolean> => {
+  console.log('chala');
+  try {
+    if (Platform.OS == 'ios') {
+      const checkStatus = await checkMultiple([
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      ]);
+      if (
+        checkStatus[
+          (PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+        ] == 'blocked' ||
+        checkStatus[
+          (PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+        ] === 'denied'
+      ) {
+        const requestStatus = await requestMultiple([
+          PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        ]);
+        return (
+          requestStatus[
+            (PERMISSIONS.IOS.LOCATION_ALWAYS,
+            PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+          ] === 'granted'
+        );
+      } else {
+        return true;
+      }
+    } else {
+      const checkStatus = await checkMultiple([
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      ]);
+      if (
+        checkStatus[
+          (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+        ] == 'blocked' ||
+        checkStatus[
+          (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+        ] === 'denied'
+      ) {
+        const requestStatus = await requestMultiple([
+          PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        ]);
+        return (
+          requestStatus[
+            (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+            PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+          ] === 'granted'
+        );
+      } else {
+        return true;
+      }
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.error(error);
+    return false;
+  }
+};
+
+/**
+ *
  * @description get key and value from parameters and save it to asyncstorage
  * @returns null
  * @todo //todo: Delete This later
@@ -506,50 +608,6 @@ async function openMap(lat: string, long: string) {
   }
 }
 
-const requestLocation = async () => {
-  console.log('chala');
-  try {
-    if (Platform.OS == 'ios') {
-      checkMultiple([
-        PERMISSIONS.IOS.LOCATION_ALWAYS,
-        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-      ]).then(async statuses => {
-        console.log(statuses[PERMISSIONS.IOS.LOCATION_ALWAYS]);
-        if (
-          statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] == 'granted' ||
-          statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] == 'granted'
-        ) {
-          const enable = await systemSetting.isLocationEnabled();
-          if (enable) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
-      });
-    } else {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (granted) {
-        const enable = await systemSetting.isLocationEnabled();
-        if (enable) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-  } catch (error) {
-    crashlytics().recordError(error as Error);
-    console.error(error);
-  }
-};
-
 export {
   _getPhoneId,
   _getFCMToken,
@@ -566,4 +624,5 @@ export {
   _normalizedSubscriptions,
   openMap,
   requestLocation,
+  _requestLocPermissions,
 };

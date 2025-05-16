@@ -426,7 +426,6 @@ export async function _rebootDevice(deviceId: string) {
  */
 
 export async function getDeviceSubscriptions(deviceId: string) {
-  console.log('Deleting Device now =>', deviceId);
   try {
     const res = await api.get<any>(`/devices/${deviceId}/subscriptions`);
     if (res?.ok) {

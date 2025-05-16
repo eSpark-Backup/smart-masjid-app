@@ -24,6 +24,7 @@ import { masjidStore } from '../../store/MasjidStore';
 import { getListMasjidSubscribedByUser } from '../../api/masjidController';
 import { globalStore } from '../../store/GlobalStates';
 import { GetMonthlySchedule } from '../../api/userController';
+import { _requestLocPermissions } from '../../utils/functions';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -110,6 +111,10 @@ export default function Home() {
     useState<Immutable<Masjid> | null>(null);
 
   useEffect(() => {
+    _requestLocPermissions();
+  }, []);
+
+  useEffect(() => {
     if (isFocused && step == 0) {
       state.globalLoading.set(true);
       // setLoading(true);
@@ -178,8 +183,8 @@ export default function Home() {
     }
   };
 
-  console.log('selectedMasjid', selectedMasjid);
-  console.log('countryCode countryCode', countryCode.get());
+  // console.log('selectedMasjid', selectedMasjid);
+  // console.log('countryCode countryCode', countryCode.get());
 
   return (
     <Wrapper

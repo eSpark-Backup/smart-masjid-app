@@ -134,17 +134,18 @@ export default function WifiSelectForm({
           setStep(5);
         },
       }));
+      console.log('yeh bhi chalrha??');
       if (autoSelect) {
         console.log('kias', autoSelect, currentWifiSSID);
-        newArr.filter(item => {
-          if (currentWifiSSID === item?.SSID) {
-            console.log('yahan aya??', item.SSID);
-            setSSID(item?.SSID);
-            setStep(5);
-          } else {
-            setIssues('Wifi SSID not found');
-          }
-        });
+        const filterRes = newArr.filter(item => currentWifiSSID === item?.SSID);
+        if (filterRes.length > 0) {
+          console.log('yahan aya??', filterRes[0].SSID);
+          setSSID(filterRes[0].SSID!);
+          setStep(5);
+          return;
+        } else {
+          setIssues('Wifi SSID not found');
+        }
       } else {
         setData(newArr);
       }

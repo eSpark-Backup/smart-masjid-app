@@ -50,11 +50,16 @@ export default function App() {
 
   useEffect(() => {
     handleDeviceIdCheck();
-    getSubscribedJummas();
   }, [userData]);
 
   useEffect(() => {
     if (userData.get()) {
+      getSubscribedJummas();
+    }
+  }, [userStore.userData.get()?.masjid?.subscriptionList]);
+
+  useEffect(() => {
+    if (userStore.userData.get()) {
       crashlytics().setUserId(userData.get()?.id.toString()!);
       crashlytics().setAttributes({
         id: userData.get()?.id.toString()!,
@@ -62,12 +67,13 @@ export default function App() {
         phone: userData.get()?.phone!,
       });
     }
-  }, [userData]);
+  }, [userStore.userData.get()]);
 
-  const getSubscribedJummas = () => {
+  const getSubscribedJummas = useCallback(() => {
     let jummas: subJummas;
+
     try {
-      if (userData.get()?.masjid?.subscriptionList) {
+      if (userStore.userData.get()?.masjid?.subscriptionList) {
         userData
           .get()
           ?.masjid?.subscriptionList?.forEach((item: SubscriptionList) => {
@@ -85,7 +91,7 @@ export default function App() {
       console.error('At get subscriobed jummahs');
       crashlytics().recordError(e as Error);
     }
-  };
+  }, [userStore.userData.get()?.masjid?.subscriptionList]);
 
   useEffect(() => {
     GetCountryCodes();

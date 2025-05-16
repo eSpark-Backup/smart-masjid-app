@@ -71,6 +71,7 @@ import {
 import { useHookstate } from '@hookstate/core';
 import { globalStore } from '../../store/GlobalStates';
 import { api } from '../../api';
+import { requestLocation } from '../../utils/functions';
 
 type DSetupNavigationProps = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -700,12 +701,14 @@ export default function DeviceSetupScreen() {
     try {
       const internetType = await checkNetwork();
       const status = await _requestBlePermissions();
+      const Locstatus = await requestLocation();
       const bleCheck = ble ?? bleStatus;
       const locationCheck = location ?? locationStatus;
 
-      console.log('Permission of Ble Status', status);
-      console.log('Permission of locationCheck Status', locationCheck);
-      console.log('Permission of bleCheck Status', bleCheck);
+      console.log('Permission of Ble', status);
+      console.log('Permission of location', Locstatus);
+      console.log('location Status', locationCheck);
+      console.log('ble Status', bleCheck);
       if (!status) {
         // setStep(8);
         // setToastContent({
@@ -720,7 +723,18 @@ export default function DeviceSetupScreen() {
           return [...state, 'Bluetooth permission denied'];
         });
       }
-      if (bleCheck && locationCheck && status && internetType != 'cellular') {
+      if (!Locstatus) {
+        setIssues(state => {
+          return [...state, 'Location permission denied'];
+        });
+      }
+      if (
+        bleCheck &&
+        locationCheck &&
+        status &&
+        Locstatus &&
+        internetType != 'cellular'
+      ) {
         await _startBluetooth();
         setTimeout(async () => {
           const res = await _scanBleDevices();

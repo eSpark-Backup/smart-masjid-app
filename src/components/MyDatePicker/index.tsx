@@ -51,8 +51,6 @@ export default function MyDatePicker({
     onDateChange(currentDate);
   };
 
-  console.log('dateFormat', dateFormat);
-
   const nextDate = () => {
     const newDate =
       dateFormat == 'Monthly' || dateFormat == 'FullMonth'
