@@ -81,19 +81,10 @@ const SearchListing = ({
 
   useEffect(() => {
     console.log('chala kiaaaaaa', ApState);
-
     if (isFocused && ApState == 'active') {
       requestLocationSetting();
     }
-  }, [isFocused]);
-
-  useEffect(() => {
-    console.log('chala kiaaaaaa2', ApState);
-
-    if (ApState == 'active') {
-      checkLocationSetting();
-    }
-  }, [ApState]);
+  }, [isFocused, ApState]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -422,7 +413,7 @@ const SearchListing = ({
                   ? 'No Smart Masjid found for the Zip Code entered.'
                   : locationStatus
                   ? 'No Smart Masjid found near your Location. Try searching with Zip Code'
-                  : 'Location services are turned off. Try searching with Zip Code'
+                  : 'Location turned off. Try searching with Zip Code'
               }
             />
           }

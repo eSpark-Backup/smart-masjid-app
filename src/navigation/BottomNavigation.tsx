@@ -7,21 +7,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import DeviceCountry from 'react-native-device-country';
 
 import { Home, Search, Device, Profile } from '../screens';
-import {
-  DeviceActiveNew,
-  DevicesSvg,
-  DeviceUnactiveNew,
-  HomeActiveSvg,
-  HomeSvg,
-  ProfileActiveSvg,
-  ProfileSvg,
-  SearchActiveSvg,
-  SearchSvg,
-} from '../assets';
+import { DevicesSvg, HomeSvg, ProfileSvg, SearchSvg } from '../assets';
 import { BottomNavigationParamList, RootStackParamList } from '../types';
 import { globalStore } from '../store/GlobalStates';
-import { requestLocation } from '../utils/functions';
-import { getCountry } from 'react-native-localize';
 import { create } from 'apisauce';
 
 const Tab = createBottomTabNavigator<BottomNavigationParamList>();

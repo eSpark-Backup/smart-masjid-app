@@ -20,7 +20,7 @@ interface DataItem {
   data: {
     title: string;
     value?: string;
-    icon: JSX.Element;
+    icon?: JSX.Element;
     onPress?: () => void;
     hidden?: boolean;
   }[];
@@ -112,8 +112,12 @@ const SectionCard = ({
           alignItems: 'center',
         }}
         onPress={item.onPress}>
-        {item.icon}
-        <GapView mode="horizontal" />
+        {item.icon ? (
+          <>
+            {item.icon}
+            <GapView mode="horizontal" />
+          </>
+        ) : null}
         <MyText text={item.title} size={16} textStyle={cardTextStyle} />
       </TouchableOpacity>
       <GapView mode="horizontal" length={5} />

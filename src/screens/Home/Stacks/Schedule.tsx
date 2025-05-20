@@ -46,6 +46,7 @@ export default function Schedule({
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
+  const schedule = useHookstate(userStore.monthlySchedule);
   const monthlyScheduleData = useHookstate(userStore.monthlySchedule).get();
   const [noMonthlyData, setNoMonthlyData] = useState<boolean | null>(null);
   const [adhaTime, setAdhaTime] = useState([]);
@@ -58,7 +59,7 @@ export default function Schedule({
   useEffect(() => {
     state.globalLoading.set(true);
     getSalahTimingsOfMasjid(
-      masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
+      masjidId?.toString() as string,
       moment().startOf('month').format('YYYY-MM-DD'),
       'MONTH',
     ).then((timings: SalahTimings[] | undefined) => {
@@ -77,11 +78,13 @@ export default function Schedule({
     state.globalLoading.set(true);
     setCurrentDate(e);
     const getScheduleInfo = await GetMonthlySchedule(
-      userData?.masjid?.id as number,
+      masjidId as number,
       moment(e).month() + 1,
       moment(e).year(),
     );
+
     if (getScheduleInfo) {
+      schedule.set(getScheduleInfo);
       getSalahTimingsOfMasjid(
         userData?.masjid?.id.toString() as string,
         moment(e).startOf('month').format('YYYY-MM-DD') as string,
@@ -89,8 +92,8 @@ export default function Schedule({
       ).then((timings: SalahTimings[] | undefined) => {
         convertTimings(timings);
         getJummahTimingsOfMasjid(
-          masjidId?.toString() ?? (userData?.masjid?.id.toString() as string),
-          moment().startOf('month').format('YYYY-MM-DD'),
+          masjidId?.toString() as string,
+          moment(e).startOf('month').format('YYYY-MM-DD'),
         ).then((timings: JumuahTimings[] | undefined) => {
           setJummaTime(timings!);
           setNoMonthlyData(false);
@@ -188,26 +191,29 @@ export default function Schedule({
       });
   };
 
+  const openDownloadedFile = () => {
+    FileViewer.open(filePath)
+      .then(() => {
+        // success
+        state.globalLoading.set(false);
+      })
+      .catch(error => {
+        // error
+        console.log('err view error', error);
+      });
+  };
+
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <LogoutModal
         visible={downloadPrompt}
         message={`Monthly Schedule downloaded successfully.\n\nWould you like to view the downloaded PDF?`}
         onAllowed={() => {
-          FileViewer.open(filePath, {
-            onDismiss() {
-              setDownloadPrompt(false);
-            },
-          })
-            .then(() => {
-              setDownloadPrompt(false);
-              // success
-            })
-            .catch(error => {
-              setDownloadPrompt(false);
-              // error
-              console.log('err view error', error);
-            });
+          state.globalLoading.set(true);
+          setDownloadPrompt(false);
+          setTimeout(() => {
+            openDownloadedFile();
+          }, 1000);
         }}
         onClose={() => setDownloadPrompt(false)}
       />

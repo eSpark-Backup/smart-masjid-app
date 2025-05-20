@@ -499,7 +499,9 @@ export const SearchMasjidByLocation = async (
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
-        text2: result?.data?.message ?? 'Something went wrong',
+        text2:
+          result?.data?.message ??
+          'Something went wrong SearchMasjidByLocation',
         type: 'error',
       });
     }

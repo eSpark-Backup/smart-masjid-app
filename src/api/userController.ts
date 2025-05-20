@@ -203,7 +203,14 @@ export const UpdateUser = async (
   otp?: string,
 ) => {
   try {
-    const result: any = await api.put<UserResponse>(`/users/${id}`, data);
+    const userData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone === '+1' ? '' : data.phone,
+      deletePhone: data.phone === '+1' ? true : false,
+    };
+    const result: any = await api.put<UserResponse>(`/users/${id}`, userData);
 
     if (result.data && result.status == 200) {
       console.log('update user result', otp);
@@ -438,7 +445,6 @@ export const GetMonthlySchedule = async (
   selectedYear?: number,
 ) => {
   try {
-    console.log('masjidId masjidId masjidId', masjidId);
     const month = new Date().getMonth() + 1;
     const year = new Date().getFullYear();
     const result: any = await api.get(
@@ -446,7 +452,6 @@ export const GetMonthlySchedule = async (
         selectedMonth ?? month
       }&year=${selectedYear ?? year}`,
     );
-    console.log('schedule results', result);
     if (result.status === 200) {
       return result.data;
     } else if (result.status == 401) {
@@ -482,7 +487,6 @@ export const PublishMonthlySchedule = async (masjidId: number, date: Date) => {
         year: year,
       },
     );
-    console.log('publish schedule results', result.data);
     if (result.status === 200) {
       return result.data;
     } else if (result.status == 401) {
@@ -511,9 +515,8 @@ export const UpdatePublishedMonthlySchedule = async (
 ) => {
   try {
     const result: any = await api.put(
-      `/masjid/${masjidId}/monthly-schedule/{scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
+      `/masjid/${masjidId}/monthly-schedule/${scheduleId}?masjidId=${masjidId}&scheduleId=${scheduleId}`,
     );
-    console.log('update published schedule results', result.data);
     if (result.status === 200) {
       return result.data;
     } else if (result.status == 401) {

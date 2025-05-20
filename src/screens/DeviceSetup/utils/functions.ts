@@ -52,15 +52,24 @@ export function _startCheckBle(callback: (e: Event) => void) {
 export function _checkBleStatus() {
   try {
     return new Promise((resolve: (value: boolean) => any, reject) => {
-      BleManager.checkState().then(state => {
+      BluetoothStateManager.onStateChange(state => {
         console.log(`current BLE state = '${state}'.`);
-        if (state == 'on') {
+        if (state == 'PoweredOn') {
           resolve(true);
         }
-        if (state == 'off') {
+        if (state == 'PoweredOff') {
           resolve(false);
         }
-      });
+      }, true);
+      // BleManager.checkState().then(state => {
+      //   console.log(`current BLE state = '${state}'.`);
+      //   if (state == 'on') {
+      //     resolve(true);
+      //   }
+      //   if (state == 'off') {
+      //     resolve(false);
+      //   }
+      // });
     });
   } catch (e) {
     crashlytics().recordError(e as Error);

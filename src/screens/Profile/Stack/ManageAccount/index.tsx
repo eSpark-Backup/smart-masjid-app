@@ -152,10 +152,12 @@ export default function ManageAccount({
   const onSave = async (otp?: string) => {
     state.globalLoading.set(true);
     // setLoading(true);
-    const isValidPhone = await isValidPhoneNumber(data.phone, country);
-    if (!isValidPhone) {
-      return;
-    }
+    // const isValidPhone =
+    //   data.phone === '' ? true : await isValidPhoneNumber(data.phone, country);
+    // if (!isValidPhone) {
+    //   return;
+    // }
+
     const oldData: any = userData;
     const gotUpdated =
       data[displayData.find(val => val.editable)?.key!] !=
@@ -389,6 +391,9 @@ export default function ManageAccount({
                       // setLoading(true);
                       const email = data['email'];
                       const phoneNo = data['phone'];
+                      console.log('phoneNophoneNo', phoneNo);
+
+                      const nothingButValid = phoneNo === '+1' ? true : false;
                       const activeKey = displayData.find(
                         val => val.editable,
                       )?.key;
@@ -407,6 +412,10 @@ export default function ManageAccount({
                           return;
                         }
                       }
+                      if (activeKey == 'phone' && nothingButValid) {
+                        onSave();
+                        return;
+                      }
                       if (activeKey == 'phone') {
                         const isValidPhone = await isValidPhoneNumber(
                           phoneNo,
@@ -417,18 +426,8 @@ export default function ManageAccount({
                           // setLoading(false);
                           return;
                         }
-                        if (Boolean(phoneNo) == false) {
-                          Toast.show({
-                            text2: 'Phone number is not valid',
-                            type: 'error',
-                            visibilityTime: 10000,
-                          });
-                          state.globalLoading.set(false);
-                          // setLoading(false);
-                          return;
-                        }
                       }
-                      const result = await SendOTP(
+                      await SendOTP(
                         activeKey == 'email' ? email : '',
                         activeKey == 'phone' ? phoneNo : '',
                       );

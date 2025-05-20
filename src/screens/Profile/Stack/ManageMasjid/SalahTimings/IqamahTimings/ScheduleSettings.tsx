@@ -9,13 +9,8 @@ import {
 } from 'react-native';
 import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
-import crashlytics from '@react-native-firebase/crashlytics';
 
-import {
-  GetJummahHistory,
-  generatePDf,
-  getSalahTimingsOfMasjid,
-} from '../../../../../../api/masjidController';
+import { generatePDf } from '../../../../../../api/masjidController';
 import {
   GapView,
   LogoutModal,
@@ -23,16 +18,8 @@ import {
   MyText,
   MyTitle,
   Rounded,
-  TextLabel,
-  TimeSheet,
 } from '../../../../../../components';
-import { masjidStore } from '../../../../../../store/MasjidStore';
 import { userStore } from '../../../../../../store/UserStore';
-import {
-  JummahTime,
-  SalahTimings,
-} from '../../../../../../types/masjidControllerTypes';
-import { convertResponseToData } from '../../../../../../utils/functions';
 import { WINDOW_WIDTH } from '../../../../../../constants';
 import {
   GetMonthlySchedule,
@@ -56,8 +43,6 @@ export default function ScheduleSettings({
 }) {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
-  const schedule = useHookstate(userStore.monthlySchedule);
-  const monthlySchedule = useHookstate(userStore.monthlySchedule).get();
 
   const [emailPrompt, setEmailPrompt] = useState(false);
   const [successPrompt, setSuccessPrompt] = useState(false);
@@ -123,7 +108,7 @@ export default function ScheduleSettings({
         {
           id: 0,
           title: 'Month',
-          val: moment().month(date?.getMonth()!).format('MMMM') ?? 'March',
+          val: date ? moment().month(date.getMonth()).format('MMMM') : 'March',
         },
         {
           id: 1,
@@ -169,14 +154,6 @@ export default function ScheduleSettings({
     setCurrentDate(e);
     state.globalLoading.set(true);
     getScheduleData(e);
-    // getSalahTimingsOfMasjid(
-    //   userData?.masjid?.id.toString() as string,
-    //   moment(e).startOf('month').format('YYYY-MM-DD') as string,
-    //   'MONTH',
-    // ).then((timings: SalahTimings[] | undefined) => {
-    //   // convertTimings(timings);
-    //   state.globalLoading.set(false);
-    // });
   };
 
   const onPublishSchedule = async () => {
@@ -200,7 +177,7 @@ export default function ScheduleSettings({
       monthSchedule?.id!,
     );
     if (res) {
-      schedule.set(res);
+      updateMonthlySchInfo(res);
       state.globalLoading.set(false);
     } else {
       state.globalLoading.set(false);
@@ -223,8 +200,6 @@ export default function ScheduleSettings({
       state.globalLoading.set(false);
     }
   };
-
-  console.log('monthlySchedule', monthSchedule);
 
   return (
     <View
