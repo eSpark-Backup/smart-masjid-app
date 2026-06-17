@@ -34,7 +34,7 @@
     "geolib": "^3.3.3",
     "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",
-    "patch-package": "^6.5.1",
+    "patch-package": "^8.0.1",
     "phone": "^3.1.37",
     "postinstall-postinstall": "^2.1.0",
     "react": "18.2.0",
