@@ -1,7 +1,17 @@
 # Smart-Masjid-App
-# Branching
+
+## Branching Mechanics
+
 - First Case of all create epic branch with that naming epic/issues/issue no ===> epic/issues/3
 - Second Case if you need to create a task for an epic simple naming feature/issues/issue no ===> feature/issues/5
 - Third Case if you need to work on any bug for bug naming should be hotfix/issues/issue no ===> hotfix/issues/4
 
 - How we follow the merging process we have an master branch and development branch in our project. when start working on new epic it must to have create a new branch as a epic branch from develpment follow first case, After creating succusfully epic branch must to creat a feature branch that feature you have to start work. All work done in an feature branch when you create an apk and give it to QA and create a PR with epic after QA verification you have to be merge your feature with epic follow the same process when your full epic was not finish after finish all the epic tasks you have to Create an APK of epic and again give it to QA for verification and create a PR of epic with development branch. About the bug resolving you have to to create a branch if bug found in develpment simplete create branch with development follow case third when successfully fix your bug create PR with development. Bug found in Epic or Task same thing follow as mentioned with development.
+
+## Figma Designs
+
+- [Figma Link](https://www.figma.com/file/cAUxwrl0ukBBg7sVqrCaGZ/Smart-Masjid-Mobile-App-Final-V2?type=design&node-id=0%3A1&t=mOsribpdO1Mhhv5j-1)
+
+## Swagger Api Collection
+
+- [Swagger Api Collection Link](http://smartmasjid-api-qa.futuriklabs.com/swagger-ui/index.html#)
