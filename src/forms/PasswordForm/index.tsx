@@ -1,0 +1,203 @@
+import React, { useState } from 'react';
+import { StyleSheet, View, Animated, Platform } from 'react-native';
+import WifiManager, {
+  ConnectToProtectedSSIDParams,
+} from 'react-native-wifi-reborn';
+import Toast from 'react-native-toast-message';
+import { Formik } from 'formik';
+import crashlytics from '@react-native-firebase/crashlytics';
+
+let Wifi: any = null;
+
+if (Platform.OS == 'android') {
+  import('@react-native-tethering/wifi')
+    .then(module => (Wifi = module.default))
+    .catch(err => console.error('Error Importing library'));
+}
+
+import {
+  GapView,
+  MyInput,
+  MyText,
+  MyTextSubHeader,
+  MyTitle,
+  OverlayLoader,
+  Rounded,
+} from '../../components';
+import { WINDOW_WIDTH } from '../../constants';
+import { DeviceSetupSchema } from '../../constants/validations/schema';
+import { GlobalProps } from '../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
+
+export default function PasswordForm({
+  ssid,
+  setPass,
+  setStep,
+  contentOpacity,
+}: {
+  ssid?: string;
+  setPass: (value: string) => void;
+  setStep: (value: number) => void;
+  contentOpacity: any;
+}) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
+  const [loading, setLoading] = useState(false);
+  const [secInp, setSecInp] = useState(true);
+
+  const connectToWifi = async (
+    {
+      ssid,
+      password,
+    }: {
+      ssid: string;
+      password: string;
+    },
+    clear: () => void,
+  ) => {
+    state.globalLoading.set(true);
+    // setLoading(true);
+    try {
+      if (Platform.OS == 'android') {
+        const options: ConnectToProtectedSSIDParams = {
+          ssid,
+          password,
+          isWEP: false,
+          isHidden: false,
+        };
+        const res = await WifiManager.connectToProtectedWifiSSID(options);
+        await WifiManager.disconnect();
+        const isForget = await WifiManager.isRemoveWifiNetwork(ssid);
+        if (isForget) {
+          console.log('Forgot Network which was validated', isForget);
+          state.globalLoading.set(false);
+          // setLoading(false);
+          setStep(6);
+          clear();
+        } else {
+          console.log('Failed to forgot', isForget);
+        }
+      } else {
+        const res = await WifiManager.disconnectFromSSID(ssid);
+        console.log('res', res);
+        const options: ConnectToProtectedSSIDParams = {
+          ssid,
+          password,
+          isWEP: false,
+          isHidden: false,
+        };
+        WifiManager.connectToProtectedWifiSSID(options).then(
+          a => {
+            console.log('Connected successfully!', a);
+            state.globalLoading.set(false);
+            setStep(6);
+            clear();
+          },
+          e => {
+            console.log('Connection failed!', e);
+            state.globalLoading.set(false);
+            Toast.show({
+              text2: 'WiFi Password incorrect.' + e,
+              type: 'error',
+              visibilityTime: 10000,
+            });
+            clear();
+          },
+        );
+      }
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('error in connecting wifi', error);
+      state.globalLoading.set(false);
+      // setLoading(false);
+      Toast.show({
+        text2: 'WiFi Password incorrect. Please try again',
+        type: 'error',
+        visibilityTime: 10000,
+      });
+      clear();
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* <OverlayLoader isShow={loading} /> */}
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          top:
+            Platform.OS == 'ios'
+              ? -WINDOW_WIDTH / 1.6 / 3
+              : -WINDOW_WIDTH / 1.9 / 3,
+        }}>
+        <Animated.View style={[{ opacity: contentOpacity }]}>
+          <MyTitle text={'Device Setup'} style={{ alignSelf: 'center' }} />
+        </Animated.View>
+      </View>
+      <GapView />
+      <View>
+        <MyTextSubHeader
+          text="Enter Wi-Fi password"
+          style={{ textAlign: 'center' }}
+        />
+        <GapView length={20} />
+        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+          <MyText text={'Connecting to : '} textStyle={styles.text} />
+          <MyTextSubHeader text={ssid!} />
+        </View>
+        <GapView length={30} />
+        <Formik
+          enableReinitialize={true}
+          initialValues={{ password: '' }}
+          validationSchema={DeviceSetupSchema.wifiPassword}
+          onSubmit={({ password }, { resetForm }) => {
+            setPass(password);
+            connectToWifi({ ssid: ssid ?? '', password }, resetForm);
+          }}>
+          {({ handleChange, handleSubmit, values, errors, touched }) => (
+            <View style={{ alignItems: 'center' }}>
+              <MyInput
+                secureInput
+                isSecure={secInp}
+                onEyePress={() => setSecInp(!secInp)}
+                placeholder="Password"
+                onChangeText={handleChange('password')}
+                value={values.password}
+              />
+              {errors.password && touched.password && (
+                <MyText
+                  text={errors.password}
+                  textStyle={{
+                    color: 'red',
+                    width: WINDOW_WIDTH - 110,
+                    marginTop: 4,
+                  }}
+                />
+              )}
+              <View
+                style={{
+                  marginTop: 30,
+                }}>
+                <Rounded label="Connect" width={250} onPress={handleSubmit} />
+              </View>
+            </View>
+          )}
+        </Formik>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 16,
+    fontFamily: 'Roboto-Regular',
+    textAlign: 'center',
+    color: '#3e3e3e',
+  },
+});

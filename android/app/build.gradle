@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services' 
+apply plugin: 'com.google.firebase.crashlytics'
 
 import com.android.build.OutputFile
 
@@ -76,6 +78,30 @@ def enableProguardInReleaseBuilds = false
  * give correct results when using with locales other than en-US. Note that
  * this variant is about 6MiB larger per architecture than default.
  */
+
+ project.ext.vectoricons = [
+    iconFontNames: [ 
+        'MaterialIcons.ttf',
+        'EvilIcons.ttf',
+        'AntDesign.ttf',
+        'Entypo.ttf',
+        'Feather.ttf',
+        'FontAwesome.ttf',
+        'FontAwesome5_Brands.ttf',
+        'FontAwesome5_Regular.ttf',
+        'FontAwesome5_Solid.ttf',
+        'Fontisto.ttf',
+        'Foundation.ttf',
+        'Ionicons.ttf',
+        'MaterialCommunityIcons.ttf',
+        'Octicons.ttf',
+        'SimpleLineIcons.ttf',
+        'Zocial.ttf'
+    ] // Name of the font files you want to copy
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 /**
@@ -93,13 +119,13 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.smart_masjid"
+    namespace "com.futurik.smartmasjid"
     defaultConfig {
-        applicationId "com.smart_masjid"
+        applicationId "com.futurik.smartmasjid"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "1.9"
     }
 
     splits {
@@ -111,6 +137,14 @@ android {
         }
     }
     signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -125,7 +159,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -165,6 +199,17 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation 'com.facebook.fresco:fresco:2.0.0'
+    // For animated GIF support
+    implementation 'com.facebook.fresco:animated-gif:2.5.0'
+
+    // For WebP support, including animated WebP
+    implementation 'com.facebook.fresco:animated-webp:2.5.0'
+    implementation 'com.facebook.fresco:webpsupport:2.5.0'
+
+    // For WebP support, without animations
+    implementation 'com.facebook.fresco:webpsupport:2.5.0'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

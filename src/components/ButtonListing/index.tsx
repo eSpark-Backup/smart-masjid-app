@@ -1,0 +1,118 @@
+import React from 'react';
+import { Theme, useTheme } from '@react-navigation/native';
+import { View, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+
+import { WINDOW_WIDTH } from '../../constants';
+import { Card } from '../../containers';
+import GapView from '../GapView';
+import MyDivider from '../MyDivider';
+import MyText from '../MyText';
+
+interface ListItem {
+  rightChild?: JSX.Element;
+  title: string;
+  leftIcon?: JSX.Element;
+  onPress?: () => void;
+}
+
+export default function ButtonListing({
+  data = [],
+  radius = 0,
+  titleWidth,
+  lines,
+  trademark,
+}: {
+  data: ListItem[];
+  radius?: number;
+  titleWidth?: string | number;
+  lines?: number;
+  trademark?: boolean;
+}) {
+  return (
+    <Card radius={radius} width={WINDOW_WIDTH - 28}>
+      <FlatList
+        style={{ maxHeight: 216 }}
+        nestedScrollEnabled
+        data={data}
+        renderItem={({ item, index }) => {
+          return (
+            <ListCard
+              titleWidth={titleWidth}
+              item={item}
+              index={index}
+              lines={lines}
+              trademark={trademark}
+            />
+          );
+        }}
+        ItemSeparatorComponent={() => {
+          return <MyDivider height={0.25} />;
+        }}
+      />
+    </Card>
+  );
+}
+
+const ListCard = ({
+  item,
+  index,
+  titleWidth,
+  lines,
+  trademark,
+}: {
+  item: ListItem;
+  index: number;
+  titleWidth?: string | number;
+  lines?: number;
+  trademark?: boolean;
+}) => {
+  const theme: Theme = useTheme();
+  const styles = makeStyles(theme, item, titleWidth);
+
+  return (
+    <TouchableOpacity
+      onPress={item?.onPress}
+      activeOpacity={0.9}
+      key={`${item}-${index}`}
+      style={styles.cardContainer}>
+      {item.leftIcon && item?.leftIcon}
+      {item.leftIcon && <GapView mode="horizontal" length={15} />}
+      <View style={styles.titleWidth}>
+        <MyText
+          text={item?.title}
+          size={16}
+          lines={lines}
+          trademark={trademark}
+        />
+      </View>
+      <GapView
+        mode="horizontal"
+        length={item.leftIcon ? 50 : WINDOW_WIDTH / 8.5}
+      />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {item.rightChild && item?.rightChild}
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const makeStyles = (
+  theme: Theme,
+  props: ListItem,
+  titleWidth?: string | number,
+) => {
+  const { colors } = theme;
+  const { rightChild } = props;
+  return StyleSheet.create({
+    cardContainer: {
+      flexDirection: 'row',
+      paddingHorizontal: 20,
+      height: 54,
+      alignItems: 'center',
+      justifyContent: !rightChild ? 'flex-start' : 'space-between',
+    },
+    titleWidth: {
+      width: titleWidth ?? '100%',
+    },
+  });
+};

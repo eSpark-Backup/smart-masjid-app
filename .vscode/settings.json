@@ -1,0 +1,25 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#005358",
+    "activityBar.background": "#005358",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#df00d2",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#005358",
+    "statusBar.background": "#002325",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#005358",
+    "statusBarItem.remoteBackground": "#002325",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#002325",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#00232599",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#002325",
+  "cSpell.words": [
+    "jummah"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "891649283900",
+    "project_id": "smart-masjid-279a7",
+    "storage_bucket": "smart-masjid-279a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891649283900:android:432f1e5256964bd2f4b039",
+        "android_client_info": {
+          "package_name": "com.futurik.smartmasjid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891649283900-at3edbbp8hnh645t2ga42lmf3l2f7bq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXnkFa_TPGYyxfhSmyNOiFiJsxn1ng3rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891649283900-at3edbbp8hnh645t2ga42lmf3l2f7bq1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "891649283900-n10mhtaj9d9grolb9g1kaef4j7qnhen3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.futurik.smartmasjid"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

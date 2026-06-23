@@ -1,9 +1,33 @@
 /**
  * @format
  */
+import 'react-native-gesture-handler';
+import { AppRegistry, LogBox, Text, TextInput } from 'react-native';
+import MapView, { enableLatestRenderer } from 'react-native-maps';
 
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
+import App from './src/navigation';
+// import App from './App';
+import { name as appName } from './app.json';
+import { _requestUserNotificationPermission } from './src/utils/functions';
 
+LogBox.ignoreLogs(['VirtualizedList', 'new NativeEventEmitter()']);
+
+// Override Text scaling
+if (Text.defaultProps) {
+  Text.defaultProps.allowFontScaling = false;
+} else {
+  Text.defaultProps = {};
+  Text.defaultProps.allowFontScaling = false;
+}
+
+// Override Text scaling in input fields
+if (TextInput.defaultProps) {
+  TextInput.defaultProps.allowFontScaling = false;
+} else {
+  TextInput.defaultProps = {};
+  TextInput.defaultProps.allowFontScaling = false;
+}
+
+_requestUserNotificationPermission();
+// enableLatestRenderer();
 AppRegistry.registerComponent(appName, () => App);

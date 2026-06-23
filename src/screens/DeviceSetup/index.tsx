@@ -1,0 +1,1023 @@
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  BackHandler,
+  NativeModules,
+  NativeEventEmitter,
+  Platform,
+  View,
+} from 'react-native';
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import BleManager, { Peripheral } from 'react-native-ble-manager';
+import jwtDecode from 'jwt-decode';
+import crashlytics from '@react-native-firebase/crashlytics';
+
+//@ts-ignore
+import RNSettings from 'react-native-settings';
+//@ts-ignore
+import { bytesToString } from 'convert-string';
+import moment from 'moment';
+import {
+  fetch,
+  NetInfoState,
+  NetInfoStateType,
+} from '@react-native-community/netinfo';
+
+import { userStore } from '../../store/UserStore';
+import { Wrapper } from '../../containers';
+import {
+  WifiSelectForm,
+  PasswordForm,
+  DeviceNicknameForm,
+  DeviceSelectForm,
+} from './DeviceForms';
+import {
+  BottomNavigationParamList,
+  DeviceInfo,
+  RootStackParamList,
+} from '../../types';
+import { DLoader, MyToast, SLoader } from '../../components';
+import {
+  _checkBleStatus,
+  _checkLocationStatus,
+  _connectBleDevice,
+  _disconnectBleDevice,
+  _readFromDevice,
+  _scanBleDevices,
+  _startBluetooth,
+  _startCheckBle,
+  _startLocationCheck,
+  _stopLocationCheck,
+  _writeToDevice,
+} from './utils/functions';
+import {
+  _checkDeviceTelemetry,
+  _resetDevice,
+  _saveDevice,
+  _saveDeviceBtnToMasjid,
+  _saveDeviceToUser,
+  _updateDevice,
+} from '../../api/deviceController';
+import { _checkDeviceExists } from '../../api/externalControllers';
+import { useUpdateEffect, _requestBlePermissions } from '../../utils';
+import {
+  UserPermissions,
+  UserToken,
+} from '../../types/userControllerApiResponse';
+import { useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
+import { api } from '../../api';
+import { requestLocation } from '../../utils/functions';
+
+type DSetupNavigationProps = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'DSetup'
+>;
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
+
+export default function DeviceSetupScreen() {
+  // console.log('User ka bta id mili ha?', userStore.get());
+
+  let telemetryInterval: number;
+  const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
+  const route: any = useRoute();
+  const devSetup = useHookstate(globalStore.devSetup);
+  const userSetup = useHookstate(userStore).get();
+  const state = useHookstate(globalStore);
+  const isFocused = useIsFocused();
+  const [bleStatus, setBleStatus] = useState<boolean | undefined>();
+  const [locationStatus, setlocationStatus] = useState<boolean | undefined>();
+  const [retry, setRetry] = useState<boolean>();
+  const [step, setStep] = useState(
+    route?.params?.deviceData?.deviceTelemetry?.status !== 'Online' ? 1 : 4,
+  );
+  const [devInfo, setDevInfo] = useState<DeviceInfo>({});
+  const [issues, setIssues] = useState<string[]>([]);
+  const [scannedDevices, setScannedDevices] = useState<
+    Array<Peripheral | undefined>
+  >([]);
+  const [iosScannedData, setIosScannedData] = useState(
+    new Map<Peripheral['id'], Peripheral>(),
+  );
+  const [disable, setDisable] = useState(false);
+  const [wifiError, setWifiError] = useState(false);
+  const [connFlag, setConnFlag] = useState(true);
+  const [toastContent, setToastContent] = useState<{
+    title?: string;
+    message?: string;
+    btnText?: string;
+    onPress?: () => void;
+    points?: string[];
+    isSuccess?: boolean;
+  }>({
+    title: undefined,
+    message: undefined,
+    btnText: undefined,
+    onPress: () => {
+      setStep(1);
+      setRetry(true);
+    },
+    points: [],
+  });
+
+  const toastContentRef = useRef<string[]>([]);
+
+  const backAction = () => {
+    console.log('current flag', route?.params?.from);
+    if (
+      route.params.from === 'Device' ||
+      route.params.from === 'SelectedDevice'
+    ) {
+      navigation.navigate('HomeBottomTab', {
+        screen: 'Device',
+      });
+    }
+    return true;
+  };
+
+  const addOrUpdatePeripheral = (peripheral: Peripheral) => {
+    // new Map() enables changing the reference & refreshing UI.
+    // TOFIX not efficient.
+    if (peripheral?.name) {
+      console.log('kia ha', peripheral);
+      setIosScannedData(map => new Map(map.set(peripheral.id, peripheral)));
+    }
+  };
+
+  useEffect(() => {
+    if (devSetup.get()) {
+      navigation.navigate('DSetup', { from: 'Device' });
+      devSetup.set(false);
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   // console.log('xxx', JSON.stringify(Array.from(iosScannedData.values())));
+  // }, [iosScannedData.values()]);
+
+  useEffect(() => {
+    if (isFocused) {
+      state.hideNetError.set(true);
+      const listeners = [
+        bleManagerEmitter.addListener(
+          'BleManagerDiscoverPeripheral',
+          peripheral => addOrUpdatePeripheral(peripheral),
+        ),
+        bleManagerEmitter.addListener('BleManagerStopScan', () =>
+          console.log('scan stopped'),
+        ),
+      ];
+
+      return () => {
+        console.debug('[app] main component unmounting. Removing listeners...');
+        for (const listener of listeners) {
+          listener.remove();
+        }
+      };
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => {
+      backHandler.remove();
+      state.hideNetError.set(false);
+      if (
+        !toastContentRef.current?.some(
+          (item: string) => item === 'Bluetooth permission denied',
+        ) ||
+        step !== 1
+      ) {
+        _disconnectBleDevice(
+          devInfo,
+          route?.params?.deviceData?.deviceTelemetry?.status === 'Online',
+        );
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    toastContentRef.current = toastContent.points as string[];
+  }, [toastContent.points]);
+
+  useEffect(() => {
+    if (retry) {
+      checkStatus();
+      setRetry(false);
+    }
+  }, [retry]);
+
+  useEffect(() => {
+    console.log('step current?', step);
+    if (step === 6) {
+      if (route?.params?.deviceData?.deviceTelemetry?.status !== 'Online') {
+        handleDeviceSetup();
+      } else {
+        setTimeout(() => {
+          updateDevice('SERVER');
+        }, 5000);
+      }
+    } else if (step == 8 && locationStatus && bleStatus) {
+      checkAndDisconnect();
+    }
+    handleShowBack(step);
+  }, [step]);
+
+  useEffect(() => {
+    checkStatus();
+    // _startLocationCheck(_handleGPSProviderEvent);
+    // if (
+    //   route?.params?.deviceData?.deviceTelemetry?.status != undefined &&
+    //   route?.params?.deviceData?.deviceTelemetry?.status != 'Online'
+    // ) {
+    //   _startCheckBle(_handleBleStateEvent);
+    // }
+    // return () => {
+    //   _stopLocationCheck();
+    // };
+  }, [isFocused]);
+
+  // useUpdateEffect(() => {
+  //   console.log('internettype', InternetType);
+  //   console.log('bleStatus btao', bleStatus);
+  //   console.log('locationStatus btao', locationStatus);
+
+  //   if (locationStatus && bleStatus) {
+  //     setIssues([]);
+  //   }
+  //   if (locationStatus === false) {
+  //     setIssues(state => {
+  //       return [...state, 'Location is turned off'];
+  //     });
+  //   }
+  //   if (
+  //     bleStatus === false &&
+  //     route?.params?.deviceData?.deviceTelemetry?.status != 'Online'
+  //   ) {
+  //     setIssues(state => {
+  //       return [...state, 'Bluetooth is turned off'];
+  //     });
+  //   }
+  // }, [locationStatus, bleStatus]);
+
+  useUpdateEffect(() => {
+    if (issues?.length > 0) {
+      setStep(8);
+      setToastContent(state => ({
+        ...state,
+        title: 'Device setup error',
+        message: 'Issues Found',
+        onPress: () => {
+          if (wifiError) {
+            setStep(4);
+            setIssues([]);
+            setWifiError(false);
+          } else {
+            setRetry(true);
+            setIssues([]);
+          }
+        },
+        points: [...new Set(issues)],
+        isSuccess: false,
+      }));
+    }
+  }, [issues]);
+
+  async function checkAndDisconnect() {
+    console.log('check huwa???');
+
+    const peripheralsArray = await BleManager.getConnectedPeripherals([]);
+    if (peripheralsArray.length > 0) {
+      _disconnectBleDevice(
+        devInfo,
+        route?.params?.deviceData?.deviceTelemetry?.status === 'Online',
+      );
+    }
+  }
+
+  function _handleGPSProviderEvent(e: any) {
+    if (e[RNSettings.LOCATION_SETTING] === RNSettings.DISABLED) {
+      setlocationStatus(false);
+    } else {
+      setlocationStatus(true);
+    }
+  }
+
+  function _handleBleStateEvent(e: any) {
+    console.log('bta ble state', e);
+    if (e === 'PoweredOn') {
+      setBleStatus(true);
+    }
+    if (e === 'PoweredOff') {
+      setBleStatus(false);
+    }
+  }
+
+  const checkStatus = async () => {
+    try {
+      const ble = await _checkBleStatus();
+      const loc = await _checkLocationStatus();
+      const internetType = await checkNetwork();
+      setBleStatus(ble);
+      setlocationStatus(loc);
+      if (
+        route?.params?.from === 'SelectedDevice' &&
+        route?.params?.deviceData?.deviceTelemetry?.status == 'Online'
+      ) {
+        if (internetType === 'cellular') {
+          setIssues(state => [
+            ...state,
+            'Please connect your phone to a WiFi Network',
+          ]);
+        } else {
+          setStep(4);
+        }
+      } else {
+        setStep(1); //todo: first 6 then 1
+        setConnFlag(true);
+        await handlePermissions(ble, loc);
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
+
+  const handleShowBack = (currStep: number) => {
+    console.log('parent?', route?.params?.from);
+    switch (currStep) {
+      case 2:
+        if (route?.params?.from == 'SelectedDevice') {
+          setDisable(false);
+        } else {
+          setDisable(true);
+        }
+        break;
+      case 3:
+        setDisable(true);
+        break;
+      case 4:
+        setDisable(true);
+        break;
+      case 5:
+        setDisable(true);
+        break;
+      default:
+        setDisable(false);
+    }
+  };
+
+  const handleBack = () => {
+    if (route.params.from === 'SelectedDevice') {
+      navigation.goBack();
+      return;
+    }
+    switch (step) {
+      case 2:
+        return navigation.goBack();
+      case 3:
+        return step - 1;
+      case 4:
+        return step - 1;
+      case 5:
+        return step - 1;
+      default:
+        return 1;
+    }
+  };
+
+  const masjidSetupText = !route?.params?.from
+    ? '\n \nLets subscribe to a masjid now.'
+    : '';
+
+  const handleDeviceSetup = async () => {
+    console.log('xxxxx======>>>>>', devInfo);
+    if (!connFlag) {
+      return;
+    }
+    try {
+      const res = await _connectBleDevice(devInfo);
+      console.log('kia ha peripherial info', res);
+      setConnFlag(false);
+      const stringData = await _readFromDevice(
+        devInfo,
+        '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+        '6e400010-b5a3-f393-e0a9-e50e24dcca9e',
+      );
+      console.log('kia ha data >>>>>>>', stringData);
+      const jsonData = JSON.parse(stringData as string);
+      setDevInfo(state => ({ ...state, ...jsonData }));
+
+      console.log('devInfo before write process', devInfo);
+
+      await _writeToDevice(
+        devInfo,
+        '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+        '6e400011-b5a3-f393-e0a9-e50e24dcca9e',
+        route.params?.isBtn,
+      );
+      const response = await _scanBleDevices(5);
+      if (
+        response?.some(item => {
+          item?.id === devInfo?.macId;
+        })
+      ) {
+        console.log(
+          'xxxxxxxxxxxxx Device was Scanned Again! Not connected xxxxxxxxxxxxx',
+        );
+        setStep(8);
+      } else {
+        await registerDevice({ ...devInfo, ...jsonData });
+      }
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('error while ble connect', error);
+      setStep(8);
+      setToastContent(state => ({
+        ...state,
+        title: 'Device setup error',
+        message: 'Please Check',
+        points: [
+          'Device is powered on',
+          'Phone is within range of the device',
+          'Device light is yellow',
+          'WiFi is working (2.4 Ghz only)',
+          'WiFi password entered is correct',
+        ],
+        onPress: () => {
+          setRetry(true);
+        },
+        isSuccess: true,
+      }));
+    }
+  };
+
+  const updateDevice = async (from: 'BLE' | 'SERVER') => {
+    try {
+      console.log('devInfoxxxxxxxxx', devInfo);
+      let res: any;
+      if (from == 'SERVER') {
+        const updateWifiRes = await api.put(
+          'devices/' + route?.params?.deviceData.id + '/wifi',
+          {
+            wifiSsid: devInfo.ssid,
+            wifiPassword: devInfo.password,
+          },
+        );
+        console.log('updateWifiRes', updateWifiRes);
+        console.log('updateWifiRes.data', updateWifiRes.data);
+        res = updateWifiRes;
+      } else {
+        const devRes: any = await _updateDevice({
+          ...route?.params?.deviceData,
+          wifiSsid: devInfo.ssid,
+          wifiPassword: devInfo.password,
+        });
+        res = devRes;
+      }
+
+      console.log('reSSSSSSSS', res);
+
+      if (res) {
+        telemetryInterval = setInterval(() => {
+          checkTelemetry(
+            route?.params?.deviceData?.id.toString(),
+            true,
+            from == 'SERVER',
+          ); // check Telemetery for userDevice
+        }, 10000);
+      } else {
+        setStep(8);
+        setToastContent({
+          title: undefined,
+          message: undefined,
+          btnText: undefined,
+          onPress: () => {
+            console.log('kia ha');
+            navigation.navigate('HomeBottomTab', {
+              screen: 'Device',
+            });
+          },
+        });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
+
+  const registerDevice = async (deviceInfo: DeviceInfo) => {
+    try {
+      const dev = scannedDevices.find(item => item?.id === deviceInfo?.macId);
+      const isBtn = dev?.name?.includes('SMBTN');
+      const USER_TOKEN: any = userStore.get().token;
+      const jwtDecodedObj: UserToken = jwtDecode(USER_TOKEN);
+      if (jwtDecodedObj?.masjidId === 0 && jwtDecodedObj?.userType?.id == 2) {
+        setStep(8); // gotten a falty masjid id
+        console.log('gotten a faulty masjid id (0)');
+      } else {
+        if (route?.params?.from != 'SelectedDevice') {
+          const devRes: any = await _saveDevice(deviceInfo);
+          if (isBtn) {
+            console.log('-> Detected Smart Button');
+            console.log(
+              'kia ha decoded string========??????',
+              JSON.stringify(jwtDecodedObj),
+            );
+            const masjidDevRes: any = await _saveDeviceBtnToMasjid(
+              devRes?.id,
+              jwtDecodedObj.masjidId,
+            );
+            console.log('kia res???', masjidDevRes);
+            if (masjidDevRes) {
+              telemetryInterval = setInterval(() => {
+                checkTelemetry(masjidDevRes?.id.toString()); // check Telemetery masjidDevice
+              }, 10000);
+            } else {
+              setStep(8); // failed saving device (show error screen)
+            }
+          } else {
+            console.log('-> Detected Smart Speaker');
+            const userDevRes: any = await _saveDeviceToUser(devRes?.id);
+            console.log('kia res???', userDevRes);
+            if (userDevRes) {
+              telemetryInterval = setInterval(() => {
+                checkTelemetry(userDevRes?.id.toString()); // check Telemetery for userDevice
+              }, 10000);
+            } else {
+              setStep(8); // failed saving device (show error screen)
+            }
+          }
+        } else {
+          setTimeout(() => {
+            updateDevice('BLE');
+          }, 5000);
+        }
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
+
+  const validateUpdatedTime = (dateTime: string): boolean => {
+    const utcDateString = dateTime; // get a date/time
+    const timeNow = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // format the current time to the same format
+    const utcTimeNow = moment.utc(timeNow);
+    const differenceInMinutes = Math.abs(
+      moment(utcDateString).diff(moment(utcTimeNow), 'minutes'),
+    ); // check the difference in minutes: number
+    console.log(
+      'updatedTime:',
+      utcDateString,
+      '\n',
+      'timeNow:',
+      utcTimeNow,
+      '\n',
+      'Difference in Time:',
+      differenceInMinutes,
+    );
+
+    return differenceInMinutes < 2 ? true : false;
+  };
+
+  let count = 0;
+  const checkTelemetry = async (
+    deviceId: string,
+    checkTime?: boolean,
+    update?: boolean,
+  ) => {
+    // function should not run more than 3 times
+    if (count >= 3) {
+      count = 0;
+      handleDeleteDevice(deviceId);
+      clearInterval(telemetryInterval);
+      return;
+    } else {
+      try {
+        const res = await _checkDeviceTelemetry(deviceId, checkTime);
+        if (Boolean(res)) {
+          count = 0;
+          clearInterval(telemetryInterval);
+          if (checkTime) {
+            console.log('kas', res);
+            const isValid = validateUpdatedTime(res?.updatedTime);
+            if (isValid) {
+              setStep(7);
+              if (update) {
+                const devRes: any = await _updateDevice({
+                  ...route?.params?.deviceData,
+                  wifiSsid: devInfo.ssid,
+                  wifiPassword: devInfo.password,
+                });
+              }
+            } else {
+              setStep(8);
+              setToastContent({
+                title: undefined,
+                message: undefined,
+                btnText: undefined,
+                onPress: () => {
+                  // navigation.navigate('HomeBottomTab', {
+                  //   screen: 'Device',
+                  // });
+                  setStep(4);
+                },
+              });
+            }
+            // isValid
+            //   ? setStep(7)
+            //   : (setStep(8),
+            //     setToastContent({
+            //       title: undefined,
+            //       message: undefined,
+            //       btnText: undefined,
+            //       onPress: () => {
+            //         // navigation.navigate('HomeBottomTab', {
+            //         //   screen: 'Device',
+            //         // });
+            //         setStep(4);
+            //       },
+            //     }));
+          } else {
+            setStep(7); // successfully device added and found it out as well
+          }
+        } else {
+          console.log('nhi mila telemetry');
+        }
+      } catch (error) {
+        crashlytics().recordError(error as Error);
+        console.log('error on call check device telemetry', error);
+        clearInterval(telemetryInterval);
+        handleDeleteDevice(deviceId);
+      }
+      count++;
+    }
+  };
+
+  const handleDeleteDevice = async (deviceId: string) => {
+    try {
+      setToastContent(state => ({
+        ...state,
+        title: 'Device setup error',
+        message: 'Please Check',
+        points: [
+          'Device is powered on',
+          'Phone is within range of the device',
+          'Device light is yellow',
+          'WiFi is working (2.4 Ghz only)',
+          'WiFi password entered is correct',
+        ],
+        onPress: () => {
+          setRetry(true);
+        },
+        isSuccess: true,
+      }));
+      const res = await _resetDevice(deviceId);
+      console.log('kia mila delte pr', res);
+      if (Boolean(res)) {
+        setStep(8); // successfully device added and found it out as well
+      } else {
+        setStep(8); // telemetry is in the negative (device not added sucessfully)
+      }
+    } catch (error) {
+      crashlytics().recordError(error as Error);
+      console.log('error on delete device', error);
+      setStep(8);
+    }
+  };
+
+  const checkNetwork = async () => {
+    const fetchType = await fetch();
+    return fetchType.type;
+  };
+
+  const handlePermissions = async (ble?: boolean, location?: boolean) => {
+    try {
+      const internetType = await checkNetwork();
+      const status = await _requestBlePermissions();
+      const Locstatus = await requestLocation();
+      const bleCheck = ble ?? bleStatus;
+      const locationCheck = location ?? locationStatus;
+
+      console.log('Permission of Ble', status);
+      console.log('Permission of location', Locstatus);
+      console.log('location Status', locationCheck);
+      console.log('ble Status', bleCheck);
+      if (!status) {
+        // setStep(8);
+        // setToastContent({
+        //   title: 'Accept Permissions',
+        //   message: 'Accept All Permission to Continue to Scan for BLE devices',
+        //   onPress: () => {
+        //     setRetry(true);
+        //   },
+        //   points: ['Allow Permissions', 'Manually from "App Settings"'],
+        // });
+        setIssues(state => {
+          return [...state, 'Bluetooth permission denied'];
+        });
+      }
+      if (!Locstatus) {
+        setIssues(state => {
+          return [...state, 'Location permission denied'];
+        });
+      }
+      if (
+        bleCheck &&
+        locationCheck &&
+        status &&
+        Locstatus &&
+        internetType != 'cellular'
+      ) {
+        await _startBluetooth();
+        setTimeout(async () => {
+          const res = await _scanBleDevices();
+          console.log('devices found', res?.length);
+          const newArr = res?.filter(item => {
+            if (item.name?.includes('SMBTN') || item.name?.includes('SMSPK')) {
+              return item;
+            }
+          });
+          console.log('ESP devices found', JSON.stringify(newArr));
+          console.log(
+            '====>>>>>',
+            bleStatus,
+            'loc xxx',
+            locationStatus,
+            new Set(issues),
+          );
+          setScannedDevices(newArr!);
+          const macAdd = route?.params?.deviceData?.macAddress;
+          const isFound = !newArr?.some(item =>
+            macAdd
+              ? Platform.OS == 'ios'
+                ? item.advertising?.manufacturerData?.bytes == undefined
+                  ? false
+                  : bytesToString(item.advertising?.manufacturerData?.bytes) ===
+                    macAdd
+                : item.id === macAdd
+              : true,
+          );
+          if (issues?.length === 0) {
+            if (newArr?.length === 0 || isFound) {
+              setStep(8);
+              setToastContent(state => ({
+                ...state,
+                title: 'Device not found',
+                message: 'Please Check',
+                points: [
+                  'Device is powered on',
+                  'Phone is within range of the device',
+                  'Device light is yellow',
+                ],
+                onPress: () => {
+                  setRetry(true);
+                },
+                isSuccess: true,
+              }));
+            } else {
+              console.log('====== step 2 jana chahta ha', iosScannedData);
+              setStep(2);
+              setToastContent(state => ({
+                ...state,
+                title: 'Device not found',
+                message: 'Please Check',
+                points: [
+                  'Device is powered on',
+                  'Phone is within range of the device',
+                  'Device light is yellow',
+                ],
+                onPress: () => {
+                  setRetry(true);
+                },
+                isSuccess: true,
+              }));
+            }
+          }
+        }, 100);
+      } else {
+        console.log('location off ha? ', locationCheck);
+        console.log('ble off ha? ', bleCheck);
+        if (internetType === 'cellular') {
+          setIssues(state => [
+            ...state,
+            'Please connect your phone to a WiFi Network',
+          ]);
+        }
+        if (locationCheck === false) {
+          if (bleCheck) {
+            setIssues(state => {
+              return [
+                ...state.filter(item => item !== 'Bluetooth is turned off'),
+              ];
+            });
+          }
+          console.log('chala location xxxx');
+          setIssues(state => [...state, 'Location is turned off']);
+        }
+        if (bleCheck === false) {
+          console.log('chala');
+
+          if (locationCheck) {
+            console.log('chala bluetooth yyyyyy');
+            setIssues(state => {
+              return [
+                ...state.filter(item => item !== 'Location is turned off'),
+              ];
+            });
+          }
+          setIssues(state => [...state, 'Bluetooth is turned off']);
+        }
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+    }
+  };
+
+  const handleSkip = () => {
+    if (route.params?.from == 'Device') {
+      return navigation.navigate('HomeBottomTab', { screen: 'Device' });
+    }
+    if (route.params?.from == 'SelectedDevice') {
+      return navigation.goBack();
+    } else {
+      return navigation.navigate('HomeBottomTab', { screen: 'Home' });
+    }
+  };
+  const successHandleSkip = () => {
+    if (
+      route.params?.from == 'SelectedDevice' ||
+      route.params?.from == 'Device'
+    ) {
+      return navigation.navigate('HomeBottomTab', {
+        screen: 'Device',
+        params: { from: 'BtnDev' },
+      });
+    } else {
+      return navigation.navigate('HomeBottomTab', { screen: 'Home' });
+    }
+  };
+
+  return (
+    <Wrapper
+      bgImageSpacer={false}
+      showBack={disable}
+      onBackPress={() => disable && setStep(handleBack)}>
+      {({ props }) => {
+        return (
+          // <ScrollView
+          //   nestedScrollEnabled
+          //   contentContainerStyle={{ paddingBottom: 30, flexGrow: 1 }}>
+          <View>
+            {step == 1 && <DLoader contentOpacity={props.contentOpacity} />}
+            {step == 2 && (
+              <DeviceSelectForm
+                contentOpacity={props.contentOpacity}
+                userPermissions={
+                  userStore.get().currentRegisterUser
+                    ? (userStore.get().currentRegisterUser?.userType
+                        .permissions as UserPermissions[])
+                    : (userStore.get().userData?.userType
+                        .permissions as UserPermissions[])
+                }
+                data={scannedDevices ?? []}
+                setStep={(value: number) => setStep(value)}
+                setDevMacId={(value?: string) =>
+                  setDevInfo(state => ({ ...state, macId: value }))
+                }
+                selectedDeviceData={route?.params?.deviceData}
+                autoSelect={route?.params?.from == 'SelectedDevice'}
+                fromMasjidDevices={route.params?.isBtn}
+              />
+              // <View style={{ backgroundColor: 'pink', flex: 1 }} />
+            )}
+            {step == 3 && (
+              <DeviceNicknameForm
+                contentOpacity={props.contentOpacity}
+                setNickName={(value: string) =>
+                  setDevInfo(state => ({ ...state, nickName: value }))
+                }
+                setStep={(value: number) => setStep(value)}
+                currentDeviceName={route?.params?.deviceData?.name}
+                autoFillName={route?.params?.from == 'SelectedDevice'}
+              />
+            )}
+            {step == 4 && (
+              <WifiSelectForm
+                contentOpacity={props.contentOpacity}
+                setSSID={(value: string) =>
+                  setDevInfo(state => ({ ...state, ssid: value }))
+                }
+                setIssues={val => {
+                  if (val != 'Wifi SSID not found') {
+                    setWifiError(true);
+                  }
+                  setIssues(state => {
+                    return [...state, val];
+                  });
+                }}
+                setStep={(value: number) => setStep(value)}
+                currentWifiSSID={route?.params?.deviceData?.wifiSsid}
+                autoSelect={route?.params?.onlyPassword}
+              />
+            )}
+            {step == 5 && (
+              <PasswordForm
+                contentOpacity={props.contentOpacity}
+                setPass={(value: string) =>
+                  route.params?.isBtn
+                    ? setDevInfo(state => ({
+                        ...state,
+                        masjid_id: userSetup.userData?.masjid?.id.toString(),
+                        password: value,
+                      }))
+                    : setDevInfo(state => ({ ...state, password: value }))
+                }
+                ssid={devInfo?.ssid}
+                setStep={(value: number) => setStep(value)}
+              />
+            )}
+            {step == 6 && (
+              <SLoader
+                title="Device Setup"
+                contentOpacity={props.contentOpacity}
+                subtitle="Setting up your device"
+                message="Do not close the app till setup is complete."
+              />
+            )}
+            {step == 7 && (
+              <MyToast
+                contentOpacity={props.contentOpacity}
+                heading="Device Setup"
+                isSuccess={true}
+                onSkip={
+                  route.params?.from == 'Device'
+                    ? route.params?.isBtn
+                      ? undefined
+                      : successHandleSkip
+                    : undefined
+                }
+                btnText={
+                  route.params?.from == 'Device'
+                    ? route.params?.isBtn
+                      ? 'View Device'
+                      : 'Search Masjid'
+                    : 'Done'
+                }
+                onPress={() => {
+                  navigation.navigate('HomeBottomTab', {
+                    screen:
+                      route.params?.from == 'Device'
+                        ? route.params?.isBtn
+                          ? 'Device'
+                          : 'Search'
+                        : 'Device',
+                    params: { from: 'BtnDev' },
+                  });
+                }}
+                title="Device connected successfully"
+                message={
+                  route.params?.from == 'Device'
+                    ? route.params?.isBtn
+                      ? ''
+                      : 'Let’s subscribe to a masjid now.'
+                    : ''
+                }
+                center
+              />
+            )}
+            {step == 8 && (
+              <MyToast
+                contentOpacity={props.contentOpacity}
+                heading="Device Setup"
+                titleSize={16}
+                onSkip={handleSkip}
+                isSuccess={toastContent.isSuccess ?? true}
+                btnText={toastContent.btnText ?? 'Try Again'}
+                onPress={toastContent.onPress}
+                title={toastContent.title ?? 'Device setup error'}
+                message={toastContent.message ?? 'Please check'}
+                points={
+                  toastContent.points ?? [
+                    'Device is powered on',
+                    'Phone is within range of the device',
+                    'Device light is yellow',
+                    'WiFi is working (2.4 Ghz only)',
+                    'WiFi password entered is correct',
+                  ]
+                }
+              />
+            )}
+          </View>
+          // {/* </ScrollView> */}
+        );
+      }}
+    </Wrapper>
+  );
+}

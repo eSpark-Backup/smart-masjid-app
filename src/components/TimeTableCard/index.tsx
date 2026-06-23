@@ -1,0 +1,89 @@
+import { TouchableOpacity, View } from 'react-native';
+import React from 'react';
+
+import { Card } from '../../containers';
+import { Calendar, DeleteSvg, EditPencil } from '../../assets';
+import GapView from '../GapView';
+import MyText from '../MyText';
+import MyDivider from '../MyDivider';
+import { WINDOW_WIDTH } from '../../constants';
+
+interface TimeTableData {
+  name: string;
+  value: string;
+}
+
+const TimeTableCard = ({
+  data = [],
+  date = '',
+  deleteBtn,
+  onEdit,
+  showEdit,
+  onDelete,
+}: {
+  data: TimeTableData[];
+  date: string;
+  deleteBtn?: boolean;
+  showEdit?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+}) => {
+  return (
+    <View style={{ marginVertical: 5 }}>
+      <Card width={WINDOW_WIDTH - 28}>
+        <View style={{ padding: 10 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Calendar width={20} height={20} style={{ color: '#6E6E6E' }} />
+              <GapView mode="horizontal" length={5} />
+              <MyText text={date} size={12} />
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {deleteBtn ? (
+                <TouchableOpacity activeOpacity={0.5} onPress={onDelete}>
+                  <DeleteSvg width={20} height={20} color={'#006870'} />
+                </TouchableOpacity>
+              ) : null}
+              <GapView length={5} mode="horizontal" />
+              {showEdit ? (
+                <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
+                  <EditPencil width={18} height={18} color={'#006870'} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          </View>
+          <GapView />
+          <MyDivider width={WINDOW_WIDTH - 48} />
+          <GapView />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: data?.length > 3 ? 'space-between' : 'flex-start',
+            }}>
+            {data?.map(v => {
+              return (
+                <View
+                  key={v.name}
+                  style={{ marginRight: data?.length > 3 ? 0 : 20 }}>
+                  <MyText
+                    textStyle={{ textTransform: 'capitalize' }}
+                    text={v.name}
+                  />
+                  <GapView length={5} />
+                  <MyText
+                    size={12}
+                    textStyle={{ color: '#6E6E6E' }}
+                    text={v.value}
+                  />
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      </Card>
+    </View>
+  );
+};
+
+export default TimeTableCard;
