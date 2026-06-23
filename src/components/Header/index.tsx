@@ -22,10 +22,12 @@ export default function Header({
             : useSafeAreaInsets().top + 5,
         justifyContent: 'center',
         paddingHorizontal: 15,
+        zIndex: 1,
       }}>
       {showBack && (
         <TouchableOpacity style={{ width: 30 }} onPress={onBackPress}>
-          <ArrowLeft />
+          <ArrowLeft color={'#fff'} width={24} height={24} />
+          {/* <ArrowLeft /> */}
         </TouchableOpacity>
       )}
     </View>

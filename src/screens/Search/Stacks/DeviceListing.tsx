@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, View, Animated, Platform } from 'react-native';
 import { useHookstate } from '@hookstate/core';
 
@@ -8,6 +8,8 @@ import { deviceStore } from '../../../store/DeviceStore';
 import { Device } from '../../../types/deviceControllerTypes';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../../constants';
 import { Masjid } from '../../../types/masjidControllerTypes';
+import { GetUserDevices } from '../../../api/deviceController';
+import { userStore } from '../../../store/UserStore';
 
 const DeviceListing = ({
   onPress,
@@ -19,6 +21,14 @@ const DeviceListing = ({
   contentOpacity?: any;
 }) => {
   const devices: any = useHookstate(deviceStore.devices).get();
+  const userData = useHookstate(userStore.userData).get();
+
+  useEffect(() => {
+    GetUserDevices(userData?.id?.toString() ?? '');
+  }, []);
+
+  console.log('devices', devices);
+
   return (
     <View
       style={{
@@ -50,8 +60,7 @@ const DeviceListing = ({
           <MyText
             textStyle={{
               // fontWeight: '400',
-              fontFamily: 'Roboto-Regular',
-              color: '#3e3e3e',
+              fontFamily: 'Roboto-Medium',
             }}
             text={masjidDetails?.name ?? ''}
           />
@@ -79,9 +88,7 @@ const DeviceListing = ({
                       item.masjid ? item.masjid.name : 'No Subscription'
                     }
                     disabled={!!item.masjid}
-                    online={
-                      item?.deviceTelemetry?.status == 'Online' ? true : false
-                    }
+                    online={item?.deviceTelemetry?.status}
                   />
                 );
               }}

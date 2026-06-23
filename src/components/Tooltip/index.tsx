@@ -20,6 +20,7 @@ interface CustomTooltipProps {
   bgColor?: string;
   iconHeight?: number;
   iconWidth?: number;
+  icon?: React.ReactElement;
 }
 
 export default function MyTooltip({
@@ -27,8 +28,9 @@ export default function MyTooltip({
   iconColor = '#006870',
   bgColor = '#fff',
   position = 'top',
-  iconHeight = 22,
-  iconWidth = 22,
+  iconHeight = 18,
+  iconWidth = 18,
+  icon,
 }: CustomTooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
   const { colors }: Theme = useTheme();
@@ -60,15 +62,20 @@ export default function MyTooltip({
         backgroundStyle={{ backgroundColor: 'blue' }}
         topAdjustment={Platform.OS == 'android' ? -useSafeAreaInsets().top : 0}
         onClose={() => setIsVisible(false)}>
-        <TouchableOpacity onPress={() => setIsVisible(true)}>
-          <InfoCircle
-            height={iconHeight}
-            width={iconWidth}
-            onPress={() => {
-              setIsVisible(!isVisible);
-            }}
-            style={{ color: iconColor }}
-          />
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => setIsVisible(true)}>
+          {icon ?? (
+            <InfoCircle
+              height={iconHeight}
+              width={iconWidth}
+              onPress={() => {
+                setIsVisible(!isVisible);
+              }}
+              // style={{ color: iconColor }}
+              color={iconColor}
+            />
+          )}
         </TouchableOpacity>
       </Tooltip>
     </View>

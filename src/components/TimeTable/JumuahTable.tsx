@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 
-import { MuteSvg, VolumUpGreen } from '../../assets';
+import { MuteSvg, UnMuteSvg } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
@@ -47,7 +47,7 @@ const RowItem = ({
       <View style={[styles.contentRow, { height: 40 }]}>
         <View
           style={{
-            width: '35%',
+            width: '40%',
           }}>
           <MyText text={item.name} size={16} />
         </View>
@@ -55,21 +55,26 @@ const RowItem = ({
           <MyText
             text={
               item.khutba
-                ? moment(item.khutba, 'HH:mm:ss').format('hh:mm')
+                ? moment(item.khutba, 'HH:mm:ss').format('h:mm A')
                 : 'unknown'
             }
             size={16}
           />
         </View>
+        <View style={{ width: '10%' }} />
         {isMute ? (
           <View style={styles.contentIcon}>
             {subscribed ? (
-              <TouchableOpacity onPress={toggleSubscription}>
-                <VolumUpGreen height={16} width={16} />
+              <TouchableOpacity
+                style={{ padding: 5 }}
+                onPress={toggleSubscription}>
+                <UnMuteSvg color={'#006870'} height={16} width={16} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={toggleSubscription}>
-                <MuteSvg height={16} width={16} />
+              <TouchableOpacity
+                style={{ padding: 5 }}
+                onPress={toggleSubscription}>
+                <MuteSvg color={'#006870'} height={16} width={16} />
               </TouchableOpacity>
             )}
           </View>
@@ -138,8 +143,14 @@ export default function JumuahTable({
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        {headings?.map(value => (
-          <View key={value} style={styles.headerCol}>
+        {headings?.map((value, index) => (
+          <View
+            key={value}
+            style={{
+              ...styles.headerCol,
+              width: index == 1 ? '30%' : '40%',
+              alignItems: index == 1 ? 'center' : 'flex-start',
+            }}>
             <MyText
               text={value}
               size={16}
@@ -150,7 +161,8 @@ export default function JumuahTable({
             />
           </View>
         ))}
-        <View style={styles.headerIcon}></View>
+        <View style={{ width: '10%' }} />
+        <View style={styles.headerIcon} />
       </View>
       <GapView />
       <MyDivider style={{ alignSelf: 'center', width: '99%' }} />
@@ -208,10 +220,18 @@ export default function JumuahTable({
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#F1F7F8',
+    backgroundColor: '#fff',
     borderRadius: 12,
     width: WINDOW_WIDTH - 28,
     alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   headerRow: {
     flexDirection: 'row',
@@ -219,7 +239,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
-  headerCol: { width: '30%', alignItems: 'flex-start' },
+  headerCol: { width: '30%' },
   headerIcon: {
     alignItems: 'flex-start',
     justifyContent: 'center',
@@ -237,7 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 10,
   },
-  contentCol: { width: '30%', alignItems: 'flex-start' },
+  contentCol: { width: '30%', alignItems: 'center' },
   contentIcon: {
     alignItems: 'center',
     justifyContent: 'center',

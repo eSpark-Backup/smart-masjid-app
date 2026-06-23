@@ -28,6 +28,7 @@ import {
   JummahTime,
   SubscriptionList,
 } from '../../types/masjidControllerTypes';
+import systemSetting from 'react-native-system-setting';
 
 /**
  *
@@ -132,10 +133,13 @@ async function _requestUserLocationPermission() {
     if (Platform.OS == 'android') {
       ToastAndroid.show('Enable Location Permission', 8000);
     }
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
-    _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-    _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_ALWAYS);
-    _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    if (Platform.OS == 'android') {
+      _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+      _openSettingIsBlocked(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    } else {
+      _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_ALWAYS);
+      _openSettingIsBlocked(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    }
     if (
       statuses[
         (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
@@ -213,7 +217,7 @@ async function _requestBlePermissions(): Promise<Boolean> {
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
         PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
         PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE)
-      ] !== 'granted' ||
+      ] == 'blocked' ||
       checkStatus[
         (PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
         PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
@@ -237,6 +241,108 @@ async function _requestBlePermissions(): Promise<Boolean> {
     }
   }
 }
+
+/**
+ *
+ * @description Used to requestLocPermissions for Location for scanning devices
+ * @returns null
+ */
+async function _requestLocPermissions() {
+  checkMultiple([
+    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    PERMISSIONS.IOS.LOCATION_ALWAYS,
+    PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  ]).then(statuses => {
+    if (
+      statuses[
+        (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+      ] != 'granted'
+    ) {
+      requestMultiple([
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      ]);
+    }
+  });
+}
+
+/**
+ *
+ * @description Used to requestLocPermissions for Location for scanning devices
+ * @returns Promise<Boolean>
+ */
+const requestLocation = async (): Promise<Boolean> => {
+  console.log('chala');
+  try {
+    if (Platform.OS == 'ios') {
+      const checkStatus = await checkMultiple([
+        PERMISSIONS.IOS.LOCATION_ALWAYS,
+        PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      ]);
+      if (
+        checkStatus[
+          (PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+        ] == 'blocked' ||
+        checkStatus[
+          (PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+        ] === 'denied'
+      ) {
+        const requestStatus = await requestMultiple([
+          PERMISSIONS.IOS.LOCATION_ALWAYS,
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        ]);
+        return (
+          requestStatus[
+            (PERMISSIONS.IOS.LOCATION_ALWAYS,
+            PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+          ] === 'granted'
+        );
+      } else {
+        return true;
+      }
+    } else {
+      const checkStatus = await checkMultiple([
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      ]);
+      if (
+        checkStatus[
+          (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+        ] == 'blocked' ||
+        checkStatus[
+          (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+        ] === 'denied'
+      ) {
+        const requestStatus = await requestMultiple([
+          PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        ]);
+        return (
+          requestStatus[
+            (PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+            PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+          ] === 'granted'
+        );
+      } else {
+        return true;
+      }
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.error(error);
+    return false;
+  }
+};
 
 /**
  *
@@ -340,7 +446,7 @@ function getCurrentMonthAdhanData(): IPrayerTimeForPeriod[] {
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  for (let i = 0; i < dates.length; i++) {
+  for (let i = 0; i < dates?.length; i++) {
     const date = new Date(dates[i]); // April 4th plus the current day number
     const dateString = date.toISOString().slice(0, 10);
     const prayerTiming = JSON.parse(JSON.stringify(prayerTimings[0])); // create a deep copy of the first day's timings object
@@ -365,7 +471,7 @@ interface ConvertedData {
 function convertResponseToData(
   arr: (IqamahTime & JummahTime)[],
 ): ConvertedData[] {
-  const data = arr.reduce<ConvertedData[]>((acc, curr: any) => {
+  const data = arr?.reduce<ConvertedData[]>((acc, curr: any) => {
     const keys = Object.keys(curr);
 
     // loop through each key of the current object
@@ -401,7 +507,7 @@ function convertResponseToData(
             // it is a valid date string, so extract the date part
             // value = dateValue.toISOString().slice(0, 10);
             // value = moment(dateValue).format('DD/MM/YYYY');
-            value = moment(currValue, 'YYYY-MM-DD').format('DD/MM/YYYY');
+            value = moment(currValue, 'YYYY-MM-DD').format('MM/DD/YYYY');
           }
         } else if (currValue instanceof Date) {
           // it is a Date object, so extract the date part
@@ -438,7 +544,7 @@ async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
       const isPhoneValid = phone(phoneNum, { country: country?.iso_code });
       if (!isPhoneValid.isValid) {
         Toast.show({
-          text2: 'Phone number is not valid',
+          text2: 'Phone number is not yeh valid',
           type: 'error',
           visibilityTime: 10000,
         });
@@ -461,7 +567,7 @@ async function isValidPhoneNumber(phoneNum: string, country?: CountryCodes) {
  */
 
 function convertTo12Hour(time: string) {
-  if (time.length == 5) {
+  if (time?.length == 5) {
     var str = new Date().toString().split('');
     str.splice(16, 5, time);
     var modifiedStr = str.join('');
@@ -517,4 +623,6 @@ export {
   convertTo12Hour,
   _normalizedSubscriptions,
   openMap,
+  requestLocation,
+  _requestLocPermissions,
 };

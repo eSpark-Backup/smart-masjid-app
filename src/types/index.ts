@@ -10,6 +10,7 @@ import {
 } from './masjidControllerTypes';
 import {
   FailCheckPhoneId,
+  ScheduleResponse,
   SuccessCheckPhoneId,
   UserResponse,
   UserType,
@@ -31,13 +32,18 @@ export type BottomNavigationParamList = {
   Home: { masjidId?: string } | undefined;
   Search: undefined;
   Device?: { from?: string };
-  Profile: undefined;
+  Profile: { masjidId?: number };
 };
 
 export type GlobalProps = {
   phoneId?: string | null;
-  fcmToken?: string;
+  fcmToken?: string | null;
   isDeviceRegistered?: boolean;
+  devSetup?: boolean;
+  globalLoading?: boolean;
+  hideNetError?: boolean;
+  globalLoadingMsg?: string;
+  countryCode: string | null;
 };
 
 export type UserStoreProps = {
@@ -46,6 +52,7 @@ export type UserStoreProps = {
   token: UserResponse | null;
   masjidAdmins: UserResponse[];
   userRoles: UserType[];
+  monthlySchedule: ScheduleResponse | null;
 };
 
 export type MasjidStoreProps = {
@@ -59,7 +66,6 @@ export type MasjidStoreProps = {
   JummahHistory: JummahTime[];
   userMasjidList: Masjid[] | null;
   connectedDevices: Device[];
-  salahTimings: SalahTimings[];
 };
 
 export type DeviceStoreProps = {
@@ -67,7 +73,7 @@ export type DeviceStoreProps = {
   masjidDevices: Device[];
 };
 
-export type DStatus = 'Online' | 'Offline' | 'Low battery';
+export type DStatus = null | 'Online' | 'Offline' | 'Low battery' | 'Running';
 
 export type HelpStoreProps = {
   FAQs: FAQ[];
@@ -106,12 +112,15 @@ export type DeviceInfo = {
   device_model?: string;
   mac_address?: string;
   firmware_rev?: string;
+  masjid_id?: string;
 };
 
 export interface SalahInfo {
   name: string;
   adhanTime: string;
   iqamaTime: string;
+  shurooqTime: string;
+  sunriseTime: string;
 }
 export interface IPrayerTimeForPeriod {
   date: string;

@@ -8,13 +8,13 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Immutable, useHookstate } from '@hookstate/core';
+import { Immutable, State, useHookstate } from '@hookstate/core';
 
 import { SearchMasjidSvg } from '../../assets';
 import { GapView, MyText, OverlayLoader, Rounded } from '../../components';
 import { Wrapper } from '../../containers';
-import { BottomNavigationParamList } from '../../types';
-import { MasjidDetails, MasjidListing } from './Stacks';
+import { BottomNavigationParamList, GlobalProps } from '../../types';
+import { MasjidDetails, MasjidListing, Schedule } from './Stacks';
 import ConnectedDevices from './Stacks/ConnectedDevices';
 import { GetUserDevices } from '../../api/deviceController';
 import { userStore } from '../../store/UserStore';
@@ -22,6 +22,9 @@ import { useMasjid } from '../../utils/hooks';
 import { Masjid } from '../../types/masjidControllerTypes';
 import { masjidStore } from '../../store/MasjidStore';
 import { getListMasjidSubscribedByUser } from '../../api/masjidController';
+import { globalStore } from '../../store/GlobalStates';
+import { GetMonthlySchedule } from '../../api/userController';
+import { _requestLocPermissions } from '../../utils/functions';
 
 type HomeNavigationProps = NativeStackScreenProps<
   BottomNavigationParamList,
@@ -74,10 +77,15 @@ export const ListEmptyComponent = ({
           />
         </TouchableOpacity>
       ) : (
-        <MyText
-          text={message2}
-          textStyle={{ textAlign: 'center', fontSize: 16 }}
-        />
+        <View style={{ width: '80%' }}>
+          <MyText
+            text={message2}
+            textStyle={{
+              textAlign: 'center',
+              fontSize: 16,
+            }}
+          />
+        </View>
       )}
 
       <GapView length={40} />
@@ -92,7 +100,10 @@ export default function Home() {
   const navigation = useNavigation<HomeNavigationProps['navigation']>();
   const { params } = useRoute<RouteProps['route']>();
   const isFocused = useIsFocused();
+  const state: State<GlobalProps> = useHookstate(globalStore);
+  const countryCode = useHookstate(globalStore.countryCode);
   const userData = useHookstate(userStore.userData).get();
+  const schedule = useHookstate(userStore.monthlySchedule);
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [uniqueObjects, setUniqueObjects] = useState<Masjid[]>([]);
@@ -100,9 +111,14 @@ export default function Home() {
     useState<Immutable<Masjid> | null>(null);
 
   useEffect(() => {
+    _requestLocPermissions();
+  }, []);
+
+  useEffect(() => {
     if (isFocused && step == 0) {
-      setLoading(true);
-      GetUserDevices(userData?.id?.toString() ?? '');
+      state.globalLoading.set(true);
+      // setLoading(true);
+      console.log('token issue hai?', userStore.token.get());
       getListMasjidSubscribedByUser(userData?.id?.toString() ?? '').then(
         data => {
           let sData = data as Masjid[];
@@ -114,15 +130,16 @@ export default function Home() {
               uniqueObj?.push(obj as any);
             }
           });
-          console.log('kiya mila', uniqueObj);
           setUniqueObjects(uniqueObj);
           if (step == 0 && uniqueObj?.length == 1 && uniqueObj != null) {
             if (typeof uniqueObj?.[0] == 'object') {
+              getScheduleData(uniqueObj?.[0].id);
               setSelectedMasjid(uniqueObj?.[0]);
             }
             setStep(1);
           }
-          setLoading(false);
+          state.globalLoading.set(false);
+          // setLoading(false);
         },
       );
     }
@@ -145,7 +162,6 @@ export default function Home() {
         }
       } else {
         setSelectedMasjid(null);
-        masjidStore.salahTimings.set([]);
       }
     }
   }, [isFocused]);
@@ -158,9 +174,27 @@ export default function Home() {
     }
   };
 
+  const getScheduleData = async (masjidId: number) => {
+    const res = await GetMonthlySchedule(masjidId);
+    if (res) {
+      schedule.set(res);
+    } else {
+      schedule.set(null);
+    }
+  };
+
+  // console.log('selectedMasjid', selectedMasjid);
+  // console.log('countryCode countryCode', countryCode.get());
+
   return (
     <Wrapper
-      showBack={step == 0 ? false : uniqueObjects?.length == 1 ? false : true}
+      showBack={
+        step == 0
+          ? false
+          : uniqueObjects?.length == 1 && step == 1
+          ? false
+          : true
+      }
       onBackPress={onBackPress}
       showFooter={false}
       title={'Masjid Subscriptions'}
@@ -168,7 +202,7 @@ export default function Home() {
       {({ props }) => {
         return (
           <>
-            <OverlayLoader isShow={loading} />
+            {/* <OverlayLoader isShow={loading} /> */}
             {step == 0 && (
               <MasjidListing
                 contentOpacity={props.contentOpacity}
@@ -186,6 +220,12 @@ export default function Home() {
               />
             )}
             {step == 2 && (
+              <Schedule
+                contentOpacity={props.contentOpacity}
+                masjidId={selectedMasjid?.id}
+              />
+            )}
+            {step == 3 && (
               <ConnectedDevices contentOpacity={props.contentOpacity} />
             )}
           </>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet, Animated, Platform } from 'react-native';
 
-import { DeviceLoaderGif } from '../../assets';
+import { DeviceLoaderGif, DevLoaderGif } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyTitle from '../MyTitle';
@@ -33,7 +33,7 @@ export default function DLoader({ contentOpacity }: { contentOpacity: any }) {
         <GapView length={30} />
         <View style={{ padding: 5 }}>
           <Image
-            source={DeviceLoaderGif}
+            source={DevLoaderGif}
             style={styles.loader}
             resizeMode="contain"
             resizeMethod="resize"

@@ -1,10 +1,17 @@
 import React from 'react';
 import { View, Animated, Platform } from 'react-native';
 
-import { Email, PeoplesSvg, Phone, ProfileUser } from '../../../../assets';
+import {
+  Email,
+  ManageUser,
+  PeoplesSvg,
+  Phone,
+  ProfileUser,
+} from '../../../../assets';
 import { GapView, MyTitle, ProfileSectionlist } from '../../../../components';
 import { WINDOW_WIDTH } from '../../../../constants';
 import { UserResponse } from '../../../../types/userControllerApiResponse';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 export default function ViewUsers({
   setFlag,
@@ -43,25 +50,23 @@ export default function ViewUsers({
                 {
                   title: 'Full Name',
                   value: user?.firstName + ' ' + user?.lastName,
-                  icon: <ProfileUser />,
                   onPress: () => console.log('no effect'),
                 },
                 {
                   title: 'Email',
                   value: user?.email ?? '-',
-                  icon: <Email />,
                   onPress: () => console.log('no effect'),
                 },
                 {
                   title: 'Phone',
-                  value: user?.phone ?? '-',
-                  icon: <Phone />,
+                  value: user?.phone!
+                    ? parsePhoneNumber(user?.phone!).formatInternational()
+                    : '-',
                   onPress: () => console.log('no effect'),
                 },
                 {
                   title: 'Role',
                   value: user?.userType.name ?? '-',
-                  icon: <PeoplesSvg />,
                   onPress: () => console.log('no effect'),
                 },
               ],

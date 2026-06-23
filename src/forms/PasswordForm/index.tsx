@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
-import WifiManager from 'react-native-wifi-reborn';
+import WifiManager, {
+  ConnectToProtectedSSIDParams,
+} from 'react-native-wifi-reborn';
 import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -24,6 +26,9 @@ import {
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
 import { DeviceSetupSchema } from '../../constants/validations/schema';
+import { GlobalProps } from '../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
 
 export default function PasswordForm({
   ssid,
@@ -36,7 +41,9 @@ export default function PasswordForm({
   setStep: (value: number) => void;
   contentOpacity: any;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [loading, setLoading] = useState(false);
+  const [secInp, setSecInp] = useState(true);
 
   const connectToWifi = async (
     {
@@ -48,52 +55,61 @@ export default function PasswordForm({
     },
     clear: () => void,
   ) => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     try {
       if (Platform.OS == 'android') {
-        const res = await WifiManager.connectToProtectedSSID(
+        const options: ConnectToProtectedSSIDParams = {
           ssid,
           password,
-          false,
-        );
+          isWEP: false,
+          isHidden: false,
+        };
+        const res = await WifiManager.connectToProtectedWifiSSID(options);
         await WifiManager.disconnect();
         const isForget = await WifiManager.isRemoveWifiNetwork(ssid);
         if (isForget) {
           console.log('Forgot Network which was validated', isForget);
-          setLoading(false);
+          state.globalLoading.set(false);
+          // setLoading(false);
           setStep(6);
           clear();
         } else {
           console.log('Failed to forgot', isForget);
         }
-        // Wifi.connectToNetwork({ ssid, password })
-        //   .then(() => {
-        //     console.log('Connected Successfully', res);
-        //     setLoading(false);
-        //     setStep(6);
-        //     clear();
-        //   })
-        //   .catch((error: any) => {
-        //     console.error(error);
-        //     crashlytics().recordError(error as Error);
-        //     setLoading(false);
-        //   });
       } else {
-        const res = await WifiManager.connectToProtectedSSID(
+        const res = await WifiManager.disconnectFromSSID(ssid);
+        console.log('res', res);
+        const options: ConnectToProtectedSSIDParams = {
           ssid,
           password,
-          false,
-        ).then(() => {
-          console.log('Connected Successfully', res);
-          setLoading(false);
-          setStep(6);
-          clear();
-        });
+          isWEP: false,
+          isHidden: false,
+        };
+        WifiManager.connectToProtectedWifiSSID(options).then(
+          a => {
+            console.log('Connected successfully!', a);
+            state.globalLoading.set(false);
+            setStep(6);
+            clear();
+          },
+          e => {
+            console.log('Connection failed!', e);
+            state.globalLoading.set(false);
+            Toast.show({
+              text2: 'WiFi Password incorrect.' + e,
+              type: 'error',
+              visibilityTime: 10000,
+            });
+            clear();
+          },
+        );
       }
     } catch (error) {
       crashlytics().recordError(error as Error);
       console.log('error in connecting wifi', error);
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
       Toast.show({
         text2: 'WiFi Password incorrect. Please try again',
         type: 'error',
@@ -105,7 +121,7 @@ export default function PasswordForm({
 
   return (
     <View style={styles.container}>
-      <OverlayLoader isShow={loading} />
+      {/* <OverlayLoader isShow={loading} /> */}
       <View
         style={{
           alignSelf: 'center',
@@ -123,15 +139,12 @@ export default function PasswordForm({
       <View>
         <MyTextSubHeader
           text="Enter Wi-Fi password"
-          style={{ ...styles.text, color: '#0e0e0e' }}
+          style={{ textAlign: 'center' }}
         />
         <GapView length={20} />
         <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
           <MyText text={'Connecting to : '} textStyle={styles.text} />
-          <MyTextSubHeader
-            text={ssid!}
-            style={{ ...styles.text, color: '#0e0e0e' }}
-          />
+          <MyTextSubHeader text={ssid!} />
         </View>
         <GapView length={30} />
         <Formik
@@ -145,10 +158,12 @@ export default function PasswordForm({
           {({ handleChange, handleSubmit, values, errors, touched }) => (
             <View style={{ alignItems: 'center' }}>
               <MyInput
+                secureInput
+                isSecure={secInp}
+                onEyePress={() => setSecInp(!secInp)}
                 placeholder="Password"
                 onChangeText={handleChange('password')}
                 value={values.password}
-                isSecure={true}
               />
               {errors.password && touched.password && (
                 <MyText

@@ -12,5 +12,4 @@ export const masjidStore = hookstate<MasjidStoreProps>({
   JummahHistory: [],
   userMasjidList: null,
   connectedDevices: [],
-  salahTimings: [],
 });

@@ -18,9 +18,12 @@ import { LogoutUser } from './userController';
 
 export const GetUserDevices = async (userId: string) => {
   try {
+    console.log('GetUserDevices chala', userId);
     const result: any = await api.get(`/devices/user/${userId}`);
+
     if (result.status == 200) {
       deviceStore.devices.set(result.data);
+      return result.data;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
@@ -30,6 +33,8 @@ export const GetUserDevices = async (userId: string) => {
       });
     }
   } catch (error) {
+    console.log('errr', error);
+
     crashlytics().recordError(error as Error);
   }
 };
@@ -339,9 +344,10 @@ export async function _updateDevice(
         text2: 'Device details updated successfully',
         type: 'success',
       });
-      if (res.data) return res.data;
+      if (res.data) return res.status;
     } else if (res.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return res.status;
     } else {
       Toast.show({
         text2: res?.data?.message ?? 'Something went wrong',
@@ -350,6 +356,7 @@ export async function _updateDevice(
         visibilityTime: 10000,
       });
       console.log('Problem status when device save', res.problem);
+      return res.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -391,6 +398,27 @@ export async function _resetDevice(deviceId: string) {
   }
 }
 
+export async function _rebootDevice(deviceId: string) {
+  console.log('Rebooting Device now =>', deviceId);
+  try {
+    const res = await api.post<any>(`devices/${deviceId}/reboot`);
+    if (res?.ok) {
+      console.log('Reboot Success', Boolean(res.data));
+      return true;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when device exists problems', error);
+    return false;
+  }
+}
+
 /**
  * Get device subscriptions.
  * @param deviceId - The ID of the device.
@@ -398,7 +426,6 @@ export async function _resetDevice(deviceId: string) {
  */
 
 export async function getDeviceSubscriptions(deviceId: string) {
-  console.log('Deleting Device now =>', deviceId);
   try {
     const res = await api.get<any>(`/devices/${deviceId}/subscriptions`);
     if (res?.ok) {
@@ -463,6 +490,84 @@ export async function removeSubscription(
     const res = await api.delete<any>(
       `/devices/${deviceId}/subscription/${subscriptionId}`,
     );
+    if (res?.ok) {
+      return res.data;
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device subscriptions problems', error);
+    return false;
+  }
+}
+
+/**
+ * @description Used to check is there any update in progress or not.
+ * @param deviceId - The ID of the device.
+ * @returns A `Promise` that resolves to a `DeviceInfo` object if successful, or `false` if there was an error.
+ */
+
+export async function getDeviceUpdateLogs(deviceId: number) {
+  try {
+    const res = await api.get<any>(`/devices/${deviceId}/log?fetchLatest=true`);
+    if (res?.ok) {
+      return res.data[0];
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device subscriptions problems', error);
+    return false;
+  }
+}
+
+/**
+ * @description Get device's updated firmware.
+ * @param deviceTypeid - The Type ID of the device.
+ * @returns A `Promise` that resolves to a `DeviceFirmwareType` object if successful, or `false` if there was an error.
+ */
+
+export async function getFirmwareUpdates(deviceTypeid: string) {
+  try {
+    const res = await api.get<any>(`/devices/firmware?fetchLatest=true`, {
+      deviceType: deviceTypeid,
+    });
+    if (res?.ok) {
+      return res.data[0];
+    } else if (res.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return false;
+    } else {
+      console.log('Problem status', res.status, res.data);
+      return false;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+    console.log('when getting device firmware problems', error);
+    return false;
+  }
+}
+
+/**
+ * @description Update device's firmware.
+ * @param deviceId - The ID of the device.
+ * @returns A `Promise` that resolves to a `DeviceFirmwareType` object if successful, or `false` if there was an error.
+ */
+
+export async function updateDeviceFirmware(deviceId: string) {
+  try {
+    const res = await api.post<any>(`/devices/${deviceId}/update-firmware`);
+
     if (res?.ok) {
       return res.data;
     } else if (res.status == 401) {

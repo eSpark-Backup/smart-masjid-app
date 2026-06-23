@@ -11,6 +11,7 @@ import {
   Easing,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import {
@@ -48,6 +49,8 @@ export default function Wrapper({
   title?: string;
 }) {
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const listRef = useRef<any>(null);
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -94,53 +97,51 @@ export default function Wrapper({
         <MyTitle text={title} style={{ color: '#fff' }} />
       </Animated.View>
 
-      <View
-        style={{ flex: 1 }}
-        // onPress={onBackDropPress}
-      >
-        <View style={{ flex: 1 }}>
-          <View style={styles.imageBackgroundStyle}>
-            <Animated.View
-              style={[
-                {
-                  position: 'absolute',
-                  alignSelf: 'center',
-                },
-                { transform: [{ translateY: contentOpacity }] },
-              ]}>
-              <Image
-                style={styles.imageStyle}
-                source={
+      <View style={{ flex: 1 }}>
+        <View style={styles.imageBackgroundStyle}>
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                alignSelf: 'center',
+                zIndex: 1,
+              },
+              { transform: [{ translateY: contentOpacity }] },
+            ]}>
+            <Image
+              style={styles.imageStyle}
+              source={
+                Platform.OS == 'ios'
+                  ? HeaderIOSBackgroundImage
+                  : HeaderAndroidBackgroundImage
+              }
+            />
+          </Animated.View>
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                alignSelf: 'center',
+                zIndex: 1,
+              },
+              { opacity: headerOpacity },
+            ]}>
+            <Image
+              style={{
+                height:
                   Platform.OS == 'ios'
-                    ? HeaderIOSBackgroundImage
-                    : HeaderAndroidBackgroundImage
-                }
-              />
-            </Animated.View>
-            <Animated.View
-              style={[
-                {
-                  position: 'absolute',
-                  alignSelf: 'center',
-                },
-                { opacity: headerOpacity },
-              ]}>
-              <Image
-                style={{
-                  height:
-                    Platform.OS == 'ios'
-                      ? WINDOW_WIDTH / 4.6
-                      : WINDOW_WIDTH / 5.5,
-                  width: WINDOW_WIDTH,
-                }}
-                source={
-                  Platform.OS == 'ios'
-                    ? HeaderIOSBackgroundImageUp
-                    : HeaderAndroidBackgroundImageUp
-                }
-              />
-            </Animated.View>
-            {/* <ImageBackground
+                    ? WINDOW_WIDTH / 4.6
+                    : WINDOW_WIDTH / 5.5,
+                width: WINDOW_WIDTH,
+              }}
+              source={
+                Platform.OS == 'ios'
+                  ? HeaderIOSBackgroundImageUp
+                  : HeaderAndroidBackgroundImageUp
+              }
+            />
+          </Animated.View>
+          {/* <ImageBackground
               style={styles.imageBackgroundStyle}
               imageStyle={styles.imageStyle}
               source={
@@ -148,35 +149,39 @@ export default function Wrapper({
                   ? HeaderIOSBackgroundImage
                   : HeaderBackgroundImage
               }> */}
-            <Header onBackPress={onBackPress} showBack={showBack} />
-            <ScrollView
-              onScroll={handleScroll}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ flexGrow: 1 }}
-              style={{ zIndex: -1 }}>
-              <>
-                <GapView
-                  length={
-                    Platform.OS == 'ios'
-                      ? WINDOW_WIDTH / 1.6
-                      : WINDOW_WIDTH / 1.74
-                  }
-                />
-                {children({ props: { contentOpacity: titleOpacity } })}
-              </>
-            </ScrollView>
-            {/* </ImageBackground> */}
-          </View>
-
-          {showFooter && (
-            <MyText
-              text="Powered by Futurik Labs"
-              size={12}
-              textStyle={{ textAlign: 'center', marginVertical: 35 }}
-            />
-          )}
+          <Header onBackPress={onBackPress} showBack={showBack} />
+          {/* <KeyboardAvoidingView
+            behavior={avoidKeyboard ? 'position' : undefined}
+            style={{ flex: 1, zIndex: 0 }}> */}
+          <ScrollView
+            ref={listRef}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ flexGrow: 1 }}
+            style={{ zIndex: -1, backgroundColor: '#f8fbFb' }}>
+            <>
+              <GapView
+                length={
+                  Platform.OS == 'ios'
+                    ? WINDOW_WIDTH / 1.6
+                    : WINDOW_WIDTH / 1.74
+                }
+              />
+              {children({ props: { contentOpacity: titleOpacity } })}
+            </>
+          </ScrollView>
+          {/* </KeyboardAvoidingView> */}
+          {/* </ImageBackground> */}
         </View>
+
+        {showFooter && (
+          <MyText
+            text="Powered by Futurik Labs"
+            size={12}
+            textStyle={{ textAlign: 'center', marginVertical: 35 }}
+          />
+        )}
       </View>
     </>
   );

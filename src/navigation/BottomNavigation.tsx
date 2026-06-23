@@ -1,20 +1,16 @@
-import React from 'react';
-import { Theme, useTheme } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { StyleSheet, Platform, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useHookstate } from '@hookstate/core';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import DeviceCountry from 'react-native-device-country';
 
 import { Home, Search, Device, Profile } from '../screens';
-import {
-  DeviceActiveNew,
-  DeviceUnactiveNew,
-  HomeActiveSvg,
-  HomeSvg,
-  ProfileActiveSvg,
-  ProfileSvg,
-  SearchActiveSvg,
-  SearchSvg,
-} from '../assets';
-import { BottomNavigationParamList } from '../types';
+import { DevicesSvg, HomeSvg, ProfileSvg, SearchSvg } from '../assets';
+import { BottomNavigationParamList, RootStackParamList } from '../types';
+import { globalStore } from '../store/GlobalStates';
+import { create } from 'apisauce';
 
 const Tab = createBottomTabNavigator<BottomNavigationParamList>();
 
@@ -22,37 +18,75 @@ const TabIcon = (screen: string, isFocused: boolean) => {
   switch (screen) {
     case 'Home':
       if (isFocused) {
-        return <HomeActiveSvg height={26} width={26} />;
+        return <HomeSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <HomeSvg height={26} width={26} />;
+        return <HomeSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     case 'Search':
       if (isFocused) {
-        return <SearchActiveSvg height={26} width={26} />;
+        return <SearchSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <SearchSvg height={26} width={26} />;
+        return <SearchSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     case 'Device':
       if (isFocused) {
-        return <DeviceActiveNew height={26} width={26} />;
+        return <DevicesSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <DeviceUnactiveNew height={26} width={26} />;
+        return <DevicesSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     case 'Profile':
       if (isFocused) {
-        return <ProfileActiveSvg />;
+        return <ProfileSvg color={'#006870'} height={26} width={26} />;
       } else {
-        return <ProfileSvg />;
+        return <ProfileSvg color={'#D0D0D0'} height={26} width={26} />;
       }
     default:
       break;
   }
 };
 
+type DSetupNavigationProps = NativeStackScreenProps<
+  RootStackParamList & BottomNavigationParamList,
+  'DSetup'
+>;
+
 function HomeBottomTab() {
   const theme: Theme = useTheme();
   const { colors } = theme;
   const styles = makeStyles(theme);
+  const navigation: any = useNavigation<DSetupNavigationProps['navigation']>();
+  const countryCode = useHookstate(globalStore.countryCode);
+
+  const devSetup = useHookstate(globalStore.devSetup);
+
+  useEffect(() => {
+    if (devSetup.get()) {
+      navigation.navigate('DSetup');
+    }
+  }, []);
+  useEffect(() => {
+    getCountryCode();
+  }, []);
+
+  const getCountryCode = async () => {
+    const getIPInfoAPI = create({
+      baseURL: 'https://get.geojs.io/v1/ip/',
+    });
+
+    const IPInfoRes = await getIPInfoAPI.get<{ country: string }>(
+      'country.json',
+    );
+    if (IPInfoRes.ok) {
+      countryCode.set(IPInfoRes.data?.country as string);
+    } else {
+      const codeRes = await DeviceCountry.getCountryCode();
+      countryCode.set(codeRes.code.toUpperCase());
+      console.log('codeRescodeRes', codeRes);
+    }
+  };
+
+  console.log('devSetup.get()', devSetup.get());
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -67,12 +101,21 @@ function HomeBottomTab() {
         tabBarActiveTintColor: colors?.primary,
         tabBarInactiveTintColor: '#9E9F9F',
         tabBarStyle: styles.tabBar,
-        tabBarShowLabel: false,
+        tabBarLabelStyle: styles.tabBarLabelStyle,
+        tabBarShowLabel: true,
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="Device" component={Device} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Device"
+        component={Device}
+        options={{ tabBarLabel: 'Devices' }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{ tabBarLabel: 'Account' }}
+      />
     </Tab.Navigator>
   );
 }
@@ -92,11 +135,15 @@ const makeStyles = (theme: Theme) => {
       height: 65,
       alignItems: 'center',
       justifyContent: 'center',
+      // backgroundColor: 'red',
     },
     tabBarLabelStyle: {
-      color: '#9E9F9F',
-      fontSize: 14,
-      bottom: Platform.OS == 'android' ? 18 : 0,
+      // color: '#9E9F9F',
+      fontSize: 8,
+      bottom: Platform.OS == 'android' ? 12 : undefined,
+      top: Platform.OS == 'ios' ? 14 : undefined,
+      fontFamily: 'Roboto-Regular',
+      // backgroundColor: 'red',
     },
     ActiveTabBarLabelStyle: {
       color: colors.primary,

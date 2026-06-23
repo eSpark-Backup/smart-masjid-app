@@ -10,7 +10,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import moment from 'moment';
 
-import { MuteSvg, VolumUpGreen } from '../../assets';
+import { MuteSvg, UnMuteSvg } from '../../assets';
 import { WINDOW_WIDTH } from '../../constants';
 import GapView from '../GapView';
 import MyDivider from '../MyDivider';
@@ -48,11 +48,14 @@ const RowItem = ({
       <View style={[styles.contentRow, { marginVertical: edit ? 0 : 10 }]}>
         {Object.keys(item)?.map((key: any, index) => {
           if (key == 'onChange') return;
+          console.log('key', index, item[key]);
+
           return (
             <React.Fragment key={index}>
               {index != 0 && edit ? (
                 <>
-                  {(type == 'F' && item[key]?.search(':') != -1) ||
+                  {(type == 'F' && item[key] == '-') ||
+                  item[key]?.search(':') != -1 ||
                   type == 'J' ? (
                     <MyTimePicker
                       onTimeChanged={item?.onChange}
@@ -140,12 +143,14 @@ const RowItem = ({
                 onPress={() => setToggleMute(!toggleMute)}
                 height={16}
                 width={16}
+                color={'#006870'}
               />
             ) : (
-              <VolumUpGreen
+              <UnMuteSvg
                 onPress={() => setToggleMute(!toggleMute)}
                 height={16}
                 width={16}
+                color={'#006870'}
               />
             )}
           </View>

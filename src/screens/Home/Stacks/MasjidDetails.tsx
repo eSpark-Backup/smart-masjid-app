@@ -7,10 +7,16 @@ import {
   FlatList,
   Platform,
 } from 'react-native';
-import { Theme, useIsFocused, useTheme } from '@react-navigation/native';
-import { useHookstate } from '@hookstate/core';
-import Toast from 'react-native-toast-message';
+import {
+  Theme,
+  useIsFocused,
+  useNavigation,
+  useTheme,
+} from '@react-navigation/native';
+import { State, useHookstate } from '@hookstate/core';
 import crashlytics from '@react-native-firebase/crashlytics';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import moment from 'moment';
 
 import {
   GapView,
@@ -19,14 +25,13 @@ import {
   MyTextSubHeader,
   MyTitle,
   OutlineDeviceContainer,
-  OverlayLoader,
   SwipeableTimeTable,
-  TextLabel,
   Tooltip,
 } from '../../../components';
 import { WINDOW_WIDTH } from '../../../constants';
 import { userStore } from '../../../store/UserStore';
 import {
+  AdhanLog,
   JummahTime,
   Masjid,
   SalahTimings,
@@ -41,9 +46,18 @@ import { masjidStore } from '../../../store/MasjidStore';
 import { Device } from '../../../types/deviceControllerTypes';
 import { useMasjid } from '../../../utils/hooks';
 import {
+  GetAdhanLog,
   GetMasjidCurrentJummahTiming,
   getSalahTimingsOfMasjid,
 } from '../../../api/masjidController';
+import { globalStore } from '../../../store/GlobalStates';
+import { BottomNavigationParamList, GlobalProps } from '../../../types';
+import { MonthlyScheduleSvg } from '../../../assets';
+
+type HomeNavigationProps = NativeStackScreenProps<
+  BottomNavigationParamList,
+  'Home'
+>;
 
 export default function MasjidDetails({
   setStep,
@@ -56,11 +70,13 @@ export default function MasjidDetails({
   contentOpacity: any;
   isSingle?: boolean;
 }) {
-  const { colors }: Theme = useTheme();
   const userData = useHookstate(userStore.userData).get();
+  const monthlyScheduleData = useHookstate(userStore.monthlySchedule).get();
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const devices = useHookstate(masjidStore.connectedDevices).get();
   const [loading, setLoading] = useState<boolean>(false);
   const [subs, setSubs] = useState<SubscriptionList[]>([]);
+  const [logs, setLogs] = useState<AdhanLog | null>(null);
   const connectedDevices = useMemo(() => devices, [devices]);
   const [salahTime, setSalahTime] = useState<SalahTimings[]>([]);
   const [currentDevice, setCurrentDevice] = useState<Device>();
@@ -76,47 +92,72 @@ export default function MasjidDetails({
 
   useEffect(() => {
     if (isFocused) {
+      getAdhanLogs();
       getSalahTimes();
     }
   }, [isFocused]);
 
   const getSalahTimes = async () => {
     try {
+      state.globalLoading.set(true);
+
       setLoading(true);
+
       await GetMasjidDevicesForUser(
         userData?.id?.toString() ?? '',
         selectedMasjid?.id.toString(),
-      ).then(res => {
+      ).then(() => {
         setCurrentDevice(connectedDevices[0] as Device);
         if (connectedDevices[0]) {
           getSubscriptions(connectedDevices[0]?.id.toString()!);
         }
       });
-      await getSalahTimingsOfMasjid(selectedMasjid?.id.toString() ?? '').then(
-        data => {
-          setSalahTime(data as SalahTimings[]);
-        },
-      );
       await GetMasjidCurrentJummahTiming(selectedMasjid?.id.toString() ?? '');
-      setLoading(false);
+      await getSalahTimingsOfMasjid(
+        selectedMasjid?.id.toString() ?? '',
+        moment().format('YYYY-MM-DD').toString(),
+        'WEEK',
+      ).then(data => {
+        setSalahTime(data as SalahTimings[]);
+        setTimeout(() => {
+          setLoading(false);
+          state.globalLoading.set(false);
+        }, 10);
+      });
     } catch (e) {
       crashlytics().recordError(e as Error);
+      state.globalLoading.set(false);
+      setLoading(false);
     }
   };
 
-  const getSubscriptions = (id: string) => {
+  const getSubscriptions = async (id: string) => {
     try {
-      getDeviceSubscriptions(id).then(data => {
+      await getDeviceSubscriptions(id).then(data => {
         setSubs(data);
       });
     } catch (e) {
       crashlytics().recordError(e as Error);
+      state.globalLoading.set(false);
+    }
+  };
+
+  const getAdhanLogs = async () => {
+    try {
+      await GetAdhanLog(
+        selectedMasjid?.id.toString() ?? '',
+        moment().format('YYYY-MM-DD').toString(),
+      ).then(data => {
+        setLogs(data);
+      });
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+      state.globalLoading.set(false);
     }
   };
 
   return (
     <View style={{ flex: 1 }}>
-      <OverlayLoader isShow={loading} noBg={false} />
       <View
         style={{
           alignSelf: 'center',
@@ -153,8 +194,11 @@ export default function MasjidDetails({
           data={connectedDevices! as Device[]}
           renderItem={({ item, index }: { item: Device; index: number }) => (
             <OutlineDeviceContainer
-              onPress={() => {
+              onPress={async () => {
+                state.globalLoading.set(true);
                 setCurrentDevice(item);
+                await getSubscriptions(item.id.toString());
+                state.globalLoading.set(false);
               }}
               name={item.name}
               isActive={item.id == currentDevice?.id}
@@ -163,11 +207,30 @@ export default function MasjidDetails({
               }
             />
           )}
-          keyExtractor={item => item.id + (Math.random() * 999).toString()}
+          // keyExtractor={item => item.id + (Math.random() * 999).toString()}
           ItemSeparatorComponent={() => <GapView mode="horizontal" />}
         />
         <GapView length={15} />
-        <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <MyTextSubHeader text="Salah Timings" style={{ color: '#3E3E3E' }} />
+          {monthlyScheduleData && (
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => setStep(2)}
+              style={{ right: 15 }}>
+              <MonthlyScheduleSvg
+                width={22}
+                height={22}
+                style={{ color: '#006870' }}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
         <GapView length={15} />
         <SwipeableTimeTable
           isMute
@@ -179,14 +242,19 @@ export default function MasjidDetails({
           data={(salahTime as SalahTimings[]) ?? []}
           subscriptions={subs}
           setSubscriptions={setSubs}
-          setLoading={val => setLoading(val)}
+          setLoading={val => {
+            state.globalLoading.set(val);
+            setLoading(val);
+          }}
           deviceGetsOnline={getSalahTimes}
+          loading={loading}
+          adhanLog={logs}
         />
         <GapView length={15} />
         <MyTextSubHeader text="Jumuah Timings" style={{ color: '#3E3E3E' }} />
         <GapView length={15} />
         <JumuahTable
-          headings={['Salah', 'Khutba']}
+          headings={['Salah', 'Khutbah']}
           masjidSubscriptions={
             selectedMasjid?.subscriptionList as SubscriptionList[]
           }
@@ -195,10 +263,13 @@ export default function MasjidDetails({
           deviceInfo={currentDevice!}
           isMute={true}
           data={JummahTime as JummahTime}
-          setLoading={val => setLoading(val)}
+          setLoading={val => {
+            state.globalLoading.set(val);
+            setLoading(val);
+          }}
         />
         <GapView length={15} />
-        <View style={{ width: '100%', alignItems: 'center' }}>
+        {/* <View style={{ width: '100%', alignItems: 'center' }}>
           <TouchableOpacity
             activeOpacity={0.9}
             style={{
@@ -242,7 +313,7 @@ export default function MasjidDetails({
               }}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

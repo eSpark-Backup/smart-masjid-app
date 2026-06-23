@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, BackHandler, Animated, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHookstate } from '@hookstate/core';
 
-import { AccountGear, Help, MasjidGear, ProfileDummy } from '../../assets';
+import {
+  AccountGear,
+  Help,
+  MasjidGear,
+  ProfileDummy,
+  SalahTimingsSvg,
+} from '../../assets';
 import { GapView, MyTitle, ProfileSectionlist } from '../../components';
 import { Wrapper } from '../../containers';
 import {
@@ -15,7 +25,7 @@ import {
   ManageMasjid,
   SalahTimings,
   IqamahHistory,
-  JummaHistory,
+  ScheduleSettings,
   ManageUsers,
   ViewUser,
   AddUser,
@@ -31,6 +41,9 @@ import { IqamahTime, jumuahsData } from '../../types/masjidControllerTypes';
 import { GetContactReasons, GetHelpFAQs } from '../../api/helpController';
 import { WINDOW_WIDTH } from '../../constants';
 import { GetUserTypes } from '../../api/userController';
+import { parsePhoneNumber } from 'libphonenumber-js';
+import { getCountry } from 'react-native-localize';
+import { date } from 'yup';
 
 type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList & BottomNavigationParamList,
@@ -57,26 +70,30 @@ type ScreenActions = {
 
 export default function Profile() {
   const navigation = useNavigation<ProfileNavigationProp['navigation']>();
+  const route = useRoute<ProfileNavigationProp['route']>();
   const [flag, setFlag] = useState('uInfo');
   const [jummaData, setJummaData] = useState<object | null>(null);
   const [iqamaData, setIqamaData] = useState<IqamahTime | null>(null);
   const [user, setUser] = useState<UserResponse | null>();
   const [clear, setClear] = useState(false);
+  const isFocused = useIsFocused();
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const titles: Titles = {
     mAcc: 'Manage Account',
+    mAccOtp: 'Manage Account',
     modAcc: 'Manage Account',
     mMas: 'Manage Masjid',
     sTime: 'Salah Timings',
     aSet: 'Adhan Settings',
     iTime: 'Iqama Timings',
     iEdit: 'Iqama Timings',
-    iHist: 'Monthly Schedule',
+    Hist: 'Monthly Schedule',
+    HistSett: 'Monthly Schedule',
     iAdd: 'Iqama Timings',
     jTime: 'Jumuah Timings',
     jEdit: 'Jumuah Timings',
     jAdd: 'Jumuah Timings',
-    jHist: 'Jumuah Timings',
     vUser: 'User Information',
     addUser: 'Add User',
     mUsers: 'Manage Users',
@@ -89,16 +106,16 @@ export default function Profile() {
     mAcc: () => setFlag('uInfo'),
     mMas: () => setFlag('uInfo'),
     mAccOtp: () => setFlag('mAcc'),
-    sTime: () => setFlag('mMas'),
+    sTime: () => setFlag('uInfo'),
     aSet: () => setFlag('mMas'),
     iTime: () => setFlag('sTime'),
     jTime: () => setFlag('sTime'),
     iEdit: () => setFlag('iTime'),
-    iHist: () => setFlag('iTime'),
+    Hist: () => setFlag('HistSett'),
+    HistSett: () => setFlag('sTime'),
     iAdd: () => setFlag('iTime'),
     jEdit: () => setFlag('jTime'),
     jAdd: () => setFlag('jTime'),
-    jHist: () => setFlag('jTime'),
     vUser: () => setFlag('mUsers'),
     addUser: () => setFlag('mUsers'),
     mUsers: () => setFlag('mMas'),
@@ -133,6 +150,10 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
+    setFlag('uInfo');
+  }, [isFocused]);
+
+  useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
@@ -141,6 +162,7 @@ export default function Profile() {
   }, [flag]);
 
   const getTitle = () => titles[flag] ?? '';
+  console.log('fiag', flag);
 
   return (
     <Wrapper
@@ -194,10 +216,19 @@ export default function Profile() {
               selectedIqamah={obj => setIqamaData(obj)}
             />
           ),
-          iHist: (
+          Hist: (
             <IqamahHistory
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
+              masjidId={route?.params?.masjidId}
+              currDate={currentDate}
+            />
+          ),
+          HistSett: (
+            <ScheduleSettings
+              contentOpacity={props.contentOpacity}
+              setFlag={(value: string) => setFlag(value)}
+              setCurrDate={setCurrentDate}
             />
           ),
           iEdit: (
@@ -235,12 +266,6 @@ export default function Profile() {
               contentOpacity={props.contentOpacity}
               setFlag={(value: string) => setFlag(value)}
               jummaType={'Add'}
-            />
-          ),
-          jHist: (
-            <JummaHistory
-              contentOpacity={props.contentOpacity}
-              setFlag={(value: string) => setFlag(value)}
             />
           ),
           mUsers: (
@@ -293,7 +318,7 @@ function UserInformation({
 }) {
   const userData = useHookstate(userStore.userData).get();
   console.log(userData?.userType.id);
-  console.log(userData?.userType);
+  console.log('User Data permissions', userData?.userType.permissions);
 
   return (
     <View style={{ flex: 1 }}>
@@ -339,17 +364,29 @@ function UserInformation({
               data: [
                 {
                   title: 'Manage Account',
-                  icon: <AccountGear />,
+                  icon: (
+                    <AccountGear width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => {
                     setFlag('mAcc');
                   },
                 },
                 {
                   title: 'Manage Masjid',
-                  icon: <MasjidGear />,
+                  icon: <MasjidGear width={25} height={25} color={'#9E9F9F'} />,
                   onPress: () => setFlag('mMas'),
                   hidden: !userData?.userType?.permissions?.some(
                     val => val?.name == 'MANAGE_MASJID',
+                  ),
+                },
+                {
+                  title: 'Salah Timings',
+                  icon: (
+                    <SalahTimingsSvg width={25} height={25} color={'#9E9F9F'} />
+                  ),
+                  onPress: () => setFlag('sTime'),
+                  hidden: !userData?.userType?.permissions?.some(
+                    val => val?.name == 'MANAGE_MASJID_SALAH_TIMINGS',
                   ),
                 },
               ],
@@ -358,7 +395,7 @@ function UserInformation({
           footerData={[
             {
               title: 'Help',
-              icon: <Help />,
+              icon: <Help width={24} height={24} color={'#006870'} />,
               onPress: () => setFlag('help'),
             },
           ]}

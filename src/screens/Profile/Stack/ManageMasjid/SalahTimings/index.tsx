@@ -1,7 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
 
-import { SalahTimingsSVG } from '../../../../../assets';
+import {
+  IqamaTimingsSvg,
+  JummaTimingsSvg,
+  MonthlyScheduleSvg,
+} from '../../../../../assets';
 import {
   GapView,
   MyTitle,
@@ -28,7 +32,7 @@ export default function SalahSettings({
               : -WINDOW_WIDTH / 1.9 / 3,
         }}>
         <Animated.View style={[{ opacity: contentOpacity }]}>
-          <MyTitle text="Salah Settings" />
+          <MyTitle text="Salah Timings" />
         </Animated.View>
       </View>
       <GapView />
@@ -36,17 +40,32 @@ export default function SalahSettings({
         <ProfileSectionlist
           data={[
             {
-              title: 'Salah Settings',
+              title: 'Salah Timings',
               data: [
                 {
                   title: 'Iqama Timings',
-                  icon: <SalahTimingsSVG />,
+                  icon: (
+                    <IqamaTimingsSvg width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => setFlag('iTime'),
                 },
                 {
                   title: 'Jumuah Timings',
-                  icon: <SalahTimingsSVG />,
+                  icon: (
+                    <JummaTimingsSvg width={25} height={25} color={'#9E9F9F'} />
+                  ),
                   onPress: () => setFlag('jTime'),
+                },
+                {
+                  title: 'Monthly Schedule',
+                  icon: (
+                    <MonthlyScheduleSvg
+                      width={25}
+                      height={25}
+                      color={'#9E9F9F'}
+                    />
+                  ),
+                  onPress: () => setFlag('HistSett'),
                 },
               ],
             },

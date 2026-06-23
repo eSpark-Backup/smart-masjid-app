@@ -11,6 +11,7 @@ import {
 } from '../types/masjidControllerTypes';
 import { LogoutUser } from './userController';
 import { userStore } from '../store/UserStore';
+import { getCountry } from 'react-native-localize';
 
 /**
  *
@@ -45,7 +46,8 @@ export const GetMasjidAdhanSetting = async (masjidId: string) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/adhan/config`);
     if (result.status == 200) {
-      masjidStore.adhanConfig.set(result.data);
+      // masjidStore.adhanConfig.set(result.data);
+      return result.data;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
@@ -99,11 +101,13 @@ export const AddMasjidIqamahTiming = async (
   try {
     console.log('start result');
     const result: any = await api.post(`/masjid/${masjidId}/iqama`, data);
-    console.log('result.data', result);
+    console.log('result.data', result.status);
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -111,6 +115,7 @@ export const AddMasjidIqamahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -136,8 +141,10 @@ export const UpdateMasjidIqamahTiming = async (
     );
     if (result.status == 200) {
       masjidStore.iqamahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       console.log('result.data', result.data?.message);
       Toast.show({
@@ -146,6 +153,7 @@ export const UpdateMasjidIqamahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -246,6 +254,36 @@ export const GetAdhanTimings = async (
 };
 
 /**
+ * Get the Adhan timings for a masjid by date and save them to masjidStore.
+ *
+ * @param masjidId - The ID of the masjid for which to retrieve Adhan timings.
+ * @param date - The date for which to retrieve Adhan timings (optional).
+ * @param range - The range for retrieving Adhan timings (optional).
+ * @returns get adhan timings of masjid by date and save to masjidStore
+ */
+export const GetAdhanLog = async (masjidId: string, date?: string) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/adhan/log`, {
+      date: date,
+    });
+    if (result.status == 200) {
+      return result.data;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return null;
+    } else {
+      // Toast.show({
+      //   text2: result?.data?.message ?? 'Something went wrong',
+      //   type: 'error',
+      // });
+      return null;
+    }
+  } catch (error) {
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
  * Get the Jummah configuration for a masjid and save it to masjidStore.
  *
  * @param masjidId - The ID of the masjid for which to retrieve the Jummah configuration.
@@ -320,8 +358,10 @@ export const AddMasjidJummahTiming = async (
     const result: any = await api.post(`/masjid/${masjidId}/jumuah`, data);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -329,6 +369,7 @@ export const AddMasjidJummahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -355,8 +396,10 @@ export const UpdatedMasjidJummahTiming = async (
     console.log(result);
     if (result.status == 200) {
       masjidStore.JummahTime.set(result.data);
+      return result.status;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+      return result.status;
     } else {
       Toast.show({
         text2: result.data?.message ?? 'Something went wrong',
@@ -364,6 +407,7 @@ export const UpdatedMasjidJummahTiming = async (
         autoHide: true,
         visibilityTime: 10000,
       });
+      return result.status;
     }
   } catch (error) {
     crashlytics().recordError(error as Error);
@@ -440,12 +484,12 @@ export const SearchMasjidByLocation = async (
   zipcode: string | number = '',
   lat: string | number = 0,
   long: string | number = 0,
+  userCountry: string,
 ) => {
   console.log('lat long', lat, long);
-
   try {
     const result: any = await api.get(
-      `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&distance=100`,
+      `/masjid/search?latitude=${lat}&longitude=${long}&zip=${zipcode}&country=${userCountry}&distance=100`,
     );
     console.log('result', result);
 
@@ -455,7 +499,9 @@ export const SearchMasjidByLocation = async (
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
     } else {
       Toast.show({
-        text2: result?.data?.message ?? 'Something went wrong',
+        text2:
+          result?.data?.message ??
+          'Something went wrong SearchMasjidByLocation',
         type: 'error',
       });
     }
@@ -473,7 +519,9 @@ export const SearchMasjidByLocation = async (
  */
 export const getListMasjidSubscribedByUser = async (userId: string) => {
   try {
+    console.log('GetMasjidlist chala', userId);
     const result: any = await api.get(`/masjid/subscriptions/user/${userId}`);
+    console.log('user masjidlist result', result);
     if (result.status == 200 && result.data) {
       const masjidList = result.data as Masjid[];
       // console.log("masjidList", masjidList);
@@ -505,15 +553,15 @@ export const getListMasjidSubscribedByUser = async (userId: string) => {
 export const getSalahTimingsOfMasjid = async (
   masjidId: string,
   date?: string,
+  range?: 'MONTH' | 'WEEK',
 ) => {
   try {
     const result: any = await api.get(`/masjid/${masjidId}/salah`, {
       date: date?.toString(),
-      range: 'MONTH',
+      range: range ? range : '',
     });
     if (result.status == 200 && result.data) {
       const timings = result?.data?.timings as SalahTimings[];
-      masjidStore?.salahTimings?.set(timings ?? []);
       return timings;
     } else if (result.status == 401) {
       await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
@@ -525,6 +573,78 @@ export const getSalahTimingsOfMasjid = async (
     }
   } catch (error) {
     console.log('getSalahTimingsOfMasjid error: ', error);
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Get Jumuah timings of a masjid for a specific month.
+ *
+ * @param masjidId - The ID of the masjid.
+ * @param [date] - The date for which Salah timings are requested. Optional.
+ * @returns An array of Salah timings for the masjid or undefined if there is an error.
+ */
+export const getJummahTimingsOfMasjid = async (
+  masjidId: string,
+  date?: string,
+) => {
+  try {
+    const result: any = await api.get(`/masjid/${masjidId}/jumuah/monthly`, {
+      date: date?.toString(),
+    });
+    if (result.status == 200 && result.data) {
+      const timings = result?.data;
+      return timings;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
+    }
+  } catch (error) {
+    console.log('getJumuahTimingsOfMasjid error: ', error);
+    crashlytics().recordError(error as Error);
+  }
+};
+
+/**
+ * Generate Monthly Schedule PDF of a masjid for a specific month.
+ *
+ * @param masjidId - The ID of the masjid.
+ * @param [date] - The date for which Monthly Schedule is requested.
+ * @param sendEmail - Flag for sending email.
+ * @returns An array of Salah timings for the masjid or undefined if there is an error.
+ */
+export const generatePDf = async (
+  masjidId: number,
+  scheduleId: number,
+  emails: string[],
+) => {
+  try {
+    console.log('masjidId, scheduleId, emails', masjidId, scheduleId, emails);
+
+    const result: any = await api.post(
+      `/masjid/${masjidId}/monthly-schedule/email`,
+      { scheduleId: scheduleId.toString(), emails: emails },
+    );
+    console.log('result', result);
+    console.log('result.data', result.data);
+
+    if (result.status == 200 && result.data) {
+      const filePath = result?.data;
+      return filePath;
+    } else if (result.status == 401) {
+      await LogoutUser(userStore.userData.get()?.id.toString() ?? '');
+    } else {
+      Toast.show({
+        text2: result?.data?.message ?? 'Something went wrong',
+        type: 'error',
+      });
+    }
+  } catch (error) {
+    console.log('generatePDf error: ', error);
     crashlytics().recordError(error as Error);
   }
 };

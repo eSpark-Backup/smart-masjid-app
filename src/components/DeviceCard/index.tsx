@@ -1,13 +1,15 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
 
-import { ButtonIcon, DeviceSvg } from '../../assets';
+import { ButtonIcon, DeviceSvg, StreamerMic } from '../../assets';
 import { Card } from '../../containers';
 import GapView from '../GapView';
 import TextLabel from '../TextLabel';
 import { Device } from '../../types/deviceControllerTypes';
 import DeviceStatus from '../DeviceStatus';
 import { WINDOW_WIDTH } from '../../constants';
+import { DStatus } from '../../types';
+import { Image } from 'react-native-animatable';
 
 export default function DeviceCard({
   deviceData,
@@ -50,16 +52,29 @@ export default function DeviceCard({
                   fontFamily: 'Roboto-Medium',
                 }}
               />
-              {deviceData?.deviceType?.modelNumber.includes('SBB') ? (
+              {deviceData?.deviceType.id == 3 ? (
+                // <Image
+                //   source={StreamerMic}
+                //   style={{ width: 50, height: 50, tintColor: '#9E9F9F' }}
+                // />
+                <StreamerMic
+                  height={50}
+                  width={50}
+                  color={'#9E9F9F'}
+                  style={{ alignSelf: 'center' }}
+                />
+              ) : deviceData?.deviceType?.modelNumber.includes('SBB') ? (
                 <ButtonIcon
                   height={50}
                   width={50}
+                  color={'#9E9F9F'}
                   style={{ alignSelf: 'center' }}
                 />
               ) : (
                 <DeviceSvg
                   height={50}
                   width={50}
+                  color={'#9E9F9F'}
                   style={{ alignSelf: 'center' }}
                 />
               )}
@@ -69,7 +84,15 @@ export default function DeviceCard({
                   bottom: 5,
                   right: 2,
                 }}>
-                <DeviceStatus status={deviceData?.deviceTelemetry?.status} />
+                <DeviceStatus
+                  status={
+                    deviceData?.deviceType.id == 3
+                      ? deviceData?.deviceTelemetry?.streamer == null
+                        ? null
+                        : (deviceData?.deviceTelemetry?.streamer as DStatus)
+                      : deviceData?.deviceTelemetry?.status
+                  }
+                />
               </View>
             </View>
           </View>
@@ -99,6 +122,6 @@ const styles = StyleSheet.create({
     width: 8,
     borderWidth: 0.7,
     borderRadius: 10,
-    backgroundColor: '#1DF126',
+    backgroundColor: '#17c01e',
   },
 });

@@ -40,7 +40,7 @@ export default function HelpScreen({
   }, []);
 
   const onSearch = (text: string) => {
-    if (text.length == 0) {
+    if (text?.length == 0) {
       setFAQs(FAQData);
       return;
     }
@@ -76,20 +76,7 @@ export default function HelpScreen({
           justifyContent: 'space-between',
         }}>
         <View style={{ flex: 1 }}>
-          <Card
-            backgroundColor="#ffffff"
-            height={45}
-            width={WINDOW_WIDTH - 30}
-            style={{
-              elevation: 3,
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 1,
-              },
-              shadowOpacity: 0.22,
-              shadowRadius: 2.22,
-            }}>
+          <Card width={WINDOW_WIDTH - 30}>
             <MyInput
               helpSearch
               inputStyle={{ width: WINDOW_WIDTH - 30 }}
@@ -117,7 +104,8 @@ export default function HelpScreen({
           <TouchableOpacity
             style={{ flexDirection: 'row' }}
             onPress={() => setFlag('cUs')}>
-            <ContactUs />
+            <ContactUs width={22} height={22} color={'#006870'} />
+            <GapView length={5} mode="horizontal" />
             <MyText
               size={16}
               text={`Contact us`}

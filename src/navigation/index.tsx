@@ -1,18 +1,16 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Toast, {
-  BaseToast,
-  ErrorToast,
-  BaseToastProps,
-} from 'react-native-toast-message';
 import { State, useHookstate } from '@hookstate/core';
 import { getUniqueId } from 'react-native-device-info';
 import jwtDecode from 'jwt-decode';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import crashlytics from '@react-native-firebase/crashlytics';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import NetInfo from '@react-native-community/netinfo';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { WelcomeScreen, UserSetupScreen, DeviceSetupScreen } from '../screens';
 import { MyLightTheme } from '../theme';
@@ -23,7 +21,7 @@ import { globalStore } from '../store/GlobalStates';
 import { getDataFromLocalStorage, _getFCMToken } from '../utils/functions';
 import { userStore } from '../store/UserStore';
 import { UserResponse, UserToken } from '../types/userControllerApiResponse';
-import { OverlayLoader } from '../components';
+import { BlurBackground, OverlayLoader } from '../components';
 import {
   GetCountryCodes,
   RefreshToken,
@@ -32,62 +30,50 @@ import {
 import { api } from '../api';
 import { subJummas, SubscriptionList } from '../types/masjidControllerTypes';
 import { masjidStore } from '../store/MasjidStore';
+import NoInternetModal from '../components/NoInternetModal';
+import { ToastProvider } from '../components/TheToast';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-const toastConfig = {
-  /*
-    Overwrite 'success' type,
-    by modifying the existing `BaseToast` component
-  */
-  success: (props: BaseToastProps) => (
-    <BaseToast
-      {...props}
-      style={styles.successStyle}
-      text1Style={styles.text1Style}
-      text2Style={styles.text2Style}
-      text1={props.text1 ?? 'Success!'}
-    />
-  ),
-  /*
-    Overwrite 'error' type,
-    by modifying the existing `ErrorToast` component
-  */
-  error: (props: BaseToastProps) => (
-    <ErrorToast
-      {...props}
-      style={styles.errorStyle}
-      text1Style={styles.text1Style}
-      text2Style={styles.text2Style}
-      text1={props.text1 ?? 'Error!'}
-    />
-  ),
-
-  warning: (props: BaseToastProps) => (
-    <BaseToast
-      {...props}
-      style={styles.warningStyle}
-      text1Style={styles.text1Style}
-      text2Style={styles.text2Style}
-      text1={props.text1 ?? 'Warning!'}
-    />
-  ),
-};
 
 export default function App() {
   const state: State<GlobalProps> = useHookstate(globalStore);
   const [checkedId, setCheckedId] = useState<boolean | null>(null);
   const userData = useHookstate(userStore.userData);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isInternetReachable);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     handleDeviceIdCheck();
-    getSubscribedJummas();
   }, [userData]);
 
-  const getSubscribedJummas = () => {
+  useEffect(() => {
+    if (userData.get()) {
+      getSubscribedJummas();
+    }
+  }, [userStore.userData.get()?.masjid?.subscriptionList]);
+
+  useEffect(() => {
+    if (userStore.userData.get()) {
+      crashlytics().setUserId(userData.get()?.id.toString()!);
+      crashlytics().setAttributes({
+        id: userData.get()?.id.toString()!,
+        email: userData.get()?.email!,
+        phone: userData.get()?.phone!,
+      });
+    }
+  }, [userStore.userData.get()]);
+
+  const getSubscribedJummas = useCallback(() => {
     let jummas: subJummas;
+
     try {
-      if (userData.get()?.masjid?.subscriptionList) {
+      if (userStore.userData.get()?.masjid?.subscriptionList) {
         userData
           .get()
           ?.masjid?.subscriptionList?.forEach((item: SubscriptionList) => {
@@ -105,7 +91,7 @@ export default function App() {
       console.error('At get subscriobed jummahs');
       crashlytics().recordError(e as Error);
     }
-  };
+  }, [userStore.userData.get()?.masjid?.subscriptionList]);
 
   useEffect(() => {
     GetCountryCodes();
@@ -140,11 +126,16 @@ export default function App() {
         userStore.token.set(token);
       }
     });
-
-    setTimeout(() => {
-      SplashScreen.hide();
-    }, 5000);
   }, []);
+
+  useEffect(() => {
+    if (checkedId != null) {
+      SplashScreen.hide();
+      state.globalLoading.set(false);
+    } else {
+      state.globalLoading.set(true);
+    }
+  }, [checkedId]);
 
   const handleDeviceIdCheck = useCallback(async () => {
     const res = await getUniqueId();
@@ -166,62 +157,65 @@ export default function App() {
     }
   }, []);
 
-  console.log('checkid', checkedId);
-  console.log('userData.get()?.id', userData.get()?.id);
-
   if (checkedId !== null) {
     return (
-      <NavigationContainer theme={MyLightTheme}>
-        <Stack.Navigator
-          initialRouteName={checkedId ? 'USetup' : 'Welcome'}
-          screenOptions={{
-            headerShown: false,
-            animation: 'fade',
-          }}>
-          {!userData.get()?.id ? (
-            <Stack.Group>
-              {!checkedId ? (
-                <>
-                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                  <Stack.Screen name="USetup" component={UserSetupScreen} />
-                </>
+      <SafeAreaProvider>
+        <GestureHandlerRootView>
+          <NavigationContainer theme={MyLightTheme}>
+            <Stack.Navigator
+              initialRouteName={checkedId ? 'USetup' : 'Welcome'}
+              screenOptions={{
+                headerShown: false,
+                animation: 'fade',
+              }}>
+              {!userData.get()?.id ? (
+                <Stack.Group>
+                  {!checkedId ? (
+                    <>
+                      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                      <Stack.Screen name="USetup" component={UserSetupScreen} />
+                    </>
+                  ) : (
+                    <>
+                      <Stack.Screen name="USetup" component={UserSetupScreen} />
+                      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                    </>
+                  )}
+                </Stack.Group>
               ) : (
-                <>
-                  <Stack.Screen name="USetup" component={UserSetupScreen} />
-                  <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                </>
+                <Stack.Group>
+                  <Stack.Screen
+                    name="HomeBottomTab"
+                    component={HomeBottomTab}
+                  />
+                  <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
+                </Stack.Group>
               )}
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
-            </Stack.Group>
-          ) : (
-            <Stack.Group>
-              <Stack.Screen name="HomeBottomTab" component={HomeBottomTab} />
-              <Stack.Screen name="DSetup" component={DeviceSetupScreen} />
-            </Stack.Group>
-          )}
-        </Stack.Navigator>
-        <Toast
-          config={toastConfig}
-          topOffset={StatusBar.currentHeight}
-          visibilityTime={5000}
-        />
-      </NavigationContainer>
+            </Stack.Navigator>
+            <ToastProvider />
+            <OverlayLoader
+              loaderColor={'rgb(0, 104, 112)'}
+              isShow={Boolean(state.globalLoading.get())}
+              msg={state.globalLoadingMsg.get()}
+              onBtnPress={() =>
+                Boolean(state.globalLoading.get()) == true
+                  ? state.globalLoading.set(false)
+                  : state.globalLoading.set(true)
+              }
+            />
+            <BlurBackground
+              show={isConnected == false && state.hideNetError.get() == false}
+            />
+            <NoInternetModal
+              isVisible={
+                isConnected == false && state.hideNetError.get() == false
+              }
+            />
+          </NavigationContainer>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
     );
   } else {
     return <OverlayLoader loaderColor={'rgb(0, 104, 112)'} isShow={false} />;
   }
 }
-
-const styles = StyleSheet.create({
-  successStyle: { width: '90%', borderLeftColor: '#0097A3' },
-  errorStyle: { width: '90%', borderLeftColor: '#FF6464' },
-  warningStyle: { width: '90%', borderLeftColor: '#f2be09' },
-  text1Style: {
-    fontFamily: 'roboto',
-    fontSize: 14,
-  },
-  text2Style: {
-    fontFamily: 'roboto',
-    fontSize: 12,
-  },
-});

@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native';
 import { Theme, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { Joined, MyTitle, GapView, MyText } from '../../components';
+import { Joined, MyTitle, GapView, MyText, Rounded } from '../../components';
 import { Wrapper } from '../../containers';
 import { RootStackParamList } from '../../types';
 
@@ -58,14 +58,15 @@ export default function App() {
             <MyText
               size={16}
               textStyle={{ textAlign: 'center' }}
-              text="Have you purchased the device ?"
+              text="Let’s get your account created"
             />
             <GapView length={50} />
-            <Joined
-              containerStyle={{ alignSelf: 'center' }}
-              onPress1={() => {}}
-              onPress2={() => navigation.navigate('USetup', { type: 'setup' })}
-            />
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Rounded
+                label="Start"
+                onPress={() => navigation.navigate('USetup', { type: 'setup' })}
+              />
+            </View>
             <GapView length={50} />
             <MyText
               text="I already have an account."

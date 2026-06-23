@@ -5,7 +5,12 @@ import II from 'react-native-vector-icons/Ionicons';
 import { Theme, useTheme } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import { Calendar } from '../../assets';
+import {
+  Calendar,
+  Chevron_Left,
+  Chevron_Right,
+  MonthlyScheduleSvg,
+} from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyTextSubHeader from '../MyTextSubHeader';
@@ -19,6 +24,7 @@ export default function MyDatePicker({
   dateFormat,
   showLabel,
   disablePicker,
+  hideChevs,
 }: {
   disablePicker?: boolean;
   onDateChange?: (e: any) => void;
@@ -27,7 +33,8 @@ export default function MyDatePicker({
   minimumDate?: Date | undefined;
   maximumDate?: Date | undefined;
   showLabel?: boolean;
-  dateFormat?: 'Monthly' | 'FullDate';
+  dateFormat?: 'FullMonth' | 'Monthly' | 'FullDate';
+  hideChevs?: boolean;
 }) {
   const [date, setDate] = useState<any>(new Date());
   const [mode, setMode] = useState('date');
@@ -46,7 +53,7 @@ export default function MyDatePicker({
 
   const nextDate = () => {
     const newDate =
-      dateFormat == 'Monthly'
+      dateFormat == 'Monthly' || dateFormat == 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).add(1, 'month'))
         : // @ts-ignore
@@ -57,7 +64,7 @@ export default function MyDatePicker({
 
   const prevDate = () => {
     const newDate =
-      dateFormat == 'Monthly'
+      dateFormat == 'Monthly' || dateFormat == 'FullMonth'
         ? // @ts-ignore
           new Date(moment(date).subtract(1, 'month'))
         : // @ts-ignore
@@ -80,14 +87,14 @@ export default function MyDatePicker({
             paddingHorizontal: 10,
             borderWidth: 0.5,
             borderRadius: 10,
-            height: 42,
+            height: 50,
           }}>
           <View
             style={{
               position: 'absolute',
               top: -10,
               left: 15,
-              backgroundColor: colors.background,
+              backgroundColor: '#f8fbfb',
               paddingHorizontal: 5,
             }}>
             <MyText
@@ -111,7 +118,11 @@ export default function MyDatePicker({
           )}
           <MyText text={moment(date)?.format('MM/DD/YYYY')} />
           <GapView length={10} mode="horizontal" />
-          <Calendar style={{ color: '#006870' }} />
+          <MonthlyScheduleSvg
+            width={22}
+            height={22}
+            style={{ color: '#006870' }}
+          />
         </TouchableOpacity>
       </>
     );
@@ -136,17 +147,28 @@ export default function MyDatePicker({
               onCancel={() => setShow(false)}
             />
           )}
-          <TouchableOpacity
-            disabled={!moment(date).isAfter(minimumDate)}
-            onPress={prevDate}>
-            <II
-              color={
-                moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
-              }
-              name="md-chevron-back"
-              size={24}
-            />
-          </TouchableOpacity>
+          {!hideChevs ? (
+            <TouchableOpacity
+              disabled={!moment(date).isAfter(minimumDate)}
+              onPress={prevDate}>
+              {/* <II
+                color={
+                  moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
+                }
+                name="md-chevron-back"
+                size={24}
+              /> */}
+              <Chevron_Left
+                color={
+                  moment(date).isAfter(minimumDate) ? colors.primary : '#bdbdbd'
+                }
+                width={18}
+                height={18}
+              />
+            </TouchableOpacity>
+          ) : (
+            <GapView length={24} />
+          )}
           <GapView length={10} mode="horizontal" />
           <TouchableOpacity
             activeOpacity={0.9}
@@ -154,24 +176,41 @@ export default function MyDatePicker({
             onPress={() => setShow(true)}>
             <MyTextSubHeader
               text={
-                dateFormat == 'Monthly'
+                dateFormat == 'FullMonth'
+                  ? moment(date)?.format('MMMM YYYY')
+                  : dateFormat == 'Monthly'
                   ? moment(date)?.format('MMM, YYYY')
                   : moment(date)?.format('MMM-DD, YYYY')
               }
             />
           </TouchableOpacity>
           <GapView length={10} mode="horizontal" />
-          <TouchableOpacity
-            disabled={!moment(date).isBefore(maximumDate)}
-            onPress={nextDate}>
-            <II
-              color={
-                moment(date).isBefore(maximumDate) ? colors.primary : '#bdbdbd'
-              }
-              name="md-chevron-forward"
-              size={24}
-            />
-          </TouchableOpacity>
+          {!hideChevs ? (
+            <TouchableOpacity
+              disabled={!moment(date).isBefore(maximumDate)}
+              onPress={nextDate}>
+              {/* <II
+                color={
+                  moment(date).isBefore(maximumDate)
+                    ? colors.primary
+                    : '#bdbdbd'
+                }
+                name="md-chevron-forward"
+                size={24}
+              /> */}
+              <Chevron_Right
+                color={
+                  moment(date).isBefore(maximumDate)
+                    ? colors.primary
+                    : '#bdbdbd'
+                }
+                width={18}
+                height={18}
+              />
+            </TouchableOpacity>
+          ) : (
+            <GapView length={24} />
+          )}
         </View>
       </>
     );

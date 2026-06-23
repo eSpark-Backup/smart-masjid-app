@@ -5,21 +5,22 @@ import { DeviceSvg } from '../../assets';
 import GapView from '../GapView';
 import TextLabel from '../TextLabel';
 import DeviceStatus from '../DeviceStatus';
+import { DStatus } from '../../types';
 
 const DeviceListItem = ({
   title = '',
   subTitle = '',
   disabled = false,
-  online = true,
+  online = 'Offline',
   onPress = () => {},
 }: {
   title: string;
   subTitle?: string;
   disabled?: boolean;
-  online?: boolean;
+  online?: DStatus;
   onPress?: () => void;
 }) => {
-  const isDisabled = disabled || !online;
+  const isDisabled = disabled || online == 'Offline';
   return (
     <>
       <TouchableOpacity
@@ -38,7 +39,7 @@ const DeviceListItem = ({
             justifyContent: 'space-between',
           }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <DeviceSvg height={24} width={24} />
+            <DeviceSvg height={24} width={24} color={'#9E9F9F'} />
             <GapView length={10} mode="horizontal" />
             <View style={{ alignItems: 'flex-start' }}>
               <TextLabel
@@ -65,7 +66,7 @@ const DeviceListItem = ({
               )}
             </View>
           </View>
-          <DeviceStatus online={online} />
+          <DeviceStatus status={online} />
         </View>
       </TouchableOpacity>
     </>

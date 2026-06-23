@@ -1,21 +1,25 @@
 import { DStatus } from '.';
 
+export type DeviceTypesType = {
+  id: number;
+  deviceCategory: DeviceCatType;
+  name: string;
+  manufacturer: string;
+  modelNumber: string;
+};
+export type DeviceCatType = {
+  id: number;
+  name: string;
+};
 export interface Device {
   id: number;
+  ipAddress: string;
   macAddress: string;
-  deviceType: {
-    id: number;
-    deviceCategory: {
-      id: number;
-      name: string;
-    };
-    name: string;
-    manufacturer: string;
-    modelNumber: string;
-  };
+  deviceType: DeviceTypesType;
   deviceTelemetry: {
     id: number;
     status: DStatus;
+    streamer: string;
     batteryLife: number;
     updatedTime: string;
   };
@@ -100,6 +104,28 @@ export interface Device {
   name: string;
   wifiSsid: string;
   firmwareVersion: string;
+  createdBy: string;
+  createdDate: string;
+  updatedBy: string;
+  updatedDate: string;
+}
+
+export interface DeviceLogType {
+  id: number;
+  version: string;
+  status: string;
+  createdBy: string;
+  createdDate: string;
+  updatedBy: string;
+  updatedDate: string;
+}
+export interface DeviceFirmwareType {
+  id: number;
+  deviceType: DeviceTypesType;
+  deviceCertificate: null;
+  name: string;
+  version: string;
+  filepath: string;
   createdBy: string;
   createdDate: string;
   updatedBy: string;

@@ -8,7 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
 import {
@@ -30,6 +30,8 @@ import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import TimeTableCard from '../../../../../../components/TimeTableCard';
 import { userStore } from '../../../../../../store/UserStore';
 import { WINDOW_WIDTH } from '../../../../../../constants';
+import { GlobalProps } from '../../../../../../types';
+import { globalStore } from '../../../../../../store/GlobalStates';
 
 export default function IqamahTimings({
   setFlag,
@@ -40,6 +42,7 @@ export default function IqamahTimings({
   contentOpacity?: any;
   selectedIqamah: (value: IqamahTime) => void;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [currentData, setCurrentData] = useState<any>(null);
@@ -49,12 +52,13 @@ export default function IqamahTimings({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    state.globalLoading.set(true);
+    // setLoading(true);
     getAllIqamahTimings();
   }, []);
 
   const getAllIqamahTimings = () => {
-    GetMasjidIqamahTiming(userData?.masjid.id.toString() as string).then(
+    GetMasjidIqamahTiming(userData?.masjid?.id.toString() as string).then(
       iqamahTime => {
         let iqamahData: any = [];
         iqamahTime?.map((i: IqamahTime) => {
@@ -139,8 +143,11 @@ export default function IqamahTimings({
           };
           iqamahData.push(namazData);
         });
+        console.log('iqamahDataiqamahData', iqamahData);
+
         setData(iqamahData);
-        setLoading(false);
+        state.globalLoading.set(false);
+        // setLoading(false);
       },
     );
   };
@@ -148,6 +155,7 @@ export default function IqamahTimings({
   const contentToRender = () => {
     return currentData != null ? (
       <TimeTableCard
+        showEdit={currentData?.date == moment().format('YYYY-MM-DD')}
         onEdit={() => {
           const ind = iqamahTimings?.findIndex(e => e.id == currentData.id);
           selectedIqamah(iqamahTimings![ind!]);
@@ -156,7 +164,7 @@ export default function IqamahTimings({
         date={currentData?.date}
         data={currentData?.data}
       />
-    ) : loading ? null : (
+    ) : state.globalLoading.get() ? null : (
       <MyText
         textStyle={{ textAlign: 'center', marginVertical: 10 }}
         text="No current Iqama to show yet!"
@@ -164,11 +172,12 @@ export default function IqamahTimings({
     );
   };
 
-  const deleteIqamahTime = () => {
+  const deleteIqamahTime = async () => {
     setIsVisible(false);
-    setLoading(true);
-    DeleteMasjidIqamahTiming(
-      userData?.masjid.id.toString() as string,
+    state.globalLoading.set(true);
+    // setLoading(true);
+    await DeleteMasjidIqamahTiming(
+      userData?.masjid?.id.toString() as string,
       deleteId as string,
     );
     getAllIqamahTimings();
@@ -191,14 +200,14 @@ export default function IqamahTimings({
           </Animated.View>
         </View>
         <GapView />
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
-          <OverlayLoader isShow={loading} />
+        <ScrollView>
+          {/* <OverlayLoader isShow={loading} /> */}
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingHorizontal: 10,
+              paddingHorizontal: 25,
               paddingBottom: 5,
             }}>
             <MyTextSubHeader text="Current" />
@@ -206,26 +215,27 @@ export default function IqamahTimings({
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => setFlag('iAdd')}>
-                <PlusCircle />
+                <PlusCircle width={20} height={20} color={'#006870'} />
               </TouchableOpacity>
-              <GapView mode="horizontal" />
+              {/* <GapView mode="horizontal" />
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => setFlag('iHist')}>
                 <HistoryBox />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           {contentToRender()}
           <View
-            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 5 }}>
+            style={{ paddingHorizontal: 25, paddingTop: 10, paddingBottom: 5 }}>
             <MyTextSubHeader text="Upcoming" />
           </View>
-          {loading ? null : (
+          {state.globalLoading.get() ? null : (
             <FlatList
               data={data}
               renderItem={({ item }) => (
                 <TimeTableCard
+                  showEdit={true}
                   onEdit={() => {
                     const ind = iqamahTimings?.findIndex(e => e.id == item.id);
                     selectedIqamah(iqamahTimings![ind!]);

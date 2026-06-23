@@ -73,6 +73,16 @@ export type UserResponse = {
   updatedBy: string;
   updatedDate: string;
 };
+export type ScheduleResponse = {
+  id: number;
+  month: number;
+  year: number;
+  url: string;
+  createdBy: string;
+  createdDate: string;
+  updatedBy: string;
+  updatedDate: string;
+};
 
 export type RequestRegisterPhone = {
   deviceId: string;

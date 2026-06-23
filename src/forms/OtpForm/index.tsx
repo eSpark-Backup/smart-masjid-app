@@ -19,6 +19,9 @@ import {
   Rounded,
 } from '../../components';
 import { WINDOW_WIDTH } from '../../constants';
+import { GlobalProps } from '../../types';
+import { State, useHookstate } from '@hookstate/core';
+import { globalStore } from '../../store/GlobalStates';
 
 export default function OtpForm({
   setStep,
@@ -37,6 +40,7 @@ export default function OtpForm({
   userPhone?: string;
   goBack?: () => void;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const otpRef: any = useRef(null);
   const { colors }: Theme = useTheme();
   const [otp, setOtp] = React.useState('');
@@ -48,12 +52,14 @@ export default function OtpForm({
   );
 
   const onResendOtp = async () => {
-    setLoader(true);
+    state.globalLoading.set(true);
+    // setLoader(true);
     await onResend?.();
     setTime((prevVal: number) => 120);
     setCountdownId(new Date().getTime().toString());
     setExpTime(false);
-    setLoader(false);
+    state.globalLoading.set(false);
+    // setLoader(false);
   };
 
   return (
@@ -72,7 +78,7 @@ export default function OtpForm({
       </View>
       <GapView />
       <View style={{ alignItems: 'center' }}>
-        <OverlayLoader isShow={loader} />
+        {/* <OverlayLoader isShow={loader} /> */}
         <MyTextSubHeader
           text={`One-time passcode sent to ${userPhone ? 'number' : 'email'}`}
         />
@@ -116,7 +122,7 @@ export default function OtpForm({
             }}
             size={10}
             showSeparator
-            separatorStyle={{ color: colors.primary, fontSize: 15 }}
+            separatorStyle={{ fontSize: 15 }}
             timeToShow={['M', 'S']}
             timeLabels={{ m: '', s: '' }}
             digitStyle={{ marginHorizontal: 1 }}

@@ -25,7 +25,7 @@ export default function OutlineDeviceContainer({
         borderWidth: 0.8,
         borderColor: colors.primary,
         height: 32,
-        width: 110,
+        width: 130,
         borderRadius: 20,
         flexDirection: 'row',
         paddingHorizontal: 10,
@@ -46,7 +46,7 @@ export default function OutlineDeviceContainer({
         style={{
           height: 10,
           width: 10,
-          backgroundColor: isOnline ? '#1DF126' : '#FF6464',
+          backgroundColor: isOnline ? '#17c01e' : '#FF6464',
           borderRadius: 100,
         }}
       />

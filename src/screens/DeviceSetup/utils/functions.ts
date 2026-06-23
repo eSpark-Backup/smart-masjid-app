@@ -52,15 +52,24 @@ export function _startCheckBle(callback: (e: Event) => void) {
 export function _checkBleStatus() {
   try {
     return new Promise((resolve: (value: boolean) => any, reject) => {
-      BleManager.checkState().then(state => {
+      BluetoothStateManager.onStateChange(state => {
         console.log(`current BLE state = '${state}'.`);
-        if (state == 'on') {
+        if (state == 'PoweredOn') {
           resolve(true);
         }
-        if (state == 'off') {
+        if (state == 'PoweredOff') {
           resolve(false);
         }
-      });
+      }, true);
+      // BleManager.checkState().then(state => {
+      //   console.log(`current BLE state = '${state}'.`);
+      //   if (state == 'on') {
+      //     resolve(true);
+      //   }
+      //   if (state == 'off') {
+      //     resolve(false);
+      //   }
+      // });
     });
   } catch (e) {
     crashlytics().recordError(e as Error);
@@ -163,8 +172,8 @@ export async function _disconnectBleDevice(
       const peripheralsArray = await BleManager.getConnectedPeripherals([]);
       console.log('Connected peripherals: ' + JSON.stringify(peripheralsArray));
 
-      const dev: Peripheral | undefined = peripheralsArray.find(item =>
-        item.name?.includes('MYESP'),
+      const dev: Peripheral | undefined = peripheralsArray.find(
+        item => item.name?.includes('SMSPK') || item.name?.includes('SMBTN'),
       );
 
       if (dev) {
@@ -210,13 +219,20 @@ export async function _writeToDevice(
   devInfo: DeviceInfo,
   serviceUUID: string,
   charUUID: string,
+  isBtn: boolean,
 ) {
   try {
     // return new Promise((resolve, reject) => {
-    const string = JSON.stringify({
+    let dat: any = {
       ssid: devInfo?.ssid,
       pass: devInfo?.password,
-    });
+    };
+    if (isBtn) {
+      dat.masjid_id = devInfo?.masjid_id;
+    }
+
+    const string = JSON.stringify(dat);
+
     const data = stringToBytes(string);
     console.log('device info1', string);
     BleManager.write(devInfo?.macId!!, serviceUUID, charUUID, data, 64)

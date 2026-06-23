@@ -2,7 +2,7 @@ import { TouchableOpacity, View } from 'react-native';
 import React from 'react';
 
 import { Card } from '../../containers';
-import { Calendar, Delete, EditPencil } from '../../assets';
+import { Calendar, DeleteSvg, EditPencil } from '../../assets';
 import GapView from '../GapView';
 import MyText from '../MyText';
 import MyDivider from '../MyDivider';
@@ -18,11 +18,13 @@ const TimeTableCard = ({
   date = '',
   deleteBtn,
   onEdit,
+  showEdit,
   onDelete,
 }: {
   data: TimeTableData[];
   date: string;
   deleteBtn?: boolean;
+  showEdit?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
 }) => {
@@ -33,20 +35,22 @@ const TimeTableCard = ({
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Calendar style={{ color: '#6E6E6E' }} />
-              <GapView length={5} />
+              <Calendar width={20} height={20} style={{ color: '#6E6E6E' }} />
+              <GapView mode="horizontal" length={5} />
               <MyText text={date} size={12} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               {deleteBtn ? (
                 <TouchableOpacity activeOpacity={0.5} onPress={onDelete}>
-                  <Delete />
+                  <DeleteSvg width={20} height={20} color={'#006870'} />
                 </TouchableOpacity>
               ) : null}
               <GapView length={5} mode="horizontal" />
-              <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
-                <EditPencil />
-              </TouchableOpacity>
+              {showEdit ? (
+                <TouchableOpacity activeOpacity={0.5} onPress={onEdit}>
+                  <EditPencil width={18} height={18} color={'#006870'} />
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
           <GapView />
@@ -55,13 +59,13 @@ const TimeTableCard = ({
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: data.length > 3 ? 'space-between' : 'flex-start',
+              justifyContent: data?.length > 3 ? 'space-between' : 'flex-start',
             }}>
-            {data.map(v => {
+            {data?.map(v => {
               return (
                 <View
                   key={v.name}
-                  style={{ marginRight: data.length > 3 ? 0 : 20 }}>
+                  style={{ marginRight: data?.length > 3 ? 0 : 20 }}>
                   <MyText
                     textStyle={{ textTransform: 'capitalize' }}
                     text={v.name}

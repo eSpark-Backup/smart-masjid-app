@@ -24,11 +24,30 @@ export type AdhanConfig = {
   id: number;
   adhanCalcConfig: AdhanCalcConfig;
   adhanJuristicConfig: AdhanJuristicConfig;
-  adhanCustomConfig: AdhanCustomConfig;
+  fajrAngle: number;
+  maghribRule: string;
+  maghribValue: string;
+  ishaRule: string;
+  ishaValue: string;
   createdBy: string;
   createdDate: string;
   updatedBy: string;
   updatedDate: string;
+};
+
+export type AdhanLog = {
+  id: number;
+  date: string;
+  fajrCalled: 'Y' | 'N';
+  dhuhrCalled: 'Y' | 'N';
+  asrCalled: 'Y' | 'N';
+  maghribCalled: 'Y' | 'N';
+  ishaCalled: 'Y' | 'N';
+  fajrCalledTime: null | string;
+  dhuhrCalledTime: null | string;
+  asrCalledTime: null | string;
+  maghribCalledTime: null | string;
+  ishaCalledTime: null | string;
 };
 
 export type IqamahTime = {
@@ -182,11 +201,19 @@ export interface Salah {
   name: string;
   adhanTime: string;
   iqamaTime: string;
+  sunriseTime: string;
+  shurooqTime: string;
 }
 
 export interface SalahTimings {
   date: string;
   salah: Salah[];
+}
+export interface JumuahTimings {
+  date: string;
+  jumuah1?: string;
+  jumuah2?: string;
+  jumuah3?: string;
 }
 export interface AllSalahTimings {
   id: string;

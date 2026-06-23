@@ -4,7 +4,7 @@ import { Peripheral } from 'react-native-ble-manager';
 import Toast from 'react-native-toast-message';
 import crashlytics from '@react-native-firebase/crashlytics';
 
-import { AdhanButton, DeviceSvg } from '../../assets';
+import { ButtonIcon, DeviceSvg } from '../../assets';
 import {
   ButtonListing,
   GapView,
@@ -18,6 +18,9 @@ import { WINDOW_WIDTH } from '../../constants';
 //@ts-ignore
 import { bytesToString } from 'convert-string';
 import { UserPermissions } from '../../types/userControllerApiResponse';
+import { GlobalProps } from '../../types';
+import { globalStore } from '../../store/GlobalStates';
+import { State, useHookstate } from '@hookstate/core';
 
 export default function DeviceSelectForm({
   data = [],
@@ -27,6 +30,7 @@ export default function DeviceSelectForm({
   autoSelect,
   selectedDeviceData,
   contentOpacity,
+  fromMasjidDevices,
 }: {
   data?: Array<Peripheral | undefined>;
   userPermissions?: UserPermissions[];
@@ -35,55 +39,66 @@ export default function DeviceSelectForm({
   autoSelect?: boolean;
   selectedDeviceData: Device;
   contentOpacity: any;
+  fromMasjidDevices: boolean;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const [loading, setLoading] = useState(false);
 
   const getIOSMacAdd = async (devData: Peripheral) => {
+    console.log(devData);
+
     const devBytes = devData.advertising.manufacturerData?.bytes;
     const strData: string = bytesToString(devBytes);
     return strData;
   };
 
   async function handleDeviceCheck(item: Peripheral) {
-    setLoading(true);
+    console.log('device item ', item);
+
+    state.globalLoading.set(true);
+    // setLoading(true);
     try {
-      const res = await _checkDeviceExists(
+      console.log('try mein aya');
+      const deviceMacaddr =
         Platform.OS == 'ios'
           ? ((await getIOSMacAdd(item as Peripheral)) as unknown as string)
-          : (item?.id as string),
-      );
+          : (item?.id as string);
+      const res = await _checkDeviceExists(deviceMacaddr);
       console.log('res', Boolean(res), item.id);
       if (!Boolean(res)) {
         setStep(3);
         setDevMacId?.(item.id);
       } else {
         Toast.show({
-          text2: 'Device Already Exists',
+          text2: 'Device Already Exists ' + `[${deviceMacaddr}]`,
           type: 'error',
           autoHide: true,
           visibilityTime: 10000,
         });
       }
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     } catch (error) {
       crashlytics().recordError(error as Error);
       console.log('error thrown', error);
-      setLoading(false);
+      state.globalLoading.set(false);
+      // setLoading(false);
     }
   }
 
-  const newArr = data.map(item => {
+  const newArr = data?.map(item => {
     const isBtn = item?.name?.includes('SMBTN');
     console.log('===============>>>>>>>>', userPermissions);
     const isAdmin = userPermissions?.some(
       val => val.name === 'MANAGE_MASJID_DEVICES',
     );
+    console.log('fromMasjidDevices isBtn', fromMasjidDevices, isBtn);
     if (!isAdmin) {
       if (!isBtn) {
         console.log('admin nhi button nhi');
         return {
           ...item,
-          leftIcon: <DeviceSvg />,
+          leftIcon: <DeviceSvg height={24} width={24} color={'#9E9F9F'} />,
           title: 'Bilal Smart Speaker',
           onPress: () => {
             console.log('selected macId', item?.id);
@@ -94,11 +109,18 @@ export default function DeviceSelectForm({
         console.log('admin nhi button hai');
         return { ...item, title: 'null' };
       }
+    } else if (!fromMasjidDevices && isBtn) {
+      console.log('masjid devices se nhi hai button hai');
+      return { ...item, title: 'null' };
     } else {
       console.log('admin hai button hai');
       return {
         ...item,
-        leftIcon: isBtn ? <AdhanButton /> : <DeviceSvg />,
+        leftIcon: isBtn ? (
+          <ButtonIcon height={24} width={24} color={'#9E9F9F'} />
+        ) : (
+          <DeviceSvg height={24} width={24} color={'#9E9F9F'} />
+        ),
         title: isBtn ? 'Smart Masjid Adhan Button' : 'Bilal Smart Speaker',
         onPress: () => {
           console.log('selected macId', item?.id);
@@ -113,7 +135,7 @@ export default function DeviceSelectForm({
   console.log('final Array', finalArr);
 
   useEffect(() => {
-    if (finalArr.length <= 0) {
+    if (finalArr?.length <= 0) {
       setStep(8);
     }
   }, [finalArr]);
@@ -121,16 +143,18 @@ export default function DeviceSelectForm({
   useEffect(() => {
     if (autoSelect) {
       finalArr.filter(item => {
-        const strData = bytesToString(
-          item.advertising?.manufacturerData?.bytes,
-        );
-        console.log('finalstrData', strData);
-        console.log('match', strData == selectedDeviceData?.macAddress);
+        // const strData = bytesToString(
+        //   item.advertising?.manufacturerData?.bytes,
+        // );
+        // console.log('finalstrData', strData);
+        // console.log('match', strData == selectedDeviceData?.macAddress);
 
         if (
           Platform.OS == 'ios'
-            ? bytesToString(item.advertising?.manufacturerData?.bytes) ==
-              selectedDeviceData?.macAddress
+            ? item.advertising?.manufacturerData?.bytes == undefined
+              ? false
+              : bytesToString(item.advertising?.manufacturerData?.bytes) ==
+                selectedDeviceData?.macAddress
             : item.id == selectedDeviceData?.macAddress
         ) {
           setStep(3);
@@ -159,9 +183,7 @@ export default function DeviceSelectForm({
       <View>
         <MyTextSubHeader text="Devices found" style={{ alignSelf: 'center' }} />
         <GapView length={30} />
-        {loading ? (
-          <OverlayLoader isShow={loading} noBg={true} />
-        ) : (
+        {!state.globalLoading.get() && (
           <ButtonListing trademark radius={12} data={finalArr} />
         )}
       </View>

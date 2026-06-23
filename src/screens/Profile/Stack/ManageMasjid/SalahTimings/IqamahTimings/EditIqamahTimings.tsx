@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Animated, Platform } from 'react-native';
-import { useHookstate } from '@hookstate/core';
+import { State, useHookstate } from '@hookstate/core';
 import moment from 'moment';
 
 import {
@@ -21,6 +21,8 @@ import { WINDOW_WIDTH } from '../../../../../../constants';
 import { masjidStore } from '../../../../../../store/MasjidStore';
 import { IqamahTime } from '../../../../../../types/masjidControllerTypes';
 import { userStore } from '../../../../../../store/UserStore';
+import { globalStore } from '../../../../../../store/GlobalStates';
+import { GlobalProps } from '../../../../../../types';
 
 export default function EditIqamahTimings({
   setFlag,
@@ -33,6 +35,7 @@ export default function EditIqamahTimings({
   iqamahType: 'Add' | 'Edit';
   selectedIqamah?: IqamahTime | null;
 }) {
+  const state: State<GlobalProps> = useHookstate(globalStore);
   const userData = useHookstate(userStore.userData).get();
   const iqamahTimings = useHookstate(masjidStore.iqamahTime).get();
   const [data, setData] = useState<any>([]);
@@ -45,15 +48,15 @@ export default function EditIqamahTimings({
       let defaultData = {
         effectiveDate: moment().format('YYYY-MM-DD'),
         type: 'F',
-        asr: '18:00:00',
-        fajr: '06:00:00',
-        dhuhr: '14:00:00',
-        isha: '21:30:00',
-        maghribDelay: '5',
-        fajrDelay: '15',
-        dhuhrDelay: '30',
-        asrDelay: '15',
-        ishaDelay: '30',
+        asr: null,
+        fajr: null,
+        dhuhr: null,
+        isha: null,
+        maghribDelay: '0',
+        fajrDelay: '0',
+        dhuhrDelay: '0',
+        asrDelay: '0',
+        ishaDelay: '0',
       };
       setData(defaultData);
     }
@@ -61,29 +64,29 @@ export default function EditIqamahTimings({
 
   const onUpdate = async () => {
     var dataObj: IqamahTime = data;
-    setLoading(true);
+    state.globalLoading.set(true);
     if (iqamahType == 'Add') {
-      await AddMasjidIqamahTiming(
-        userData?.masjid.id.toString() as string,
+      const res = await AddMasjidIqamahTiming(
+        userData?.masjid?.id.toString() as string,
         dataObj,
       );
+      console.log('resresresresres', res);
+
+      if (res == 200) {
+        setData(null);
+        setFlag('iTime');
+      }
     } else {
-      await UpdateMasjidIqamahTiming(
-        userData?.masjid.id.toString() as string,
+      const res = await UpdateMasjidIqamahTiming(
+        userData?.masjid?.id.toString() as string,
         dataObj,
       );
+      if (res == 200) {
+        setData(null);
+        setFlag('iTime');
+      }
     }
-    // if (
-    //   (dataObj.type == 'D' && !Boolean(dataObj.fajrDelay)) ||
-    //   !Boolean(dataObj.dhuhrDelay) ||
-    //   !Boolean(dataObj.asrDelay) ||
-    //   !Boolean(dataObj.maghribDelay) ||
-    //   !Boolean(dataObj.ishaDelay)
-    // ) {
-    // }
-    setLoading(false);
-    setData(null);
-    setFlag('iTime');
+    state.globalLoading.set(false);
   };
 
   const type = data?.type;
@@ -105,7 +108,7 @@ export default function EditIqamahTimings({
         </View>
 
         <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
-          <OverlayLoader isShow={loading} />
+          {/* <OverlayLoader isShow={loading} /> */}
           <TimeTable
             type={data?.type}
             containerStyle={{
@@ -116,7 +119,7 @@ export default function EditIqamahTimings({
                 <View>
                   <MyDropDown
                     title={''}
-                    // searchDisabled={true}
+                    searchDisabled={true}
                     placeholder="Select Iqama Type"
                     items={[
                       { id: 1, name: 'Fixed' },
@@ -136,10 +139,10 @@ export default function EditIqamahTimings({
                         let defaultData = {
                           ...selectedIqamah,
                           effectiveDate: data.effectiveDate,
-                          asr: '18:00:00',
-                          fajr: '06:00:00',
-                          dhuhr: '14:00:00',
-                          isha: '21:30:00',
+                          asr: null,
+                          fajr: null,
+                          dhuhr: null,
+                          isha: null,
                         };
                         setData({
                           ...defaultData,
@@ -153,10 +156,10 @@ export default function EditIqamahTimings({
                         let defaultData = {
                           ...selectedIqamah,
                           effectiveDate: data.effectiveDate,
-                          fajrDelay: '10',
-                          dhuhrDelay: '10',
-                          asrDelay: '10',
-                          ishaDelay: '10',
+                          fajrDelay: '0',
+                          dhuhrDelay: '0',
+                          asrDelay: '0',
+                          ishaDelay: '0',
                         };
                         setData({
                           ...defaultData,
@@ -178,6 +181,11 @@ export default function EditIqamahTimings({
                     }
                     minimumDate={new Date()}
                     onDateChange={date => {
+                      console.log(
+                        'moment(date).format(YYYY-MM-DD)',
+                        moment(date).format('YYYY-MM-DD'),
+                      );
+
                       setData({
                         ...data,
                         effectiveDate: moment(date).format('YYYY-MM-DD'),
@@ -193,7 +201,9 @@ export default function EditIqamahTimings({
                 name: 'Fajr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(data?.fajr, 'HH:mm:ss').format('LT')
+                    ? data?.fajr != null
+                      ? moment(data?.fajr, 'HH:mm:ss').format('LT')
+                      : '-'
                     : data?.fajrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
@@ -209,7 +219,9 @@ export default function EditIqamahTimings({
                 name: 'Dhuhr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(data?.dhuhr, 'HH:mm:ss').format('LT')
+                    ? data?.dhuhr != null
+                      ? moment(data?.dhuhr, 'HH:mm:ss').format('LT')
+                      : '-'
                     : data?.dhuhrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
@@ -225,7 +237,9 @@ export default function EditIqamahTimings({
                 name: 'Asr',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(data?.asr, 'HH:mm:ss').format('LT')
+                    ? data?.asr != null
+                      ? moment(data?.asr, 'HH:mm:ss').format('LT')
+                      : '-'
                     : data?.asrDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
@@ -251,7 +265,9 @@ export default function EditIqamahTimings({
                 name: 'Isha',
                 iqamahTiming:
                   type == 'F'
-                    ? moment(data?.isha, 'HH:mm:ss').format('LT')
+                    ? data?.isha != null
+                      ? moment(data?.isha, 'HH:mm:ss').format('LT')
+                      : '-'
                     : data?.ishaDelay?.toString() ?? '0',
                 onChange: value => {
                   setData({
