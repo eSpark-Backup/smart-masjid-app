@@ -99,7 +99,7 @@
     "pod-install": "1.0.19",
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   },
   "jest": {
     "preset": "react-native"
