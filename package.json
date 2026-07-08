@@ -47,7 +47,7 @@
     "react-native-ble-plx": "^2.0.3",
     "react-native-bluetooth-state-manager": "^1.3.4",
     "react-native-countdown-component": "^2.7.1",
-    "react-native-device-country": "^1.0.4",
+    "react-native-device-country": "^2.0.1",
     "react-native-device-info": "^10.4.0",
     "react-native-fast-image": "^8.6.3",
     "react-native-file-viewer": "^2.1.5",
