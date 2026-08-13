@@ -23,7 +23,7 @@
     "@react-native-community/netinfo": "^11.4.1",
     "@react-native-firebase/app": "^18.4.0",
     "@react-native-firebase/crashlytics": "^18.4.0",
-    "@react-native-firebase/messaging": "^24.1.1",
+    "@react-native-firebase/messaging": "^26.2.0",
     "@react-native-tethering/wifi": "^1.0.0",
     "@react-navigation/bottom-tabs": "^6.5.4",
     "@react-navigation/native": "^6.1.3",
