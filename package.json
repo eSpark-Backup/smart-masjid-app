@@ -26,7 +26,7 @@
     "@react-native-firebase/messaging": "^24.1.1",
     "@react-native-tethering/wifi": "^1.0.0",
     "@react-navigation/bottom-tabs": "^6.5.4",
-    "@react-navigation/native": "^6.1.3",
+    "@react-navigation/native": "^7.4.1",
     "@react-navigation/native-stack": "^6.9.9",
     "@twotalltotems/react-native-otp-input": "^1.3.11",
     "apisauce": "^3.2.2",
